@@ -11,6 +11,7 @@
     <classEntry path="com.hjx.graphic.SubGraph"/>
     <classEntry path="com.hjx.graphic.Direction"/>
     <classEntry path="com.hjx.graphic.LinkArrowType"/>
+    <classEntry path="com.hjx.graphic.graphlayout.GraphLayout"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
