@@ -122,7 +122,6 @@ package com.hjx.graphic
 			{
 				_endNode = value;
 				dispatchEvent(new Event("endNodeChange"));
-				_endNode.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
 			}
 		}
 
@@ -141,34 +140,9 @@ package com.hjx.graphic
 			{
 				_startNode = value;
 				dispatchEvent(new Event("startNodeChange"));
-				_startNode.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
 			}
 		}
 		
-		private function onNodeMouseDown(event:MouseEvent):void
-		{
-			stage.addEventListener(MouseEvent.MOUSE_MOVE,onStageMouseMove);
-		}
-		
-		protected function onStageMouseMove(event:MouseEvent):void
-		{
-			stage.addEventListener(Event.ENTER_FRAME,onStageEnterFrame);
-			stage.addEventListener(MouseEvent.MOUSE_UP,onStageMouseUp);
-		}
-		
-		protected function onStageMouseUp(event:MouseEvent):void
-		{
-			stage.removeEventListener(MouseEvent.MOUSE_MOVE,onStageMouseMove);
-			stage.removeEventListener(MouseEvent.MOUSE_UP,onStageMouseUp);
-			stage.removeEventListener(Event.ENTER_FRAME,onStageEnterFrame);
-		}
-		
-		protected function onStageEnterFrame(event:Event):void
-		{
-			if(startNode){
-				trace( "local x: " + startNode.x+","+ "local y: " + startNode.y);
-			}
-		}
 		
 		/**
 		 * 绘制图形。 
