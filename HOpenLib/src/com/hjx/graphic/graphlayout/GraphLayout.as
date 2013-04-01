@@ -6,7 +6,7 @@ package com.hjx.graphic.graphlayout
 {
 	/*******************************************
 	 **** huangjixin,2013-4-1,下午5:10:47 作者：黄记新**
-	 **** 请一句话表述该类主要作用  **
+	 **** Graph布局算法基类，请注意该类不能被直接使用，请使用它的子类。  **
 	 *******************************************/
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
@@ -40,7 +40,6 @@ package com.hjx.graphic.graphlayout
 		//--------------------------------------------------------
 		public function GraphLayout(target:IEventDispatcher=null)
 		{
-			//TODO: implement function
 			super(target);
 		}//构造函数结束
 		

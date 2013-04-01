@@ -12,6 +12,7 @@
     <classEntry path="com.hjx.graphic.Direction"/>
     <classEntry path="com.hjx.graphic.LinkArrowType"/>
     <classEntry path="com.hjx.graphic.graphlayout.GraphLayout"/>
+    <classEntry path="com.hjx.graphic.skin.Test"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

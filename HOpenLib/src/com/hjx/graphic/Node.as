@@ -3,6 +3,7 @@ package com.hjx.graphic
 	import com.hjx.graphic.skin.NodeSkin;
 	
 	import spark.components.Label;
+	import spark.skins.SparkSkin;
 
 	/**
 	 * 节点类基类。 
@@ -26,6 +27,11 @@ package com.hjx.graphic
 		
 		private var _centerX : Number = NaN;
 		private var _centerY : Number = NaN;
+		
+		private var defaultCSSStyles:Object = {
+			skinClass:NodeSkin
+		};
+		
 		public function Node()
 		{
 			super();
@@ -84,6 +90,15 @@ package com.hjx.graphic
 		public function set label(value:String):void
 		{
 			_label = value;
+		}
+		
+		override public function stylesInitialized():void{
+			super.stylesInitialized();
+			for (var i:String in defaultCSSStyles) {
+				if (getStyle (i) == undefined) {
+					setStyle (i, defaultCSSStyles [i]);
+				}
+			}
 		}
 	}
 }

@@ -8,6 +8,7 @@ package com.hjx.graphic
 	
 	import mx.events.MoveEvent;
 	
+	import spark.components.Button;
 	import spark.primitives.Path;
 
 	/**
@@ -51,7 +52,8 @@ package com.hjx.graphic
 			strokeWidth: 1, 
 			strokeColor: 0x0, 
 			startArrowType: "triangle", 
-			startArrowVisible: false
+			startArrowVisible: false,
+			skinClass:LinkSkin
 		};
 		
 		[SkinPart(required="false")]
@@ -67,7 +69,7 @@ package com.hjx.graphic
 			this.startNode = startNode;
 			this.endNode = endNode;
 			
-			setStyle("skinClass",LinkSkin);
+//			setStyle("skinClass",LinkSkin);
 		}
 		
 		[Bindable]
@@ -149,7 +151,8 @@ package com.hjx.graphic
 		 * 
 		 */
 		private function draw():void{
-			
+			trace("draw");
+			path.data = "M 0 0 H -100 V -100 Z";var b:Button
 		}
 		//-----------------------------------------------------------
 		// 覆盖函数
@@ -166,6 +169,9 @@ package com.hjx.graphic
 		override public function styleChanged(styleProp:String):void{
 			super.styleChanged(styleProp);
 			callLater(draw);
+			if("skinClass" == styleProp){
+				trace("sdfs");
+			}
 		} 
 	}
 }

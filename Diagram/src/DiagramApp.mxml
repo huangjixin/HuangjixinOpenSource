@@ -60,7 +60,7 @@
 		<graphic:SubGraph id="subGraph" width="200" height="200">
 			<graphic:SubGraph id="subGraph1" width="150" height="150">
 				<local:BPMNBtn id="node2" click="node1_clickHandler(event)" horizontalCenter="20"
-							   skinClass="skins.BPMNBtnSkin" label="node2" verticalCenter="0"/>
+							   skinClass="skins.BPMNBtnSkin" label="node2" verticalCenter="0" backgroundColor="0x0"/>
 				<local:BPMNBtn id="node3" click="node1_clickHandler(event)"
 							   skinClass="skins.BPMNBtnSkin" label="node3" />
 			</graphic:SubGraph>
