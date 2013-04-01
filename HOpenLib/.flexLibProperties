@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="com.hjx.graphic.Renderer"/>
+    <classEntry path="com.hjx.graphic.Node"/>
+    <classEntry path="com.hjx.graphic.Graph"/>
+    <classEntry path="com.hjx.graphic.Link"/>
+    <classEntry path="com.hjx.graphic.skin.NodeSkinBase"/>
+    <classEntry path="com.hjx.graphic.skin.NodeSkin"/>
+    <classEntry path="com.hjx.graphic.skin.TestSkin"/>
+    <classEntry path="com.hjx.graphic.SubGraph"/>
+    <classEntry path="com.hjx.graphic.Direction"/>
+    <classEntry path="com.hjx.graphic.LinkArrowType"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

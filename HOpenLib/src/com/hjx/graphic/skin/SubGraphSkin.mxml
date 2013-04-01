@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin:NodeSkinBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:skin="com.hjx.graphic.skin.*"
+				   xmlns:graphic="com.hjx.graphic.*">
+	<fx:Declarations>
+	</fx:Declarations>
+	<fx:Metadata>
+		[HostComponent("com.hjx.graphic.SubGraph")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+			} 
+		]]>
+	</fx:Script>
+	<skin:states>
+		<s:State name="normal"/>
+		<s:State name="normalAndShowsCaret"/>
+		<s:State name="selected"/>
+		<s:State name="selectedAndShowsCaret"/>
+	</skin:states>
+	<s:Group id="base" left="0" right="0" top="0" bottom="0" width="{hostComponent.width}" height="{hostComponent.height}">
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:SolidColor color.normal="{this.backgroundColor}"
+							  color.selected="{this.selectedColor}"/>
+			</s:fill>
+			<s:stroke>
+				<s:SolidColorStroke color="{this.borderColor}" weight="2"/>
+			</s:stroke>
+		</s:Rect>
+		<s:Group id="topGroup" left="0" right="0" top="0" height="20">
+			<s:Rect left="0" right="0" top="0" bottom="0" >
+				<s:fill>
+					<s:SolidColor color="0x0"/>
+				</s:fill>
+			</s:Rect>
+			<s:Label id="labelElement" horizontalCenter="0" text="{hostComponent.label}"
+					 verticalCenter="0" color="0xffffff"/>
+		</s:Group>
+		
+		<graphic:Graph id="graph" left="0" right="0" top="{topGroup.height}" bottom="0">
+			
+		</graphic:Graph>
+	</s:Group>
+</skin:NodeSkinBase>
