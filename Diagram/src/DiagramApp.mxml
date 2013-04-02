@@ -5,10 +5,12 @@
 			   xmlns:graphic="com.hjx.graphic.*"
 			   xmlns:local="*"
 			   minWidth="955" minHeight="600"
-			   creationComplete="application1_creationCompleteHandler(event)">
+			   creationComplete="application1_creationCompleteHandler(event)" xmlns:diagram="com.hjx.diagram.*">
 	
 	<fx:Script>
 		<![CDATA[
+			import com.hjx.graphic.Node;
+			
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			protected function node1_clickHandler(event:MouseEvent):void
@@ -38,6 +40,7 @@
 			{
 				node.startDrag();
 				node.addEventListener(MouseEvent.MOUSE_UP,onNodeMouseUp);
+				node.addEventListener(MouseEvent.MOUSE_MOVE,onNodeMouseMove);
 			}
 			
 			protected function onNodeMouseUp(event:MouseEvent):void
@@ -46,21 +49,21 @@
 				node.removeEventListener(MouseEvent.MOUSE_UP,onNodeMouseUp);
 			}
 			
+			protected function onNodeMouseMove(event:MouseEvent):void
+			{
+				var node:Node = null;
+				if(event.currentTarget is Node){
+					node = event.currentTarget as Node;
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<graphic:GraphScroller id="graphSroller" width="100" height="100">
-		<graphic:Graph width="200" height="200" horizontalCenter="0" verticalCenter="0">
-			<s:Rect width="100%" height="100%">
-				<s:fill>
-					<s:SolidColor color="0x0"/>
-				</s:fill>
-			</s:Rect>
-		</graphic:Graph>
-	</graphic:GraphScroller>
+	<diagram:Diagram id="diagram" width="100%" height="100%"/>
 	<graphic:Graph id="graph" width="50%" height="50%" horizontalCenter="0" verticalCenter="0">
 		<graphic:Link id="link" startNode="{node}" endNode="{node1}"/>
 		<local:BPMNBtn id="node" click="node1_clickHandler(event)" horizontalCenter="0"

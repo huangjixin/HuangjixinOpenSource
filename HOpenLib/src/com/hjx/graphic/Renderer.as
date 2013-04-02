@@ -1,5 +1,6 @@
 package com.hjx.graphic
 {
+	import flash.events.Event;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
@@ -30,8 +31,10 @@ package com.hjx.graphic
 		public function Renderer()
 		{
 			super();
+			
+			addEventListener("skinChanged",onSkinChanged);
 		}
-
+		
 		[Bindable]
 		public function get data():Object
 		{
@@ -114,6 +117,13 @@ package com.hjx.graphic
 		{
 			_resizable = value;
 			invalidateSkinState();
+		}
+		
+		protected function onSkinChanged(event:Event):void
+		{
+			if(this.skin){
+				this.skin.invalidateDisplayList();
+			}
 		}
 		
 		override protected function getCurrentSkinState():String

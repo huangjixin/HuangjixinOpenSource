@@ -43,6 +43,10 @@ package com.hjx.graphic
 		private var _fallbackEndPoint:Point;
 		private var _fallbackStartPoint:Point;
 		
+		/**
+		 * 默认css风格。
+		 * 
+		 */
 		private var defaultCSSStyles:Object = {
 			dashStyle: "none", 
 			endArrowType: "triangle", 
@@ -68,8 +72,6 @@ package com.hjx.graphic
 			super();
 			this.startNode = startNode;
 			this.endNode = endNode;
-			
-//			setStyle("skinClass",LinkSkin);
 		}
 		
 		[Bindable]
@@ -151,9 +153,9 @@ package com.hjx.graphic
 		 * 
 		 */
 		private function draw():void{
-			trace("draw");
 			path.data = "M 0 0 H -100 V -100 Z";var b:Button
 		}
+		
 		//-----------------------------------------------------------
 		// 覆盖函数
 		//-----------------------------------------------------------
@@ -169,9 +171,6 @@ package com.hjx.graphic
 		override public function styleChanged(styleProp:String):void{
 			super.styleChanged(styleProp);
 			callLater(draw);
-			if("skinClass" == styleProp){
-				trace("sdfs");
-			}
 		} 
 	}
 }

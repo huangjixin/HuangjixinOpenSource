@@ -62,11 +62,17 @@ package com.hjx.graphic.skin
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		
+		public function set backgroundColor(value:uint):void
+		{
+			_backgroundColor = value;
+		}
+
 		/**
 		 * 背景颜色。 
 		 * @return 
 		 * 
 		 */
+		[Bindable]
 		public function get backgroundColor():uint
 		{
 			return _backgroundColor;

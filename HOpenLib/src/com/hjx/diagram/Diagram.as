@@ -8,7 +8,9 @@ package com.hjx.diagram
 	 **** huangjixin,2013-3-29,上午8:44:56 **
 	 **** 请一句话表述该类主要作用  **
 	 *******************************************/
+	import com.hjx.diagram.skin.DiagramSkin;
 	import com.hjx.graphic.Graph;
+	import com.hjx.graphic.GraphScroller;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 	
@@ -37,13 +39,17 @@ package com.hjx.diagram
 		[SkinPart(required="true")]
 		public var graph:Graph;
 		
+		[SkinPart(required="true")]
+		public var graphScroller:GraphScroller;
+		
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// 构造函数，初始化相关工作可以放在里面
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		public function Diagram()
 		{
-			//TODO: implement function
 			super();
+			
+			setStyle("skinClass",DiagramSkin);
 		}//构造函数结束
 		
 		

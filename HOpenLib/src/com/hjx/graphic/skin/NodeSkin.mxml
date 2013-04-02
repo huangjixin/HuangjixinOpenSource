@@ -10,8 +10,20 @@
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
-			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
-			} 
+			/**
+			 *  @private
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
+			{
+				var bg:Number = getStyle("backgroundColor");
+				
+				if (backgroundColor != bg)
+				{
+					backgroundColor = bg;
+				}      
+				
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
 		]]>
 	</fx:Script>
 	<skin:states>
