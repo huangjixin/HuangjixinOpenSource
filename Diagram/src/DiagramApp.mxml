@@ -9,6 +9,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			protected function node1_clickHandler(event:MouseEvent):void
 			{
@@ -21,7 +22,7 @@
 			{
 				this.addEventListener(MouseEvent.MOUSE_MOVE, onMoveHandler);
 				node.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
-				trace(link.path.width+","+link.path.height);
+//				trace(link.width+","+link.height);
 			}
 			
 			protected function onMoveHandler(event:MouseEvent):void
@@ -51,6 +52,15 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
+	<graphic:GraphScroller id="graphSroller" width="100" height="100">
+		<graphic:Graph width="200" height="200" horizontalCenter="0" verticalCenter="0">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:SolidColor color="0x0"/>
+				</s:fill>
+			</s:Rect>
+		</graphic:Graph>
+	</graphic:GraphScroller>
 	<graphic:Graph id="graph" width="50%" height="50%" horizontalCenter="0" verticalCenter="0">
 		<graphic:Link id="link" startNode="{node}" endNode="{node1}"/>
 		<local:BPMNBtn id="node" click="node1_clickHandler(event)" horizontalCenter="0"
@@ -60,7 +70,7 @@
 		<graphic:SubGraph id="subGraph" width="200" height="200">
 			<graphic:SubGraph id="subGraph1" width="150" height="150">
 				<local:BPMNBtn id="node2" click="node1_clickHandler(event)" horizontalCenter="20"
-							   skinClass="skins.BPMNBtnSkin" label="node2" verticalCenter="0" backgroundColor="0x0"/>
+							   skinClass="skins.BPMNBtnSkin" label="node2" verticalCenter="0"/>
 				<local:BPMNBtn id="node3" click="node1_clickHandler(event)"
 							   skinClass="skins.BPMNBtnSkin" label="node3" />
 			</graphic:SubGraph>

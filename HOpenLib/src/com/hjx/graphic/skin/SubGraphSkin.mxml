@@ -20,6 +20,10 @@
 		<s:State name="normalAndShowsCaret"/>
 		<s:State name="selected"/>
 		<s:State name="selectedAndShowsCaret"/>
+		<s:State name="collapsed"/>
+		<s:State name="collapsedAndShowsCaret"/>
+		<s:State name="collapsedSelected"/>
+		<s:State name="collapsedSelectedAndShowsCaret"/>
 	</skin:states>
 	<s:Group id="base" left="0" right="0" top="0" bottom="0" width="{hostComponent.width}" height="{hostComponent.height}">
 		<s:Rect left="0" right="0" top="0" bottom="0">

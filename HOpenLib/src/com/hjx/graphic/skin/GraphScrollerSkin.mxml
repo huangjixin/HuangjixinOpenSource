@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("com.hjx.graphic.GraphScroller")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var zoomReticle:ClassFactory
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+	</fx:Declarations>
+	<s:HScrollBar id="horizontalScrollBar" visible="false">
+		
+	</s:HScrollBar>
+	<s:VScrollBar id="verticalScrollBar" visible="false">
+		
+	</s:VScrollBar>
+</s:Skin>
