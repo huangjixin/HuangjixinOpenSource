@@ -14,6 +14,9 @@
     <classEntry path="com.hjx.graphic.graphlayout.GraphLayout"/>
     <classEntry path="com.hjx.graphic.skin.Test"/>
     <classEntry path="com.hjx.diagram.skin.DiagramSkin"/>
+    <classEntry path="com.hjx.diagram.editor.DiagramEditor"/>
+    <classEntry path="com.hjx.diagram.editor.Grid"/>
+    <classEntry path="com.hjx.diagram.editor.skin.DiagramEditorSkin"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

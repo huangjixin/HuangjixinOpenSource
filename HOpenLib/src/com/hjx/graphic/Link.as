@@ -153,7 +153,9 @@ package com.hjx.graphic
 		 * 
 		 */
 		private function draw():void{
-			path.data = "M 0 0 H -100 V -100 Z";var b:Button
+			fallbackStartPoint;
+			path.data = "M "+fallbackStartPoint.x+" "+fallbackStartPoint.y+" V "+ fallbackEndPoint.y+" H "+(fallbackEndPoint.x-10) ;
+//			path.data = "M -10 0 H -100 V -100 ";
 		}
 		
 		//-----------------------------------------------------------

@@ -5,7 +5,7 @@
 			   xmlns:graphic="com.hjx.graphic.*"
 			   xmlns:local="*"
 			   minWidth="955" minHeight="600"
-			   creationComplete="application1_creationCompleteHandler(event)" xmlns:diagram="com.hjx.diagram.*">
+			   creationComplete="application1_creationCompleteHandler(event)" xmlns:diagram="com.hjx.diagram.*" xmlns:editor="com.hjx.diagram.editor.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -47,6 +47,7 @@
 			{
 				node.stopDrag();
 				node.removeEventListener(MouseEvent.MOUSE_UP,onNodeMouseUp);
+				node.removeEventListener(MouseEvent.MOUSE_MOVE,onNodeMouseMove);
 			}
 			
 			protected function onNodeMouseMove(event:MouseEvent):void
@@ -63,17 +64,23 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
+	<editor:DiagramEditor id="diagramEditor"  width="100%" height="100%">
+		<diagram:Diagram id="diagram1" width="100%" height="100%">
+			
+		</diagram:Diagram>
+	</editor:DiagramEditor>
 	<diagram:Diagram id="diagram" width="100%" height="100%"/>
 	<graphic:Graph id="graph" width="50%" height="50%" horizontalCenter="0" verticalCenter="0">
-		<graphic:Link id="link" startNode="{node}" endNode="{node1}"/>
 		<local:BPMNBtn id="node" click="node1_clickHandler(event)" horizontalCenter="0"
 					   skinClass="skins.BPMNBtnSkin" verticalCenter="0"/>
 		<local:BPMNBtn id="node1" click="node1_clickHandler(event)" horizontalCenter="20"
 					   skinClass="skins.BPMNBtnSkin" label="node1" verticalCenter="0"/>
 		<graphic:SubGraph id="subGraph" width="200" height="200">
 			<graphic:SubGraph id="subGraph1" width="150" height="150">
+				<graphic:Link id="link" startNode="{node2}" endNode="{node3}" fallbackStartPoint="{new Point(-100,-100)}"
+							  fallbackEndPoint="{new Point(0,0)}" strokeWidth="4"/>
 				<local:BPMNBtn id="node2" click="node1_clickHandler(event)" horizontalCenter="20"
-							   skinClass="skins.BPMNBtnSkin" label="node2" verticalCenter="0"/>
+							   skinClass="skins.BPMNBtnSkin" label="node2" bottom="0"/>
 				<local:BPMNBtn id="node3" click="node1_clickHandler(event)"
 							   skinClass="skins.BPMNBtnSkin" label="node3" />
 			</graphic:SubGraph>

@@ -33,6 +33,9 @@ package com.hjx.diagram
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		private var _selectionMode:String = "";
 		
+		private var defaultCSSStyles:Object = {
+			skinClass:DiagramSkin
+		};
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// public 公有变量声明处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -48,8 +51,6 @@ package com.hjx.diagram
 		public function Diagram()
 		{
 			super();
-			
-			setStyle("skinClass",DiagramSkin);
 		}//构造函数结束
 		
 		
@@ -66,5 +67,14 @@ package com.hjx.diagram
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+		override public function stylesInitialized():void{
+			super.stylesInitialized();
+			for (var i:String in defaultCSSStyles) {
+				if (getStyle (i) == undefined) {
+					setStyle (i, defaultCSSStyles [i]);
+				}
+			}
+			//			setStyle("skinClass",NodeSkin);
+		}
 	}//类结束
 }//包结束

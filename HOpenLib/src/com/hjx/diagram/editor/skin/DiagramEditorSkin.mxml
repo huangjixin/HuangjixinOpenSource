@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		xmlns:editor="com.hjx.diagram.editor.*">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("com.hjx.diagram.editor.DiagramEditor")]
+	</fx:Metadata>
+	
+	<!-- SkinParts
+	name=diagramParent, type=spark.components.Group, required=true
+	name=grid, type=com.hjx.diagram.editor.Grid, required=false
+	name=adornersGroup, type=spark.components.Group, required=true
+	-->
+	<editor:Grid id="grid" left="0" right="0" top="0" bottom="0"/>
+	<s:Group id="diagramParent" left="0" right="0" top="0" bottom="0"/>
+	<s:Group id="adornersGroup" left="0" right="0" top="0" bottom="0"/>
+</s:Skin>

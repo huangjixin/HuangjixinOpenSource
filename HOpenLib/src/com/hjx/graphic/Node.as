@@ -3,14 +3,11 @@ package com.hjx.graphic
 	import com.hjx.graphic.skin.NodeSkin;
 	
 	import flash.display.DisplayObject;
-	import flash.events.IEventDispatcher;
 	import flash.geom.Rectangle;
 	
-	import mx.core.IFactory;
 	import mx.core.UIComponent;
 	
 	import spark.components.Label;
-	import spark.skins.SparkSkin;
 
 	/**
 	 * 节点类基类。 
