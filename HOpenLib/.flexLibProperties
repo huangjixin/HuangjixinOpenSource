@@ -17,6 +17,7 @@
     <classEntry path="com.hjx.diagram.editor.DiagramEditor"/>
     <classEntry path="com.hjx.diagram.editor.Grid"/>
     <classEntry path="com.hjx.diagram.editor.skin.DiagramEditorSkin"/>
+    <classEntry path="com.hjx.graphic.events.GraphScrollerEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
