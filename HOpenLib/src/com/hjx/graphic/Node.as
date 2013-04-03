@@ -45,6 +45,8 @@ package com.hjx.graphic
 		private var _centerY : Number = NaN;
 		
 		private var defaultCSSStyles:Object = {
+			backgroundColor : 0xD1CE9C,
+			borderColor : 0x0,
 			skinClass:NodeSkin
 		};
 		

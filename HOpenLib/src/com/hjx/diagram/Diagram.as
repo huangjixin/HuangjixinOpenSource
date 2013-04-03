@@ -12,9 +12,12 @@ package com.hjx.diagram
 	import com.hjx.graphic.Graph;
 	import com.hjx.graphic.GraphScroller;
 	import com.hjx.graphic.Node;
+	import com.hjx.graphic.SubGraph;
 	import com.hjx.graphic.graphlayout.GraphLayout;
 	
 	import flash.events.Event;
+	import flash.net.getClassByAlias;
+	import flash.utils.getDefinitionByName;
 	
 	import mx.collections.HierarchicalCollectionView;
 	import mx.collections.ICollectionView;
@@ -320,20 +323,31 @@ package com.hjx.diagram
 			
 			while (!cursor.afterLast)
 			{
-				
 				var label:* = cursor.current[this.labelField];
 				var x:* = cursor.current[this.xLocationField];
 				var y:* = cursor.current[this.yLocationField];
-				if (!nodeRenderer){
-					nodeRenderer = new ClassFactory(Node);
+				if(cursor.current is XML){
+					var localName:Object = XML(cursor.current).localName();
+					if(localName){
+						if(localName == "node"){
+							nodeRenderer = new ClassFactory(Node);
+							var node:Node = nodeRenderer.newInstance() as Node;
+							node.label = label;
+							node.x = x;
+							node.y = y;
+							
+							this.graph.addElement(node);
+						}else if(localName == "graph"){
+							nodeRenderer = new ClassFactory(SubGraph);
+							var subGraph:SubGraph = nodeRenderer.newInstance() as SubGraph;
+							subGraph.label = label;
+							subGraph.x = x;
+							subGraph.y = y;
+							this.graph.addElement(subGraph);
+						}
+					}
 				}
 				
-				var node:Node = nodeRenderer.newInstance() as Node;
-				node.label = label;
-				node.x = x;
-				node.y = y;
-				
-				this.graph.addElement(node);
 				cursor.moveNext();
 				/*new HierarchicalCollectionView(cursor.current);*/
 			}

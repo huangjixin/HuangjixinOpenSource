@@ -15,12 +15,12 @@
 			 */
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
 			{
-				/*var bg:Number = getStyle("backgroundColor");
+				var bg:Number = getStyle("backgroundColor");
 				
 				if (backgroundColor != bg)
 				{
 					backgroundColor = bg;
-				}  */    
+				}      
 				
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 			}
@@ -38,7 +38,7 @@
 				<s:SolidColor color.normal="{this.backgroundColor}" color.selected="{this.selectedColor}"/>
 			</s:fill>
 			<s:stroke>
-				<s:SolidColorStroke color="0x0" weight="2"/>
+				<s:SolidColorStroke color="{this.borderColor}" weight="2"/>
 			</s:stroke>
 		</s:Rect>
 		<s:Label id="labelElement" text="{hostComponent.label}" horizontalCenter="0" verticalCenter="0"/>
