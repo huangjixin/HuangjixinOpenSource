@@ -78,7 +78,7 @@
 				<graph x="140" y="50" label="Graph 1">
 					<node x="10" y="0" label="Node 11"/>
 					<node x="10" y="50" label="Node 12"/>
-					<graph x="150" y="60" label="Graph 2">
+					<graph x="0" y="60" label="Graph 2">
 						<node x="0" y="0" label="Node 21"/>
 						<node x="60" y="60" label="Node 22"/>
 					</graph>  

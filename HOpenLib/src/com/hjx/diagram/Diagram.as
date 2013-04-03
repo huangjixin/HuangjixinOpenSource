@@ -335,18 +335,17 @@ package com.hjx.diagram
 						if(localName == "node"){
 							nodeRenderer = new ClassFactory(Node);
 							var node:Node = nodeRenderer.newInstance() as Node;
+							container.addElement(node);
 							node.label = label;
 							node.x = x;
 							node.y = y;
-							
-							container.addElement(node);
 						}else if(localName == "graph"){
 							nodeRenderer = new ClassFactory(SubGraph);
 							var subGraph:SubGraph = nodeRenderer.newInstance() as SubGraph;
+							container.addElement(subGraph);
 							subGraph.label = label;
 							subGraph.x = x;
 							subGraph.y = y;
-							container.addElement(subGraph);
 							
 							var hierarchicalCollectionView :HierarchicalCollectionView = new HierarchicalCollectionView(new HierarchicalData(cursor.current as XML));
 							hierarchicalCollectionView.showRoot = nodeRoot.showRoot;
