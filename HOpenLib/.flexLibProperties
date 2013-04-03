@@ -20,6 +20,7 @@
     <classEntry path="com.hjx.graphic.events.GraphScrollerEvent"/>
     <classEntry path="com.hjx.graphic.graphlayout.HierarchicalLayout"/>
     <classEntry path="com.hjx.graphic.graphlayout.HierarchicalLayoutFlowDirection"/>
+    <classEntry path="com.hjx.diagram.events.DiagramEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

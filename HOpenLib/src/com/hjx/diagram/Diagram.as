@@ -13,8 +13,74 @@ package com.hjx.diagram
 	import com.hjx.graphic.GraphScroller;
 	import com.hjx.graphic.graphlayout.GraphLayout;
 	
+	import flash.events.Event;
+	
+	import mx.collections.ICollectionView;
+	import mx.core.IFactory;
+	
 	import spark.components.supportClasses.SkinnableComponent;
 	
+	/**
+	 * 当渲染器焦点改变的时候派发。
+	 * 
+	 */
+	[Event(name="caretChange", type="mx.events.PropertyChangeEvent")]
+	/**
+	 * 当渲染节点位移或者形变的时候派发。 
+	 */
+	[Event(name="elementGeometryChange", type="com.hjx.graphic.events.GraphEvent")]
+	/**
+	 * 当一个graph或者subGraph被添加到另外的一个graph的时候派发。 
+	 */
+	[Event(name="graphAdd", type="com.hjx.graphic.events.GraphEvent")]
+	/**
+	 * 当布局动画结束的时候派发。 
+	 */
+	[Event(name="graphLayoutEnd", type="com.hjx.graphic.events.GraphEvent")]
+	/**
+	 * 当布局动画开始的时候派发。 
+	 */
+	[Event(name="graphLayoutStart", type="com.hjx.graphic.events.GraphEvent")]
+	/**
+	 * 当一个graph或者subGraph被另外的一个graph移除的时候派发。 
+	 */
+	[Event(name="graphRemove", type="com.hjx.graphic.events.GraphEvent")]
+	/**
+	 * 当一个连线被添加到一个graph的时候派发。 
+	 */
+	[Event(name="linkAdd", type="com.hjx.graphic.events.GraphEvent")]
+	/**
+	 * 当一个连线被移除的时候派发。 
+	 */
+	[Event(name="linkRemove", type="com.hjx.graphic.events.GraphEvent")]
+	/**
+	 * 当一个节点被添加到一个graph的时候派发。 
+	 */
+	[Event(name="nodeAdd", type="com.hjx.graphic.events.GraphEvent")]
+	/**
+	 * 当一个分支关闭的时候派发。 
+	 */
+	[Event(name="nodeClose", type="com.hjx.diagram.events.DiagramEvent")]
+	/**
+	 * 当一个分支关闭的时候派发。 
+	 */
+	[Event(name="nodeOpen", type="com.hjx.diagram.events.DiagramEvent")]
+	/**
+	 * 当一个分支在打开或者关闭前派发。 
+	 */
+	[Event(name="nodeOpening", type="com.hjx.diagram.events.DiagramEvent")]
+	/**
+	 * 用户交互选择结果。 
+	 */
+	[Event(name="selectionChange", type="com.hjx.diagram.events.DiagramEvent")]
+	/**
+	 * 当一个节点的时候派发。 
+	 */
+	[Event(name="nodeMove", type="com.hjx.diagram.events.DiagramNodeMoveEvent")]
+	/**
+	 * 当滚动条缩放的时候派发。 
+	 */
+	[Event(name="zoomCommit", type="com.hjx.graphic.events.GraphScrollerEvent")]
 	public class Diagram extends SkinnableComponent
 	{
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -47,6 +113,9 @@ package com.hjx.diagram
 		
 		private var _nodeDataProvider:Object;
 		
+		private var _nodeRenderer:IFactory;
+		
+		private var _nodeRendererFunction:Function;
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// public 公有变量声明处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -68,8 +137,7 @@ package com.hjx.diagram
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// getter和setter函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-
-		[Bindable]
+		[Bindable(event="nodeDataProviderChange")]
 		/**
 		 * 节点数据源。
 		 */
@@ -77,11 +145,57 @@ package com.hjx.diagram
 		{
 			return _nodeDataProvider;
 		}
-
+		
+		/**
+		 * @private
+		 */
 		public function set nodeDataProvider(value:Object):void
 		{
-			_nodeDataProvider = value;
+			if( _nodeDataProvider !== value)
+			{
+				_nodeDataProvider = value;
+				dispatchEvent(new Event("nodeDataProviderChange"));
+				if(value is ICollectionView){
+					
+				}
+			}
 		}
+		
+		/**
+		 * 从数据模型当中创建节点.
+		 * 该函数有以下语法:<br>function rendererFunction(diagram:Diagram, item:Object):Node</br>
+		 * <br>该函数优先级高于工厂属性</br>
+		 */
+		public function get nodeRendererFunction():Function
+		{
+			return _nodeRendererFunction;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set nodeRendererFunction(value:Function):void
+		{
+			_nodeRendererFunction = value;
+		}
+
+		[Bindable]
+		/**
+		 * 节点渲染器。 
+		 */
+		public function get nodeRenderer():IFactory
+		{
+			return _nodeRenderer;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set nodeRenderer(value:IFactory):void
+		{
+			_nodeRenderer = value;
+		}
+
 
 		[Bindable]
 		/**
@@ -137,7 +251,14 @@ package com.hjx.diagram
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// 相关事件响应函数和逻辑函数存放处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-		
+		/**
+		 * 创建节点 
+		 * @return 
+		 * 
+		 */
+		private function installNodes():void{
+			
+		}
 		
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// override 覆盖函数

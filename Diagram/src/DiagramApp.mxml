@@ -13,8 +13,8 @@
 	<fx:Script>
 		<![CDATA[
 			import com.hjx.graphic.Node;
+			import mx.collections.HierarchicalData;
 			
-			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			protected function node1_clickHandler(event:MouseEvent):void
 			{
@@ -65,11 +65,28 @@
 	</fx:Script>
 	
 	<fx:Declarations>
-		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<fx:XML id="data">
+			<graph label="root">  
+				<node label="Node 1" x="50" y="50" />
+				<node label="Node 2" x="50" y="200"/>
+				<node label="Node 3" x="50" y="120"/>
+				<graph label="Graph 1" x="140" y="50">
+					<node label="Node 11" x="10" y="0" />
+					<node label="Node 12" x="10" y="50"/>
+					<graph label="Graph 2" x="150" y="60">
+						<node label="Node 21" x="0" y="0" />
+						<node label="Node 22" x="60" y="60"/>
+					</graph>  
+				</graph>
+			</graph>
+		</fx:XML>
+		<mx:HierarchicalCollectionView showRoot="false" 
+									   source="{new HierarchicalData(data)}" 
+									   id="hcv"/>
 	</fx:Declarations>
 	<editor:DiagramEditor id="diagramEditor" width="100%" height="100%">
 		<diagram:Diagram id="diagram1" width="100%" height="100%" automaticGraphLayout="false"
-						 selectionMode="multiple">
+						 selectionMode="multiple" nodeDataProvider="{hcv}">
 			<diagram:nodeLayout>
 				<graphlayout:HierarchicalLayout id="hierarchicalLayout" flowDirection="right"/>
 			</diagram:nodeLayout>
