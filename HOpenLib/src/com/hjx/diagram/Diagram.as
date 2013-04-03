@@ -20,10 +20,13 @@ package com.hjx.diagram
 	import flash.utils.getDefinitionByName;
 	
 	import mx.collections.HierarchicalCollectionView;
+	import mx.collections.HierarchicalData;
 	import mx.collections.ICollectionView;
+	import mx.collections.IHierarchicalData;
 	import mx.collections.IViewCursor;
 	import mx.core.ClassFactory;
 	import mx.core.IFactory;
+	import mx.core.IVisualElementContainer;
 	
 	import spark.components.Button;
 	import spark.components.supportClasses.SkinnableComponent;
@@ -240,7 +243,7 @@ package com.hjx.diagram
 		{
 			_nodeRendererFunction = value;
 		}
-
+		
 		[Bindable]
 		/**
 		 * 节点渲染器。 
@@ -249,7 +252,7 @@ package com.hjx.diagram
 		{
 			return _nodeRenderer;
 		}
-
+		
 		/**
 		 * @private
 		 */
@@ -257,8 +260,8 @@ package com.hjx.diagram
 		{
 			_nodeRenderer = value;
 		}
-
-
+		
+		
 		[Bindable]
 		/**
 		 * 是否自动布局。
@@ -269,12 +272,12 @@ package com.hjx.diagram
 		{
 			return _automaticGraphLayout;
 		}
-
+		
 		public function set automaticGraphLayout(value:Boolean):void
 		{
 			_automaticGraphLayout = value;
 		}
-
+		
 		[Bindable]
 		[Inspectable(enumeration="multiple,single",defaultValue="multiple")]
 		/**
@@ -284,7 +287,7 @@ package com.hjx.diagram
 		{
 			return _selectionMode;
 		}
-
+		
 		/**
 		 * @private
 		 */
@@ -292,7 +295,7 @@ package com.hjx.diagram
 		{
 			_selectionMode = value;
 		}
-
+		
 		[Bindable]
 		/**
 		 * 节点布局。 
@@ -318,8 +321,8 @@ package com.hjx.diagram
 		 * @return 
 		 * 
 		 */
-		private function installNodes(nodeRoot:Object):void{
-			var cursor:IViewCursor= HierarchicalCollectionView(nodeDataProvider).createCursor();
+		private function installNodes(nodeRoot:HierarchicalCollectionView,container:IVisualElementContainer):void{
+			var cursor:IViewCursor= nodeRoot.createCursor();
 			
 			while (!cursor.afterLast)
 			{
@@ -336,20 +339,24 @@ package com.hjx.diagram
 							node.x = x;
 							node.y = y;
 							
-							this.graph.addElement(node);
+							container.addElement(node);
 						}else if(localName == "graph"){
 							nodeRenderer = new ClassFactory(SubGraph);
 							var subGraph:SubGraph = nodeRenderer.newInstance() as SubGraph;
 							subGraph.label = label;
 							subGraph.x = x;
 							subGraph.y = y;
-							this.graph.addElement(subGraph);
+							container.addElement(subGraph);
+							
+							var hierarchicalCollectionView :HierarchicalCollectionView = new HierarchicalCollectionView(new HierarchicalData(cursor.current as XML));
+							hierarchicalCollectionView.showRoot = nodeRoot.showRoot;
+							installNodes(hierarchicalCollectionView,subGraph.graph);
 						}
 					}
 				}
 				
 				cursor.moveNext();
-				/*new HierarchicalCollectionView(cursor.current);*/
+				/**/
 			}
 		}
 		
@@ -364,7 +371,7 @@ package com.hjx.diagram
 				if(graph){
 					graph.removeAllElements();
 				}
-				installNodes(nodeDataProvider);
+				installNodes(nodeDataProvider as HierarchicalCollectionView,this.graph);
 			}
 		}
 		override public function stylesInitialized():void{
