@@ -45,6 +45,8 @@ package com.hjx.diagram
 		
 		private var _automaticGraphLayout:Boolean = false;
 		
+		private var _nodeDataProvider:Object;
+		
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// public 公有变量声明处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -66,6 +68,20 @@ package com.hjx.diagram
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// getter和setter函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+		[Bindable]
+		/**
+		 * 节点数据源。
+		 */
+		public function get nodeDataProvider():Object
+		{
+			return _nodeDataProvider;
+		}
+
+		public function set nodeDataProvider(value:Object):void
+		{
+			_nodeDataProvider = value;
+		}
 
 		[Bindable]
 		/**
