@@ -16,7 +16,7 @@ package com.hjx.graphic
 	 */
 	[Style(name="backgroundColor", inherit="no", type="uint",format="Color")]
 	[Style(name="borderColor", inherit="no", type="uint",format="Color")]
-	/*[Style(name="caretColor", inherit="no", type="uint",format="Color")]*/
+	[Style(name="caretColor", inherit="no", type="uint",format="Color")]
 	[Style(name="color", inherit="yes", type="uint",format="Color")]
 	[Style(name="selectedColor", inherit="yes", type="uint",format="Color")]
 	[Style(name="selectedTextColor", inherit="yes", type="uint",format="Color")]

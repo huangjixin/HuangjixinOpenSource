@@ -13,9 +13,14 @@
 	<fx:Script>
 		<![CDATA[
 			import com.hjx.graphic.Node;
-			import mx.collections.HierarchicalData;
 			
+			import mx.collections.ArrayCollection;
+			import mx.collections.HierarchicalData;
 			import mx.events.FlexEvent;
+			
+			[Bindable]
+			private var hac:ArrayCollection = new ArrayCollection([{label:"root",children:[{label:"node0"},{label:"node1"}]}]);
+			
 			protected function node1_clickHandler(event:MouseEvent):void
 			{
 				if(node.selectable){
@@ -67,26 +72,25 @@
 	<fx:Declarations>
 		<fx:XML id="data">
 			<graph label="root">  
-				<node label="Node 1" x="50" y="50" />
-				<node label="Node 2" x="50" y="200"/>
-				<node label="Node 3" x="50" y="120"/>
-				<graph label="Graph 1" x="140" y="50">
-					<node label="Node 11" x="10" y="0" />
-					<node label="Node 12" x="10" y="50"/>
-					<graph label="Graph 2" x="150" y="60">
-						<node label="Node 21" x="0" y="0" />
-						<node label="Node 22" x="60" y="60"/>
+				<node x="50" y="50" label="Node 1"/>
+				<node x="50" y="200" label="Node 2"/>
+				<node x="50" y="120" label="Node 3"/>
+				<graph x="140" y="50" label="Graph 1">
+					<node x="10" y="0" label="Node 11"/>
+					<node x="10" y="50" label="Node 12"/>
+					<graph x="150" y="60" label="Graph 2">
+						<node x="0" y="0" label="Node 21"/>
+						<node x="60" y="60" label="Node 22"/>
 					</graph>  
 				</graph>
 			</graph>
 		</fx:XML>
-		<mx:HierarchicalCollectionView showRoot="false" 
-									   source="{new HierarchicalData(data)}" 
-									   id="hcv"/>
+		<mx:HierarchicalCollectionView id="hcv" showRoot="false"
+									   source="{new HierarchicalData(data)}"/>
 	</fx:Declarations>
 	<editor:DiagramEditor id="diagramEditor" width="100%" height="100%">
 		<diagram:Diagram id="diagram1" width="100%" height="100%" automaticGraphLayout="false"
-						 selectionMode="multiple" nodeDataProvider="{hcv}">
+						 nodeDataProvider="{hcv}" selectionMode="multiple">
 			<diagram:nodeLayout>
 				<graphlayout:HierarchicalLayout id="hierarchicalLayout" flowDirection="right"/>
 			</diagram:nodeLayout>

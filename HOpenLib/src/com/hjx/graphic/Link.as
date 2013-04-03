@@ -13,7 +13,7 @@ package com.hjx.graphic
 	 * 
 	 */
 	[Style(name="caps", inherit="yes", type="String",enumeration="round,square,none")]
-	/*[Style(name="caretColor", inherit="no", type="uint",format="Color")]*/
+	[Style(name="caretColor", inherit="no", type="uint",format="Color")]
 	[Style(name="dashArray", inherit="no", type="Array")]
 	[Style(name="dashStyle", inherit="no", type="String",enumeration="none,dash,dot,dashDot")]
 	[Style(name="endArrowType", inherit="yes", type="String",enumeration="triangle,open,sunken,curved,square,diamond,circle,star")]

@@ -11,13 +11,18 @@ package com.hjx.diagram
 	import com.hjx.diagram.skin.DiagramSkin;
 	import com.hjx.graphic.Graph;
 	import com.hjx.graphic.GraphScroller;
+	import com.hjx.graphic.Node;
 	import com.hjx.graphic.graphlayout.GraphLayout;
 	
 	import flash.events.Event;
 	
+	import mx.collections.HierarchicalCollectionView;
 	import mx.collections.ICollectionView;
+	import mx.collections.IViewCursor;
+	import mx.core.ClassFactory;
 	import mx.core.IFactory;
 	
+	import spark.components.Button;
 	import spark.components.supportClasses.SkinnableComponent;
 	
 	/**
@@ -111,11 +116,19 @@ package com.hjx.diagram
 		
 		private var _automaticGraphLayout:Boolean = false;
 		
+		private var nodeDataProviderChanged:Boolean;
+		
 		private var _nodeDataProvider:Object;
 		
 		private var _nodeRenderer:IFactory;
 		
 		private var _nodeRendererFunction:Function;
+		
+		private var displayNodesOpen:Boolean;                     
+		private var _xLocationField:String ="@x";
+		private var _yLocationField:String ="@y"; 
+		private var _labelField:String ="@label";
+		
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// public 公有变量声明处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -137,6 +150,49 @@ package com.hjx.diagram
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// getter和setter函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+		/**
+		 * 显示字段，默认为@label,为xml设置. 
+		 * @return 
+		 * 
+		 */
+		public function get labelField():String
+		{
+			return _labelField;
+		}
+		
+		public function set labelField(value:String):void
+		{
+			_labelField = value;
+		}
+		
+		[Bindable]
+		/**
+		 * 横坐标字段，默认为@x 
+		 */
+		public function get xLocationField():String
+		{
+			return _xLocationField;
+		}
+		
+		public function set xLocationField(value:String):void
+		{
+			_xLocationField = value;
+		}
+		/**
+		 * 纵坐标字段，默认为@y。 
+		 * @return 
+		 * 
+		 */
+		public function get yLocationField():String
+		{
+			return _yLocationField;
+		}
+		
+		public function set yLocationField(value:String):void
+		{
+			_yLocationField = value;
+		}
+		
 		[Bindable(event="nodeDataProviderChange")]
 		/**
 		 * 节点数据源。
@@ -155,9 +211,12 @@ package com.hjx.diagram
 			{
 				_nodeDataProvider = value;
 				dispatchEvent(new Event("nodeDataProviderChange"));
-				if(value is ICollectionView){
-					
+				if(!value is HierarchicalCollectionView){
+					throw new Error("数据源有误，必须是HierarchicalCollectionView类型。");
 				}
+				
+				nodeDataProviderChanged = true;
+				invalidateProperties();
 			}
 		}
 		
@@ -256,14 +315,44 @@ package com.hjx.diagram
 		 * @return 
 		 * 
 		 */
-		private function installNodes():void{
+		private function installNodes(nodeRoot:Object):void{
+			var cursor:IViewCursor= HierarchicalCollectionView(nodeDataProvider).createCursor();
 			
+			while (!cursor.afterLast)
+			{
+				
+				var label:* = cursor.current[this.labelField];
+				var x:* = cursor.current[this.xLocationField];
+				var y:* = cursor.current[this.yLocationField];
+				if (!nodeRenderer){
+					nodeRenderer = new ClassFactory(Node);
+				}
+				
+				var node:Node = nodeRenderer.newInstance() as Node;
+				node.label = label;
+				node.x = x;
+				node.y = y;
+				
+				this.graph.addElement(node);
+				cursor.moveNext();
+				/*new HierarchicalCollectionView(cursor.current);*/
+			}
 		}
 		
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-
+		
+		override protected function commitProperties():void{
+			super.commitProperties();
+			if(nodeDataProviderChanged){
+				nodeDataProviderChanged = false;
+				if(graph){
+					graph.removeAllElements();
+				}
+				installNodes(nodeDataProvider);
+			}
+		}
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
 			for (var i:String in defaultCSSStyles) {
@@ -271,7 +360,6 @@ package com.hjx.diagram
 					setStyle (i, defaultCSSStyles [i]);
 				}
 			}
-			//			setStyle("skinClass",NodeSkin);
 		}
 	}//类结束
 }//包结束
