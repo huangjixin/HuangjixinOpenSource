@@ -19,7 +19,7 @@
 			import mx.events.FlexEvent;
 			
 			[Bindable]
-			private var hac:ArrayCollection = new ArrayCollection([{label:"root",children:[{label:"node0"},{label:"node1"}]}]);
+			private var hac:ArrayCollection = new ArrayCollection([{nodeType:"graph",label:"root",children:[{nodeType:"node",label:"node0",x:0,y:0},{nodeType:"node",label:"node1",x:50,y:100}]}]);
 			
 			protected function node1_clickHandler(event:MouseEvent):void
 			{

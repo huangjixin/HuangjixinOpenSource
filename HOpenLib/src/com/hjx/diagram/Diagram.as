@@ -329,25 +329,51 @@ package com.hjx.diagram
 				var label:* = cursor.current[this.labelField];
 				var x:* = cursor.current[this.xLocationField];
 				var y:* = cursor.current[this.yLocationField];
+				var node:Node;
+				var subGraph:SubGraph;
+				var hierarchicalCollectionView :HierarchicalCollectionView;
 				if(cursor.current is XML){
 					var localName:Object = XML(cursor.current).localName();
 					if(localName){
 						if(localName == "node"){
 							nodeRenderer = new ClassFactory(Node);
-							var node:Node = nodeRenderer.newInstance() as Node;
+							node = nodeRenderer.newInstance() as Node;
 							container.addElement(node);
 							node.label = label;
 							node.x = x;
 							node.y = y;
 						}else if(localName == "graph"){
 							nodeRenderer = new ClassFactory(SubGraph);
-							var subGraph:SubGraph = nodeRenderer.newInstance() as SubGraph;
+							subGraph = nodeRenderer.newInstance() as SubGraph;
 							container.addElement(subGraph);
 							subGraph.label = label;
 							subGraph.x = x;
 							subGraph.y = y;
 							
-							var hierarchicalCollectionView :HierarchicalCollectionView = new HierarchicalCollectionView(new HierarchicalData(cursor.current as XML));
+							hierarchicalCollectionView = new HierarchicalCollectionView(new HierarchicalData(cursor.current));
+							hierarchicalCollectionView.showRoot = nodeRoot.showRoot;
+							installNodes(hierarchicalCollectionView,subGraph.graph);
+						}
+					}
+				}else if(cursor.current is Object){
+					var nodeType:Object = cursor.current["nodeType"];
+					if(localName){
+						if(localName == "node"){
+							nodeRenderer = new ClassFactory(Node);
+							node = nodeRenderer.newInstance() as Node;
+							container.addElement(node);
+							node.label = label;
+							node.x = x;
+							node.y = y;
+						}else if(localName == "graph"){
+							nodeRenderer = new ClassFactory(SubGraph);
+							subGraph = nodeRenderer.newInstance() as SubGraph;
+							container.addElement(subGraph);
+							subGraph.label = label;
+							subGraph.x = x;
+							subGraph.y = y;
+							
+							hierarchicalCollectionView = new HierarchicalCollectionView(new HierarchicalData(cursor.current));
 							hierarchicalCollectionView.showRoot = nodeRoot.showRoot;
 							installNodes(hierarchicalCollectionView,subGraph.graph);
 						}
