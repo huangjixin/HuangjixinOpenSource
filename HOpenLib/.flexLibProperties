@@ -18,6 +18,8 @@
     <classEntry path="com.hjx.diagram.editor.Grid"/>
     <classEntry path="com.hjx.diagram.editor.skin.DiagramEditorSkin"/>
     <classEntry path="com.hjx.graphic.events.GraphScrollerEvent"/>
+    <classEntry path="com.hjx.graphic.graphlayout.HierarchicalLayout"/>
+    <classEntry path="com.hjx.graphic.graphlayout.HierarchicalLayoutFlowDirection"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

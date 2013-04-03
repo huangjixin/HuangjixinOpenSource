@@ -6,11 +6,12 @@ package com.hjx.diagram
 {
 	/*******************************************
 	 **** huangjixin,2013-3-29,上午8:44:56 **
-	 **** 请一句话表述该类主要作用  **
+	 **** 图形绘制，包括节点和连线。  **
 	 *******************************************/
 	import com.hjx.diagram.skin.DiagramSkin;
 	import com.hjx.graphic.Graph;
 	import com.hjx.graphic.GraphScroller;
+	import com.hjx.graphic.graphlayout.GraphLayout;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 	
@@ -31,11 +32,19 @@ package com.hjx.diagram
 		// private 私有变量声明处，请以“_”开头定义变量
 		// 例如：private var _example:String;
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-		private var _selectionMode:String = "";
+		private var _selectionMode:String = "multiple";
 		
+		/**
+		 * 默认css风格。 
+		 */
 		private var defaultCSSStyles:Object = {
 			skinClass:DiagramSkin
 		};
+		
+		private var _nodeLayout:GraphLayout;
+		
+		private var _automaticGraphLayout:Boolean = false;
+		
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// public 公有变量声明处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -57,7 +66,57 @@ package com.hjx.diagram
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// getter和setter函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+		[Bindable]
+		/**
+		 * 是否自动布局。
+		 * @return 
+		 * 
+		 */
+		public function get automaticGraphLayout():Boolean
+		{
+			return _automaticGraphLayout;
+		}
+
+		public function set automaticGraphLayout(value:Boolean):void
+		{
+			_automaticGraphLayout = value;
+		}
+
+		[Bindable]
+		[Inspectable(enumeration="multiple,single",defaultValue="multiple")]
+		/**
+		 * 选中模式。 
+		 */
+		public function get selectionMode():String
+		{
+			return _selectionMode;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set selectionMode(value:String):void
+		{
+			_selectionMode = value;
+		}
+
+		[Bindable]
+		/**
+		 * 节点布局。 
+		 */
+		public function get nodeLayout():GraphLayout
+		{
+			return _nodeLayout;
+		}
 		
+		/**
+		 * @private
+		 */
+		public function set nodeLayout(value:GraphLayout):void
+		{
+			_nodeLayout = value;
+		}
 		
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// 相关事件响应函数和逻辑函数存放处
@@ -67,6 +126,7 @@ package com.hjx.diagram
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
 			for (var i:String in defaultCSSStyles) {

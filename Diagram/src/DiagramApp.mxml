@@ -4,8 +4,11 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:graphic="com.hjx.graphic.*"
 			   xmlns:local="*"
+			   xmlns:diagram="com.hjx.diagram.*"
+			   xmlns:editor="com.hjx.diagram.editor.*"
+			   xmlns:graphlayout="com.hjx.graphic.graphlayout.*"
 			   minWidth="955" minHeight="600"
-			   creationComplete="application1_creationCompleteHandler(event)" xmlns:diagram="com.hjx.diagram.*" xmlns:editor="com.hjx.diagram.editor.*">
+			   creationComplete="application1_creationCompleteHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
@@ -64,25 +67,29 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<editor:DiagramEditor id="diagramEditor"  width="100%" height="100%">
-		<diagram:Diagram id="diagram1" width="100%" height="100%">
-			
+	<editor:DiagramEditor id="diagramEditor" width="100%" height="100%">
+		<diagram:Diagram id="diagram1" width="100%" height="100%" automaticGraphLayout="false"
+						 selectionMode="multiple">
+			<diagram:nodeLayout>
+				<graphlayout:HierarchicalLayout id="hierarchicalLayout" flowDirection="right"/>
+			</diagram:nodeLayout>
 		</diagram:Diagram>
 	</editor:DiagramEditor>
 	<diagram:Diagram id="diagram" width="100%" height="100%"/>
 	<graphic:Graph id="graph" width="50%" height="50%" horizontalCenter="0" verticalCenter="0">
 		<local:BPMNBtn id="node" click="node1_clickHandler(event)" horizontalCenter="0"
 					   skinClass="skins.BPMNBtnSkin" verticalCenter="0"/>
-		<local:BPMNBtn id="node1" click="node1_clickHandler(event)" horizontalCenter="20"
-					   skinClass="skins.BPMNBtnSkin" label="node1" verticalCenter="0"/>
+		<local:BPMNBtn id="node1" label="node1" click="node1_clickHandler(event)"
+					   horizontalCenter="20" skinClass="skins.BPMNBtnSkin" verticalCenter="0"/>
 		<graphic:SubGraph id="subGraph" width="200" height="200">
 			<graphic:SubGraph id="subGraph1" width="150" height="150">
-				<graphic:Link id="link" startNode="{node2}" endNode="{node3}" fallbackStartPoint="{new Point(-100,-100)}"
-							  fallbackEndPoint="{new Point(0,0)}" strokeWidth="4"/>
-				<local:BPMNBtn id="node2" click="node1_clickHandler(event)" horizontalCenter="20"
-							   skinClass="skins.BPMNBtnSkin" label="node2" bottom="0"/>
-				<local:BPMNBtn id="node3" click="node1_clickHandler(event)"
-							   skinClass="skins.BPMNBtnSkin" label="node3" />
+				<graphic:Link id="link" endNode="{node3}" fallbackEndPoint="{new Point(0,0)}"
+							  fallbackStartPoint="{new Point(-100,-100)}" startNode="{node2}"
+							  strokeWidth="4"/>
+				<local:BPMNBtn id="node2" bottom="0" label="node2" click="node1_clickHandler(event)"
+							   horizontalCenter="20" skinClass="skins.BPMNBtnSkin"/>
+				<local:BPMNBtn id="node3" label="node3" click="node1_clickHandler(event)"
+							   skinClass="skins.BPMNBtnSkin"/>
 			</graphic:SubGraph>
 		</graphic:SubGraph>
 	</graphic:Graph>
