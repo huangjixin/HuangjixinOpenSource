@@ -1,6 +1,7 @@
 package com.hjx.graphic
 {
 	import com.hjx.graphic.skin.LinkSkin;
+	import com.hjx.uitls.Geometry;
 	
 	import flash.events.Event;
 	import flash.geom.Point;
@@ -34,10 +35,10 @@ package com.hjx.graphic
 		private var _startNode:Node;
 		private var _endNode:Node;
 		
-		private var _shapeType:String;
+		private var _shapeType:String = LinkShapeType.STRAIGHT;
 		
-		private var _fallbackEndPoint:Point;
-		private var _fallbackStartPoint:Point;
+		private var _fallbackEndPoint:Point = new Point();
+		private var _fallbackStartPoint:Point = new Point();
 		
 		/**
 		 * 默认css风格。
@@ -149,14 +150,180 @@ package com.hjx.graphic
 		 * 
 		 */
 		private function draw():void{
-			fallbackStartPoint;
-			path.data = "M "+fallbackStartPoint.x+" "+fallbackStartPoint.y+" V "+ fallbackEndPoint.y+" H "+(fallbackEndPoint.x-10) ;
+			if(startNode){
+				fallbackStartPoint = new Point(startNode.centerX,startNode.centerY);
+				fallbackStartPoint = localToGlobal(fallbackStartPoint);
+				fallbackStartPoint = this.parent.globalToLocal(fallbackStartPoint);
+			}
+			
+			if(endNode){
+				fallbackEndPoint = new Point(endNode.centerX,endNode.centerY);
+				fallbackEndPoint = localToGlobal(fallbackEndPoint);
+				fallbackEndPoint = this.parent.globalToLocal(fallbackEndPoint);
+			}
+			
+			var fP:Point = fallbackStartPoint;
+			var tP:Point = fallbackEndPoint;
+			// 确定连线风格。
+			var dashStyle:String = this.getStyle("dashStyle");
+			// path绘图数据。
+			var data:String = "";
+			
+			if(shapeType == LinkShapeType.STRAIGHT){
+				//计算偏移角度。
+				var linkAngle:Number = Math.atan2(tP.y - fP.y,tP.x - fP.x);
+				var degree:Number = Geometry.rad2deg(linkAngle);
+				tP = Point.polar(Point.distance(tP,fP) - 10,linkAngle);
+				tP.offset(fP.x,fP.y);
+				if(endArrow){
+					var endArrowVisible:Boolean = getStyle("endArrowVisible");
+					if(endArrowVisible){
+						endArrow.x = fallbackEndPoint.x;
+						endArrow.y = fallbackEndPoint.y;
+						endArrow.rotation = degree;
+					}
+				}
+				
+				if(dashStyle == DashStyle.NONE){
+					data = "M "+fP.x+" "+fP.y+" L "+tP.x+" "+tP.y;
+				}else if(dashStyle == DashStyle.DASH){
+					
+				}else if(dashStyle == DashStyle.DASH_DOT){
+					
+				}else if(dashStyle == DashStyle.DOT){
+					
+				}
+			}else if(shapeType == LinkShapeType.ORTHOGONAL){
+				
+			}else if(shapeType == LinkShapeType.FREE){
+				
+			}else if(shapeType == LinkShapeType.OBLIQUE){
+				
+			}
+			
+			/*var data:String = "M 0 0";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 4,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 8,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 12,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 16,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 20,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 24,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 28,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 32,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 36,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 40,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 44,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 48,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 52,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 56,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 60,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 64,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 68,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 72,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 76,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 80,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 84,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 88,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 92,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 96,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 100,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";*/
+			
+			path.data = data;
+//			path.data = "M "+fallbackStartPoint.x+" "+fallbackStartPoint.y+" V "+ fallbackEndPoint.y+" H "+(fallbackEndPoint.x-10) ;
 //			path.data = "M -10 0 H -100 V -100 ";
 		}
 		
 		//-----------------------------------------------------------
 		// 覆盖函数
 		//-----------------------------------------------------------
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
+			draw();
+		}
+		override protected function partAdded(partName:String, instance:Object):void{
+			if(instance == this.startArrow){
+				this.startArrow.visible = getStyle("startArrowVisible")
+			}
+			if(instance == this.endArrow){
+				this.endArrow.visible = getStyle("endArrowVisible")
+			}
+		}
+		
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
 			for (var i:String in defaultCSSStyles) {
@@ -168,7 +335,7 @@ package com.hjx.graphic
 		
 		override public function styleChanged(styleProp:String):void{
 			super.styleChanged(styleProp);
-			callLater(draw);
+			invalidateDisplayList();
 		} 
 	}
 }

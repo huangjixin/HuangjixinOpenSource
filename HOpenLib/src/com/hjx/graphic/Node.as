@@ -76,7 +76,7 @@ package com.hjx.graphic
 		//--------------------------------------------------------
 		public function get centerY():Number
 		{
-			return x + (height / 2.0);;
+			return y + (height / 2.0);;
 		}
 		
 		public function set centerY(value:Number):void

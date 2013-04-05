@@ -83,6 +83,7 @@ package com.hjx.graphic.skin
 		 * @return 
 		 * 
 		 */
+		[Bindable]
 		public function get borderColor():uint
 		{
 			return _borderColor;
@@ -97,6 +98,7 @@ package com.hjx.graphic.skin
 		 * @return 
 		 * 
 		 */
+		[Bindable]
 		public function get color():uint
 		{
 			return _color;
@@ -106,6 +108,7 @@ package com.hjx.graphic.skin
 		 * @return 
 		 * 
 		 */
+		[Bindable]
 		public function get selectedColor():uint
 		{
 			return _selectedColor;
@@ -115,6 +118,7 @@ package com.hjx.graphic.skin
 		 * @return 
 		 * 
 		 */
+		[Bindable]
 		public function get selectedTextColor():uint
 		{
 			return _selectedTextColor;
