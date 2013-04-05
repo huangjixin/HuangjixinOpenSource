@@ -123,6 +123,12 @@ package com.hjx.graphic
 			{
 				_endNode = value;
 				dispatchEvent(new Event("endNodeChange"));
+				if(_endNode){
+					var index:int = _endNode.links.indexOf(this);
+					if(index==-1){
+						_endNode.links.push(this);
+					}
+				}
 			}
 		}
 
@@ -141,6 +147,12 @@ package com.hjx.graphic
 			{
 				_startNode = value;
 				dispatchEvent(new Event("startNodeChange"));
+				if(_startNode){
+					var index:int = _startNode.links.indexOf(this);
+					if(index ==-1){
+						_startNode.links.push(this);
+					}
+				}
 			}
 		}
 		
@@ -149,17 +161,19 @@ package com.hjx.graphic
 		 * 绘制图形。 
 		 * 
 		 */
-		private function draw():void{
+		public function draw():void{
 			if(startNode){
 				fallbackStartPoint = new Point(startNode.centerX,startNode.centerY);
-				fallbackStartPoint = localToGlobal(fallbackStartPoint);
+				fallbackStartPoint = startNode.parent.localToGlobal(fallbackStartPoint);
 				fallbackStartPoint = this.parent.globalToLocal(fallbackStartPoint);
 			}
 			
 			if(endNode){
 				fallbackEndPoint = new Point(endNode.centerX,endNode.centerY);
-				fallbackEndPoint = localToGlobal(fallbackEndPoint);
+				fallbackEndPoint = endNode.parent.localToGlobal(fallbackEndPoint);
 				fallbackEndPoint = this.parent.globalToLocal(fallbackEndPoint);
+				/*fallbackEndPoint = localToGlobal(fallbackEndPoint);
+				fallbackEndPoint = this.parent.globalToLocal(fallbackEndPoint);*/
 			}
 			
 			var fP:Point = fallbackStartPoint;

@@ -63,6 +63,7 @@
 				var node:Node = null;
 				if(event.currentTarget is Node){
 					node = event.currentTarget as Node;
+					node.refresh();
 				}
 			}
 			
@@ -101,13 +102,16 @@
 	<graphic:Graph id="graph" width="50%" height="100%" x="{width/2}">
 		<local:BPMNBtn id="node" click="node1_clickHandler(event)"  x="300"
 					   skinClass="skins.BPMNBtnSkin" y="400"/>
+		<local:BPMNBtn id="node4" click="node1_clickHandler(event)"  x="500"
+					   skinClass="skins.BPMNBtnSkin" y="200"/>
+		
 		<graphic:SubGraph id="subGraph1" y="200" width="200" height="200">
 			<local:BPMNBtn id="node2"  label="node2" click="node1_clickHandler(event)" x="10" y="20"
 						    skinClass="skins.BPMNBtnSkin"/>
 			<local:BPMNBtn id="node3" label="node3" click="node1_clickHandler(event)"
 						   x="50" y="100"
 						   skinClass="skins.BPMNBtnSkin"/>
-			<graphic:Link id="link" endNode="{node3}" startNode="{node2}"
+			<graphic:Link id="link" endNode="{node}" startNode="{node2}"
 						  strokeWidth="2"/>
 		</graphic:SubGraph>
 	</graphic:Graph>

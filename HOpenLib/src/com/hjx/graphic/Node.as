@@ -44,6 +44,8 @@ package com.hjx.graphic
 		private var _centerX : Number = NaN;
 		private var _centerY : Number = NaN;
 		
+		private var _links:Vector.<Link> = new Vector.<Link>();
+		
 		private var defaultCSSStyles:Object = {
 			backgroundColor : 0xD1CE9C,
 			borderColor : 0x0,
@@ -74,6 +76,18 @@ package com.hjx.graphic
 		//--------------------------------------------------------
 		// getter和setter函数
 		//--------------------------------------------------------
+
+		[Bindable]
+		public function get links():Vector.<Link>
+		{
+			return _links;
+		}
+
+		public function set links(value:Vector.<Link>):void
+		{
+			_links = value;
+		}
+
 		public function get centerY():Number
 		{
 			return y + (height / 2.0);;
@@ -137,7 +151,7 @@ package com.hjx.graphic
 		}
 		
 		public function getLinks():Vector.<Link>{
-			return null;
+			return this.links;
 		}
 		
 		public function getLinksCount():int{
@@ -162,11 +176,20 @@ package com.hjx.graphic
 		public function suspendGraphLayoutInvalidationOnMoveResize():void{
 		}
 
+		public function refresh():void{
+			for each (var link:Link in links) 
+			{
+				link.draw();	
+			}
+		}
 		
 		//--------------------------------------------------------
 		// override 覆盖函数
 		//--------------------------------------------------------
-		
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+			super.updateDisplayList(unscaledWidth,unscaledHeight);
+			
+		} 
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
 			for (var i:String in defaultCSSStyles) {
@@ -174,7 +197,6 @@ package com.hjx.graphic
 					setStyle (i, defaultCSSStyles [i]);
 				}
 			}
-//			setStyle("skinClass",NodeSkin);
 		}
 	}
 }
