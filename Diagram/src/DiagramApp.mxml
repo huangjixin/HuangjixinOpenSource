@@ -39,7 +39,7 @@
 			{
 				var currentObject:Object = graph.getHitRenderer(event.target);
 				if(currentObject){
-					trace(currentObject["id"]);
+//					trace(currentObject["id"]);
 				}
 				
 			}
@@ -113,6 +113,8 @@
 						   skinClass="skins.BPMNBtnSkin"/>
 			<graphic:Link id="link" endNode="{node}" startNode="{node2}"
 						  strokeWidth="2"/>
+			<!--<graphic:Link id="link0" endNode="{node4}" startNode="{node}"
+						  strokeWidth="2"/>-->
 		</graphic:SubGraph>
 	</graphic:Graph>
 </s:Application>

@@ -172,8 +172,6 @@ package com.hjx.graphic
 				fallbackEndPoint = new Point(endNode.centerX,endNode.centerY);
 				fallbackEndPoint = endNode.parent.localToGlobal(fallbackEndPoint);
 				fallbackEndPoint = this.parent.globalToLocal(fallbackEndPoint);
-				/*fallbackEndPoint = localToGlobal(fallbackEndPoint);
-				fallbackEndPoint = this.parent.globalToLocal(fallbackEndPoint);*/
 			}
 			
 			var fP:Point = fallbackStartPoint;
@@ -184,17 +182,45 @@ package com.hjx.graphic
 			var data:String = "";
 			
 			if(shapeType == LinkShapeType.STRAIGHT){
+				
 				//计算偏移角度。
+				var angle:Number = Math.atan2(endNode.height,endNode.width);
 				var linkAngle:Number = Math.atan2(tP.y - fP.y,tP.x - fP.x);
-				var degree:Number = Geometry.rad2deg(linkAngle);
-				tP = Point.polar(Point.distance(tP,fP) - 10,linkAngle);
+				var linkDegree:Number = Geometry.rad2deg(linkAngle);
+				var degree:Number = Geometry.rad2deg(angle);
+				
+				var wLength:Number = endNode.width/2/ Math.cos(linkAngle);
+				var hLength:Number = endNode.height/2/ Math.sin(linkAngle);
+				trace(linkAngle+","+angle);
+				if(Math.abs(linkAngle) < angle){
+					if(linkAngle > angle){
+						tP = Point.polar(Point.distance(tP,fP) +wLength,linkAngle);
+					}else{
+						tP = Point.polar(Point.distance(tP,fP) -wLength,linkAngle);
+					}
+				}else{
+					if(linkAngle < angle){
+						tP = Point.polar(Point.distance(tP,fP) +hLength,linkAngle);
+					}else{
+						tP = Point.polar(Point.distance(tP,fP) -hLength,linkAngle);
+					}
+				}
+				
+				/*tP = Point.polar(Point.distance(tP,fP) -wLength,linkAngle);*/
 				tP.offset(fP.x,fP.y);
+				//确定箭头位置
+				var arrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
+				arrowPoint.offset(fP.x,fP.y);
+				//q确定连线终点位置
+				tP = Point.polar(Point.distance(tP,fP) -10,linkAngle);
+				tP.offset(fP.x,fP.y);
+				
 				if(endArrow){
 					var endArrowVisible:Boolean = getStyle("endArrowVisible");
 					if(endArrowVisible){
-						endArrow.x = fallbackEndPoint.x;
-						endArrow.y = fallbackEndPoint.y;
-						endArrow.rotation = degree;
+						endArrow.x = arrowPoint.x;
+						endArrow.y = arrowPoint.y;
+						endArrow.rotation = linkDegree;
 					}
 				}
 				
