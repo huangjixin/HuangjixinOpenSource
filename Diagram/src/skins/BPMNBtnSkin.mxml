@@ -19,7 +19,7 @@
 	name=labelElement, type=spark.components.Label, required=false
 	-->
 	<s:Group id="base" left="0" right="0" top="0" bottom="0" width="100" height="50">
-		<s:Rect left="0" right="0" top="0" bottom="0" radiusX="8" radiusY="8">
+		<s:Rect left="0" right="0" top="0" bottom="0" radiusX="4" radiusY="4">
 			<s:fill>
 				<s:SolidColor color="0xffffff"/>
 			</s:fill>

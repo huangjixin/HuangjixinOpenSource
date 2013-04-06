@@ -37,6 +37,7 @@ package com.hjx.graphic
 		
 		private var _shapeType:String = LinkShapeType.STRAIGHT;
 		
+		private var linkTypeOrthogonal:String;
 		private var _fallbackEndPoint:Point = new Point();
 		private var _fallbackStartPoint:Point = new Point();
 		
@@ -181,6 +182,7 @@ package com.hjx.graphic
 			// path绘图数据。
 			var data:String = "";
 			
+			var endArrowVisible:Boolean = getStyle("endArrowVisible");
 			if(shapeType == LinkShapeType.STRAIGHT){
 				
 				//计算偏移角度。
@@ -197,23 +199,17 @@ package com.hjx.graphic
 				var startPoint:Point = new Point();
 				if(-angle<= linkAngle && linkAngle <= angle){
 					tP = Point.polar(distance -endNodeWidthOffset,linkAngle);
-//					startPoint = Point.polar(startNodeWidthOffset,linkAngle);
 				}else if(angle<=linkAngle &&linkAngle <=Math.PI-angle){
 					tP = Point.polar(distance -endNodeHeightOffset,linkAngle);
-//					startPoint = Point.polar(startNodeHeightOffset,linkAngle);
 				}else if(-(Math.PI-angle)<linkAngle&&linkAngle<-angle){
 					tP = Point.polar(distance +endNodeHeightOffset,linkAngle);
-//					startPoint = Point.polar(startNodeHeightOffset,linkAngle);
 				}else if(Math.PI-angle< linkAngle<Math.PI){
 					tP = Point.polar(distance +endNodeWidthOffset,linkAngle);
-//					startPoint = Point.polar(startNodeWidthOffset,linkAngle);
 				}else if(-Math.PI<linkAngle<angle-Math.PI ){
 					tP = Point.polar(distance -endNodeWidthOffset,linkAngle);
-//					startPoint = Point.polar(startNodeWidthOffset,linkAngle);
 				}
 				
 				tP.offset(fP.x,fP.y);
-				startPoint.offset(fP.x,fP.y);
 				
 				//确定箭头位置
 				var arrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
@@ -224,7 +220,6 @@ package com.hjx.graphic
 				//确定连线起点位置
 //				fP = startPoint;
 				if(endArrow){
-					var endArrowVisible:Boolean = getStyle("endArrowVisible");
 					if(endArrowVisible){
 						endArrow.x = arrowPoint.x;
 						endArrow.y = arrowPoint.y;
@@ -242,7 +237,43 @@ package com.hjx.graphic
 					
 				}
 			}else if(shapeType == LinkShapeType.ORTHOGONAL){
+				var basePoint:Point = new Point(fP.x,tP.y);
+				var hDist:Number = Point.distance(fP,basePoint);
+				var vDist:Number = Point.distance(basePoint,tP);
+				if(tP.x>fP.x && tP.y>fP.y){
+					if(vDist>hDist){
+						tP.offset(0,-endNode.height/2-10);
+						basePoint.x = tP.x;
+						basePoint.y = fP.y;
+						if(endArrow){
+							if(endArrowVisible){
+								endArrow.x = tP.x;
+								endArrow.y = tP.y+10;
+								endArrow.rotation = 90;
+							}
+						}
+					}else{
+						tP.offset(-endNode.width/2-10,0);
+						if(endArrow){
+							if(endArrowVisible){
+								endArrow.x = tP.x+10;
+								endArrow.y = tP.y;
+								endArrow.rotation = 0;
+							}
+						}
+					}
+				}
 				
+				
+				if(dashStyle == DashStyle.NONE){
+					data = "M "+fP.x+" "+fP.y+" L "+basePoint.x+" "+basePoint.y+" L "+tP.x+" "+tP.y;
+				}else if(dashStyle == DashStyle.DASH){
+					
+				}else if(dashStyle == DashStyle.DASH_DOT){
+					
+				}else if(dashStyle == DashStyle.DOT){
+					
+				}
 			}else if(shapeType == LinkShapeType.FREE){
 				
 			}else if(shapeType == LinkShapeType.OBLIQUE){
