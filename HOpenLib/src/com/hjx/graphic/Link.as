@@ -189,32 +189,40 @@ package com.hjx.graphic
 				var linkDegree:Number = Geometry.rad2deg(linkAngle);
 				var degree:Number = Geometry.rad2deg(angle);
 				
-				var wLength:Number = endNode.width/2/ Math.cos(linkAngle);
-				var hLength:Number = endNode.height/2/ Math.sin(linkAngle);
-				trace(linkAngle+","+angle);
-				if(Math.abs(linkAngle) < angle){
-					if(linkAngle > angle){
-						tP = Point.polar(Point.distance(tP,fP) +wLength,linkAngle);
-					}else{
-						tP = Point.polar(Point.distance(tP,fP) -wLength,linkAngle);
-					}
-				}else{
-					if(linkAngle < angle){
-						tP = Point.polar(Point.distance(tP,fP) +hLength,linkAngle);
-					}else{
-						tP = Point.polar(Point.distance(tP,fP) -hLength,linkAngle);
-					}
+				var endNodeWidthOffset:Number = endNode.width/2/ Math.cos(linkAngle);
+				var endNodeHeightOffset:Number = endNode.height/2/ Math.sin(linkAngle);
+				var startNodeWidthOffset:Number = startNode.width/2/ Math.cos(linkAngle);
+				var startNodeHeightOffset:Number = startNode.height/2/ Math.sin(linkAngle);
+				var distance:Number = Point.distance(tP,fP);
+				var startPoint:Point = new Point();
+				if(-angle<= linkAngle && linkAngle <= angle){
+					tP = Point.polar(distance -endNodeWidthOffset,linkAngle);
+//					startPoint = Point.polar(startNodeWidthOffset,linkAngle);
+				}else if(angle<=linkAngle &&linkAngle <=Math.PI-angle){
+					tP = Point.polar(distance -endNodeHeightOffset,linkAngle);
+//					startPoint = Point.polar(startNodeHeightOffset,linkAngle);
+				}else if(-(Math.PI-angle)<linkAngle&&linkAngle<-angle){
+					tP = Point.polar(distance +endNodeHeightOffset,linkAngle);
+//					startPoint = Point.polar(startNodeHeightOffset,linkAngle);
+				}else if(Math.PI-angle< linkAngle<Math.PI){
+					tP = Point.polar(distance +endNodeWidthOffset,linkAngle);
+//					startPoint = Point.polar(startNodeWidthOffset,linkAngle);
+				}else if(-Math.PI<linkAngle<angle-Math.PI ){
+					tP = Point.polar(distance -endNodeWidthOffset,linkAngle);
+//					startPoint = Point.polar(startNodeWidthOffset,linkAngle);
 				}
 				
-				/*tP = Point.polar(Point.distance(tP,fP) -wLength,linkAngle);*/
 				tP.offset(fP.x,fP.y);
+				startPoint.offset(fP.x,fP.y);
+				
 				//确定箭头位置
 				var arrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
 				arrowPoint.offset(fP.x,fP.y);
-				//q确定连线终点位置
+				//确定连线终点位置
 				tP = Point.polar(Point.distance(tP,fP) -10,linkAngle);
 				tP.offset(fP.x,fP.y);
-				
+				//确定连线起点位置
+//				fP = startPoint;
 				if(endArrow){
 					var endArrowVisible:Boolean = getStyle("endArrowVisible");
 					if(endArrowVisible){
