@@ -41,6 +41,10 @@ package com.hjx.graphic
 		private var _fallbackEndPoint:Point = new Point();
 		private var _fallbackStartPoint:Point = new Point();
 		
+		private var _startConnectionArea:String = LinkConnectionArea.RIGHT;
+		private var _endConnectionArea:String = LinkConnectionArea.LEFT;
+		
+		private static const EXTEND_LENGTH:Number = 20;
 		/**
 		 * 默认css风格。
 		 * 
@@ -49,7 +53,7 @@ package com.hjx.graphic
 			dashStyle: "none", 
 			endArrowType: "triangle", 
 			endArrowVisible: true, 
-			orthogonalSpacing: 0, 
+			orthogonalSpacing: 20, 
 			radius: 0, 
 			strokeWidth: 1, 
 			strokeColor: 0x0, 
@@ -72,6 +76,38 @@ package com.hjx.graphic
 			this.endNode = endNode;
 		}
 		
+		/**
+		 * 结束节点的连接区域。 
+		 * @return 
+		 * 
+		 */
+		public function get endConnectionArea():String
+		{
+			return _endConnectionArea;
+		}
+
+		public function set endConnectionArea(value:String):void
+		{
+			_endConnectionArea = value;
+		}
+
+		/**
+		 * 开始节点的连接区域。 
+		 * @return 
+		 * 
+		 */
+		[Bindable]
+		[Inspectable(enumeration="left,right,top,bottom")]
+		public function get startConnectionArea():String
+		{
+			return _startConnectionArea;
+		}
+
+		public function set startConnectionArea(value:String):void
+		{
+			_startConnectionArea = value;
+		}
+
 		[Bindable]
 		public function get fallbackStartPoint():Point
 		{
@@ -184,7 +220,6 @@ package com.hjx.graphic
 			
 			var endArrowVisible:Boolean = getStyle("endArrowVisible");
 			if(shapeType == LinkShapeType.STRAIGHT){
-				
 				//计算偏移角度。
 				var angle:Number = Math.atan2(endNode.height,endNode.width);
 				var linkAngle:Number = Math.atan2(tP.y - fP.y,tP.x - fP.x);
@@ -237,36 +272,41 @@ package com.hjx.graphic
 					
 				}
 			}else if(shapeType == LinkShapeType.ORTHOGONAL){
-				var basePoint:Point = new Point(fP.x,tP.y);
-				var hDist:Number = Point.distance(fP,basePoint);
-				var vDist:Number = Point.distance(basePoint,tP);
-				if(tP.x>fP.x && tP.y>fP.y){
-					if(vDist>hDist){
-						tP.offset(0,-endNode.height/2-10);
-						basePoint.x = tP.x;
-						basePoint.y = fP.y;
-						if(endArrow){
-							if(endArrowVisible){
-								endArrow.x = tP.x;
-								endArrow.y = tP.y+10;
-								endArrow.rotation = 90;
-							}
-						}
-					}else{
-						tP.offset(-endNode.width/2-10,0);
-						if(endArrow){
-							if(endArrowVisible){
-								endArrow.x = tP.x+10;
-								endArrow.y = tP.y;
-								endArrow.rotation = 0;
-							}
-						}
-					}
+				var startOffset:Point = new Point();
+				var endOffset:Point = new Point();
+				
+				if(startConnectionArea == LinkConnectionArea.LEFT){
+					fP.offset(-startNode.width/2,0);
+					startOffset.offset(-EXTEND_LENGTH,0);
+				}else if(startConnectionArea == LinkConnectionArea.RIGHT){
+					fP.offset(startNode.width/2,0);
+					startOffset.offset(EXTEND_LENGTH,0);
+				}else if(startConnectionArea == LinkConnectionArea.TOP){
+					fP.offset(0,-startNode.height/2);
+					startOffset.offset(0,-EXTEND_LENGTH);
+				}else if(startConnectionArea == LinkConnectionArea.BOTTOM){
+					fP.offset(0,startNode.height/2);
+					startOffset.offset(0,EXTEND_LENGTH);
 				}
 				
+				if(endConnectionArea == LinkConnectionArea.LEFT){
+					fP.offset(-endNode.width/2,0);
+					startOffset.offset(-EXTEND_LENGTH,0);
+				}else if(endConnectionArea == LinkConnectionArea.RIGHT){
+					fP.offset(endNode.width/2,0);
+					startOffset.offset(EXTEND_LENGTH,0);
+				}else if(endConnectionArea == LinkConnectionArea.TOP){
+					fP.offset(0,-endNode.height/2);
+					startOffset.offset(0,-EXTEND_LENGTH);
+				}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
+					fP.offset(0,endNode.height/2);
+					startOffset.offset(0,EXTEND_LENGTH);
+				}
 				
+				var basePoint:Point = new Point(startOffset.x/2+endOffset.x/2,startOffset.y/2+endOffset.y/2);
 				if(dashStyle == DashStyle.NONE){
-					data = "M "+fP.x+" "+fP.y+" L "+basePoint.x+" "+basePoint.y+" L "+tP.x+" "+tP.y;
+					data = "M "+fP.x+" "+fP.y+" L "+startOffset.x+" "+startOffset.y+" L "+basePoint.x+" "+startOffset.y
+						+" L "+basePoint.x+" "+endOffset.y+" L "+endOffset.x+" "+endOffset.y+" L "+tP.x+" "+tP.y;
 				}else if(dashStyle == DashStyle.DASH){
 					
 				}else if(dashStyle == DashStyle.DASH_DOT){
