@@ -246,9 +246,9 @@ package com.hjx.graphic
 //					//确定结束节点的高宽比角度。
 					var startNodeHWAngle:Number = Math.atan2(startNode.height,startNode.width);
 					// 计算出终点二分之一宽度对应的弦；
-					var sNodeHeightOffset:Number = endNode.width/2/ Math.cos(linkAngle);
+					var sNodeHeightOffset:Number = startNode.width/2/ Math.cos(linkAngle);
 //					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
-					var sNodeWidthOffset:Number = endNode.height/2/ Math.sin(linkAngle);
+					var sNodeWidthOffset:Number = startNode.height/2/ Math.sin(linkAngle);
 //					
 					minOffset = Math.min(Math.abs(sNodeHeightOffset),Math.abs(sNodeWidthOffset));
 					minOffset = Math.abs(minOffset);
