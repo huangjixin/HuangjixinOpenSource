@@ -22,6 +22,7 @@
     <classEntry path="com.hjx.graphic.graphlayout.HierarchicalLayoutFlowDirection"/>
     <classEntry path="com.hjx.diagram.events.DiagramEvent"/>
     <classEntry path="com.hjx.graphic.LinkShapeType"/>
+    <classEntry path="com.hjx.graphic.LinkConnectionArea"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

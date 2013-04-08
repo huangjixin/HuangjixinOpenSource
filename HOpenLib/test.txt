@@ -1,1 +1,101 @@
-test
+/*var data:String = "M 0 0";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 4,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 8,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 12,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 16,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 20,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 24,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 28,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 32,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 36,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 40,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 44,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 48,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 52,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 56,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 60,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 64,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 68,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 72,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 76,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 80,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 84,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 88,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 92,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 96,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="M "+temp.x+" "+temp.y+" ";
+			
+			temp = Point.polar(Point.distance(tP,fP) - 100,edgeAngle);
+			temp.offset(fP.x,fP.y);
+			data+="L "+temp.x+" "+temp.y+" ";*/

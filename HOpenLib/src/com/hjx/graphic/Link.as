@@ -18,7 +18,7 @@ package com.hjx.graphic
 	[Style(name="dashArray", inherit="no", type="Array")]
 	[Style(name="dashStyle", inherit="no", type="String",enumeration="none,dash,dot,dashDot")]
 	[Style(name="endArrowType", inherit="yes", type="String",enumeration="triangle,open,sunken,curved,square,diamond,circle,star")]
-	[Style(name="endArrowVisible", inherit="yes", type="Boolean",format="Boolean")]
+	[Style(name="endArrowVisible", inherit="yes", type="Boolean",format="Boolean",enumeration="true,false")]
 	[Style(name="joints", inherit="yes", type="String",enumeration="round,miter,bevel")]
 	[Style(name="miterLimit", inherit="yes", type="uint",format="Number")]
 	[Style(name="orthogonalSpacing", inherit="no", type="Number")]
@@ -27,7 +27,7 @@ package com.hjx.graphic
 	[Style(name="selectedColor", inherit="yes", type="uint",format="Color")]
 	[Style(name="selectedStrokeWidth", inherit="yes", type="uint",format="Number")]
 	[Style(name="startArrowType", inherit="yes", type="String",enumeration="triangle,open,sunken,curved,square,diamond,circle,star")]
-	[Style(name="startArrowVisible", inherit="yes", type="Boolean",format="Boolean")]
+	[Style(name="startArrowVisible", inherit="yes", type="Boolean",format="Boolean",enumeration="true,false")]
 	[Style(name="strokeColor", inherit="yes", type="uint",format="Color")]
 	[Style(name="strokeWidth", inherit="yes", type="uint",format="Number")]
 	public class Link extends Renderer
@@ -45,6 +45,11 @@ package com.hjx.graphic
 		private var _endConnectionArea:String = LinkConnectionArea.LEFT;
 		
 		private static const EXTEND_LENGTH:Number = 20;
+		
+		/**
+		 * 箭头头部长度。 
+		 */
+		private static const ARROW_HEADER_LENGTH:Number = 10;
 		/**
 		 * 默认css风格。
 		 * 
@@ -211,54 +216,93 @@ package com.hjx.graphic
 				fallbackEndPoint = this.parent.globalToLocal(fallbackEndPoint);
 			}
 			
-			var fP:Point = fallbackStartPoint;
-			var tP:Point = fallbackEndPoint;
+			
+			// path绘图数据。
+			var data:String = getData();
+			path.data = data;
+		}
+		
+		/**
+		 * 通过开始节点，结束节点，线的风格，形状，计算开始箭头，结束箭头的位置，返回字符串数据。 
+		 * @return data字符串。
+		 * 
+		 */
+		private function getData():String
+		{
+			var data:String = "";
 			// 确定连线风格。
 			var dashStyle:String = this.getStyle("dashStyle");
-			// path绘图数据。
-			var data:String = "";
-			
-			var endArrowVisible:Boolean = getStyle("endArrowVisible");
+			// 
+			var fP:Point = fallbackStartPoint;
+			var tP:Point = fallbackEndPoint;
+			//计算终点和起始点形成的角度。
+			var linkAngle:Number = Math.atan2(tP.y - fP.y,tP.x - fP.x);
+			//如果为直连线的话，那么连线连线的终点箭头就是linkDegree，开始箭头就是linkDegree+180
+			var linkDegree:Number = Geometry.rad2deg(linkAngle);
 			if(shapeType == LinkShapeType.STRAIGHT){
-				//计算偏移角度。
-				var angle:Number = Math.atan2(endNode.height,endNode.width);
-				var linkAngle:Number = Math.atan2(tP.y - fP.y,tP.x - fP.x);
-				var linkDegree:Number = Geometry.rad2deg(linkAngle);
-				var degree:Number = Geometry.rad2deg(angle);
-				
-				var endNodeWidthOffset:Number = endNode.width/2/ Math.cos(linkAngle);
-				var endNodeHeightOffset:Number = endNode.height/2/ Math.sin(linkAngle);
-				var startNodeWidthOffset:Number = startNode.width/2/ Math.cos(linkAngle);
-				var startNodeHeightOffset:Number = startNode.height/2/ Math.sin(linkAngle);
-				var distance:Number = Point.distance(tP,fP);
-				var startPoint:Point = new Point();
-				if(-angle<= linkAngle && linkAngle <= angle){
-					tP = Point.polar(distance -endNodeWidthOffset,linkAngle);
-				}else if(angle<=linkAngle &&linkAngle <=Math.PI-angle){
-					tP = Point.polar(distance -endNodeHeightOffset,linkAngle);
-				}else if(-(Math.PI-angle)<linkAngle&&linkAngle<-angle){
-					tP = Point.polar(distance +endNodeHeightOffset,linkAngle);
-				}else if(Math.PI-angle< linkAngle<Math.PI){
-					tP = Point.polar(distance +endNodeWidthOffset,linkAngle);
-				}else if(-Math.PI<linkAngle<angle-Math.PI ){
-					tP = Point.polar(distance -endNodeWidthOffset,linkAngle);
+				var distance:Number;//两点之间的距离。
+				var minOffset:Number;
+				if(startNode){
+//					//确定结束节点的高宽比角度。
+					var startNodeHWAngle:Number = Math.atan2(startNode.height,startNode.width);
+					// 计算出终点二分之一宽度对应的弦；
+					var sNodeHeightOffset:Number = endNode.width/2/ Math.cos(linkAngle);
+//					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
+					var sNodeWidthOffset:Number = endNode.height/2/ Math.sin(linkAngle);
+//					
+					minOffset = Math.min(Math.abs(sNodeHeightOffset),Math.abs(sNodeWidthOffset));
+					minOffset = Math.abs(minOffset);
+					fP.offset(minOffset*Math.cos(linkAngle),minOffset*Math.sin(linkAngle));
+					
+					//确定开始点箭头位置
+					var sArrowPoint:Point = fP.clone();
+					if(startArrow){
+						var startArrowVisible:* = getStyle("startArrowVisible");
+						if(startArrowVisible){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
+							var startArrowType:* = getStyle("startArrowType");
+							if(startArrowType == "triangle"){
+								startArrow.x = sArrowPoint.x;
+								startArrow.y = sArrowPoint.y;
+								startArrow.rotation = 180+linkDegree;
+								
+								//确定连线终点位置
+								sArrowPoint = Point.polar(ARROW_HEADER_LENGTH,linkAngle);
+								fP.offset(sArrowPoint.x,sArrowPoint.y);
+							}
+						}
+					}
 				}
 				
-				tP.offset(fP.x,fP.y);
+				if(endNode){
+					//确定结束节点的高宽比角度。
+					var endNodeHWAngle:Number = Math.atan2(endNode.height,endNode.width);
+					// 计算出终点二分之一宽度对应的弦；
+					var eNodeHeightOffset:Number = endNode.width/2/ Math.cos(linkAngle);
+					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
+					var eNodeWidthOffset:Number = endNode.height/2/ Math.sin(linkAngle);
 				
-				//确定箭头位置
-				var arrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
-				arrowPoint.offset(fP.x,fP.y);
-				//确定连线终点位置
-				tP = Point.polar(Point.distance(tP,fP) -10,linkAngle);
-				tP.offset(fP.x,fP.y);
-				//确定连线起点位置
-//				fP = startPoint;
-				if(endArrow){
-					if(endArrowVisible){
-						endArrow.x = arrowPoint.x;
-						endArrow.y = arrowPoint.y;
-						endArrow.rotation = linkDegree;
+					minOffset = Math.min(Math.abs(eNodeHeightOffset),Math.abs(eNodeWidthOffset));
+					minOffset = Math.abs(minOffset);
+					distance = Point.distance(tP,fP);
+					tP = Point.polar(distance -minOffset,linkAngle);
+					tP.offset(fP.x,fP.y);
+					//确定终点箭头位置
+					var eArrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
+					eArrowPoint.offset(fP.x,fP.y);
+					if(endArrow){
+						var endArrowVisiable:* = getStyle("endArrowVisible");
+						if(endArrowVisiable){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
+							var endArrowType:* = getStyle("endArrowType");
+							if(endArrowType == "triangle"){
+								endArrow.x = eArrowPoint.x;
+								endArrow.y = eArrowPoint.y;
+								endArrow.rotation = linkDegree;
+								
+								//确定连线终点位置
+								tP = Point.polar(Point.distance(tP,fP) - ARROW_HEADER_LENGTH,linkAngle);
+								tP.offset(fP.x,fP.y);
+							}
+						}
 					}
 				}
 				
@@ -272,41 +316,58 @@ package com.hjx.graphic
 					
 				}
 			}else if(shapeType == LinkShapeType.ORTHOGONAL){
-				var startOffset:Point = new Point();
-				var endOffset:Point = new Point();
+				var startOffset:Point ;
+				var endOffset:Point ;
 				
 				if(startConnectionArea == LinkConnectionArea.LEFT){
 					fP.offset(-startNode.width/2,0);
+					startOffset = fP.clone();
 					startOffset.offset(-EXTEND_LENGTH,0);
 				}else if(startConnectionArea == LinkConnectionArea.RIGHT){
 					fP.offset(startNode.width/2,0);
+					startOffset = fP.clone();
 					startOffset.offset(EXTEND_LENGTH,0);
 				}else if(startConnectionArea == LinkConnectionArea.TOP){
 					fP.offset(0,-startNode.height/2);
+					startOffset = fP.clone();
 					startOffset.offset(0,-EXTEND_LENGTH);
 				}else if(startConnectionArea == LinkConnectionArea.BOTTOM){
 					fP.offset(0,startNode.height/2);
+					startOffset = fP.clone();
 					startOffset.offset(0,EXTEND_LENGTH);
 				}
 				
 				if(endConnectionArea == LinkConnectionArea.LEFT){
-					fP.offset(-endNode.width/2,0);
-					startOffset.offset(-EXTEND_LENGTH,0);
+					tP.offset(-endNode.width/2,0);
+					endOffset = tP.clone();
+					endOffset.offset(-EXTEND_LENGTH,0);
+					tP.offset(-10,0);
+					if(endArrow){
+						endArrow.x = tP.x;
+						endArrow.y = tP.y;
+						endArrow.rotation = 0;
+					}
 				}else if(endConnectionArea == LinkConnectionArea.RIGHT){
-					fP.offset(endNode.width/2,0);
-					startOffset.offset(EXTEND_LENGTH,0);
+					tP.offset(endNode.width/2,0);
+					endOffset = tP.clone();
+					endOffset.offset(EXTEND_LENGTH,0);
 				}else if(endConnectionArea == LinkConnectionArea.TOP){
-					fP.offset(0,-endNode.height/2);
-					startOffset.offset(0,-EXTEND_LENGTH);
+					tP.offset(0,-endNode.height/2);
+					endOffset = tP.clone();
+					endOffset.offset(0,-EXTEND_LENGTH);
 				}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
-					fP.offset(0,endNode.height/2);
-					startOffset.offset(0,EXTEND_LENGTH);
+					tP.offset(0,endNode.height/2);
+					endOffset = tP.clone();
+					endOffset.offset(0,EXTEND_LENGTH);
 				}
 				
 				var basePoint:Point = new Point(startOffset.x/2+endOffset.x/2,startOffset.y/2+endOffset.y/2);
 				if(dashStyle == DashStyle.NONE){
-					data = "M "+fP.x+" "+fP.y+" L "+startOffset.x+" "+startOffset.y+" L "+basePoint.x+" "+startOffset.y
-						+" L "+basePoint.x+" "+endOffset.y+" L "+endOffset.x+" "+endOffset.y+" L "+tP.x+" "+tP.y;
+					data = "M "+fP.x+" "+fP.y+" L "+startOffset.x+" "+startOffset.y
+						+" L "+basePoint.x+" "+startOffset.y
+						+" L "+basePoint.x+" "+endOffset.y
+						+" L "+endOffset.x+" "+endOffset.y
+						+" L "+tP.x+" "+tP.y;
 				}else if(dashStyle == DashStyle.DASH){
 					
 				}else if(dashStyle == DashStyle.DASH_DOT){
@@ -319,114 +380,8 @@ package com.hjx.graphic
 			}else if(shapeType == LinkShapeType.OBLIQUE){
 				
 			}
-			
-			/*var data:String = "M 0 0";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 4,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 8,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 12,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 16,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 20,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 24,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 28,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 32,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 36,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 40,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 44,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 48,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 52,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 56,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 60,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 64,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 68,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 72,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 76,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 80,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 84,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 88,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 92,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 96,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="M "+temp.x+" "+temp.y+" ";
-			
-			temp = Point.polar(Point.distance(tP,fP) - 100,edgeAngle);
-			temp.offset(fP.x,fP.y);
-			data+="L "+temp.x+" "+temp.y+" ";*/
-			
-			path.data = data;
-//			path.data = "M "+fallbackStartPoint.x+" "+fallbackStartPoint.y+" V "+ fallbackEndPoint.y+" H "+(fallbackEndPoint.x-10) ;
-//			path.data = "M -10 0 H -100 V -100 ";
-		}
-		
+			return data;
+		}//getData结束
 		//-----------------------------------------------------------
 		// 覆盖函数
 		//-----------------------------------------------------------
@@ -455,6 +410,21 @@ package com.hjx.graphic
 		override public function styleChanged(styleProp:String):void{
 			super.styleChanged(styleProp);
 			invalidateDisplayList();
+			if(styleProp =="endArrowType"){
+				if(getStyle("endArrowType") == "triangle"){
+					if(endArrow){
+						endArrow.data = "M -10 -5 l 10 5 l -10 5 Z";
+					}
+				}else if(getStyle("endArrowType") == "circle"){
+					if(endArrow){
+						endArrow.data = "M -10 -5 l 10 5 l -10 5 Z";
+					}
+				}else if(getStyle("endArrowType") == "square"){
+					if(endArrow){
+						endArrow.data = "M -10 -5 l -10 5 l 0 5 l 0 -5 l -10 -5";
+					}
+				}
+			}
 		} 
 	}
 }
