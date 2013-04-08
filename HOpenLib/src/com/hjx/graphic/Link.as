@@ -425,6 +425,18 @@ package com.hjx.graphic
 					}
 				}
 			}
+			if(styleProp =="startArrowVisible"){
+				if(startArrow){
+					var startArrowVisible:Boolean = getStyle("startArrowVisible");
+					startArrow.visible = startArrowVisible;
+				}
+			}
+			if(styleProp =="endArrowVisible"){
+				if(endArrow){
+					var endArrowVisible:Boolean = getStyle("endArrowVisible");
+					endArrow.visible = endArrowVisible;
+				}
+			}
 		} 
 	}
 }
