@@ -253,24 +253,6 @@ package com.hjx.graphic
 					minOffset = Math.min(Math.abs(sNodeHeightOffset),Math.abs(sNodeWidthOffset));
 					minOffset = Math.abs(minOffset);
 					fP.offset(minOffset*Math.cos(linkAngle),minOffset*Math.sin(linkAngle));
-					
-					//确定开始点箭头位置
-					var sArrowPoint:Point = fP.clone();
-					if(startArrow){
-						var startArrowVisible:* = getStyle("startArrowVisible");
-						if(startArrowVisible){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
-							var startArrowType:* = getStyle("startArrowType");
-							if(startArrowType == "triangle"){
-								startArrow.x = sArrowPoint.x;
-								startArrow.y = sArrowPoint.y;
-								startArrow.rotation = 180+linkDegree;
-								
-								//确定连线终点位置
-								sArrowPoint = Point.polar(ARROW_HEADER_LENGTH,linkAngle);
-								fP.offset(sArrowPoint.x,sArrowPoint.y);
-							}
-						}
-					}
 				}
 				
 				if(endNode){
@@ -286,26 +268,44 @@ package com.hjx.graphic
 					distance = Point.distance(tP,fP);
 					tP = Point.polar(distance -minOffset,linkAngle);
 					tP.offset(fP.x,fP.y);
-					//确定终点箭头位置
-					var eArrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
-					eArrowPoint.offset(fP.x,fP.y);
-					if(endArrow){
-						var endArrowVisiable:* = getStyle("endArrowVisible");
-						if(endArrowVisiable){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
-							var endArrowType:* = getStyle("endArrowType");
-							if(endArrowType == "triangle"){
-								endArrow.x = eArrowPoint.x;
-								endArrow.y = eArrowPoint.y;
-								endArrow.rotation = linkDegree;
-								
-								//确定连线终点位置
-								tP = Point.polar(Point.distance(tP,fP) - ARROW_HEADER_LENGTH,linkAngle);
-								tP.offset(fP.x,fP.y);
-							}
+				}
+				
+				//确定开始点箭头位置
+				var sArrowPoint:Point = fP.clone();
+				if(startArrow){
+					var startArrowVisible:* = getStyle("startArrowVisible");
+					if(startArrowVisible){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
+						var startArrowType:* = getStyle("startArrowType");
+						if(startArrowType == "triangle"){
+							startArrow.x = sArrowPoint.x;
+							startArrow.y = sArrowPoint.y;
+							startArrow.rotation = 180+linkDegree;
+							
+							//确定连线终点位置
+							sArrowPoint = Point.polar(ARROW_HEADER_LENGTH,linkAngle);
+							fP.offset(sArrowPoint.x,sArrowPoint.y);
 						}
 					}
 				}
 				
+				//确定终点箭头位置
+				var eArrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
+				eArrowPoint.offset(fP.x,fP.y);
+				if(endArrow){
+					var endArrowVisiable:* = getStyle("endArrowVisible");
+					if(endArrowVisiable){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
+						var endArrowType:* = getStyle("endArrowType");
+						if(endArrowType == "triangle"){
+							endArrow.x = eArrowPoint.x;
+							endArrow.y = eArrowPoint.y;
+							endArrow.rotation = linkDegree;
+							
+							//确定连线终点位置
+							tP = Point.polar(Point.distance(tP,fP) - ARROW_HEADER_LENGTH,linkAngle);
+							tP.offset(fP.x,fP.y);
+						}
+					}
+				}
 				if(dashStyle == DashStyle.NONE){
 					data = "M "+fP.x+" "+fP.y+" L "+tP.x+" "+tP.y;
 				}else if(dashStyle == DashStyle.DASH){
