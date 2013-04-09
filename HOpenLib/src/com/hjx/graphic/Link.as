@@ -254,22 +254,6 @@ package com.hjx.graphic
 					minOffset = Math.abs(minOffset);
 					fP.offset(minOffset*Math.cos(linkAngle),minOffset*Math.sin(linkAngle));
 				}
-				
-				if(endNode){
-					//确定结束节点的高宽比角度。
-					var endNodeHWAngle:Number = Math.atan2(endNode.height,endNode.width);
-					// 计算出终点二分之一宽度对应的弦；
-					var eNodeHeightOffset:Number = endNode.width/2/ Math.cos(linkAngle);
-					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
-					var eNodeWidthOffset:Number = endNode.height/2/ Math.sin(linkAngle);
-				
-					minOffset = Math.min(Math.abs(eNodeHeightOffset),Math.abs(eNodeWidthOffset));
-					minOffset = Math.abs(minOffset);
-					distance = Point.distance(tP,fP);
-					tP = Point.polar(distance -minOffset,linkAngle);
-					tP.offset(fP.x,fP.y);
-				}
-				
 				//确定开始点箭头位置
 				var sArrowPoint:Point = fP.clone();
 				if(startArrow){
@@ -286,6 +270,21 @@ package com.hjx.graphic
 							fP.offset(sArrowPoint.x,sArrowPoint.y);
 						}
 					}
+				}
+				
+				if(endNode){
+					//确定结束节点的高宽比角度。
+					var endNodeHWAngle:Number = Math.atan2(endNode.height,endNode.width);
+					// 计算出终点二分之一宽度对应的弦；
+					var eNodeHeightOffset:Number = endNode.width/2/ Math.cos(linkAngle);
+					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
+					var eNodeWidthOffset:Number = endNode.height/2/ Math.sin(linkAngle);
+				
+					minOffset = Math.min(Math.abs(eNodeHeightOffset),Math.abs(eNodeWidthOffset));
+					minOffset = Math.abs(minOffset);
+					distance = Point.distance(tP,fP);
+					tP = Point.polar(distance -minOffset,linkAngle);
+					tP.offset(fP.x,fP.y);
 				}
 				
 				//确定终点箭头位置
@@ -306,6 +305,7 @@ package com.hjx.graphic
 						}
 					}
 				}
+				
 				if(dashStyle == DashStyle.NONE){
 					data = "M "+fP.x+" "+fP.y+" L "+tP.x+" "+tP.y;
 				}else if(dashStyle == DashStyle.DASH){
