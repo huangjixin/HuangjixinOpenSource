@@ -1,4 +1,4 @@
-/*var data:String = "M 0 0";
+sdssdd/*var data:String = "M 0 0";
 			
 			temp = Point.polar(Point.distance(tP,fP) - 4,edgeAngle);
 			temp.offset(fP.x,fP.y);
