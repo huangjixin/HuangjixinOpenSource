@@ -4,17 +4,37 @@
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   xmlns:skin="com.hjx.graphic.skin.*"
 				   xmlns:graphic="com.hjx.graphic.*">
-	<fx:Declarations>
-	</fx:Declarations>
 	<fx:Metadata>
 		[HostComponent("com.hjx.graphic.SubGraph")]
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+				var cr:Number = getStyle("caretColor");
+				if (caretColor != cr) super.caretColor = cr;
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
 			} 
 		]]>
 	</fx:Script>
+	<fx:Declarations>
+		<mx:Sequence id="collapseSequence" effectEnd="{hostComponent.collapseAnimationEnd()}"
+					 effectStart="{hostComponent.collapseAnimationStart()}">
+			<s:Fade alphaTo="0" duration="150" target="{graphGroup}"/>
+			<s:Resize duration="150" target="{main}"/>        
+		</mx:Sequence>  
+		
+		<mx:Sequence id="expandSequence" effectEnd="{hostComponent.expandAnimationEnd()}"
+					 effectStart="{hostComponent.expandAnimationStart()}">
+			<s:Resize duration="150" target="{main}"/>        
+			<s:Fade alphaTo="1" duration="150" target="{graphGroup}"/>
+		</mx:Sequence> 
+	</fx:Declarations>
+	<skin:transitions>
+		<mx:Transition effect="{collapseSequence}" fromState="*" toState="collapsed"/>
+		<mx:Transition effect="{collapseSequence}" fromState="*" toState="collapsedSelected"/>
+		<mx:Transition effect="{expandSequence}" fromState="collapsed" toState="*"/>
+		<mx:Transition effect="{expandSequence}" fromState="collapsedSelected" toState="*"/>
+	</skin:transitions>
 	<skin:states>
 		<s:State name="normal"/>
 		<s:State name="normalAndShowsCaret"/>
@@ -25,7 +45,84 @@
 		<s:State name="collapsedSelected"/>
 		<s:State name="collapsedSelectedAndShowsCaret"/>
 	</skin:states>
-	<s:Group id="base" left="0" right="0" top="0" bottom="0" width="200" height="200">
+	<s:Group id="main" left="0" top="0" width="{hostComponent.expandedWidth}"
+			 height="{hostComponent.expandedHeight}"
+			 width.collapsed="{hostComponent.collapsedWidth}"
+			 height.collapsed="{hostComponent.collapsedHeight}">
+		<s:filters>
+			<s:GlowFilter includeIn="normalAndShowsCaret" alpha="0.8" blurX="8" blurY="8"
+						  color="{caretColor}">
+			</s:GlowFilter>
+		</s:filters>
+		
+		<s:Rect id="border" left="0" top="0" width="100%" height="100%" radiusX="5" radiusY="5">
+			<s:stroke>
+				<mx:SolidColorStroke color="0xC4C4C4" weight="2"
+									 color.collapsed="0xACAEAF"/>
+			</s:stroke>
+			<s:fill>
+				<mx:SolidColor color="0xF7F7F7"
+							   color.collapsed="0xCEEDFF"/>
+			</s:fill>
+		</s:Rect>
+		
+		<s:Group id="markers" bottom="2" horizontalCenter="0">
+			
+			<s:layout>
+				<s:HorizontalLayout gap="3"/>
+			</s:layout>
+			
+			<!-- button to expand or collapse the subgraph -->
+			
+			<mx:Button width="16" height="16" buttonMode="true"
+					   click="{hostComponent.collapsed = !hostComponent.collapsed }" fontSize="14"
+					   fontWeight="bold" paddingBottom="5" paddingLeft="0" paddingRight="1"
+					   paddingTop="0"
+					   label.collapsed="+"
+					   label="-"/>
+			
+			<s:Group width="14" height="14"
+					 mouseDown="{hostComponent.collapsed = !hostComponent.collapsed; event.stopPropagation();}">
+				<s:Rect bottom="1" width="14" height="14" radiusX="3" radiusY="3">
+					<s:fill>
+						<mx:SolidColor color="0xd0d0d0"/>
+					</s:fill>
+				</s:Rect>
+				<s:Rect width="8" height="2" horizontalCenter="0" verticalCenter="-1">
+					<s:fill>
+						<mx:SolidColor color="0x404040"/>
+					</s:fill>
+				</s:Rect>
+				<s:Rect visible="false" width="2" height="8" horizontalCenter="0" verticalCenter="-1">
+					<s:fill>
+						<mx:SolidColor color="0x404040"/>
+					</s:fill>
+				</s:Rect>
+			</s:Group>
+		</s:Group>
+		
+		<s:Group id="labelElement" left="5" top="8" fontSize="12"
+				 horizontalCenter.collapsed="0" verticalCenter.collapsed="-10">
+			<s:Label id="label" maxWidth="{main.width - 2}" color="0x000000"
+					 text="{hostComponent.label}" textAlign="start"
+					 textAlign.collapsed="center"/>
+		</s:Group>
+		
+		<s:Group id="graphGroup" visible="true" left="5" right="5" top="{labelElement.height + 10}"
+				 bottom="20" alpha="1" clipAndEnableScrolling="true"
+				 visible.collapsed="false" alpha.collapsed="0">
+			<s:Rect left="0" top="0" width="100%" height="100%">
+				<s:fill>
+					<mx:SolidColor color="0xF7F7F7"/>
+				</s:fill>
+			</s:Rect>
+			<graphic:Graph id="graph" left="{hostComponent.graphMarginLeft}"
+						   right="{hostComponent.graphMarginRight}"
+						   top="{hostComponent.graphMarginTop}"
+						   bottom="{hostComponent.graphMarginBottom}" automaticGraphLayout="false"/>
+		</s:Group>
+	</s:Group>
+	<!--<s:Group id="base" left="0" right="0" top="0" bottom="0" width="200" height="200">
 		<s:Rect left="0" right="0" top="0" bottom="0">
 			<s:fill>
 				<s:SolidColor color.normal="{this.backgroundColor}"
@@ -48,5 +145,5 @@
 		<graphic:Graph id="graph" left="0" right="0" top="{topGroup.height}" bottom="0">
 			
 		</graphic:Graph>
-	</s:Group>
+	</s:Group>-->
 </skin:NodeSkinBase>

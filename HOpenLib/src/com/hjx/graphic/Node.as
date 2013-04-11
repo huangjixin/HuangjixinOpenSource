@@ -7,6 +7,7 @@ package com.hjx.graphic
 	
 	import mx.core.UIComponent;
 	
+	import spark.components.Group;
 	import spark.components.Label;
 
 	/**
@@ -55,10 +56,10 @@ package com.hjx.graphic
 		//--------------------------------------------------------
 		// public 公有变量声明处
 		//--------------------------------------------------------
-		[SkinPart]
-		public var labelElement:Label;
+		[SkinPart(required="false")]
+		public var labelElement:Group;
 		
-		[SkinPart(required="true")]
+		[SkinPart(required="false")]
 		public var base:UIComponent;
 		
 		/*[SkinPart(required="true")]
@@ -193,9 +194,7 @@ package com.hjx.graphic
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
 			for (var i:String in defaultCSSStyles) {
-				if (getStyle (i) == undefined) {
-					setStyle (i, defaultCSSStyles [i]);
-				}
+				setStyle (i, defaultCSSStyles [i]);
 			}
 		}
 	}

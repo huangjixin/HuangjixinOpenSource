@@ -401,9 +401,7 @@ package com.hjx.graphic
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
 			for (var i:String in defaultCSSStyles) {
-				if (getStyle (i) == undefined) {
-					setStyle (i, defaultCSSStyles [i]);
-				}
+				setStyle (i, defaultCSSStyles [i]);
 			}
 		} 
 		

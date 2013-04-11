@@ -6,4 +6,8 @@
 	<fx:Metadata>
 		[HostComponent("spark.components.supportClasses.SkinnableComponent")]
 	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+		]]>
+	</fx:Script>
 </s:Skin>

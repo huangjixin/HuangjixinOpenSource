@@ -62,6 +62,11 @@ package com.hjx.graphic.skin
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		
+		public function set caretColor(value:uint):void
+		{
+			_caretColor = value;
+		}
+
 		public function set backgroundColor(value:uint):void
 		{
 			_backgroundColor = value;

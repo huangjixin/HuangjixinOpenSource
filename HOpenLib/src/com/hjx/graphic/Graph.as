@@ -20,6 +20,19 @@ package com.hjx.graphic
 			super();
 		}
 		
+		private var _automaticGraphLayout:Boolean;
+		
+		[Bindable]
+		public function get automaticGraphLayout():Boolean
+		{
+			return _automaticGraphLayout;
+		}
+
+		public function set automaticGraphLayout(value:Boolean):void
+		{
+			_automaticGraphLayout = value;
+		}
+
 		/**
 		 * 
 		 * @param graphic — 事件发生的地方。

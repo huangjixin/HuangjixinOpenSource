@@ -20,7 +20,7 @@
 				if (backgroundColor != bg)
 				{
 					backgroundColor = bg;
-				}      
+				}     
 				
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 			}
@@ -41,6 +41,8 @@
 				<s:SolidColorStroke color="{this.borderColor}" weight="2"/>
 			</s:stroke>
 		</s:Rect>
-		<s:Label id="labelElement" text="{hostComponent.label}" horizontalCenter="0" verticalCenter="0"/>
+		<s:Group id="labelElement">
+			<s:Label id="label" text="{hostComponent.label}" horizontalCenter="0" verticalCenter="0"/>
+		</s:Group>
 	</s:Group>
 </skin:NodeSkinBase>
