@@ -74,13 +74,6 @@
 			
 			<!-- button to expand or collapse the subgraph -->
 			
-			<mx:Button width="16" height="16" buttonMode="true"
-					   click="{hostComponent.collapsed = !hostComponent.collapsed }" fontSize="14"
-					   fontWeight="bold" paddingBottom="5" paddingLeft="0" paddingRight="1"
-					   paddingTop="0"
-					   label.collapsed="+"
-					   label="-"/>
-			
 			<s:Group width="14" height="14"
 					 mouseDown="{hostComponent.collapsed = !hostComponent.collapsed; event.stopPropagation();}">
 				<s:Rect bottom="1" width="14" height="14" radiusX="3" radiusY="3">

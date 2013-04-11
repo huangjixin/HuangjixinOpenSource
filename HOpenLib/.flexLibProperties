@@ -23,6 +23,7 @@
     <classEntry path="com.hjx.diagram.events.DiagramEvent"/>
     <classEntry path="com.hjx.graphic.LinkShapeType"/>
     <classEntry path="com.hjx.graphic.LinkConnectionArea"/>
+    <classEntry path="com.hjx.graphic.events.SubgraphEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
