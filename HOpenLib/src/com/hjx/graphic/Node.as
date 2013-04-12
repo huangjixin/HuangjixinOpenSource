@@ -46,6 +46,8 @@ package com.hjx.graphic
 		private var _centerY : Number = NaN;
 		
 		private var _links:Vector.<Link> = new Vector.<Link>();
+		private var _incomingLinks:Vector.<Link> = new Vector.<Link>();
+		private var _outgoingLinks:Vector.<Link> = new Vector.<Link>();
 		
 		private var defaultCSSStyles:Object = {
 			backgroundColor : 0xD1CE9C,
@@ -70,13 +72,37 @@ package com.hjx.graphic
 		public function Node()
 		{
 			super();
-			
+			for (var i:String in defaultCSSStyles) {
+				setStyle (i, defaultCSSStyles [i]);
+			}
 		}//构造函数结束
 		
 		
 		//--------------------------------------------------------
 		// getter和setter函数
 		//--------------------------------------------------------
+
+		[Bindable]
+		public function get outgoingLinks():Vector.<Link>
+		{
+			return _outgoingLinks;
+		}
+
+		public function set outgoingLinks(value:Vector.<Link>):void
+		{
+			_outgoingLinks = value;
+		}
+
+		[Bindable]
+		public function get incomingLinks():Vector.<Link>
+		{
+			return _incomingLinks;
+		}
+
+		public function set incomingLinks(value:Vector.<Link>):void
+		{
+			_incomingLinks = value;
+		}
 
 		[Bindable]
 		public function get links():Vector.<Link>
@@ -152,7 +178,7 @@ package com.hjx.graphic
 		}
 		
 		public function getLinks():Vector.<Link>{
-			return this.links;
+			return this.incomingLinks.concat(outgoingLinks);
 		}
 		
 		public function getLinksCount():int{
@@ -178,9 +204,13 @@ package com.hjx.graphic
 		}
 
 		public function refresh():void{
-			for each (var link:Link in links) 
+			for each (var incomingLink:Link in incomingLinks) 
 			{
-				link.draw();	
+				incomingLink.draw();	
+			}
+			for each (var outgoingLink:Link in outgoingLinks) 
+			{
+				outgoingLink.draw();	
 			}
 		}
 		
@@ -193,9 +223,6 @@ package com.hjx.graphic
 		} 
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
-			for (var i:String in defaultCSSStyles) {
-				setStyle (i, defaultCSSStyles [i]);
-			}
 		}
 	}
 }

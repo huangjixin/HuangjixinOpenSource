@@ -79,6 +79,10 @@ package com.hjx.graphic
 			super();
 			this.startNode = startNode;
 			this.endNode = endNode;
+			
+			for (var i:String in defaultCSSStyles) {
+				setStyle (i, defaultCSSStyles [i]);
+			}
 		}
 		
 		/**
@@ -94,6 +98,7 @@ package com.hjx.graphic
 		public function set endConnectionArea(value:String):void
 		{
 			_endConnectionArea = value;
+			invalidateDisplayList();
 		}
 
 		/**
@@ -111,6 +116,7 @@ package com.hjx.graphic
 		public function set startConnectionArea(value:String):void
 		{
 			_startConnectionArea = value;
+			invalidateDisplayList();
 		}
 
 		[Bindable]
@@ -122,6 +128,7 @@ package com.hjx.graphic
 		public function set fallbackStartPoint(value:Point):void
 		{
 			_fallbackStartPoint = value;
+			invalidateDisplayList();
 		}
 
 		[Bindable]
@@ -133,6 +140,7 @@ package com.hjx.graphic
 		public function set fallbackEndPoint(value:Point):void
 		{
 			_fallbackEndPoint = value;
+			invalidateDisplayList();
 		}
 
 		[Bindable]
@@ -145,6 +153,7 @@ package com.hjx.graphic
 		public function set shapeType(value:String):void
 		{
 			_shapeType = value;
+			invalidateDisplayList();
 		}
 
 		[Bindable(event="endNodeChange")]
@@ -165,10 +174,12 @@ package com.hjx.graphic
 			{
 				_endNode = value;
 				dispatchEvent(new Event("endNodeChange"));
+				invalidateDisplayList();
 				if(_endNode){
-					var index:int = _endNode.links.indexOf(this);
+					fallbackEndPoint = null;
+					var index:int = _endNode.incomingLinks.indexOf(this);
 					if(index==-1){
-						_endNode.links.push(this);
+						_endNode.incomingLinks.push(this);	
 					}
 				}
 			}
@@ -189,10 +200,12 @@ package com.hjx.graphic
 			{
 				_startNode = value;
 				dispatchEvent(new Event("startNodeChange"));
+				invalidateDisplayList();
 				if(_startNode){
-					var index:int = _startNode.links.indexOf(this);
+					fallbackStartPoint = null;
+					var index:int = _startNode.outgoingLinks.indexOf(this);
 					if(index ==-1){
-						_startNode.links.push(this);
+						_startNode.outgoingLinks.push(this);
 					}
 				}
 			}
@@ -204,21 +217,45 @@ package com.hjx.graphic
 		 * 
 		 */
 		public function draw():void{
+			var stPoint:Point;
+			var enPoint:Point;
 			if(startNode){
-				fallbackStartPoint = new Point(startNode.centerX,startNode.centerY);
-				fallbackStartPoint = startNode.parent.localToGlobal(fallbackStartPoint);
-				fallbackStartPoint = this.parent.globalToLocal(fallbackStartPoint);
+				if(!fallbackStartPoint){
+					stPoint = new Point(startNode.centerX,startNode.centerY);
+					stPoint = startNode.parent.localToGlobal(stPoint);
+					stPoint = this.parent.globalToLocal(stPoint);
+				}else{
+					stPoint = fallbackStartPoint;
+				}
+				
+			}else{
+				if(!fallbackStartPoint){
+					stPoint = new Point();
+				}else{
+					stPoint = fallbackStartPoint;
+				}
 			}
 			
 			if(endNode){
-				fallbackEndPoint = new Point(endNode.centerX,endNode.centerY);
-				fallbackEndPoint = endNode.parent.localToGlobal(fallbackEndPoint);
-				fallbackEndPoint = this.parent.globalToLocal(fallbackEndPoint);
+				if(!fallbackEndPoint){
+					enPoint = new Point(endNode.centerX,endNode.centerY);
+					enPoint = endNode.parent.localToGlobal(enPoint);
+					enPoint = this.parent.globalToLocal(enPoint);
+				}else{
+					enPoint = fallbackEndPoint;
+				}
+				
+			}else{
+				if(!fallbackEndPoint){
+					enPoint = new Point();
+				}else{
+					enPoint = fallbackEndPoint;
+				}
 			}
 			
 			
 			// path绘图数据。
-			var data:String = getData();
+			var data:String = getData(stPoint,enPoint);
 			path.data = data;
 		}
 		
@@ -227,14 +264,14 @@ package com.hjx.graphic
 		 * @return data字符串。
 		 * 
 		 */
-		private function getData():String
+		private function getData(stPoint:Point,enPoint:Point):String
 		{
 			var data:String = "";
 			// 确定连线风格。
 			var dashStyle:String = this.getStyle("dashStyle");
 			// 
-			var fP:Point = fallbackStartPoint;
-			var tP:Point = fallbackEndPoint;
+			var fP:Point = stPoint;
+			var tP:Point = enPoint;
 			//计算终点和起始点形成的角度。
 			var linkAngle:Number = Math.atan2(tP.y - fP.y,tP.x - fP.x);
 			//如果为直连线的话，那么连线连线的终点箭头就是linkDegree，开始箭头就是linkDegree+180
@@ -380,6 +417,7 @@ package com.hjx.graphic
 			}else if(shapeType == LinkShapeType.OBLIQUE){
 				
 			}
+			
 			return data;
 		}//getData结束
 		//-----------------------------------------------------------
@@ -400,9 +438,6 @@ package com.hjx.graphic
 		
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
-			for (var i:String in defaultCSSStyles) {
-				setStyle (i, defaultCSSStyles [i]);
-			}
 		} 
 		
 		override public function styleChanged(styleProp:String):void{

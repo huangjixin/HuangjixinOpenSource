@@ -8,7 +8,10 @@ package com.hjx.graphic
 	 **** huangjixin,2013-3-29,上午9:27:15 **
 	 **** 请一句话表述该类主要作用  **
 	 *******************************************/
+	import com.hjx.graphic.events.SubgraphEvent;
 	import com.hjx.graphic.skin.SubGraphSkin;
+	
+	import flash.geom.Point;
 	
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
@@ -104,6 +107,10 @@ package com.hjx.graphic
 			super();
 			collapsedWidth = 100;
 			collapsedHeight = 50;
+			
+			for (var i:String in defaultCSSStyles) {
+				setStyle (i, defaultCSSStyles [i]);
+			}
 		}
 		//构造函数结束
 		
@@ -150,6 +157,22 @@ package com.hjx.graphic
 		{
 			_mxmlContent = value;
 			mxmlContentChanged = true;
+		}
+		
+		override public function get centerY():Number
+		{
+			if(collapsed){
+				return y + (collapsedHeight / 2.0);
+			}
+			return y + (height / 2.0);
+		}
+		
+		override public function get centerX():Number
+		{
+			if(collapsed){
+				return x + (collapsedWidth / 2.0);
+			}
+			return x + (width / 2.0);
 		}
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// 相关事件响应函数和逻辑函数存放处
@@ -216,20 +239,34 @@ package com.hjx.graphic
 		}
 		
 		
+		/**
+		 * 
+		 * 
+		 */
 		public function collapseAnimationStart():void{
-		
+			collapseLinks(this.graph);
+			dispatchEvent(new SubgraphEvent(SubgraphEvent.COLLAPSE_ANIMATION_START));
 		}
 		
+		/**
+		 * 
+		 * 
+		 */
 		public function collapseAnimationEnd():void{
-		
+			dispatchEvent(new SubgraphEvent(SubgraphEvent.COLLAPSE_ANIMATION_END));
 		}
 		
+		/**
+		 * 
+		 * 
+		 */
 		public function expandAnimationStart():void{
-		
+			expandLinks(this.graph);
+			dispatchEvent(new SubgraphEvent(SubgraphEvent.EXPAND_ANIMATION_START));
 		}
 		
 		public function expandAnimationEnd():void{
-		
+			dispatchEvent(new SubgraphEvent(SubgraphEvent.EXPAND_ANIMATION_END));
 		}
 		
 		/**
@@ -252,9 +289,85 @@ If the layout is configured to be performed automatically, there is no need to c
 		public function performGraphLayout(traverse:Boolean = false):void{
 		
 		}
+		
+		private function collapseLinks(gra:Graph):void{
+			var node:Node;
+			var length:int = gra.numElements;
+			for (var i:int = 0; i < length; i++) 
+			{
+				var element:IVisualElement = this.graph.getElementAt(i);
+				if(element is Node){
+					node = element as Node;
+					var link:Link;
+					for each(link in node.getLinks()){
+						//要收拢的线必须不在当前子图，连线只能有一头在当前子图里面。
+						if(!this.contains(link)){
+							if (this.contains(link.startNode)){
+								if(!link.fallbackStartPoint){
+									link.fallbackStartPoint = new Point();
+								}
+								link.fallbackStartPoint.setTo(this.centerX,this.centerY);
+								link.fallbackStartPoint = this.parent.localToGlobal(link.fallbackStartPoint);
+								link.fallbackStartPoint = link.startNode.parent.globalToLocal(link.fallbackStartPoint);
+							}
+							if (this.contains(link.endNode)){
+								if(!link.fallbackEndPoint){
+									link.fallbackEndPoint = new Point();
+								}
+								link.fallbackEndPoint.setTo(this.centerX,this.centerY);
+								link.fallbackEndPoint = this.parent.localToGlobal(link.fallbackEndPoint);
+								link.fallbackEndPoint = link.endNode.parent.globalToLocal(link.fallbackEndPoint);
+							}
+						}
+					}
+				}
+				//递归下去，收拢连线。
+				if(node is SubGraph){
+					collapseLinks(SubGraph(node).graph);
+				}
+			}
+			
+		}
+		
+		private function expandLinks(gra:Graph):void{
+			var node:Node;
+			var length:int = gra.numElements;
+			for (var i:int = 0; i < length; i++) 
+			{
+				var element:IVisualElement = this.graph.getElementAt(i);
+				if(element is Node){
+					node = element as Node;
+					var link:Link;
+					for each(link in node.getLinks()){
+						//要收拢的线必须不在当前子图，连线只能有一头在当前子图里面。
+						if(!this.contains(link)){
+							if (this.contains(link.startNode)){
+								link.fallbackStartPoint = null;
+							}
+							if (this.contains(link.endNode)){
+								link.fallbackEndPoint = null;
+							}
+						}
+					}
+				}
+				//递归下去，收拢连线。
+				if(node is SubGraph){
+					expandLinks(SubGraph(node).graph);
+				}
+			}
+		}
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+		override public function refresh():void{
+			super.refresh();
+			if(collapsed){
+				collapseLinks(this.graph);
+			}else{
+				
+			}
+		}
+		
 		override protected function getCurrentSkinState():String{
 			if(collapsed && showsCaret){
 				return "collapsedAndShowsCaret";
@@ -296,9 +409,6 @@ If the layout is configured to be performed automatically, there is no need to c
 		} 
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
-			for (var i:String in defaultCSSStyles) {
-				setStyle (i, defaultCSSStyles [i]);
-			}
 		}
 	}//类结束
 }//包结束

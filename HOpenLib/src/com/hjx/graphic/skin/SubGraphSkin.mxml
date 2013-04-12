@@ -86,7 +86,7 @@
 						<mx:SolidColor color="0x404040"/>
 					</s:fill>
 				</s:Rect>
-				<s:Rect visible="false" width="2" height="8" horizontalCenter="0" verticalCenter="-1">
+				<s:Rect visible="false" visible.collapsed="true" width="2" height="8" horizontalCenter="0" verticalCenter="-1">
 					<s:fill>
 						<mx:SolidColor color="0x404040"/>
 					</s:fill>
