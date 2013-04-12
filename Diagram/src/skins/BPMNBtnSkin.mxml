@@ -27,6 +27,6 @@
 				<s:SolidColorStroke color="0x000000" weight="2"/>
 			</s:stroke>
 		</s:Rect>
-		<s:Label id="labelElement" text="{hostComponent.label}" horizontalCenter="0" verticalCenter="0"/>
+		<s:Label id="label" text="{hostComponent.label}" horizontalCenter="0" verticalCenter="0"/>
 	</s:Group>
 </s:Skin>

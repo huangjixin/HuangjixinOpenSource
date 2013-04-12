@@ -105,16 +105,18 @@
 	<diagram:Diagram id="diagram" width="100%" height="100%"/>
 	<graphic:Graph id="graph" x="{width/2}" width="50%" height="100%">
 		<graphic:SubGraph id="subGraph1" y="200" width="200" height="200">
-			<graphic:Link id="link" endArrowVisible="true" endNode="{node}" startArrowVisible="true"
-						  startNode="{node2}" strokeWidth="2"/>
-			<graphic:Link id="link0" endNode="{node4}" startNode="{node}" strokeWidth="2" startArrowVisible="true"/>
 			<local:BPMNBtn id="node2" x="10" y="20" label="node2" skinClass="skins.BPMNBtnSkin"/>
 			<local:BPMNBtn id="node3" x="50" y="100" label="node3" skinClass="skins.BPMNBtnSkin"/>
 		</graphic:SubGraph>
-		<local:BPMNBtn id="node" x="300" y="400" width="300" height="300" click="node1_clickHandler(event)"/>
+		<local:BPMNBtn id="node" x="300" y="400" width="300" height="300"
+					   click="node1_clickHandler(event)"/>
 		<local:BPMNBtn id="node4" x="500" y="200"/>
-		<graphic:Link id="link3" endArrowVisible="true"  startArrowVisible="true"
-					   strokeWidth="2" fallbackStartPoint="{new Point(20,30)}"
-					   fallbackEndPoint="{new Point(120,30)}" />
+		<graphic:Link id="link" endArrowVisible="true" endNode="{node}" startArrowVisible="true"
+					  startNode="{node2}" strokeWidth="2"/>
+		<graphic:Link id="link0" endNode="{node4}" startArrowVisible="true" startNode="{node}"
+					  strokeWidth="2"/>
+		<graphic:Link id="link3" endArrowVisible="true" fallbackEndPoint="{new Point(120,30)}"
+					  fallbackStartPoint="{new Point(20,30)}" startArrowVisible="true"
+					  strokeWidth="2"/>
 	</graphic:Graph>
 </s:Application>
