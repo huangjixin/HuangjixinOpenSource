@@ -16,6 +16,7 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.HierarchicalData;
+			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
 			[Bindable]
@@ -25,9 +26,9 @@
 			{
 				if(node.selectable){
 					node.selected = !node.selected;
-					link0.setStyle("startArrowVisible",node.selected);
+//					link0.setStyle("startArrowVisible",node.selected);
 					link.setStyle("startArrowVisible",node.selected);
-					link0.setStyle("endArrowVisible",node.selected);
+//					link0.setStyle("endArrowVisible",node.selected);
 					link.setStyle("endArrowVisible",node.selected);
 				}
 			}
@@ -36,6 +37,7 @@
 			{
 				this.addEventListener(MouseEvent.MOUSE_MOVE, onMoveHandler);
 				node.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
+				subGraph1.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
 //				trace(link.width+","+link.height);
 			}
 			
@@ -50,16 +52,18 @@
 			
 			protected function onNodeMouseDown(event:MouseEvent):void
 			{
-				node.startDrag();
-				node.addEventListener(MouseEvent.MOUSE_UP,onNodeMouseUp);
-				node.addEventListener(MouseEvent.MOUSE_MOVE,onNodeMouseMove);
+				var ui:UIComponent = event.currentTarget as UIComponent;
+				ui.startDrag();
+				ui.addEventListener(MouseEvent.MOUSE_UP,onNodeMouseUp);
+				ui.addEventListener(MouseEvent.MOUSE_MOVE,onNodeMouseMove);
 			}
 			
 			protected function onNodeMouseUp(event:MouseEvent):void
 			{
-				node.stopDrag();
-				node.removeEventListener(MouseEvent.MOUSE_UP,onNodeMouseUp);
-				node.removeEventListener(MouseEvent.MOUSE_MOVE,onNodeMouseMove);
+				var ui:UIComponent = event.currentTarget as UIComponent;
+				ui.stopDrag();
+				ui.removeEventListener(MouseEvent.MOUSE_UP,onNodeMouseUp);
+				ui.removeEventListener(MouseEvent.MOUSE_MOVE,onNodeMouseMove);
 			}
 			
 			protected function onNodeMouseMove(event:MouseEvent):void
@@ -102,21 +106,16 @@
 			</diagram:nodeLayout>
 		</diagram:Diagram>
 	</editor:DiagramEditor>
-	<diagram:Diagram id="diagram" width="100%" height="100%"/>
+	<!--<diagram:Diagram id="diagram" width="100%" height="100%"/>-->
 	<graphic:Graph id="graph" x="{width/2}" width="50%" height="100%">
 		<graphic:SubGraph id="subGraph1" y="200" width="200" height="200">
 			<local:BPMNBtn id="node2" x="10" y="20" label="node2" skinClass="skins.BPMNBtnSkin"/>
 			<local:BPMNBtn id="node3" x="50" y="100" label="node3" skinClass="skins.BPMNBtnSkin"/>
 		</graphic:SubGraph>
-		<local:BPMNBtn id="node" x="300" y="400" width="300" height="300"
+		<local:BPMNBtn id="node" x="300" y="400"
 					   click="node1_clickHandler(event)"/>
 		<local:BPMNBtn id="node4" x="500" y="200"/>
-		<graphic:Link id="link" endArrowVisible="true" endNode="{node}" startArrowVisible="true"
+		<graphic:Link id="link" endArrowVisible="false" endNode="{node}" startArrowVisible="false" 
 					  startNode="{node2}" strokeWidth="2"/>
-		<graphic:Link id="link0" endNode="{node4}" startArrowVisible="true" startNode="{node}"
-					  strokeWidth="2"/>
-		<graphic:Link id="link3" endArrowVisible="true" fallbackEndPoint="{new Point(120,30)}"
-					  fallbackStartPoint="{new Point(20,30)}" startArrowVisible="true"
-					  strokeWidth="2"/>
 	</graphic:Graph>
 </s:Application>
