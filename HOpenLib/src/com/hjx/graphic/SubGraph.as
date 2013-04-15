@@ -308,7 +308,7 @@ If the layout is configured to be performed automatically, there is no need to c
 								}
 								link.fallbackStartPoint.setTo(this.centerX,this.centerY);
 								link.fallbackStartPoint = this.parent.localToGlobal(link.fallbackStartPoint);
-								link.fallbackStartPoint = link.startNode.parent.globalToLocal(link.fallbackStartPoint);
+								link.fallbackStartPoint = link.parent.globalToLocal(link.fallbackStartPoint);
 							}
 							if (this.contains(link.endNode)){
 								if(!link.fallbackEndPoint){
@@ -316,7 +316,7 @@ If the layout is configured to be performed automatically, there is no need to c
 								}
 								link.fallbackEndPoint.setTo(this.centerX,this.centerY);
 								link.fallbackEndPoint = this.parent.localToGlobal(link.fallbackEndPoint);
-								link.fallbackEndPoint = link.endNode.parent.globalToLocal(link.fallbackEndPoint);
+								link.fallbackEndPoint = link.parent.globalToLocal(link.fallbackEndPoint);
 							}
 						}
 					}
@@ -356,15 +356,33 @@ If the layout is configured to be performed automatically, there is no need to c
 				}
 			}
 		}
+		
+		private function refreshChildrens(gra:Graph):void{
+			var node:Node;
+			var length:int = gra.numElements;
+			for (var i:int = 0; i < length; i++) 
+			{
+				var element:IVisualElement = this.graph.getElementAt(i);
+				if(element is Node){
+					node = element as Node;
+					node.refresh();
+				}
+				//递归下去，收拢连线。
+				if(node is SubGraph){
+					refreshChildrens(SubGraph(node).graph);
+				}
+			}
+		}
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		override public function refresh():void{
 			super.refresh();
+			refreshChildrens(this.graph);
 			if(collapsed){
 				collapseLinks(this.graph);
 			}else{
-				
+				expandLinks(this.graph);
 			}
 		}
 		
