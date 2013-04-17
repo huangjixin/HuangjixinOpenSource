@@ -244,7 +244,7 @@ package com.hjx.graphic
 		 * 
 		 */
 		public function collapseAnimationStart():void{
-			collapseLinks(this.graph);
+			collapseLinks(this);
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.COLLAPSE_ANIMATION_START));
 		}
 		
@@ -261,7 +261,7 @@ package com.hjx.graphic
 		 * 
 		 */
 		public function expandAnimationStart():void{
-			expandLinks(this.graph);
+			expandLinks(this);
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.EXPAND_ANIMATION_START));
 		}
 		
@@ -290,9 +290,9 @@ If the layout is configured to be performed automatically, there is no need to c
 		
 		}
 		
-		private function collapseLinks(gra:Graph):void{
+		private function collapseLinks(subGraph:SubGraph):void{
 			var node:Node;
-			var length:int = gra.numElements;
+			var length:int = graph.numElements;
 			for (var i:int = 0; i < length; i++) 
 			{
 				var element:IVisualElement = this.graph.getElementAt(i);
@@ -301,21 +301,21 @@ If the layout is configured to be performed automatically, there is no need to c
 					var link:Link;
 					for each(link in node.getLinks()){
 						//要收拢的线必须不在当前子图，连线只能有一头在当前子图里面。
-						if(!this.contains(link)){
-							if (this.contains(link.startNode)){
+						if(!subGraph.contains(link)){
+							if (subGraph.contains(link.startNode)){
 								if(!link.fallbackStartPoint){
 									link.fallbackStartPoint = new Point();
 								}
-								link.fallbackStartPoint.setTo(this.centerX,this.centerY);
-								link.fallbackStartPoint = this.parent.localToGlobal(link.fallbackStartPoint);
+								link.fallbackStartPoint.setTo(subGraph.centerX,subGraph.centerY);
+								link.fallbackStartPoint = subGraph.parent.localToGlobal(link.fallbackStartPoint);
 								link.fallbackStartPoint = link.parent.globalToLocal(link.fallbackStartPoint);
 							}
-							if (this.contains(link.endNode)){
+							if (subGraph.contains(link.endNode)){
 								if(!link.fallbackEndPoint){
 									link.fallbackEndPoint = new Point();
 								}
-								link.fallbackEndPoint.setTo(this.centerX,this.centerY);
-								link.fallbackEndPoint = this.parent.localToGlobal(link.fallbackEndPoint);
+								link.fallbackEndPoint.setTo(subGraph.centerX,subGraph.centerY);
+								link.fallbackEndPoint = subGraph.parent.localToGlobal(link.fallbackEndPoint);
 								link.fallbackEndPoint = link.parent.globalToLocal(link.fallbackEndPoint);
 							}
 						}
@@ -323,36 +323,36 @@ If the layout is configured to be performed automatically, there is no need to c
 				}
 				//递归下去，收拢连线。
 				if(node is SubGraph){
-					collapseLinks(SubGraph(node).graph);
+					SubGraph(node).collapseLinks(this);
 				}
 			}
 			
 		}
 		
-		private function expandLinks(gra:Graph):void{
+		private function expandLinks(subGraph:SubGraph):void{
 			var node:Node;
-			var length:int = gra.numElements;
+			var length:int = graph.numElements;
 			for (var i:int = 0; i < length; i++) 
 			{
-				var element:IVisualElement = this.graph.getElementAt(i);
+				var element:IVisualElement = graph.getElementAt(i);
 				if(element is Node){
 					node = element as Node;
 					var link:Link;
 					for each(link in node.getLinks()){
 						//要收拢的线必须不在当前子图，连线只能有一头在当前子图里面。
-						if(!this.contains(link)){
-							if (this.contains(link.startNode)){
+						if(!subGraph.contains(link)){
+							if (subGraph.contains(link.startNode)){
 								link.fallbackStartPoint = null;
 							}
-							if (this.contains(link.endNode)){
+							if (subGraph.contains(link.endNode)){
 								link.fallbackEndPoint = null;
 							}
 						}
 					}
 				}
-				//递归下去，收拢连线。
+				//递归下去，张开连线。
 				if(node is SubGraph){
-					expandLinks(SubGraph(node).graph);
+					SubGraph(node).expandLinks(this);
 				}
 			}
 		}
@@ -369,7 +369,9 @@ If the layout is configured to be performed automatically, there is no need to c
 				}
 				//递归下去，收拢连线。
 				if(node is SubGraph){
-					refreshChildrens(SubGraph(node).graph);
+					if(SubGraph(node).graph){
+						SubGraph(node).refreshChildrens(SubGraph(node).graph);
+					}
 				}
 			}
 		}
@@ -380,9 +382,9 @@ If the layout is configured to be performed automatically, there is no need to c
 			super.refresh();
 			refreshChildrens(this.graph);
 			if(collapsed){
-				collapseLinks(this.graph);
+				collapseLinks(this);
 			}else{
-				expandLinks(this.graph);
+				expandLinks(this);
 			}
 		}
 		
@@ -423,7 +425,7 @@ If the layout is configured to be performed automatically, there is no need to c
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			super.updateDisplayList(unscaledWidth,unscaledHeight);
-			
+			refresh();
 		} 
 		override public function stylesInitialized():void{
 			super.stylesInitialized();

@@ -288,7 +288,7 @@ package com.hjx.graphic
 					var sNodeWidthOffset:Number = startNode.height/2/ Math.sin(linkAngle);
 //					
 					minOffset = Math.min(Math.abs(sNodeHeightOffset),Math.abs(sNodeWidthOffset));
-					minOffset = Math.abs(minOffset);
+//					minOffset = Math.abs(minOffset);
 					fP.offset(minOffset*Math.cos(linkAngle),minOffset*Math.sin(linkAngle));
 				}
 				//确定开始点箭头位置
@@ -316,11 +316,21 @@ package com.hjx.graphic
 					var eNodeHeightOffset:Number = endNode.width/2/ Math.cos(linkAngle);
 					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
 					var eNodeWidthOffset:Number = endNode.height/2/ Math.sin(linkAngle);
-				
 					minOffset = Math.min(Math.abs(eNodeHeightOffset),Math.abs(eNodeWidthOffset));
-					minOffset = Math.abs(minOffset);
+					
+//					minOffset = Math.abs(minOffset);
 					distance = Point.distance(tP,fP);
-					tP = Point.polar(distance -minOffset,linkAngle);
+					if(distance>= minOffset){
+						tP = Point.polar(distance -minOffset,linkAngle);
+					}else{
+						if(minOffset == Math.abs(eNodeHeightOffset)){
+							tP = Point.polar(distance +eNodeHeightOffset,linkAngle);
+						}else{
+							tP = Point.polar(distance +eNodeWidthOffset,linkAngle);
+						}
+						
+					}
+					
 					tP.offset(fP.x,fP.y);
 				}
 				
