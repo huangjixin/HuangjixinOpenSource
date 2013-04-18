@@ -16,8 +16,6 @@ package com.hjx.graphic
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	
-	import spark.components.Group;
-	
 	[SkinState("collapsed")]
 	[SkinState("collapsedAndShowsCaret")]
 	[SkinState("collapsedSelected")]
@@ -337,6 +335,7 @@ If the layout is configured to be performed automatically, there is no need to c
 				var element:IVisualElement = graph.getElementAt(i);
 				if(element is Node){
 					node = element as Node;
+					
 					var link:Link;
 					for each(link in node.getLinks()){
 						//要收拢的线必须不在当前子图，连线只能有一头在当前子图里面。
@@ -352,7 +351,10 @@ If the layout is configured to be performed automatically, there is no need to c
 				}
 				//递归下去，张开连线。
 				if(node is SubGraph){
-					SubGraph(node).expandLinks(this);
+					var collapsed:Boolean = SubGraph(node).collapsed;
+					if(!collapsed){
+						SubGraph(node).expandLinks(this);
+					}
 				}
 			}
 		}

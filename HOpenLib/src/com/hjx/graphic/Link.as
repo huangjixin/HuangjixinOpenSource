@@ -253,7 +253,6 @@ package com.hjx.graphic
 				}
 			}
 			
-			
 			// path绘图数据。
 			var data:String = getData(stPoint,enPoint);
 			path.data = data;
