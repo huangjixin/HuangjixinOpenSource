@@ -37,6 +37,7 @@
 			{
 				this.addEventListener(MouseEvent.MOUSE_MOVE, onMoveHandler);
 				node.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
+				node2.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
 				subGraph1.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
 				subGraph0.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
 //				trace(link.width+","+link.height);
@@ -112,15 +113,15 @@
 	<graphic:Graph id="graph" x="{width/2}" width="50%" height="100%">
 		<graphic:SubGraph id="subGraph0" y="200" width="200" height="200">
 			<graphic:SubGraph id="subGraph1" y="200" width="200" height="200">
-				<local:BPMNBtn id="node2" x="10" y="20" label="node2" skinClass="skins.BPMNBtnSkin"/>
+				<local:BPMNBtn id="node" x="10" y="20" label="node2" skinClass="skins.BPMNBtnSkin"/>
 				<local:BPMNBtn id="node3" x="50" y="100" label="node3" skinClass="skins.BPMNBtnSkin"/>
 			</graphic:SubGraph>
 		</graphic:SubGraph>
-		
-		<local:BPMNBtn id="node" x="300" y="400"
+		<graphic:Link id="link" endArrowVisible="true" endNode="{node2}" startArrowVisible="false" 
+					  startNode="{node}" strokeWidth="2"/>
+		<local:BPMNBtn id="node2" x="300" y="400"
 					   click="node1_clickHandler(event)"/>
 		<local:BPMNBtn id="node4" x="500" y="200"/>
-		<graphic:Link id="link" endArrowVisible="true" endNode="{node}" startArrowVisible="false" 
-					  startNode="{node2}" strokeWidth="2"/>
+		
 	</graphic:Graph>
 </s:Application>
