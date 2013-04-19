@@ -41,7 +41,7 @@
 				<s:SolidColorStroke color="{this.borderColor}" weight="2"/>
 			</s:stroke>
 		</s:Rect>
-		<s:Group id="labelElement">
+		<s:Group id="labelElement" horizontalCenter="0" verticalCenter="0">
 			<s:Label id="label" text="{hostComponent.label}" horizontalCenter="0" verticalCenter="0"/>
 		</s:Group>
 	</s:Group>

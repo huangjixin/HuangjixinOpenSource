@@ -278,7 +278,7 @@ package com.hjx.graphic
 			if(shapeType == LinkShapeType.STRAIGHT){
 				var distance:Number;//两点之间的距离。
 				var minOffset:Number;
-				if(startNode){
+				/*if(startNode){
 //					//确定结束节点的高宽比角度。
 					var startNodeHWAngle:Number = Math.atan2(startNode.height,startNode.width);
 					// 计算出终点二分之一宽度对应的弦；
@@ -350,7 +350,7 @@ package com.hjx.graphic
 							tP.offset(fP.x,fP.y);
 						}
 					}
-				}
+				}*/
 				
 				if(dashStyle == DashStyle.NONE){
 					data = "M "+fP.x+" "+fP.y+" L "+tP.x+" "+tP.y;

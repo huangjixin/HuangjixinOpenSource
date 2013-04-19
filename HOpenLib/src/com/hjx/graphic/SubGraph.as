@@ -348,6 +348,8 @@ If the layout is configured to be performed automatically, there is no need to c
 							}
 						}
 					}
+					
+					node.refresh();
 				}
 				//递归下去，张开连线。
 				if(node is SubGraph){
@@ -359,12 +361,15 @@ If the layout is configured to be performed automatically, there is no need to c
 			}
 		}
 		
-		private function refreshChildrens(gra:Graph):void{
+		private function refreshChildrens(subGraph:SubGraph):void{
+			if(subGraph.collapsed){
+				return;
+			}
 			var node:Node;
-			var length:int = gra.numElements;
+			var length:int = subGraph.graph.numElements;
 			for (var i:int = 0; i < length; i++) 
 			{
-				var element:IVisualElement = this.graph.getElementAt(i);
+				var element:IVisualElement = subGraph.graph.getElementAt(i);
 				if(element is Node){
 					node = element as Node;
 					node.refresh();
@@ -372,7 +377,10 @@ If the layout is configured to be performed automatically, there is no need to c
 				//递归下去，收拢连线。
 				if(node is SubGraph){
 					if(SubGraph(node).graph){
-						SubGraph(node).refreshChildrens(SubGraph(node).graph);
+						if(!SubGraph(node).collapsed){
+							SubGraph(node).refreshChildrens(SubGraph(node));
+						}
+//						SubGraph(node).refreshChildrens(SubGraph(node).graph);
 					}
 				}
 			}
@@ -382,11 +390,11 @@ If the layout is configured to be performed automatically, there is no need to c
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		override public function refresh():void{
 			super.refresh();
-			refreshChildrens(this.graph);
+			refreshChildrens(this);
 			if(collapsed){
 				collapseLinks(this);
 			}else{
-				expandLinks(this);
+//				expandLinks(this);
 			}
 		}
 		

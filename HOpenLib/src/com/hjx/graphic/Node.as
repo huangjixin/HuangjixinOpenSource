@@ -8,7 +8,6 @@ package com.hjx.graphic
 	import mx.core.UIComponent;
 	
 	import spark.components.Group;
-	import spark.components.Label;
 
 	/**
 	 * 节点类基类。 
@@ -204,6 +203,7 @@ package com.hjx.graphic
 		}
 
 		public function refresh():void{
+			trace(this.id+this.label);
 			for each (var incomingLink:Link in incomingLinks) 
 			{
 				incomingLink.draw();	
