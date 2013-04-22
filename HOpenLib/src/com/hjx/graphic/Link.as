@@ -434,7 +434,7 @@ package com.hjx.graphic
 		//-----------------------------------------------------------
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
-			draw();
+//			draw();
 		}
 		override protected function partAdded(partName:String, instance:Object):void{
 			if(instance == this.startArrow){

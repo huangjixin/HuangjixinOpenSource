@@ -242,7 +242,7 @@ package com.hjx.graphic
 		 * 
 		 */
 		public function collapseAnimationStart():void{
-			collapseLinks(this);
+			collapseLinks(this,this);
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.COLLAPSE_ANIMATION_START));
 		}
 		
@@ -288,12 +288,12 @@ If the layout is configured to be performed automatically, there is no need to c
 		
 		}
 		
-		private function collapseLinks(subGraph:SubGraph):void{
+		private function collapseLinks(subGraph0:SubGraph,subGraph:SubGraph):void{
 			var node:Node;
-			var length:int = graph.numElements;
+			var length:int = subGraph0.graph.numElements;
 			for (var i:int = 0; i < length; i++) 
 			{
-				var element:IVisualElement = this.graph.getElementAt(i);
+				var element:IVisualElement = subGraph0.graph.getElementAt(i);
 				if(element is Node){
 					node = element as Node;
 					var link:Link;
@@ -318,10 +318,11 @@ If the layout is configured to be performed automatically, there is no need to c
 							}
 						}
 					}
+					node.refresh();
 				}
 				//递归下去，收拢连线。
 				if(node is SubGraph){
-					SubGraph(node).collapseLinks(this);
+					SubGraph(node).collapseLinks(SubGraph(node),subGraph);
 				}
 			}
 			
@@ -362,9 +363,6 @@ If the layout is configured to be performed automatically, there is no need to c
 		}
 		
 		private function refreshChildrens(subGraph:SubGraph):void{
-			if(subGraph.collapsed){
-				return;
-			}
 			var node:Node;
 			var length:int = subGraph.graph.numElements;
 			for (var i:int = 0; i < length; i++) 
@@ -377,10 +375,10 @@ If the layout is configured to be performed automatically, there is no need to c
 				//递归下去，收拢连线。
 				if(node is SubGraph){
 					if(SubGraph(node).graph){
-						if(!SubGraph(node).collapsed){
+						/*if(!SubGraph(node).collapsed){
 							SubGraph(node).refreshChildrens(SubGraph(node));
-						}
-//						SubGraph(node).refreshChildrens(SubGraph(node).graph);
+						}*/
+						SubGraph(node).refreshChildrens(SubGraph(node));
 					}
 				}
 			}
@@ -392,7 +390,7 @@ If the layout is configured to be performed automatically, there is no need to c
 			super.refresh();
 			refreshChildrens(this);
 			if(collapsed){
-				collapseLinks(this);
+				collapseLinks(this,this);
 			}else{
 //				expandLinks(this);
 			}
