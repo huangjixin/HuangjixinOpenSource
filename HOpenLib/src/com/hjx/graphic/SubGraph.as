@@ -288,6 +288,12 @@ If the layout is configured to be performed automatically, there is no need to c
 		
 		}
 		
+		/**
+		 * 收拢连线，把连线都附到第二个参数子图上面。 
+		 * @param subGraph0 递归子图。
+		 * @param subGraph 收拢子图。
+		 * 
+		 */
 		private function collapseLinks(subGraph0:SubGraph,subGraph:SubGraph):void{
 			var node:Node;
 			var length:int = subGraph0.graph.numElements;
@@ -328,6 +334,11 @@ If the layout is configured to be performed automatically, there is no need to c
 			
 		}
 		
+		/**
+		 * 在状态变成展开的时候，展开连线，主要是设置连线的开始和结束节点为Null值。 
+		 * @param subGraph
+		 * 
+		 */
 		private function expandLinks(subGraph:SubGraph):void{
 			var node:Node;
 			var length:int = graph.numElements;
@@ -362,6 +373,11 @@ If the layout is configured to be performed automatically, there is no need to c
 			}
 		}
 		
+		/**
+		 * 子图是能够嵌套，所以要刷新嵌套的子图。 
+		 * @param subGraph
+		 * 
+		 */
 		private function refreshChildrens(subGraph:SubGraph):void{
 			var node:Node;
 			var length:int = subGraph.graph.numElements;
@@ -396,6 +412,11 @@ If the layout is configured to be performed automatically, there is no need to c
 			}
 		}
 		
+		/**
+		 * 添加状态的判断。 
+		 * @return 
+		 * 
+		 */
 		override protected function getCurrentSkinState():String{
 			if(collapsed && showsCaret){
 				return "collapsedAndShowsCaret";
@@ -422,6 +443,12 @@ If the layout is configured to be performed automatically, there is no need to c
 				}
 			}
 		}
+		/**
+		 * 当graph被实例化的时候，移除mxml内容。
+		 * @param partName
+		 * @param instance
+		 * 
+		 */
 		override protected function partRemoved(partName:String, instance:Object):void{
 			super.partRemoved(partName, instance);
 			if(instance == graph){

@@ -278,79 +278,86 @@ package com.hjx.graphic
 			if(shapeType == LinkShapeType.STRAIGHT){
 				var distance:Number;//两点之间的距离。
 				var minOffset:Number;
-				/*if(startNode){
-//					//确定结束节点的高宽比角度。
-					var startNodeHWAngle:Number = Math.atan2(startNode.height,startNode.width);
-					// 计算出终点二分之一宽度对应的弦；
-					var sNodeHeightOffset:Number = startNode.width/2/ Math.cos(linkAngle);
-//					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
-					var sNodeWidthOffset:Number = startNode.height/2/ Math.sin(linkAngle);
+				
+//				if(startNode){
+//					var stSubGraph:Object = null;
+//					stSubGraph = getCollpasedSubGraph(startNode);
+////					//确定结束节点的高宽比角度。
+//					var startNodeHWAngle:Number = stSubGraph == null ?Math.atan2(startNode.height,startNode.width):Math.atan2(SubGraph(stSubGraph).collapsedHeight,SubGraph(stSubGraph).collapsedWidth);
+//					// 计算出终点二分之一宽度对应的弦；
+//					var sNodeHeightOffset:Number = stSubGraph == null ?startNode.width/2/ Math.cos(linkAngle):SubGraph(stSubGraph).collapsedWidth/2/ Math.cos(linkAngle);
+////					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
+//					var sNodeWidthOffset:Number = stSubGraph == null ?startNode.height/2/ Math.sin(linkAngle):SubGraph(stSubGraph).collapsedHeight/2/ Math.cos(linkAngle);
+////					
+//					minOffset = Math.min(Math.abs(sNodeHeightOffset),Math.abs(sNodeWidthOffset));
+////					minOffset = Math.abs(minOffset);
+//					fP.offset(minOffset*Math.cos(linkAngle),minOffset*Math.sin(linkAngle));
+//				}
+//				//确定开始点箭头位置
+//				var sArrowPoint:Point = fP.clone();
+//				if(startArrow){
+//					var startArrowVisible:* = getStyle("startArrowVisible");
+//					if(startArrowVisible){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
+//						var startArrowType:* = getStyle("startArrowType");
+//						if(startArrowType == "triangle"){
+//							startArrow.x = sArrowPoint.x;
+//							startArrow.y = sArrowPoint.y;
+//							startArrow.rotation = 180+linkDegree;
+//							
+//							//确定连线终点位置
+//							sArrowPoint = Point.polar(ARROW_HEADER_LENGTH,linkAngle);
+//							fP.offset(sArrowPoint.x,sArrowPoint.y);
+//						}
+//					}
+//				}
+//				
+//				if(endNode){
+//					var enSubGraph:Object = null;
+//					enSubGraph = getCollpasedSubGraph(endNode);
 //					
-					minOffset = Math.min(Math.abs(sNodeHeightOffset),Math.abs(sNodeWidthOffset));
-//					minOffset = Math.abs(minOffset);
-					fP.offset(minOffset*Math.cos(linkAngle),minOffset*Math.sin(linkAngle));
-				}
-				//确定开始点箭头位置
-				var sArrowPoint:Point = fP.clone();
-				if(startArrow){
-					var startArrowVisible:* = getStyle("startArrowVisible");
-					if(startArrowVisible){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
-						var startArrowType:* = getStyle("startArrowType");
-						if(startArrowType == "triangle"){
-							startArrow.x = sArrowPoint.x;
-							startArrow.y = sArrowPoint.y;
-							startArrow.rotation = 180+linkDegree;
-							
-							//确定连线终点位置
-							sArrowPoint = Point.polar(ARROW_HEADER_LENGTH,linkAngle);
-							fP.offset(sArrowPoint.x,sArrowPoint.y);
-						}
-					}
-				}
-				
-				if(endNode){
-					//确定结束节点的高宽比角度。
-					var endNodeHWAngle:Number = Math.atan2(endNode.height,endNode.width);
-					// 计算出终点二分之一宽度对应的弦；
-					var eNodeHeightOffset:Number = endNode.width/2/ Math.cos(linkAngle);
-					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
-					var eNodeWidthOffset:Number = endNode.height/2/ Math.sin(linkAngle);
-					minOffset = Math.min(Math.abs(eNodeHeightOffset),Math.abs(eNodeWidthOffset));
-					
-//					minOffset = Math.abs(minOffset);
-					distance = Point.distance(tP,fP);
-					if(distance>= minOffset){
-						tP = Point.polar(distance -minOffset,linkAngle);
-					}else{
-						if(minOffset == Math.abs(eNodeHeightOffset)){
-							tP = Point.polar(distance +eNodeHeightOffset,linkAngle);
-						}else{
-							tP = Point.polar(distance +eNodeWidthOffset,linkAngle);
-						}
-						
-					}
-					
-					tP.offset(fP.x,fP.y);
-				}
-				
-				//确定终点箭头位置
-				var eArrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
-				eArrowPoint.offset(fP.x,fP.y);
-				if(endArrow){
-					var endArrowVisiable:* = getStyle("endArrowVisible");
-					if(endArrowVisiable){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
-						var endArrowType:* = getStyle("endArrowType");
-						if(endArrowType == "triangle"){
-							endArrow.x = eArrowPoint.x;
-							endArrow.y = eArrowPoint.y;
-							endArrow.rotation = linkDegree;
-							
-							//确定连线终点位置
-							tP = Point.polar(Point.distance(tP,fP) - ARROW_HEADER_LENGTH,linkAngle);
-							tP.offset(fP.x,fP.y);
-						}
-					}
-				}*/
+//					//确定结束节点的高宽比角度。
+//					var endNodeHWAngle:Number = enSubGraph == null ?Math.atan2(endNode.height,endNode.width):Math.atan2(SubGraph(enSubGraph).collapsedHeight,SubGraph(enSubGraph).collapsedWidth);
+//					// 计算出终点二分之一宽度对应的弦；
+//					var eNodeHeightOffset:Number = enSubGraph == null ?endNode.width/2/ Math.cos(linkAngle):SubGraph(enSubGraph).collapsedWidth/2/ Math.cos(linkAngle);
+//					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
+//					var eNodeWidthOffset:Number = enSubGraph == null ?endNode.height/2/ Math.sin(linkAngle):SubGraph(enSubGraph).collapsedHeight/2/ Math.cos(linkAngle);
+//					
+//					minOffset = Math.min(Math.abs(eNodeHeightOffset),Math.abs(eNodeWidthOffset));
+//					
+////					minOffset = Math.abs(minOffset);
+//					distance = Point.distance(tP,fP);
+////					if(distance>= minOffset){
+////						tP = Point.polar(distance -minOffset,linkAngle);
+////					}else{
+////						if(minOffset == Math.abs(eNodeHeightOffset)){
+////							tP = Point.polar(distance +eNodeHeightOffset,linkAngle);
+////						}else{
+////							tP = Point.polar(distance +eNodeWidthOffset,linkAngle);
+////						}
+////						
+////					}
+//					tP = Point.polar(distance -minOffset,linkAngle);
+//					tP.offset(fP.x,fP.y);
+//				}
+//				
+//				//确定终点箭头位置
+//				var eArrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
+//				eArrowPoint.offset(fP.x,fP.y);
+//				if(endArrow){
+//					var endArrowVisiable:* = getStyle("endArrowVisible");
+//					if(endArrowVisiable){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
+//						var endArrowType:* = getStyle("endArrowType");
+//						if(endArrowType == "triangle"){
+//							endArrow.x = eArrowPoint.x;
+//							endArrow.y = eArrowPoint.y;
+//							endArrow.rotation = linkDegree;
+//							
+//							//确定连线终点位置
+//							tP = Point.polar(Point.distance(tP,fP) - ARROW_HEADER_LENGTH,linkAngle);
+//							tP.offset(fP.x,fP.y);
+//						}
+//					}
+//				}
 				
 				if(dashStyle == DashStyle.NONE){
 					data = "M "+fP.x+" "+fP.y+" L "+tP.x+" "+tP.y;
@@ -429,6 +436,36 @@ package com.hjx.graphic
 			
 			return data;
 		}//getData结束
+		
+		
+		private function getCollpasedSubGraph(render:Renderer):Object
+		{
+			if(render.parent is Graph){
+				var graph:Graph = Graph(render.parent);
+				var parentDoc:Object = graph.parentDocument;
+				var parentSubGraph:SubGraph;
+				if(parentDoc.hasOwnProperty("hostComponent")){
+					var hostComponent:Object = parentDoc["hostComponent"];
+					var render1:Renderer;
+					if(hostComponent is Renderer){
+						render1 = parentDoc["hostComponent"] as Renderer;
+					}
+					if(render1 is SubGraph){
+						parentSubGraph = render1 as SubGraph;
+					}
+					if(parentSubGraph){
+						if(parentSubGraph.collapsed){
+							getCollpasedSubGraph(render1);
+							return parentSubGraph;
+						}
+					}else{
+						return null;
+					}
+				}
+			}
+			
+			return null;
+		}//getCollpaseSubGraph结束
 		//-----------------------------------------------------------
 		// 覆盖函数
 		//-----------------------------------------------------------
