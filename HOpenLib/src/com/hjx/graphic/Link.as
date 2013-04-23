@@ -6,6 +6,8 @@ package com.hjx.graphic
 	import flash.events.Event;
 	import flash.geom.Point;
 	
+	import mx.collections.ArrayCollection;
+	
 	import spark.primitives.Path;
 
 	/**
@@ -219,11 +221,36 @@ package com.hjx.graphic
 		public function draw():void{
 			var stPoint:Point;
 			var enPoint:Point;
+			var stSubGraph:SubGraph = null;
+			var enSubGraph:SubGraph = null;
+			
 			if(startNode){
 				if(!fallbackStartPoint){
-					stPoint = new Point(startNode.centerX,startNode.centerY);
-					stPoint = startNode.parent.localToGlobal(stPoint);
-					stPoint = this.parent.globalToLocal(stPoint);
+					var stArrCol:ArrayCollection = new ArrayCollection();
+					getCollpasedSubGraph(stArrCol,startNode);
+					/*if(stArrCol.length>0){
+						if(stArrCol[0] is SubGraph){
+							stSubGraph = stArrCol[0] as SubGraph;
+						}
+					}*/
+					for(var i:int = stArrCol.length-1 ;i>=0;i--) 
+					{
+						var stSG:SubGraph = stArrCol[i];
+						if(stSG.collapsed){
+							stSubGraph = stSG;
+							break;
+						}
+					}
+					
+					if(stSubGraph){
+						stPoint = new Point(stSubGraph.centerX,stSubGraph.centerY);
+						stPoint = stSubGraph.parent.localToGlobal(stPoint);
+						stPoint = this.parent.globalToLocal(stPoint);
+					}else{
+						stPoint = new Point(startNode.centerX,startNode.centerY);
+						stPoint = startNode.parent.localToGlobal(stPoint);
+						stPoint = this.parent.globalToLocal(stPoint);					
+					}
 				}else{
 					stPoint = fallbackStartPoint;
 				}
@@ -238,9 +265,30 @@ package com.hjx.graphic
 			
 			if(endNode){
 				if(!fallbackEndPoint){
-					enPoint = new Point(endNode.centerX,endNode.centerY);
-					enPoint = endNode.parent.localToGlobal(enPoint);
-					enPoint = this.parent.globalToLocal(enPoint);
+					var enArrCol:ArrayCollection = new ArrayCollection();
+					getCollpasedSubGraph(enArrCol,endNode);
+					/*if(enArrCol.length>0){
+						if(enArrCol[0] is SubGraph){
+							enSubGraph = enArrCol[0] as SubGraph;
+						}
+					}*/
+					for(var j:int = enArrCol.length-1 ;j>=0;j--) 
+					{
+						var enSG:SubGraph = enArrCol[i];
+						if(enSG.collapsed){
+							enSubGraph = enSG;
+							break;
+						}
+					}
+					if (enSubGraph){
+						enPoint = new Point(enSubGraph.centerX,enSubGraph.centerY);
+						enPoint = endNode.parent.localToGlobal(enPoint);
+						enPoint = this.parent.globalToLocal(enPoint);
+					}else{
+						enPoint = new Point(endNode.centerX,endNode.centerY);
+						enPoint = endNode.parent.localToGlobal(enPoint);
+						enPoint = this.parent.globalToLocal(enPoint);						
+					}
 				}else{
 					enPoint = fallbackEndPoint;
 				}
@@ -254,7 +302,7 @@ package com.hjx.graphic
 			}
 			
 			// path绘图数据。
-			var data:String = getData(stPoint,enPoint);
+			var data:String = getData(stPoint,enPoint,stSubGraph,enSubGraph);
 			path.data = data;
 		}
 		
@@ -263,7 +311,7 @@ package com.hjx.graphic
 		 * @return data字符串。
 		 * 
 		 */
-		private function getData(stPoint:Point,enPoint:Point):String
+		private function getData(stPoint:Point,enPoint:Point,stSubGraph:SubGraph = null,enSubGraph:SubGraph = null):String
 		{
 			var data:String = "";
 			// 确定连线风格。
@@ -279,85 +327,80 @@ package com.hjx.graphic
 				var distance:Number;//两点之间的距离。
 				var minOffset:Number;
 				
-//				if(startNode){
-//					var stSubGraph:Object = null;
-//					stSubGraph = getCollpasedSubGraph(startNode);
-////					//确定结束节点的高宽比角度。
-//					var startNodeHWAngle:Number = stSubGraph == null ?Math.atan2(startNode.height,startNode.width):Math.atan2(SubGraph(stSubGraph).collapsedHeight,SubGraph(stSubGraph).collapsedWidth);
-//					// 计算出终点二分之一宽度对应的弦；
-//					var sNodeHeightOffset:Number = stSubGraph == null ?startNode.width/2/ Math.cos(linkAngle):SubGraph(stSubGraph).collapsedWidth/2/ Math.cos(linkAngle);
-////					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
-//					var sNodeWidthOffset:Number = stSubGraph == null ?startNode.height/2/ Math.sin(linkAngle):SubGraph(stSubGraph).collapsedHeight/2/ Math.cos(linkAngle);
-////					
-//					minOffset = Math.min(Math.abs(sNodeHeightOffset),Math.abs(sNodeWidthOffset));
-////					minOffset = Math.abs(minOffset);
-//					fP.offset(minOffset*Math.cos(linkAngle),minOffset*Math.sin(linkAngle));
-//				}
-//				//确定开始点箭头位置
-//				var sArrowPoint:Point = fP.clone();
-//				if(startArrow){
-//					var startArrowVisible:* = getStyle("startArrowVisible");
-//					if(startArrowVisible){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
-//						var startArrowType:* = getStyle("startArrowType");
-//						if(startArrowType == "triangle"){
-//							startArrow.x = sArrowPoint.x;
-//							startArrow.y = sArrowPoint.y;
-//							startArrow.rotation = 180+linkDegree;
-//							
-//							//确定连线终点位置
-//							sArrowPoint = Point.polar(ARROW_HEADER_LENGTH,linkAngle);
-//							fP.offset(sArrowPoint.x,sArrowPoint.y);
-//						}
-//					}
-//				}
-//				
-//				if(endNode){
-//					var enSubGraph:Object = null;
-//					enSubGraph = getCollpasedSubGraph(endNode);
-//					
+				if(startNode){
 //					//确定结束节点的高宽比角度。
-//					var endNodeHWAngle:Number = enSubGraph == null ?Math.atan2(endNode.height,endNode.width):Math.atan2(SubGraph(enSubGraph).collapsedHeight,SubGraph(enSubGraph).collapsedWidth);
-//					// 计算出终点二分之一宽度对应的弦；
-//					var eNodeHeightOffset:Number = enSubGraph == null ?endNode.width/2/ Math.cos(linkAngle):SubGraph(enSubGraph).collapsedWidth/2/ Math.cos(linkAngle);
+					var startNodeHWAngle:Number = stSubGraph == null ?Math.atan2(startNode.height,startNode.width):Math.atan2(stSubGraph.collapsedHeight,stSubGraph.collapsedWidth);
+					// 计算出终点二分之一宽度对应的弦；
+					var sNodeHeightOffset:Number = stSubGraph == null ?startNode.width/2/ Math.cos(linkAngle):stSubGraph.collapsedWidth/2/ Math.cos(linkAngle);
 //					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
-//					var eNodeWidthOffset:Number = enSubGraph == null ?endNode.height/2/ Math.sin(linkAngle):SubGraph(enSubGraph).collapsedHeight/2/ Math.cos(linkAngle);
+					var sNodeWidthOffset:Number = stSubGraph == null ?startNode.height/2/ Math.sin(linkAngle):stSubGraph.collapsedHeight/2/ Math.sin(linkAngle);
 //					
-//					minOffset = Math.min(Math.abs(eNodeHeightOffset),Math.abs(eNodeWidthOffset));
-//					
-////					minOffset = Math.abs(minOffset);
-//					distance = Point.distance(tP,fP);
-////					if(distance>= minOffset){
-////						tP = Point.polar(distance -minOffset,linkAngle);
-////					}else{
-////						if(minOffset == Math.abs(eNodeHeightOffset)){
-////							tP = Point.polar(distance +eNodeHeightOffset,linkAngle);
-////						}else{
-////							tP = Point.polar(distance +eNodeWidthOffset,linkAngle);
-////						}
-////						
-////					}
-//					tP = Point.polar(distance -minOffset,linkAngle);
-//					tP.offset(fP.x,fP.y);
-//				}
-//				
-//				//确定终点箭头位置
-//				var eArrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
-//				eArrowPoint.offset(fP.x,fP.y);
-//				if(endArrow){
-//					var endArrowVisiable:* = getStyle("endArrowVisible");
-//					if(endArrowVisiable){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
-//						var endArrowType:* = getStyle("endArrowType");
-//						if(endArrowType == "triangle"){
-//							endArrow.x = eArrowPoint.x;
-//							endArrow.y = eArrowPoint.y;
-//							endArrow.rotation = linkDegree;
-//							
-//							//确定连线终点位置
-//							tP = Point.polar(Point.distance(tP,fP) - ARROW_HEADER_LENGTH,linkAngle);
-//							tP.offset(fP.x,fP.y);
+					minOffset = Math.min(Math.abs(sNodeHeightOffset),Math.abs(sNodeWidthOffset));
+//					minOffset = Math.abs(minOffset);
+					fP.offset(minOffset*Math.cos(linkAngle),minOffset*Math.sin(linkAngle));
+				}
+				//确定开始点箭头位置
+				var sArrowPoint:Point = fP.clone();
+				if(startArrow){
+					var startArrowVisible:* = getStyle("startArrowVisible");
+					if(startArrowVisible){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
+						var startArrowType:* = getStyle("startArrowType");
+						if(startArrowType == "triangle"){
+							startArrow.x = sArrowPoint.x;
+							startArrow.y = sArrowPoint.y;
+							startArrow.rotation = 180+linkDegree;
+							
+							//确定连线终点位置
+							sArrowPoint = Point.polar(ARROW_HEADER_LENGTH,linkAngle);
+							fP.offset(sArrowPoint.x,sArrowPoint.y);
+						}
+					}
+				}
+				
+				if(endNode){					
+					//确定结束节点的高宽比角度。
+					var endNodeHWAngle:Number = enSubGraph == null ?Math.atan2(endNode.height,endNode.width):Math.atan2(enSubGraph.collapsedHeight,enSubGraph.collapsedWidth);
+					// 计算出终点二分之一宽度对应的弦；
+					var eNodeHeightOffset:Number = enSubGraph == null ?endNode.width/2/ Math.cos(linkAngle):enSubGraph.collapsedWidth/2/ Math.cos(linkAngle);
+					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
+					var eNodeWidthOffset:Number = enSubGraph == null ?endNode.height/2/ Math.sin(linkAngle):enSubGraph.collapsedHeight/2/ Math.sin(linkAngle);
+					
+					minOffset = Math.min(Math.abs(eNodeHeightOffset),Math.abs(eNodeWidthOffset));
+					
+//					minOffset = Math.abs(minOffset);
+					distance = Point.distance(tP,fP);
+//					if(distance>= minOffset){
+//						tP = Point.polar(distance -minOffset,linkAngle);
+//					}else{
+//						if(minOffset == Math.abs(eNodeHeightOffset)){
+//							tP = Point.polar(distance +eNodeHeightOffset,linkAngle);
+//						}else{
+//							tP = Point.polar(distance +eNodeWidthOffset,linkAngle);
 //						}
+//						
 //					}
-//				}
+					tP = Point.polar(distance -minOffset,linkAngle);
+					tP.offset(fP.x,fP.y);
+				}
+				
+				//确定终点箭头位置
+				var eArrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
+				eArrowPoint.offset(fP.x,fP.y);
+				if(endArrow){
+					var endArrowVisiable:* = getStyle("endArrowVisible");
+					if(endArrowVisiable){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
+						var endArrowType:* = getStyle("endArrowType");
+						if(endArrowType == "triangle"){
+							endArrow.x = eArrowPoint.x;
+							endArrow.y = eArrowPoint.y;
+							endArrow.rotation = linkDegree;
+							
+							//确定连线终点位置
+							tP = Point.polar(Point.distance(tP,fP) - ARROW_HEADER_LENGTH,linkAngle);
+							tP.offset(fP.x,fP.y);
+						}
+					}
+				}
 				
 				if(dashStyle == DashStyle.NONE){
 					data = "M "+fP.x+" "+fP.y+" L "+tP.x+" "+tP.y;
@@ -438,7 +481,7 @@ package com.hjx.graphic
 		}//getData结束
 		
 		
-		private function getCollpasedSubGraph(render:Renderer):Object
+		private function getCollpasedSubGraph(arr:ArrayCollection,render:Renderer):SubGraph
 		{
 			if(render.parent is Graph){
 				var graph:Graph = Graph(render.parent);
@@ -454,10 +497,10 @@ package com.hjx.graphic
 						parentSubGraph = render1 as SubGraph;
 					}
 					if(parentSubGraph){
-						if(parentSubGraph.collapsed){
-							getCollpasedSubGraph(render1);
-							return parentSubGraph;
-						}
+//						arr.removeAll();
+						arr.addItem(parentSubGraph);
+						getCollpasedSubGraph(arr,render1);
+						return parentSubGraph;
 					}else{
 						return null;
 					}

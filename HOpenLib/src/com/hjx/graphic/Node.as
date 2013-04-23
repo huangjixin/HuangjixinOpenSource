@@ -203,7 +203,6 @@ package com.hjx.graphic
 		}
 
 		public function refresh():void{
-			trace(this.id+this.label);
 			for each (var incomingLink:Link in incomingLinks) 
 			{
 				incomingLink.draw();	

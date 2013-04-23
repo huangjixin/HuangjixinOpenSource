@@ -242,7 +242,8 @@ package com.hjx.graphic
 		 * 
 		 */
 		public function collapseAnimationStart():void{
-			collapseLinks(this,this);
+//			collapseLinks(this,this);
+			refresh();
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.COLLAPSE_ANIMATION_START));
 		}
 		
@@ -259,7 +260,8 @@ package com.hjx.graphic
 		 * 
 		 */
 		public function expandAnimationStart():void{
-			expandLinks(this);
+//			expandLinks(this);
+			refresh();
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.EXPAND_ANIMATION_START));
 		}
 		
@@ -405,11 +407,11 @@ If the layout is configured to be performed automatically, there is no need to c
 		override public function refresh():void{
 			super.refresh();
 			refreshChildrens(this);
-			if(collapsed){
+			/*if(collapsed){
 				collapseLinks(this,this);
 			}else{
 //				expandLinks(this);
-			}
+			}*/
 		}
 		
 		/**
@@ -460,7 +462,7 @@ If the layout is configured to be performed automatically, there is no need to c
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			super.updateDisplayList(unscaledWidth,unscaledHeight);
-			refresh();
+//			refresh();
 		} 
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
