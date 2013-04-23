@@ -6,6 +6,7 @@ package com.hjx.graphic
 	import flash.geom.Rectangle;
 	
 	import mx.core.UIComponent;
+	import mx.events.FlexEvent;
 	
 	import spark.components.Group;
 
@@ -74,7 +75,10 @@ package com.hjx.graphic
 			for (var i:String in defaultCSSStyles) {
 				setStyle (i, defaultCSSStyles [i]);
 			}
-		}//构造函数结束
+			
+			addEventListener(FlexEvent.CREATION_COMPLETE,onCreationComplete);
+		}
+		//构造函数结束
 		
 		
 		//--------------------------------------------------------
@@ -168,6 +172,12 @@ package com.hjx.graphic
 		//--------------------------------------------------------
 		// 相关事件响应函数和逻辑函数存放处
 		//--------------------------------------------------------
+		
+		protected function onCreationComplete(event:FlexEvent):void
+		{
+			refresh();
+		}
+		
 		public function getIncomingLinks():Vector.<Link>{
 			return null;
 		}
@@ -218,7 +228,7 @@ package com.hjx.graphic
 		//--------------------------------------------------------
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			super.updateDisplayList(unscaledWidth,unscaledHeight);
-			
+//			refresh();
 		} 
 		override public function stylesInitialized():void{
 			super.stylesInitialized();

@@ -497,7 +497,6 @@ package com.hjx.graphic
 						parentSubGraph = render1 as SubGraph;
 					}
 					if(parentSubGraph){
-//						arr.removeAll();
 						arr.addItem(parentSubGraph);
 						getCollpasedSubGraph(arr,render1);
 						return parentSubGraph;
@@ -514,7 +513,7 @@ package com.hjx.graphic
 		//-----------------------------------------------------------
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
-//			draw();
+			draw();
 		}
 		override protected function partAdded(partName:String, instance:Object):void{
 			if(instance == this.startArrow){
