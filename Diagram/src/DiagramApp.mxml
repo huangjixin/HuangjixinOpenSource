@@ -27,9 +27,9 @@
 				if(node.selectable){
 					node.selected = !node.selected;
 //					link0.setStyle("startArrowVisible",node.selected);
-//					link.setStyle("startArrowVisible",node.selected);
+					link.setStyle("startArrowVisible",node.selected);
 //					link0.setStyle("endArrowVisible",node.selected);
-//					link.setStyle("endArrowVisible",node.selected);
+					link.setStyle("endArrowVisible",node.selected);
 				}
 			}
 			
