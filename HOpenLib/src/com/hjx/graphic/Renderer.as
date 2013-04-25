@@ -1,10 +1,10 @@
 package com.hjx.graphic
 {
 	import flash.events.Event;
-	import flash.utils.getDefinitionByName;
-	import flash.utils.getQualifiedClassName;
 	
-	import mx.core.ClassFactory;
+	import mx.core.IVisualElement;
+	import mx.core.IVisualElementContainer;
+	import mx.events.FlexEvent;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 	
@@ -27,60 +27,40 @@ package com.hjx.graphic
 		private var _selectable : Boolean = true;
 		private var _selected : Boolean = false;
 		private var _showsCaret : Boolean = false;
-		
+		private var _geometryChangedByLayout:Boolean = false;
 		public function Renderer()
 		{
 			super();
-			
-			addEventListener("skinChanged",onSkinChanged);
 		}
 		
 		[Bindable]
-		public function get data():Object
+		public function get geometryChangedByLayout():Boolean
+		{
+			return _geometryChangedByLayout;
+		}
+
+		public function set geometryChangedByLayout(value:Boolean):void
+		{
+			if(_geometryChangedByLayout != value){
+				_geometryChangedByLayout = value;
+				if(value)
+					invalidateProperties();
+			}
+		}
+
+		[Bindable]
+		final public function get data():Object
 		{
 			return _data;
 		}
 
-		public function set data(value:Object):void
+		final public function set data(value:Object):void
 		{
-			_data = value;
-		}
-
-		[Bindable]
-		/**
-		 *  
-		 */
-		public function get showsCaret():Boolean
-		{
-			return _showsCaret;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set showsCaret(value:Boolean):void
-		{
-			_showsCaret = value;
-			invalidateSkinState();
-		}
-
-		[Bindable]
-		/**
-		 * 是否被选中。 
-		 */
-		public function get selected():Boolean
-		{
-			return _selected;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set selected(value:Boolean):void
-		{
-			_selected = value;
-			
-			invalidateSkinState();
+			if(this._data != value){
+				_data = value;
+				
+				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
+			}
 		}
 
 		[Bindable]
@@ -91,14 +71,74 @@ package com.hjx.graphic
 		{
 			return _selectable;
 		}
-
+		
 		/**
 		 * @private
 		 */
 		public function set selectable(value:Boolean):void
 		{
-			_selectable = value;
-			invalidateSkinState();
+			if(this._selectable != value){
+				_selectable = value;
+			}
+		}
+		
+		[Bindable]
+		/**
+		 *  
+		 */
+		final public function get showsCaret():Boolean
+		{
+			return _showsCaret;
+		}
+
+		/**
+		 * @private
+		 */
+		final public function set showsCaret(value:Boolean):void
+		{
+			var oldVal:Boolean;
+			var newVal:Boolean;
+			if(this._showsCaret != value){
+				oldVal = this._showsCaret;
+				this._showsCaret = value;
+				newVal = this._showsCaret;
+				invalidateSkinState();
+				if(oldVal != newVal){
+					dispatchPropertyChangeEvent("showCaret",oldVal,newVal);
+				}
+			}
+		}
+
+		[Bindable]
+		/**
+		 * 是否被选中。 
+		 */
+		final public function get selected():Boolean
+		{
+			return _selected;
+		}
+
+		/**
+		 * 加上selectable进行判断,此处的处理在判断皮肤的时候容易多了。
+		 * @private
+		 */
+		final public function set selected(value:Boolean):void
+		{
+			var flag:Boolean;
+			
+			if(this._selected != value){
+				flag = this._selected;
+				if (!this.selectable){
+					this._selected = false;
+				}else{
+					this._selected = value;
+				}
+				
+				if(flag != this._selected){
+					invalidateSkinState();
+					dispatchPropertyChangeEvent("selected",flag,this._selected);
+				}
+			}
 		}
 
 		[Bindable]
@@ -126,21 +166,56 @@ package com.hjx.graphic
 			}
 		}
 		
+		/**
+		 * 根据ID获得皮肤元素。
+		 * @param id 参数id为字符串，将通过id查询皮肤元素。
+		 * @return 
+		 * 
+		 */
+		protected function getSkinElementById(id:String):IVisualElement
+		{
+			if(!skin)
+				return null;
+			if(skin is IVisualElementContainer)
+				return getSkinElementByIdImpl(IVisualElementContainer(skin),id);
+			return null;
+		}//getSkinElementById结束
+		
+		/**
+		 * 根据ID获得皮肤元素的具体实现方法,遍历皮肤容器（请注意学习相关技巧）。 
+		 * @param id
+		 * @return 
+		 * 
+		 */
+		private function getSkinElementByIdImpl(iVisualContainer:IVisualElementContainer,id:String):IVisualElement
+		{
+			var ele:IVisualElement;
+			var eleNum:int = 0;
+			var length:int = iVisualContainer.numElements;
+			while(eleNum < length){
+				ele = iVisualContainer.getElementAt(eleNum);
+				if(ele["id"] && ele["id"]==id)
+					return ele;
+				
+				if(ele is IVisualElementContainer)
+					return getSkinElementByIdImpl(IVisualElementContainer(ele),id);
+				
+			}
+			return null;
+		}
+		
+		/**
+		 * 获取当前的皮肤状态。 
+		 * @return 
+		 * 
+		 */
 		override protected function getCurrentSkinState():String
 		{
-			if(selectable){
-				if(selected){
-					if(showsCaret){
-						return "selectedAndShowsCaret";
-					}else{
-						return "selected";
-					}
+			if(selected){
+				if(showsCaret){
+					return "selectedAndShowsCaret";
 				}else{
-					if(showsCaret){
-						return "normalAndShowsCaret";
-					}else{
-						return "normal";
-					}
+					return "selected";
 				}
 			}else{
 				if(showsCaret){
@@ -149,11 +224,14 @@ package com.hjx.graphic
 					return "normal";
 				}
 			}
-			return super.getCurrentSkinState();
 		}
 		
+		override protected function commitProperties():void{
+			super.commitProperties();
+			this.geometryChangedByLayout = false;
+		}
 		
-		public function clone():Renderer{
+		/*public function clone():Renderer{
 			var object:Object = this.descriptor.properties;
 			var className:String=getQualifiedClassName(this);
 			var ClassName:Class=getDefinitionByName(className) as Class;
@@ -165,8 +243,6 @@ package com.hjx.graphic
 			var skinClass:* = this.getStyle("skinClass");
 			render.setStyle("skinClass",this.getStyle("skinClass"));
 			return render;
-		}
-		
-		
+		}*/
 	}
 }

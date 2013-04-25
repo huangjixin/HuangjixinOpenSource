@@ -3,12 +3,13 @@ package com.hjx.graphic
 	import com.hjx.graphic.skin.NodeSkin;
 	
 	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
+	import mx.core.EventPriority;
+	import mx.core.IFactory;
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
-	
-	import spark.components.Group;
 
 	/**
 	 * 节点类基类。 
@@ -27,7 +28,8 @@ package com.hjx.graphic
 		// private 类私有静态变量和静态常量声明处。（全部大写，使用下划线进行分割）
 		// 例如：private static const EXAMPLE:String = "example";
 		//--------------------------------------------------------
-		
+		private static const DEFAULT_NODE_LABEL:String = "节点";
+		private static const EMPTY_LINK_VECTOR:Vector.<Link> = createEmptyLinkVector();
 		//--------------------------------------------------------
 		// public 类公有静态变量和静态常量声明处。（全部大写，使用下划线进行分割）
 		// 例如：public static const EXAMPLE:String = "example";
@@ -38,7 +40,7 @@ package com.hjx.graphic
 		// private 私有变量声明处，请以“_”开头定义变量
 		// 例如：private var _example:String;
 		//--------------------------------------------------------
-		private var _label:String = "节点";
+		private var _label:String;
 		
 		private var _movable : Boolean = true;
 		
@@ -59,24 +61,42 @@ package com.hjx.graphic
 		// public 公有变量声明处
 		//--------------------------------------------------------
 		[SkinPart(required="false")]
-		public var labelElement:Group;
+		/**
+		 * 存放label标签等元素。 
+		 */
+		public var labelElement:DisplayObject;
 		
 		[SkinPart(required="false")]
 		public var base:UIComponent;
-		
-		/*[SkinPart(required="true")]
-		public dynamic var  overviewDisplay:IFactory;*/
+
+		[SkinPart(required="false")]
+		public var overviewDisplay:IFactory;
 		//--------------------------------------------------------
 		// 构造函数，初始化相关工作可以放在里面
 		//--------------------------------------------------------
 		public function Node()
 		{
 			super();
+			label = DEFAULT_NODE_LABEL;
+			
 			for (var i:String in defaultCSSStyles) {
 				setStyle (i, defaultCSSStyles [i]);
 			}
 			
+			addEventListener(MouseEvent.MOUSE_DOWN,handleMouseDown,false,EventPriority.DEFAULT);
 			addEventListener(FlexEvent.CREATION_COMPLETE,onCreationComplete);
+		}
+		
+		private static function createEmptyLinkVector():Vector.<Link>{
+			var vec:Vector.<Link> = new Vector.<Link>();
+			vec.fixed = true;
+			return vec;
+		}
+		
+		protected function handleMouseDown(event:MouseEvent):void
+		{
+			// TODO Auto-generated method stub
+			
 		}
 		//构造函数结束
 		
