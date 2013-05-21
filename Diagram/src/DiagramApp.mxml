@@ -9,13 +9,34 @@
 			   xmlns:graphlayout="com.hjx.graphic.graphlayout.*"
 			   minWidth="955" minHeight="600"
 			   creationComplete="application1_creationCompleteHandler(event)">
-	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace graphic "com.hjx.graphic.*";
+		@namespace local "*";
+		@namespace diagram "com.hjx.diagram.*";
+		@namespace editor "com.hjx.diagram.editor.*";
+		@namespace graphlayout "com.hjx.graphic.graphlayout.*";
+		graphic|Node{
+			skinClass:ClassReference("com.hjx.graphic.skin.NodeSkin")
+		}
+		local|BPMNBtn{
+			skinClass:ClassReference("skins.BPMNBtnSkin")
+		}
+		
+		graphic|SubGraph{
+			skinClass:ClassReference("com.hjx.graphic.skin.SubGraphSkin")
+		}
+	</fx:Style>
 	<fx:Script>
 		<![CDATA[
 			import com.hjx.graphic.Node;
+			import com.hjx.graphic.Renderer;
+			import com.hjx.uitls.CloneUtil;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.HierarchicalData;
+			import mx.core.IVisualElementContainer;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
@@ -31,6 +52,11 @@
 //					link0.setStyle("endArrowVisible",node.selected);
 					link.setStyle("endArrowVisible",node.selected);
 				}
+				
+				var cloneNode:Renderer = CloneUtil.cloneInternal(node);
+				graph.addElement(cloneNode);
+//				SubGraph(cloneNode).expandedWidth = 400;
+//				SubGraph(cloneNode).expandedHeight = 400;
 			}
 			
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
@@ -113,8 +139,8 @@
 	<graphic:Graph id="graph" x="{width/2}" width="50%" height="100%">
 		<graphic:SubGraph id="subGraph0" y="200" width="200" height="200">
 			<graphic:SubGraph id="subGraph1" y="200" width="200" height="200">
-				<local:BPMNBtn id="node" x="10" y="20" label="node2" skinClass="skins.BPMNBtnSkin"/>
-				<local:BPMNBtn id="node3" x="50" y="100" label="node3" skinClass="skins.BPMNBtnSkin"/>
+				<local:BPMNBtn id="node" x="10" y="20" label="node2"/>
+				<local:BPMNBtn id="node3" x="50" y="100" label="node3"/>
 			</graphic:SubGraph>
 		</graphic:SubGraph>
 		<graphic:Link id="link" endArrowVisible="true" endNode="{node2}" startArrowVisible="false" 
