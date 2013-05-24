@@ -9,16 +9,23 @@ package com.hjx.graphic
 	import spark.components.supportClasses.SkinnableComponent;
 	
 	/**
-	 * 该类为所有可视化图形的基类。
-	 * @author huangjixin
-	 * 
+	 *  边饰类，可以继承。
 	 */
 	[Style(name="adornerClass", inherit="yes", type="Class")]
 	
+	
+	/**
+	 * 
+	 */
 	[SkinState("normal")]
 	[SkinState("normalAndShowsCaret")]
 	[SkinState("selected")]
 	[SkinState("selectedAndShowsCaret")]
+	/**
+	 * 该类为所有可视化图形的基类，它继承自SkinnableComponent，所有显示在其上面的组件都必须继承自该类。
+	 * @author huangjixin
+	 * 
+	 */
 	public class Renderer extends SkinnableComponent
 	{
 		
@@ -28,6 +35,11 @@ package com.hjx.graphic
 		private var _selected : Boolean = false;
 		private var _showsCaret : Boolean = false;
 		private var _geometryChangedByLayout:Boolean = false;
+		
+		/**
+		 * 构造函数结束。 
+		 * 
+		 */
 		public function Renderer()
 		{
 			super();
@@ -230,19 +242,5 @@ package com.hjx.graphic
 			super.commitProperties();
 			this.geometryChangedByLayout = false;
 		}
-		
-		/*public function clone():Renderer{
-			var object:Object = this.descriptor.properties;
-			var className:String=getQualifiedClassName(this);
-			var ClassName:Class=getDefinitionByName(className) as Class;
-			
-			var classFactory:ClassFactory = new ClassFactory(ClassName);
-			
-			var render:Renderer = classFactory.newInstance();
-			
-			var skinClass:* = this.getStyle("skinClass");
-			render.setStyle("skinClass",this.getStyle("skinClass"));
-			return render;
-		}*/
 	}
 }

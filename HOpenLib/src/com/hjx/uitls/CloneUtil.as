@@ -93,7 +93,13 @@ package  com.hjx.uitls
 			{
 				trace(prop.localName);
 				var p:Object = renderer[prop.localName];
-				cloneRenderer[prop.localName] = p;
+				if(p is int || p is Number || p is String || p is Boolean ){
+					cloneRenderer[prop.localName] = ObjectUtil.clone(p);
+				}
+				
+				/*if(p is ){
+				
+				}*/
 			}
 			return;
 		}
@@ -114,7 +120,7 @@ package  com.hjx.uitls
 					if (ele) 
 					{
 						clone = cloneRendererStatic(ele);
-						SubGraph(cloneRenderer).addElement(clone);
+						SubGraph(cloneRenderer).mxmlContent.push(clone);
 						cloneChildrenStatic(ele, clone);
 					}
 					i++;

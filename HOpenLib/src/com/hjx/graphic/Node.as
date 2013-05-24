@@ -3,6 +3,7 @@ package com.hjx.graphic
 	import com.hjx.graphic.skin.NodeSkin;
 	
 	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
@@ -10,18 +11,20 @@ package com.hjx.graphic
 	import mx.core.IFactory;
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
+	import mx.events.MoveEvent;
+	import mx.events.ResizeEvent;
 
-	/**
-	 * 节点类基类。 
-	 * @author huangjixin
-	 * 
-	 */
 	[Style(name="backgroundColor", inherit="no", type="uint",format="Color")]
 	[Style(name="borderColor", inherit="no", type="uint",format="Color")]
 	[Style(name="caretColor", inherit="no", type="uint",format="Color")]
 	[Style(name="color", inherit="yes", type="uint",format="Color")]
 	[Style(name="selectedColor", inherit="yes", type="uint",format="Color")]
 	[Style(name="selectedTextColor", inherit="yes", type="uint",format="Color")]
+	/**
+	 * 节点类基类，该节点继承自Renderer，组件可分为两大类，节点和连线。 
+	 * @author huangjixin
+	 * 
+	 */
 	public class Node extends Renderer
 	{
 		//--------------------------------------------------------
@@ -29,7 +32,6 @@ package com.hjx.graphic
 		// 例如：private static const EXAMPLE:String = "example";
 		//--------------------------------------------------------
 		private static const DEFAULT_NODE_LABEL:String = "节点";
-		private static const EMPTY_LINK_VECTOR:Vector.<Link> = createEmptyLinkVector();
 		//--------------------------------------------------------
 		// public 类公有静态变量和静态常量声明处。（全部大写，使用下划线进行分割）
 		// 例如：public static const EXAMPLE:String = "example";
@@ -79,18 +81,11 @@ package com.hjx.graphic
 			super();
 			label = DEFAULT_NODE_LABEL;
 			
-			for (var i:String in defaultCSSStyles) {
+			/*for (var i:String in defaultCSSStyles) {
 				setStyle (i, defaultCSSStyles [i]);
-			}
+			}*/
 			
 			addEventListener(MouseEvent.MOUSE_DOWN,handleMouseDown,false,EventPriority.DEFAULT);
-			addEventListener(FlexEvent.CREATION_COMPLETE,onCreationComplete);
-		}
-		
-		private static function createEmptyLinkVector():Vector.<Link>{
-			var vec:Vector.<Link> = new Vector.<Link>();
-			vec.fixed = true;
-			return vec;
 		}
 		
 		protected function handleMouseDown(event:MouseEvent):void
@@ -98,7 +93,6 @@ package com.hjx.graphic
 			// TODO Auto-generated method stub
 			
 		}
-		//构造函数结束
 		
 		
 		//--------------------------------------------------------
@@ -140,7 +134,7 @@ package com.hjx.graphic
 
 		public function get centerY():Number
 		{
-			return y + (height / 2.0);;
+			return _centerY;
 		}
 		
 		public function set centerY(value:Number):void
@@ -150,7 +144,7 @@ package com.hjx.graphic
 		
 		public function get centerX():Number
 		{
-			return x + (width / 2.0);
+			return _centerX;
 		}
 		
 		public function set centerX(value:Number):void
@@ -193,10 +187,6 @@ package com.hjx.graphic
 		// 相关事件响应函数和逻辑函数存放处
 		//--------------------------------------------------------
 		
-		protected function onCreationComplete(event:FlexEvent):void
-		{
-			refresh();
-		}
 		
 		public function getIncomingLinks():Vector.<Link>{
 			return null;
@@ -215,7 +205,7 @@ package com.hjx.graphic
 		}
 		
 		public function getNodeOrBaseBounds(targetCoordinateSpace:DisplayObject):Rectangle{
-			return null;
+			return this.getBounds(targetCoordinateSpace);
 		}
 		
 		public function getOutgoingLinks():Vector.<Link>{
@@ -232,7 +222,7 @@ package com.hjx.graphic
 		public function suspendGraphLayoutInvalidationOnMoveResize():void{
 		}
 
-		public function refresh():void{
+		public function invalidateLinkShape():void{
 			for each (var incomingLink:Link in incomingLinks) 
 			{
 				incomingLink.draw();	
@@ -243,15 +233,46 @@ package com.hjx.graphic
 			}
 		}
 		
+		/**
+		 * 当位置变化或者大小变化的时候，重绘连线。 
+		 * @param event
+		 * 
+		 */
+		protected function baseGeometryChanged(event:Event):void
+		{
+			invalidateLinkShape();
+		}
+		
 		//--------------------------------------------------------
 		// override 覆盖函数
 		//--------------------------------------------------------
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+		/**
+		 * 监控移动缩放，刷新连线。 
+		 * @param partName
+		 * @param instance
+		 * 
+		 */
+		override protected function partAdded(partName:String, instance:Object):void{
+			super.partAdded(partName, instance);
+			if(instance == base){
+				base.addEventListener(MoveEvent.MOVE,baseGeometryChanged);
+				base.addEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
+			}
+		}
+		
+		override protected function partRemoved(partName:String, instance:Object):void{
+			super.partRemoved(partName, instance);
+			if(instance == base){
+				base.removeEventListener(MoveEvent.MOVE,baseGeometryChanged);
+				base.removeEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
+			}
+		}
+		/*		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			super.updateDisplayList(unscaledWidth,unscaledHeight);
 //			refresh();
 		} 
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
-		}
+		}*/
 	}
 }

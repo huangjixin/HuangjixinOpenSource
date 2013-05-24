@@ -11,6 +11,7 @@ package com.hjx.graphic
 	import com.hjx.graphic.events.SubgraphEvent;
 	import com.hjx.graphic.skin.SubGraphSkin;
 	
+	import flash.events.Event;
 	import flash.geom.Point;
 	
 	import mx.core.IVisualElement;
@@ -55,7 +56,7 @@ package com.hjx.graphic
 		private var _automaticGraphLayout:Boolean;
 		
 		private var mxmlContentChanged:Boolean = false;
-		private var _mxmlContent:Array;
+		private var _mxmlContent:Array = [];
 		
 		private var defaultCSSStyles:Object = {
 			skinClass:SubGraphSkin
@@ -106,9 +107,7 @@ package com.hjx.graphic
 			collapsedWidth = 100;
 			collapsedHeight = 50;
 			
-			for (var i:String in defaultCSSStyles) {
-				setStyle (i, defaultCSSStyles [i]);
-			}
+			graph;
 		}
 		//构造函数结束
 		
@@ -116,6 +115,11 @@ package com.hjx.graphic
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// getter和setter函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/		
+
+		public function get mxmlContent():Array
+		{
+			return _mxmlContent;
+		}
 
 		[Bindable]
 		public function get automaticGraphLayout():Boolean
@@ -157,21 +161,6 @@ package com.hjx.graphic
 			mxmlContentChanged = true;
 		}
 		
-		override public function get centerY():Number
-		{
-			if(collapsed){
-				return y + (collapsedHeight / 2.0);
-			}
-			return y + (height / 2.0);
-		}
-		
-		override public function get centerX():Number
-		{
-			if(collapsed){
-				return x + (collapsedWidth / 2.0);
-			}
-			return x + (width / 2.0);
-		}
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// 相关事件响应函数和逻辑函数存放处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -243,7 +232,7 @@ package com.hjx.graphic
 		 */
 		public function collapseAnimationStart():void{
 //			collapseLinks(this,this);
-			refresh();
+//			refresh();
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.COLLAPSE_ANIMATION_START));
 		}
 		
@@ -260,8 +249,6 @@ package com.hjx.graphic
 		 * 
 		 */
 		public function expandAnimationStart():void{
-//			expandLinks(this);
-			refresh();
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.EXPAND_ANIMATION_START));
 		}
 		
@@ -326,7 +313,7 @@ If the layout is configured to be performed automatically, there is no need to c
 							}
 						}
 					}
-					node.refresh();
+//					node.refresh();
 				}
 				//递归下去，收拢连线。
 				if(node is SubGraph){
@@ -363,7 +350,7 @@ If the layout is configured to be performed automatically, there is no need to c
 						}
 					}
 					
-					node.refresh();
+//					node.refresh();
 				}
 				//递归下去，张开连线。
 				if(node is SubGraph){
@@ -388,7 +375,7 @@ If the layout is configured to be performed automatically, there is no need to c
 				var element:IVisualElement = subGraph.graph.getElementAt(i);
 				if(element is Node){
 					node = element as Node;
-					node.refresh();
+//					node.refresh();
 				}
 				//递归下去，收拢连线。
 				if(node is SubGraph){
@@ -401,19 +388,47 @@ If the layout is configured to be performed automatically, there is no need to c
 				}
 			}
 		}
+		
+		private function invalidateLinkOfHierarchechy():void{
+			var length:int = graph.numElements;
+			var node:Node;
+			for (var i:int = 0; i < length; i++) 
+			{
+				var element:IVisualElement = graph.getElementAt(i);
+				if(element is Node){
+					node = element as Node;
+					node.invalidateLinkShape();
+				}
+				//递归下去，收拢连线。
+				if(node is SubGraph){
+					if(SubGraph(node).graph){
+						SubGraph(node).refreshChildrens(SubGraph(node));
+					}
+				}
+			}
+			
+		}
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-		override public function refresh():void{
-			super.refresh();
-			refreshChildrens(this);
+//		override public function refresh():void{
+//			super.refresh();
+//			refreshChildrens(this);
 			/*if(collapsed){
 				collapseLinks(this,this);
 			}else{
 //				expandLinks(this);
 			}*/
+//		}
+		/**
+		 * 当位置变化或者大小变化的时候，重绘连线。 
+		 * @param event
+		 * 
+		 */
+		override protected function baseGeometryChanged(event:Event):void
+		{
+			super.baseGeometryChanged(event);
 		}
-		
 		/**
 		 * 添加状态的判断。 
 		 * @return 
@@ -462,10 +477,6 @@ If the layout is configured to be performed automatically, there is no need to c
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			super.updateDisplayList(unscaledWidth,unscaledHeight);
-//			refresh();
 		} 
-		override public function stylesInitialized():void{
-			super.stylesInitialized();
-		}
 	}//类结束
 }//包结束
