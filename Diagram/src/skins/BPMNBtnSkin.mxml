@@ -35,6 +35,8 @@
 				</s:RadialGradient>
 			</s:fill>
 		</s:Ellipse>
-		<s:Label id="label" text="{hostComponent.label}" horizontalCenter="0" verticalCenter="0"/>
+		<s:Group id="labelElement" horizontalCenter="0" verticalCenter="0">
+			<s:Label id="label" text="{hostComponent.label}" />			
+		</s:Group>
 	</s:Group>
 </s:Skin>

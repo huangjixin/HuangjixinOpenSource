@@ -39,6 +39,7 @@
 			import mx.core.IVisualElementContainer;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
+			import mx.events.MoveEvent;
 			
 			[Bindable]
 			private var hac:ArrayCollection = new ArrayCollection([{nodeType:"graph",label:"root",children:[{nodeType:"node",label:"node0",x:0,y:0},{nodeType:"node",label:"node1",x:50,y:100}]}]);
@@ -47,14 +48,18 @@
 			{
 				if(node.selectable){
 					node.selected = !node.selected;
+//					node.width+=10;
+//					node.height+=10;
+//					node.invalidateLinkShape();
+//					node.base.dispatchEvent(new MoveEvent(MoveEvent.MOVE));
 //					link0.setStyle("startArrowVisible",node.selected);
-					link.setStyle("startArrowVisible",node.selected);
+//					link.setStyle("startArrowVisible",node.selected);
 //					link0.setStyle("endArrowVisible",node.selected);
-					link.setStyle("endArrowVisible",node.selected);
+//					link.setStyle("endArrowVisible",node.selected);
 				}
 				
-				var cloneNode:Renderer = CloneUtil.cloneInternal(node);
-				graph.addElement(cloneNode);
+//				var cloneNode:Renderer = CloneUtil.cloneInternal(subGraph1);
+//				graph.addElement(cloneNode);
 //				SubGraph(cloneNode).expandedWidth = 400;
 //				SubGraph(cloneNode).expandedHeight = 400;
 			}
@@ -100,7 +105,8 @@
 				var node:Node = null;
 				if(event.currentTarget is Node){
 					node = event.currentTarget as Node;
-					node.refresh();
+					node.invalidateLinkShape();
+//					node.refresh();
 				}
 			}
 			
@@ -126,7 +132,7 @@
 		<mx:HierarchicalCollectionView id="hcv" showRoot="false"
 									   source="{new HierarchicalData(data)}"/>
 	</fx:Declarations>
-	<editor:DiagramEditor id="diagramEditor" width="100%" height="100%">
+	<!--<editor:DiagramEditor id="diagramEditor" width="100%" height="100%">
 		<diagram:Diagram id="diagram1" width="100%" height="100%" automaticGraphLayout="false"
 						 labelField="@label" nodeDataProvider="{hcv}" selectionMode="multiple"
 						 xLocationField="@x" yLocationField="@y">
@@ -134,20 +140,20 @@
 				<graphlayout:HierarchicalLayout id="hierarchicalLayout" flowDirection="right"/>
 			</diagram:nodeLayout>
 		</diagram:Diagram>
-	</editor:DiagramEditor>
+	</editor:DiagramEditor>-->
 	<!--<diagram:Diagram id="diagram" width="100%" height="100%"/>-->
 	<graphic:Graph id="graph" x="{width/2}" width="50%" height="100%">
 		<graphic:SubGraph id="subGraph0" y="200" width="200" height="200">
 			<graphic:SubGraph id="subGraph1" y="200" width="200" height="200">
 				<local:BPMNBtn id="node" x="10" y="20" label="node2"/>
-				<local:BPMNBtn id="node3" x="50" y="100" label="node3"/>
+				<!--<local:BPMNBtn id="node3" x="50" y="100" label="node3"/>-->
 			</graphic:SubGraph>
 		</graphic:SubGraph>
 		<graphic:Link id="link" endArrowVisible="true" endNode="{node2}" startArrowVisible="false" 
 					  startNode="{node}" strokeWidth="2"/>
 		<local:BPMNBtn id="node2" x="300" y="400"
 					   click="node1_clickHandler(event)"/>
-		<local:BPMNBtn id="node4" x="500" y="200"/>
+		<!--<local:BPMNBtn id="node4" x="500" y="200"/>-->
 		
 	</graphic:Graph>
 </s:Application>

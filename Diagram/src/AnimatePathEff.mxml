@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   minWidth="955" 
+			   minHeight="600" 
+			   xmlns:uigfx="http://uigfx.lafabrick.com"  viewSourceURL="srcview/index.html" xmlns:primatives="ws.tink.spark.primatives.*" xmlns:graphics="ws.tink.spark.graphics.*">
+	
+	<fx:Script>
+		<![CDATA[
+			protected function group1_rollOverHandler(event:MouseEvent):void
+			{
+				animOut.stop(); 
+				animIn.play();
+				
+				pathOut.stop(); 
+				pathIn.play();
+				
+				/* colorAnimOut.stop();
+				colorAnimIn.play(); */
+			}
+			
+			protected function group1_rollOutHandler(event:MouseEvent):void
+			{
+				animIn.stop(); 
+				animOut.play();
+				
+				pathIn.stop(); 
+				pathOut.play();
+				
+				/* colorAnimIn.stop();
+				colorAnimOut.play(); */
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:Elastic id="elastic" />
+		<s:Bounce id="bounce" />
+		
+		<!--<s:AnimateColor id="colorAnimIn" target="{fillCol}" colorTo="#00D5BA" />
+		<s:AnimateColor id="colorAnimOut" duration="1000" target="{fillCol}" colorTo="#009EE0" />-->
+		
+		<uigfx:AnimatePath id="animIn"
+						   targets="{[cmpPath]}"
+						   dataTo="M 0 15 L 1 15 L 15 0 L 76 15 L 15 30 L 1 15 L 0 15 z"  />
+		
+		<uigfx:AnimatePath
+			id="animOut"
+			targets="{[cmpPath]}"
+			dataTo="M 0 10 L 40 10 L 35 0 L 60 15 L 35 30 L 40 20 L 0 20 z " />
+		
+		<uigfx:AnimatePath id="pathIn"
+						   targets="{[path]}"
+						   dataTo="M 0 0 L 0 90 Q 0 100 10 100 L 90 100 Q 100 100 100 110 L 100 190"  />
+		
+		<uigfx:AnimatePath
+			id="pathOut"
+			targets="{[path]}"
+			dataTo="M 0 0 L 90 0 Q 100 0 100 10 L 100 90 Q 100 100 110 100 L 190 100" />
+		
+	</fx:Declarations>
+	
+	<s:Group 
+		horizontalCenter="0" verticalCenter="0"
+		rollOver="group1_rollOverHandler(event)"
+		rollOut="group1_rollOutHandler(event)"
+		>
+		
+		<s:Path 
+			id="cmpPath"
+			horizontalCenter="0" verticalCenter="0"
+			
+			top="0" bottom="0" left="0" right="0"
+			data="M 0 10 L 40 10 L 35 0 L 60 15 L 35 30 L 40 20 L 0 20 z ">
+			
+			<!--<s:fill>
+				<s:SolidColor id="fillCol" color="#009EE0" />
+			</s:fill>-->
+			<s:stroke>
+				<s:SolidColorStroke color="0" weight="2"/>
+			</s:stroke>
+			<s:filters>
+				<s:GlowFilter inner="true" color="#000000" alpha="0.6" blurX="8" blurY="8" />
+			</s:filters> 
+		</s:Path>
+		<primatives:PathExtend id="path" data="M 0 0 L 90 0 Q 100 0 100 10 L 100 90 Q 100 100 110 100 L 190 100">
+			<primatives:stroke>
+				<graphics:SolidColorDash color="0xfff3456" weight="2" dash="8" gap="8"/>
+				<!--<s:SolidColorStroke color="0" weight="2"/>-->
+			</primatives:stroke>
+		</primatives:PathExtend>
+		<!--<s:Path 
+			id="cmpPath2"
+			horizontalCenter="0" verticalCenter="0"
+			
+			top="0" bottom="0" left="0" right="0"
+			data="M 0 10 L 40 10 L 35 0 L 60 15 L 35 30 L 40 20 L 0 20 z ">
+			
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="#FFFFFF" alpha="0.4" ratio="0" />
+					<s:GradientEntry color="#FFFFFF" alpha="0" ratio="0.5" />
+				</s:LinearGradient>
+				
+			</s:fill>
+			
+		</s:Path>-->
+		
+		<!--<uigfx:ComplexPath      
+			data="C D L 0 T 36.5 P 4.59 5.36 D L 0 B 0 D H -35 B 0 D H -23 B 18 D H 3 B 2 D H 2 B 0 D R 0 B 0 D R 0 T 0 D L 34 T 0 S 6.07 4.56 D L 44 T 20 P 0 -8.18 S 0 13.81 D L 19 T 45 P 13.81 S -7.6 C D R 96 T 18 D R 68 T 9 D R 59 T 37 D R 87 T 46 " 
+			width="200" height="200">
+			
+			<uigfx:stroke>
+				<s:SolidColorStroke color="#ffffff" weight="2" />
+			</uigfx:stroke>
+			
+			<uigfx:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="#333333" ratio="0" alpha="1"/>
+					<s:GradientEntry color="#212121" ratio="1" alpha="1"/>
+				</s:LinearGradient>
+			</uigfx:fill>
+			
+			<uigfx:filters>
+				<s:GlowFilter color="#000000" blurX="12" blurY="12" alpha="0.65"/>
+			</uigfx:filters>
+		</uigfx:ComplexPath>-->
+	</s:Group>
+	
+</s:Application>
