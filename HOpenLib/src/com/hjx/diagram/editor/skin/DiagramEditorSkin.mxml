@@ -13,7 +13,16 @@
 	name=grid, type=com.hjx.diagram.editor.Grid, required=false
 	name=adornersGroup, type=spark.components.Group, required=true
 	-->
-	<editor:Grid id="grid" left="0" right="0" top="0" bottom="0"/>
+	<s:Rect top="0" bottom="0" left="0" right="0">
+		<s:stroke>
+			<s:SolidColorStroke color="#D0D0D0" weight="1"/>
+		</s:stroke>
+	</s:Rect>
+	<editor:Grid id="grid" left="0" right="0" top="0" bottom="0" step="8">
+		<editor:stroke>
+			<s:SolidColorStroke color="#DADADA" weight="1"/>
+		</editor:stroke>
+	</editor:Grid>
 	<s:Group id="diagramParent" left="0" right="0" top="0" bottom="0"/>
 	<s:Group id="adornersGroup" left="0" right="0" top="0" bottom="0"/>
 </s:Skin>

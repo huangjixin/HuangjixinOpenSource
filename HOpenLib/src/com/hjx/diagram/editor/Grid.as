@@ -1,61 +1,152 @@
-/***********************************************
- **** 版权声明处 **
- ****  为了方便阅读和维护，请严格遵守相关代码规范，谢谢   ****
- *******************************************/
-package com.hjx.diagram.editor
-{
-	/*******************************************
-	 **** huangjixin,2013-4-2,下午2:14:09 作者：黄记新**
-	 **** 背景表格  **
-	 *******************************************/
-	import spark.components.Group;
-	
-	public class Grid extends Group
+package com.hjx.diagram.editor{
+
+import flash.display.BitmapData;
+import flash.display.Graphics;
+import flash.display.Sprite;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+
+import mx.graphics.IFill;
+import mx.graphics.IStroke;
+
+import spark.primitives.supportClasses.GraphicElement;
+
+/**
+ * 绘制表格。
+ * <br></br> 
+ */
+public class Grid extends GraphicElement {
+	public function Grid() {
+		super();
+	}
+
+	private var _tempDisplayObject:Sprite = new Sprite();
+	private var _bitmapData : BitmapData;
+	private var _bitmapRect : Rectangle;
+
+	private var _stroke : IStroke;
+
+	public function get stroke():IStroke {
+		return _stroke;
+	}
+
+	public function set stroke(value:IStroke):void {
+		weight = value.weight;
+		_stroke = value;
+		invalidateSize();
+		invalidateBitmapData();
+		invalidateDisplayList();
+		invalidateParentSizeAndDisplayList();
+	}
+
+	private var _fill : IFill;
+
+	public function get fill():IFill {
+		return _fill;
+	}
+
+	public function set fill(value:IFill):void {
+		_fill = value;
+		invalidateSize();
+		invalidateBitmapData();
+		invalidateDisplayList();
+		invalidateParentSizeAndDisplayList();
+	}
+
+	private var _step:Number=20;
+	/**
+	 *  Grid step
+	 *  @default 20
+	 */
+	[Inspectable("General", minValue="2.0")]
+	public function get step():Number
 	{
-		//--------------------------------------------------------
-		// private 类私有静态变量和静态常量声明处。（全部大写，使用下划线进行分割）
-		// 例如：private static const EXAMPLE:String = "example";
-		//--------------------------------------------------------
-		
-		//--------------------------------------------------------
-		// public 类公有静态变量和静态常量声明处。（全部大写，使用下划线进行分割）
-		// 例如：public static const EXAMPLE:String = "example";
-		//--------------------------------------------------------
-		
-		
-		//--------------------------------------------------------
-		// private 私有变量声明处，请以“_”开头定义变量
-		// 例如：private var _example:String;
-		//--------------------------------------------------------
-		
-		
-		//--------------------------------------------------------
-		// public 公有变量声明处
-		//--------------------------------------------------------
-		
-		
-		//--------------------------------------------------------
-		// 构造函数，初始化相关工作可以放在里面
-		//--------------------------------------------------------
-		public function Grid()
+		return _step;
+	}
+	public function set step(value:Number):void
+	{
+		if (value != _step)
 		{
-			//TODO: implement function
-			super();
-		}//构造函数结束
-		
-		
-		//--------------------------------------------------------
-		// getter和setter函数
-		//--------------------------------------------------------
-		
-		
-		//--------------------------------------------------------
-		// 相关事件响应函数和逻辑函数存放处
-		//--------------------------------------------------------
-		
-		
-		//--------------------------------------------------------
-		// override 覆盖函数
-		//--------------------------------------------------------
-	}//类结束
-}//包结束
+			_step = Math.max(2, value);
+
+			invalidateSize();
+			invalidateBitmapData();
+			invalidateDisplayList();
+			invalidateParentSizeAndDisplayList();
+		}
+	}
+
+	private var _type : String = "line";
+
+	[Inspectable(enumeration="dot,line,none")]
+	public function get type():String {
+		return _type;
+	}
+
+	public function set type(value:String):void {
+		_type = value;
+		invalidateSize();
+		invalidateBitmapData();
+		invalidateDisplayList();
+		invalidateParentSizeAndDisplayList();
+	}
+
+	private var _weight : Number = .5;
+
+	protected function get weight():Number {
+		return _weight;
+	}
+	protected function set weight(value:Number):void {
+		_weight = Math.max(value, Math.max(value, .5));
+	}
+
+	protected function invalidateBitmapData() : void
+	{
+		if(_bitmapData) {
+			_bitmapData.dispose();
+			_bitmapData = null;
+		}
+		_bitmapData = new BitmapData(Math.max(1,_step), Math.max(1,_step), true, 0xFF0000);
+		_bitmapRect = new Rectangle(0, 0, _step, _step);
+
+		_tempDisplayObject.graphics.clear();
+
+		if(stroke) {
+			stroke.apply(_tempDisplayObject.graphics, _bitmapRect, new Point());
+		}
+		if(fill) {
+			fill.begin(_tempDisplayObject.graphics, _bitmapRect, new Point());
+		}
+
+		draw(_tempDisplayObject.graphics);
+
+		_tempDisplayObject.graphics.endFill();
+		_bitmapData.draw(_tempDisplayObject);
+	}
+
+	protected function draw(graphics : Graphics) : void
+	{
+		switch(type) {
+			case "dot":
+					graphics.drawCircle(_step-2*weight, _step-2*weight, weight);
+				break;
+			case "line":
+					graphics.drawRect(step-weight, 0, weight, step);
+					graphics.drawRect(0, step-weight, step, weight);
+				break;
+			case "none":
+				break;
+		}
+	}
+
+	override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+		super.updateDisplayList(unscaledWidth, unscaledHeight);
+		var g:Graphics = Sprite(drawnDisplayObject).graphics;
+
+		g.lineStyle();
+		g.beginBitmapFill(_bitmapData, null, true, false);
+		g.drawRect(drawX, drawY, unscaledWidth, unscaledHeight);
+		g.endFill();
+	}
+}
+}

@@ -255,16 +255,16 @@ package com.hjx.graphic
 		override protected function partAdded(partName:String, instance:Object):void{
 			super.partAdded(partName, instance);
 			if(instance == base){
-//				this.addEventListener(MoveEvent.MOVE,baseGeometryChanged);
-//				this.addEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
+				base.addEventListener(MoveEvent.MOVE,baseGeometryChanged);
+				base.addEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
 			}
 		}
 		
 		override protected function partRemoved(partName:String, instance:Object):void{
 			super.partRemoved(partName, instance);
 			if(instance == base){
-//				this.removeEventListener(MoveEvent.MOVE,baseGeometryChanged);
-//				this.removeEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
+				base.removeEventListener(MoveEvent.MOVE,baseGeometryChanged);
+				base.removeEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
 			}
 		}
 		/*		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{

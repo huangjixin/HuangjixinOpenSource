@@ -1,10 +1,15 @@
 package com.hjx.graphic
 {
 	import flash.events.Event;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
 	
+	import mx.core.ClassFactory;
+	import mx.core.IFactory;
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.events.FlexEvent;
+	import mx.utils.ObjectUtil;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 	
@@ -23,18 +28,22 @@ package com.hjx.graphic
 	[SkinState("selectedAndShowsCaret")]
 	/**
 	 * 该类为所有可视化图形的基类，它继承自SkinnableComponent，所有显示在其上面的组件都必须继承自该类。
+	 * 
 	 * @author huangjixin
 	 * 
 	 */
 	public class Renderer extends SkinnableComponent
 	{
-		
 		private var _data:Object = null;
 		private var _resizable : Boolean = true;
 		private var _selectable : Boolean = true;
 		private var _selected : Boolean = false;
 		private var _showsCaret : Boolean = false;
 		private var _geometryChangedByLayout:Boolean = false;
+		
+		private var cloneRenderer:Renderer;
+		
+		public static var rendererProperties:Array;
 		
 		/**
 		 * 构造函数结束。 
@@ -216,6 +225,127 @@ package com.hjx.graphic
 			return null;
 		}
 		
+		/**
+		 * 该函数提供了克隆一个Renderer组件。克隆属性，克隆孩子。<br>克隆属性的时候，不克隆属性组件引用，克隆基本类型，以及数组。</br> 
+		 * @return 
+		 * 
+		 */
+		public function clone():Renderer{
+			var className:String = getQualifiedClassName(this);
+			var RendererObject:Object = getDefinitionByName(className);
+			var cloneRenderer:Renderer  = new RendererObject();
+			
+			cloneProperties(this,cloneRenderer);
+			this.cloneRenderer = cloneRenderer;
+			return cloneRenderer;
+		}
+		
+		/**
+		 * 克隆属性。 
+		 * @param renderer
+		 * @param cloneRenderer
+		 * 
+		 */
+		protected function cloneProperties(renderer:Renderer, cloneRenderer:Renderer):void
+		{
+			var prop:Object;
+			if (!(renderer == null) && !(cloneRenderer == null)) 
+			{
+				//克隆x和y坐标。
+				setX(cloneRenderer, getX(renderer));
+				setY(cloneRenderer, getY(renderer));
+				
+				cloneRenderer.explicitWidth = renderer.explicitWidth;
+				cloneRenderer.explicitHeight = renderer.explicitHeight;
+				cloneRenderer.percentWidth = renderer.percentWidth;
+				cloneRenderer.percentHeight = renderer.percentHeight;
+				cloneRenderer.explicitMinWidth = renderer.explicitMinWidth;
+				cloneRenderer.explicitMinHeight = renderer.explicitMinHeight;
+				cloneRenderer.explicitMaxWidth = renderer.explicitMaxWidth;
+				cloneRenderer.explicitMaxHeight = renderer.explicitMaxHeight;
+			}
+			
+			if (rendererProperties == null) 
+			{
+				rendererProperties = new Array();
+				var properties:Array = ObjectUtil.getClassInfo(new Renderer())["properties"];
+				
+				for each ( prop in properties) 
+				{
+					rendererProperties.push(prop.localName);
+				}
+			}
+			var options:Object;
+			(options = new Object())["includeReadOnly"] = false;
+			var classInfo:Object = ObjectUtil.getClassInfo(renderer, rendererProperties, options);
+			var cloneProperties:Array = classInfo["properties"];
+			
+			for each (prop in cloneProperties) 
+			{
+				trace(prop.localName);
+				var p:Object = renderer[prop.localName];
+				if(p is int || p is Number || p is String || p is Boolean ){
+					cloneRenderer[prop.localName] = p;
+				}/*else if(p is Object){
+					cloneRenderer[prop.localName] = ObjectUtil.clone(p);
+				}*/
+			}
+			
+		}
+		
+		internal function getX(renderer:Renderer):Number
+		{
+			var result:Number=NaN;
+			if (renderer.left is Number) 
+			{
+				result = Number(renderer.left);
+				if (!isNaN(result)) 
+				{
+					return result;
+				}
+			}
+			return renderer.x;
+		}
+		
+		internal function setX(renderer:Renderer, x:Number):void
+		{
+			if (renderer.left is Number && !isNaN(Number(renderer.left))) 
+			{
+				renderer.left = x;
+			}
+			else 
+			{
+				renderer.x = x;
+			}
+			return;
+		}
+		
+		internal function getY(renderer:Renderer):Number
+		{
+			var result:Number=NaN;
+			if (renderer.top is Number) 
+			{
+				result = Number(renderer.top);
+				if (!isNaN(result)) 
+				{
+					return result;
+				}
+			}
+			return renderer.y;
+		}
+		
+		internal function setY(renderer:Renderer, y:Number):void
+		{
+			if (renderer.top is Number && !isNaN(Number(renderer.top))) 
+			{
+				renderer.top = y;
+			}
+			else 
+			{
+				renderer.y = y;
+			}
+			return;
+		}
 		/**
 		 * 获取当前的皮肤状态。 
 		 * @return 

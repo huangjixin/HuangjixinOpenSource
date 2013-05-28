@@ -179,21 +179,61 @@ package com.hjx.graphic
 			return graph.getElementAt(index);
 		}
 		
+		/**
+		 * 复写 addElement方法，当皮肤尚未被加载的时候，graph对象为null，此时调用方法callLater在后面一帧进行加载。
+		 * @param element
+		 * @return 
+		 * 
+		 */
 		public function addElement(element:IVisualElement):IVisualElement
 		{
-			return graph.addElement(element);
+			if(!graph){
+				callLater(addElement,[element]);
+				return element;
+			}else{
+				return graph.addElement(element);			
+			}
 		}
 		
+		/**
+		 * 复写 addElementAt方法，当皮肤尚未被加载的时候，graph对象为null，此时调用方法callLater在后面一帧进行加载。
+		 * @param element
+		 * @param index
+		 * @return 
+		 * 
+		 */
 		public function addElementAt(element:IVisualElement, index:int):IVisualElement
 		{
-			return graph.addElementAt(element, index);
+			if(!graph){
+				callLater(addElementAt,[element,index]);
+				return element;
+			}else{
+				return graph.addElementAt(element, index);			
+			}
 		}
 		
+		/**
+		 * 复写 removeElement方法，当皮肤尚未被加载的时候，graph对象为null，此时调用方法callLater在后面一帧进行加载。
+		 * @param element
+		 * @return 
+		 * 
+		 */
 		public function removeElement(element:IVisualElement):IVisualElement
 		{
-			return graph.removeElement(element);
+			if(!graph){
+				callLater(removeElement,[element]);
+				return element;
+			}else{
+				return graph.removeElement(element);			
+			}
 		}
 		
+		/**
+		 * 复写 removeElementAt方法，当皮肤尚未被加载的时候，graph对象为null，此时调用方法callLater在后面一帧进行加载。
+		 * @param index
+		 * @return 
+		 * 
+		 */
 		public function removeElementAt(index:int):IVisualElement
 		{
 			return graph.removeElementAt(index);
@@ -226,7 +266,7 @@ package com.hjx.graphic
 		
 		
 		/**
-		 * 
+		 * 当开始收缩的时候，派发SubgraphEvent动画开始事件。
 		 * 
 		 */
 		public function collapseAnimationStart():void{
@@ -236,7 +276,7 @@ package com.hjx.graphic
 		}
 		
 		/**
-		 * 
+		 * 当结束收缩的时候，派发SubgraphEvent动画开始事件。
 		 * 
 		 */
 		public function collapseAnimationEnd():void{
@@ -244,13 +284,17 @@ package com.hjx.graphic
 		}
 		
 		/**
-		 * 
+		 * 当开始扩展的时候，派发SubgraphEvent动画开始事件。
 		 * 
 		 */
 		public function expandAnimationStart():void{
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.EXPAND_ANIMATION_START));
 		}
 		
+		/**
+		 * 当结束收缩的时候，派发SubgraphEvent动画开始事件。 
+		 * 
+		 */
 		public function expandAnimationEnd():void{
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.EXPAND_ANIMATION_END));
 		}
@@ -354,7 +398,7 @@ package com.hjx.graphic
 		 * @param subGraph
 		 * 
 		 */
-		private function refreshChildrens(subGraph:SubGraph):void{
+		internal function refreshChildrens(subGraph:SubGraph):void{
 			var node:Node;
 			var length:int = subGraph.graph.numElements;
 			for (var i:int = 0; i < length; i++) 
@@ -380,7 +424,7 @@ package com.hjx.graphic
 		 * 刷新内部连线实现具体方法。 
 		 * 
 		 */
-		private function invalidateLinkOfHierarchechyImpl():void{
+		internal function invalidateLinkOfHierarchechyImpl():void{
 			var length:int = graph.numElements;
 			var node:Node;
 			for (var i:int = 0; i < length; i++) 
@@ -423,6 +467,42 @@ package com.hjx.graphic
 //				expandLinks(this);
 			}*/
 //		}
+		override public function clone():Renderer{
+			var cloneRenderer:Renderer = super.clone();
+			cloneChildren(this, cloneRenderer);
+			return cloneRenderer;
+		}
+		
+		/**
+		 * 克隆孩子。 
+		 * @param renderer
+		 * @param cloneRenderer
+		 * 
+		 */
+		internal function cloneChildren(renderer:Renderer, cloneRenderer:Renderer):void{
+			var length:int=0;
+			var ele:Renderer=null;
+			var clo:Renderer=null;
+			var subGraph:SubGraph = renderer as SubGraph;
+			if (subGraph != null) 
+			{
+				var i:int = 0;
+				length = subGraph.numElements;
+				while (i < length) 
+				{
+					ele = subGraph.getElementAt(i) as Renderer;
+					if (ele) 
+					{
+						clo = ele.clone();
+						SubGraph(cloneRenderer).addElement(clo);
+						cloneChildren(ele, clo);
+					}
+					i++;
+				}
+			}
+			return;
+		}
+		
 		/**
 		 * 当位置变化或者大小变化的时候，重绘连线。 
 		 * @param event

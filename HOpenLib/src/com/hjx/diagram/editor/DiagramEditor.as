@@ -10,9 +10,23 @@ package com.hjx.diagram.editor
 	 *******************************************/
 	import com.hjx.diagram.Diagram;
 	import com.hjx.diagram.editor.skin.DiagramEditorSkin;
+	import com.hjx.graphic.Graph;
+	import com.hjx.graphic.Node;
+	import com.hjx.graphic.Renderer;
+	
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
+	
+	import mx.events.SandboxMouseEvent;
+	import mx.graphics.SolidColorStroke;
 	
 	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
+	import spark.primitives.Rect;
 	
 	[DefaultProperty("diagram")]
 	public class DiagramEditor extends SkinnableComponent
@@ -38,6 +52,13 @@ package com.hjx.diagram.editor
 		
 		private var _diagram:Diagram;
 		private var _diagramChanged:Boolean = false;
+		private var _graph:Graph;
+		
+		internal var adorners:Dictionary;
+		internal var selectedObjects:Vector.<Renderer>;
+		
+		private var marquee:Rect;
+		
 		//--------------------------------------------------------
 		// public 公有变量声明处
 		//--------------------------------------------------------
@@ -51,15 +72,35 @@ package com.hjx.diagram.editor
 		//--------------------------------------------------------
 		// 构造函数，初始化相关工作可以放在里面
 		//--------------------------------------------------------
+		private var startX:Number;
+		private var startY:Number;
+		
 		public function DiagramEditor()
 		{
 			super();
+			
+			this.selectedObjects = new Vector.<Renderer>();
+			this.adorners = new Dictionary();
+			this.addEventListener(MouseEvent.MOUSE_DOWN, this.mouseDownHandler, true);
+			this.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseMoveHandler);
+			this.addEventListener(MouseEvent.MOUSE_OVER, this.mouseOverHandler);
 		}//构造函数结束
 		
 		
 		//--------------------------------------------------------
 		// getter和setter函数
 		//--------------------------------------------------------
+
+		public function get graph():Graph
+		{
+			return _graph;
+		}
+
+		public function set graph(value:Graph):void
+		{
+			_graph = value;
+		}
+
 		[Bindable]
 		public function get diagram():Diagram
 		{
@@ -73,9 +114,196 @@ package com.hjx.diagram.editor
 			invalidateProperties();
 		}
 		
+		internal static function getRenderer(object:Object):Renderer
+		{
+			while (object is flash.display.DisplayObject) 
+			{
+				if (object is Renderer) 
+				{
+					return Renderer(object);
+				}
+				if (object is Adorner) 
+				{
+					return Adorner(object).adornedObject;
+				}
+				object = object.parent;
+			}
+			return null;
+		}
+		
 		//--------------------------------------------------------
 		// 相关事件响应函数和逻辑函数存放处
 		//--------------------------------------------------------
+		internal function mouseDownHandler(event:MouseEvent):void
+		{
+			var renderer:Renderer=getRenderer(event.target);
+			this._graph.setFocus();
+			if (event.ctrlKey) 
+			{
+				if (renderer != null) 
+				{
+					this.setSelected(renderer, !this.isSelected(renderer));
+				}
+			}
+			else if (renderer == null || !this.isSelected(renderer)) 
+			{
+				this.selectOnly(renderer);
+			}
+
+			if (event.ctrlKey || event.shiftKey) 
+			{
+				return;
+			}
+			
+			this.startX = this.adornersGroup.mouseX;  
+			this.startY = this.adornersGroup.mouseY;
+			
+			var displayObject:DisplayObject = systemManager.getSandboxRoot();  
+			displayObject.addEventListener(MouseEvent.MOUSE_UP, this.mouseUpHandler, true);  
+			displayObject.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseDragHandler, true);  
+			displayObject.addEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, this.mouseUpHandler, true);  
+			displayObject.addEventListener(SandboxMouseEvent.MOUSE_MOVE_SOMEWHERE, this.mouseDragHandler, true);  
+			systemManager.deployMouseShields(true);  
+
+			return;
+		}
+		
+		internal function mouseMoveHandler(event:MouseEvent):void
+		{
+
+		}
+		
+		internal function mouseOverHandler(arg1:flash.events.MouseEvent):void
+		{
+			
+		}
+		
+		internal function mouseDragHandler(event:MouseEvent):void
+		{
+			var lastX:Number = this.adornersGroup.mouseX;  
+			var lastY:Number = this.adornersGroup.mouseY; 
+
+			var renderer:Renderer = getRenderer(event.target);
+			
+			if (this.marquee == null) 
+			{
+				this.marquee = new Rect();
+				this.marquee.maxWidth = Number.MAX_VALUE;
+				this.marquee.maxHeight = Number.MAX_VALUE;
+				this.marquee.stroke = new SolidColorStroke(10526880);
+				this.adornersGroup.addElement(this.marquee);
+			}
+			
+			var start:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(this.startX, this.startY)));  
+			 var end:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(lastX, lastY)));  
+			this.marquee.left = Math.min(start.x, end.x);  
+			this.marquee.top = Math.min(start.y, end.y);  
+			this.marquee.width = Math.abs(start.x - end.x);  
+			this.marquee.height = Math.abs(start.y - end.y);  
+
+		}
+		
+		internal function mouseUpHandler(event:Event):void
+		{
+			var rectangle:Rectangle = null;
+			var length:int; 
+			var renderer:Renderer = null;
+			if (this.marquee != null) 
+			{
+				rectangle = new flash.geom.Rectangle(Number(this.marquee.left), Number(this.marquee.top), this.marquee.width, this.marquee.height);
+				this.adornersGroup.removeElement(this.marquee);
+				this.marquee = null;
+				this.deselectAllExcept();
+				length = 0;
+				while (length < this._graph.numElements) 
+				{
+					renderer = this._graph.getElementAt(length) as Renderer;
+					if (renderer && rectangle.containsRect(renderer.getBounds(this.adornersGroup))) 
+					{
+						this.setSelected(renderer, true);
+					}
+					++length;
+				}
+			}	
+			
+			var displayObject:DisplayObject = systemManager.getSandboxRoot();
+			displayObject.removeEventListener(MouseEvent.MOUSE_UP, this.mouseUpHandler, true);
+			displayObject.removeEventListener(MouseEvent.MOUSE_MOVE, this.mouseDragHandler, true);
+			displayObject.removeEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, this.mouseUpHandler, true);
+			displayObject.removeEventListener(SandboxMouseEvent.MOUSE_MOVE_SOMEWHERE, this.mouseDragHandler, true);
+			systemManager.deployMouseShields(false);
+			return;
+		}
+		
+		public function setSelected(renderer:Renderer, isSelected:Boolean):void
+		{
+			if (this.isSelected(renderer) != isSelected) 
+			{
+				if (isSelected) 
+				{
+					this.selectedObjects.push(renderer);
+				}
+				else 
+				{
+					this.selectedObjects.splice(this.selectedObjects.indexOf(renderer), 1);
+				}
+				this.updateAdorner(renderer);
+			}
+			return;
+		}
+		
+		public function deselectAll():void
+		{
+			this.deselectAllExcept();
+			return;
+		}
+		
+		function deselectAllExcept(arg1:Renderer=null):void
+		{
+			var loc1:*=null;
+			var loc2:*=0;
+			var loc3:*=this.selectedObjects.concat();
+			for each (loc1 in loc3) 
+			{
+				if (loc1 == arg1) 
+				{
+					continue;
+				}
+				this.setSelected(loc1, false);
+			}
+			return;
+		}
+		
+		internal function selectOnly(renderer:Renderer=null):void
+		{
+			this.deselectAllExcept(renderer);
+			if (renderer != null) 
+			{
+				this.setSelected(renderer, true);
+			}
+			return;
+		}
+		
+		/**
+		 * 判断一个渲染器是否被选中。 
+		 * @param renderer
+		 * @return 
+		 * 
+		 */
+		public function isSelected(renderer:Renderer):Boolean
+		{
+			return this.selectedObjects.indexOf(renderer) >= 0;
+		}
+		
+		/**
+		 * 获取选中对象。 
+		 * @return 
+		 * 
+		 */
+		public function getSelectedObjects():Vector.<Renderer>
+		{
+			return this.selectedObjects.concat();
+		}
 		/**
 		 * 安装Diagram。 
 		 * 
@@ -84,9 +312,53 @@ package com.hjx.diagram.editor
 		{
 			if (diagramParent)
 			{
+				diagramParent.removeAllElements();
 				diagramParent.addElementAt(diagram, 0);
+				this.graph = diagram.graph;
 			}
 		}
+		
+		//--------------------------------------------------------
+		// 相关事件响应函数和逻辑函数存放处
+		//--------------------------------------------------------
+		/**
+		 * 更新边饰器。 
+		 * @param renderer
+		 * 
+		 */
+		internal function updateAdorner(renderer:Renderer):void
+		{
+			var adorner:Adorner=this.getAdorner(renderer);
+			if (this.isSelected(renderer as Renderer)) 
+			{
+				if (adorner == null) 
+				{
+					adorner = this.createAdorner(renderer);
+					this.adorners[renderer] = adorner;
+					this.adornersGroup.addElement(adorner);
+				}
+			}
+			else if (adorner != null) 
+			{
+				this.adornersGroup.removeElement(adorner);
+				this.adorners[renderer] = null;
+			}
+			return;
+		}
+		
+		internal function createAdorner(renderer:Renderer):Adorner
+		{
+			if (renderer is Node) 
+			{
+				return new NodeAdorner(renderer);
+			}
+			throw new ArgumentError("参数有误");
+		}
+		
+		public function getAdorner(renderer:Renderer):Adorner
+		{
+			return Adorner(this.adorners[renderer]);
+		} 
 		
 		//--------------------------------------------------------
 		// override 覆盖函数
@@ -101,11 +373,11 @@ package com.hjx.diagram.editor
 		
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
-			for (var i:String in defaultCSSStyles) {
+			/*for (var i:String in defaultCSSStyles) {
 				if (getStyle (i) == undefined) {
 					setStyle (i, defaultCSSStyles [i]);
 				}
-			}
+			}*/
 		}
 	}//类结束
 }//包结束
