@@ -23,6 +23,7 @@ package ws.tink.spark.primatives
 	import mx.graphics.IStroke;
 	import mx.utils.MatrixUtil;
 	
+	import spark.primitives.Path;
 	import spark.primitives.supportClasses.FilledElement;
 	
 	import ws.tink.graphics.IGraphicsCreator;
@@ -49,7 +50,7 @@ package ws.tink.spark.primatives
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	public class Path extends FilledElement
+	public class PathExtend extends Path
 	{
 
 		
@@ -68,7 +69,7 @@ package ws.tink.spark.primatives
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function Path()
+		public function PathExtend()
 		{
 			super();
 		}
@@ -111,7 +112,7 @@ package ws.tink.spark.primatives
 		 *  coordinate parameters for those commands, and then
 		 *  drawn to screen. 
 		 */ 
-		mx_internal var graphicsPath:GraphicsPath = new GraphicsPath(new Vector.<int>(), new Vector.<Number>());
+		mx_internal var graphicPath:GraphicsPath = new GraphicsPath(new Vector.<int>(), new Vector.<Number>());
 		
 		
 		
@@ -203,7 +204,7 @@ package ws.tink.spark.primatives
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function set data(value:String):void
+		override public function set data(value:String):void
 		{
 			if (_data == value)
 				return;
@@ -222,7 +223,7 @@ package ws.tink.spark.primatives
 		/** 
 		 *  @private
 		 */
-		public function get data():String 
+		override public function get data():String 
 		{
 			return _data;
 		}
@@ -247,7 +248,7 @@ package ws.tink.spark.primatives
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function set winding(value:String):void
+		override public function set winding(value:String):void
 		{
 			if (_winding != value)
 			{
@@ -259,7 +260,7 @@ package ws.tink.spark.primatives
 		/** 
 		 *  @private
 		 */
-		public function get winding():String 
+		override public function get winding():String 
 		{
 			return _winding; 
 		}
@@ -400,7 +401,7 @@ package ws.tink.spark.primatives
 		 *  @return Returns the axis aligned bounding box of the path when
 		 *  resized to (width, height) and then transformed by matrix m.
 		 */
-		mx_internal function computeBoundsWithStroke(width:Number,
+		mx_internal override  function computeBoundsWithStroke(width:Number,
 													 height:Number,
 													 m:Matrix):Rectangle
 		{
@@ -938,7 +939,7 @@ package ws.tink.spark.primatives
 				var sx:Number = rcBounds.width == 0 ? 1 : width / rcBounds.width;
 				var sy:Number = rcBounds.height == 0 ? 1 : height / rcBounds.height;
 				if (segments)
-					segments.generateGraphicsPath(graphicsPath, drawX, drawY, sx, sy);
+					segments.generateGraphicsPath(graphicPath, drawX, drawY, sx, sy);
 				graphicsPathChanged = false;
 			}
 			
@@ -948,19 +949,19 @@ package ws.tink.spark.primatives
 				
 			if( !strokeAndFillCreators )
 			{
-				g.drawPath( graphicsPath.commands, graphicsPath.data, winding );
+				g.drawPath( graphicPath.commands, graphicPath.data, winding );
 			}
 			
 			if( fillCreator )
 			{
 				setupFill( g );
-				fillCreator.drawPath( graphicsPath.commands, graphicsPath.data, winding );
+				fillCreator.drawPath( graphicPath.commands, graphicPath.data, winding );
 			}
 			
 			if( strokeCreator )
 			{
 				setupStroke( g );
-				strokeCreator.drawPath( graphicsPath.commands, graphicsPath.data, winding );
+				strokeCreator.drawPath( graphicPath.commands, graphicPath.data, winding );
 			}
 
 		}

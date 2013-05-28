@@ -62,13 +62,13 @@ package com.hjx.graphic
 		//--------------------------------------------------------
 		// public 公有变量声明处
 		//--------------------------------------------------------
-		[SkinPart(required="false")]
+		[SkinPart(required="true")]
 		/**
 		 * 存放label标签等元素。 
 		 */
 		public var labelElement:DisplayObject;
 		
-		[SkinPart(required="false")]
+		[SkinPart(required="true")]
 		public var base:UIComponent;
 
 		[SkinPart(required="false")]
@@ -255,16 +255,16 @@ package com.hjx.graphic
 		override protected function partAdded(partName:String, instance:Object):void{
 			super.partAdded(partName, instance);
 			if(instance == base){
-				base.addEventListener(MoveEvent.MOVE,baseGeometryChanged);
-				base.addEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
+//				this.addEventListener(MoveEvent.MOVE,baseGeometryChanged);
+//				this.addEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
 			}
 		}
 		
 		override protected function partRemoved(partName:String, instance:Object):void{
 			super.partRemoved(partName, instance);
 			if(instance == base){
-				base.removeEventListener(MoveEvent.MOVE,baseGeometryChanged);
-				base.removeEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
+//				this.removeEventListener(MoveEvent.MOVE,baseGeometryChanged);
+//				this.removeEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
 			}
 		}
 		/*		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{

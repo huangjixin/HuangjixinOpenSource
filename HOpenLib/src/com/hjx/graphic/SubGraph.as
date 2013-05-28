@@ -32,6 +32,7 @@ package com.hjx.graphic
 	[Event(name="linkRemove", type="com.hjx.graphic.events.GraphEvent")]
 	[Event(name="nodeAdd", type="com.hjx.graphic.events.GraphEvent")]
 	[Event(name="nodeRemove", type="com.hjx.graphic.events.GraphEvent")]
+	
 	[DefaultProperty("mxmlContent")] 
 	public class SubGraph extends Node implements IVisualElementContainer
 	{
@@ -106,8 +107,6 @@ package com.hjx.graphic
 			super();
 			collapsedWidth = 100;
 			collapsedHeight = 50;
-			
-			graph;
 		}
 		//构造函数结束
 		
@@ -256,23 +255,11 @@ package com.hjx.graphic
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.EXPAND_ANIMATION_END));
 		}
 		
-		/**
-		 *Performs the graph layout on the parent of the subgraph if graph layout is automatic. This method is called automatically when the subgraph is expanded or collapsed. It is public so that it can be called from custom subgraph skins, at the end of an expand/collapse animation. 
-		 * 
-		 */
+		
 		public function performLayoutOnParent():void{
 		
 		}
 		
-		/**
-		 *Performs the graph layouts attached to the subgraph content. Note that the graph layout is actually performed during a later screen update.
-
-The method actually only executes the layouts if the graph layout is invalid. The graph layout can be invalid either because the content of the graph has changed, or because the parameters of the layout have changed, or because the layout has been explicitely triggered by a call to performGraphLayout().
-
-If the layout is configured to be performed automatically, there is no need to call this method. The layout will be performed whenever there is a change in the graph model. 
-		 * @param traverse - 遍历
-		 * 
-		 */
 		public function performGraphLayout(traverse:Boolean = false):void{
 		
 		}
@@ -389,7 +376,11 @@ If the layout is configured to be performed automatically, there is no need to c
 			}
 		}
 		
-		private function invalidateLinkOfHierarchechy():void{
+		/**
+		 * 刷新内部连线实现具体方法。 
+		 * 
+		 */
+		private function invalidateLinkOfHierarchechyImpl():void{
 			var length:int = graph.numElements;
 			var node:Node;
 			for (var i:int = 0; i < length; i++) 
@@ -402,11 +393,23 @@ If the layout is configured to be performed automatically, there is no need to c
 				//递归下去，收拢连线。
 				if(node is SubGraph){
 					if(SubGraph(node).graph){
-						SubGraph(node).refreshChildrens(SubGraph(node));
+						SubGraph(node).invalidateLinkOfHierarchechy();
 					}
 				}
 			}
-			
+		}
+		
+		/**
+		 * 刷新内部连线。 
+		 * 
+		 */
+		private function invalidateLinkOfHierarchechy():void{
+			invalidateLinkOfHierarchechyImpl()
+		}
+		
+		override public function invalidateLinkShape():void{
+			super.invalidateLinkShape();
+			invalidateLinkOfHierarchechy();
 		}
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// override 覆盖函数
@@ -428,6 +431,7 @@ If the layout is configured to be performed automatically, there is no need to c
 		override protected function baseGeometryChanged(event:Event):void
 		{
 			super.baseGeometryChanged(event);
+			invalidateLinkOfHierarchechy();
 		}
 		/**
 		 * 添加状态的判断。 
@@ -474,9 +478,5 @@ If the layout is configured to be performed automatically, there is no need to c
 				}
 			}
 		}
-		
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
-			super.updateDisplayList(unscaledWidth,unscaledHeight);
-		} 
 	}//类结束
 }//包结束

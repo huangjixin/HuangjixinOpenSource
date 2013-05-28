@@ -20,12 +20,12 @@
 		<mx:Sequence id="collapseSequence" effectEnd="{hostComponent.collapseAnimationEnd()}"
 					 effectStart="{hostComponent.collapseAnimationStart()}">
 			<s:Fade alphaTo="0" duration="150" target="{graphGroup}"/>
-			<s:Resize duration="150" target="{main}"/>        
+			<s:Resize duration="150" target="{base}"/>        
 		</mx:Sequence>  
 		
 		<mx:Sequence id="expandSequence" effectEnd="{hostComponent.expandAnimationEnd()}"
 					 effectStart="{hostComponent.expandAnimationStart()}">
-			<s:Resize duration="150" target="{main}"/>        
+			<s:Resize duration="150" target="{base}"/>        
 			<s:Fade alphaTo="1" duration="150" target="{graphGroup}"/>
 		</mx:Sequence> 
 	</fx:Declarations>
@@ -45,7 +45,7 @@
 		<s:State name="collapsedSelected"/>
 		<s:State name="collapsedSelectedAndShowsCaret"/>
 	</skin:states>
-	<s:Group id="main" left="0" top="0" width="{hostComponent.expandedWidth}"
+	<s:Group id="base" left="0" top="0" width="{hostComponent.expandedWidth}"
 			 height="{hostComponent.expandedHeight}"
 			 width.collapsed="{hostComponent.collapsedWidth}"
 			 height.collapsed="{hostComponent.collapsedHeight}">
@@ -96,7 +96,7 @@
 		
 		<s:Group id="labelElement" left="5" top="8" fontSize="12"
 				 horizontalCenter.collapsed="0" verticalCenter.collapsed="-10">
-			<s:Label id="label" maxWidth="{main.width - 2}" color="0x000000"
+			<s:Label id="label" maxWidth="{base.width - 2}" color="0x000000"
 					 text="{hostComponent.label}" textAlign="start"
 					 textAlign.collapsed="center"/>
 		</s:Group>
