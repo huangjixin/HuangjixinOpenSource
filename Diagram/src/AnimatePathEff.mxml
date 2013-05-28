@@ -8,6 +8,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.lafabrick.uigfx.primitives.GridType;
 			protected function group1_rollOverHandler(event:MouseEvent):void
 			{
 				animOut.stop(); 
@@ -30,6 +31,17 @@
 				
 				/* colorAnimIn.stop();
 				colorAnimOut.play(); */
+			}
+			
+			protected function group1_clickHandler(event:MouseEvent):void
+			{
+				if(grid.type == GridType.DOT){
+					grid.type = GridType.LINE;
+				}else if(grid.type == GridType.LINE){
+					grid.type = GridType.NONE;
+				}else if(grid.type == GridType.NONE){
+					grid.type = GridType.DOT;
+				}
 			}
 			
 		]]>
@@ -62,12 +74,21 @@
 		
 	</fx:Declarations>
 	
-	<s:Group 
+	<s:Group width="80%" height="80%"
 		horizontalCenter="0" verticalCenter="0"
 		rollOver="group1_rollOverHandler(event)"
 		rollOut="group1_rollOutHandler(event)"
-		>
-		
+		click="group1_clickHandler(event)">
+		<s:Rect top="0" bottom="0" left="0" right="0">
+			<s:stroke>
+				<s:SolidColorStroke color="#D0D0D0" weight="1"/>
+			</s:stroke>
+		</s:Rect>
+		<uigfx:Grid id="grid" top="0" bottom="0" left="0" right="0" type="none" step="15">
+			<uigfx:stroke>
+				<s:SolidColorStroke color="#DADADA" weight="1"/>
+			</uigfx:stroke>
+		</uigfx:Grid>
 		<s:Path 
 			id="cmpPath"
 			horizontalCenter="0" verticalCenter="0"

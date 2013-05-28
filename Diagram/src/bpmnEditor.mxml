@@ -18,14 +18,25 @@
 		@namespace editor "com.hjx.diagram.editor.*";
 		@namespace graphlayout "com.hjx.graphic.graphlayout.*";
 		graphic|Node{
-			skinClass:ClassReference("com.hjx.graphic.skin.NodeSkin")
+			skinClass:ClassReference("com.hjx.graphic.skin.NodeSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")
 		}
+		
+		editor|NodeAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.NodeAdornerSkin")
+		}
+		
 		local|BPMNBtn{
-			skinClass:ClassReference("skins.BPMNBtnSkin")
+			skinClass:ClassReference("skins.BPMNBtnSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")	
 		}
 		
 		graphic|SubGraph{
 			skinClass:ClassReference("com.hjx.graphic.skin.SubGraphSkin")
+		}
+		
+		editor|DiagramEditor{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.DiagramEditorSkin")
 		}
 	</fx:Style>
 	<fx:Script>
@@ -48,6 +59,10 @@
 			{
 				if(node.selectable){
 					node.selected = !node.selected;
+					var renderer:Renderer = subGraph0.clone();
+					IVisualElementContainer(subGraph0.parent).addElementAt(renderer,0);
+					renderer.x=renderer.width+renderer.x;
+					renderer.y=renderer.height+renderer.y;
 //					node.width+=10;
 //					node.height+=10;
 //					node.invalidateLinkShape();
@@ -57,11 +72,6 @@
 //					link0.setStyle("endArrowVisible",node.selected);
 //					link.setStyle("endArrowVisible",node.selected);
 				}
-				
-//				var cloneNode:Renderer = CloneUtil.cloneInternal(subGraph1);
-//				graph.addElement(cloneNode);
-//				SubGraph(cloneNode).expandedWidth = 400;
-//				SubGraph(cloneNode).expandedHeight = 400;
 			}
 			
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
@@ -98,15 +108,52 @@
 				ui.stopDrag();
 				ui.removeEventListener(MouseEvent.MOUSE_UP,onNodeMouseUp);
 				ui.removeEventListener(MouseEvent.MOUSE_MOVE,onNodeMouseMove);
+				
+				var rect:Rectangle = ui.getBounds(diagramEditor.grid.parent);
+				var gridRect:Rectangle = new Rectangle(diagramEditor.grid.x,diagramEditor.grid.y,diagramEditor.grid.width,diagramEditor.grid.height);
+				if(gridRect.intersects(rect)){
+					var step:Number = diagramEditor.grid.step;
+					/* step /=2; */
+					var modeX:Number = rect.x % step;
+					var modeY:Number = rect.y % step;
+					if(modeX < step/2){
+						ui.x-=modeX;
+					}else if(modeX > step/2){
+						ui.x += step - modeX;
+					}
+					
+					if(modeY < step/2){
+						ui.y-=modeY;
+					}else if(modeY > step/2){
+						ui.y += step - modeY;
+					}
+				}
 			}
 			
 			protected function onNodeMouseMove(event:MouseEvent):void
 			{
+				var ui:UIComponent = event.currentTarget as UIComponent;
 				var node:Node = null;
 				if(event.currentTarget is Node){
 					node = event.currentTarget as Node;
 					node.invalidateLinkShape();
 //					node.refresh();
+				}
+				
+			}
+			
+			protected function diagramEditor_clickHandler(event:MouseEvent):void
+			{
+				if(!diagramEditor.grid){
+					return;
+				}
+				
+				if(diagramEditor.grid.type == "dot"){
+					diagramEditor.grid.type = "line";
+				}else if(diagramEditor.grid.type == "line"){
+					diagramEditor.grid.type = "none";
+				}else if(diagramEditor.grid.type == "none"){
+					diagramEditor.grid.type = "dot";
 				}
 			}
 			
@@ -132,15 +179,15 @@
 		<mx:HierarchicalCollectionView id="hcv" showRoot="false"
 									   source="{new HierarchicalData(data)}"/>
 	</fx:Declarations>
-	<!--<editor:DiagramEditor id="diagramEditor" width="100%" height="100%">
+	<editor:DiagramEditor id="diagramEditor" width="50%" height="50%" top="20" left="20" click="diagramEditor_clickHandler(event)">
 		<diagram:Diagram id="diagram1" width="100%" height="100%" automaticGraphLayout="false"
 						 labelField="@label" nodeDataProvider="{hcv}" selectionMode="multiple"
 						 xLocationField="@x" yLocationField="@y">
-			<diagram:nodeLayout>
+			<!--<diagram:nodeLayout>
 				<graphlayout:HierarchicalLayout id="hierarchicalLayout" flowDirection="right"/>
-			</diagram:nodeLayout>
+			</diagram:nodeLayout>-->
 		</diagram:Diagram>
-	</editor:DiagramEditor>-->
+	</editor:DiagramEditor>
 	<!--<diagram:Diagram id="diagram" width="100%" height="100%"/>-->
 	<graphic:Graph id="graph" x="{width/2}" width="50%" height="100%">
 		<graphic:SubGraph id="subGraph0" y="200" width="200" height="200">
