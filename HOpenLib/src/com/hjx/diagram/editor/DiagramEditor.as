@@ -26,7 +26,9 @@ package com.hjx.diagram.editor
 	
 	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
-	import spark.primitives.Rect;
+	
+	import ws.tink.spark.graphics.SolidColorDash;
+	import ws.tink.spark.primatives.Rect;
 	
 	[DefaultProperty("diagram")]
 	public class DiagramEditor extends SkinnableComponent
@@ -190,7 +192,7 @@ package com.hjx.diagram.editor
 				this.marquee = new Rect();
 				this.marquee.maxWidth = Number.MAX_VALUE;
 				this.marquee.maxHeight = Number.MAX_VALUE;
-				this.marquee.stroke = new SolidColorStroke(10526880);
+				this.marquee.stroke = new SolidColorDash(5,5,0x0,2,2,false,"normal","round");
 				this.adornersGroup.addElement(this.marquee);
 			}
 			
@@ -218,7 +220,7 @@ package com.hjx.diagram.editor
 				while (length < this._graph.numElements) 
 				{
 					renderer = this._graph.getElementAt(length) as Renderer;
-					if (renderer && rectangle.containsRect(renderer.getBounds(this.adornersGroup))) 
+					if (renderer && rectangle.intersects(renderer.getBounds(this.adornersGroup))) 
 					{
 						this.setSelected(renderer, true);
 					}
