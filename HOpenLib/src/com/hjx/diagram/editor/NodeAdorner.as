@@ -3,18 +3,18 @@ package com.hjx.diagram.editor
 	import com.hjx.graphic.Renderer;
 	
 	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
 	
 	public class NodeAdorner extends Adorner
 	{
 		[SkinPart(required="false")]
-		public var topLeftHandle:DisplayObject;
+		public var rightArrowHandle:DisplayObject;
 		[SkinPart(required="false")]
-		public var topRightHandle:DisplayObject;
+		public var topArrowHandle:DisplayObject;
 		[SkinPart(required="false")]
-		public var bottomLeftHandle:DisplayObject;
+		public var bottomArrowHandle:DisplayObject;
 		[SkinPart(required="false")]
-		public var bottomRightHandle:DisplayObject;
-		
+		public var leftArrowHandle:DisplayObject;
 		public function NodeAdorner(adornedObject:Renderer)
 		{
 			super(adornedObject);
@@ -22,9 +22,15 @@ package com.hjx.diagram.editor
 		
 		override protected function isHandle(object:Object):Boolean
 		{
-			if(object is Handle)
+			if(object is ArrowHandle)
 				return true;
-			return false;
+			return super.isHandle(object);
+		}
+		
+		override protected function onAdornerMouseMove(event:MouseEvent):void
+		{
+			rightArrowHandle.visible=topArrowHandle.visible=bottomArrowHandle.visible=leftArrowHandle.visible
+				= isMouseNear(8);
 		}
 	}
 }

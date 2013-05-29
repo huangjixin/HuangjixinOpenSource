@@ -13,6 +13,7 @@ package com.hjx.diagram.editor
 	import com.hjx.graphic.Graph;
 	import com.hjx.graphic.Node;
 	import com.hjx.graphic.Renderer;
+	import com.hjx.graphic.SubGraph;
 	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -429,7 +430,10 @@ package com.hjx.diagram.editor
 		
 		internal function createAdorner(renderer:Renderer):Adorner
 		{
-			if (renderer is Node) 
+			if (renderer is SubGraph) 
+			{
+				return new ResizableNodeAdorner(renderer);
+			}else if (renderer is Node) 
 			{
 				return new NodeAdorner(renderer);
 			}

@@ -81,12 +81,18 @@ package com.hjx.diagram.editor
 			if (event.target == this) 
 			{
 				invalidateProperties();
+				this.stage.addEventListener(MouseEvent.MOUSE_MOVE,onAdornerMouseMove);
 			}
 		}
 		
 		protected function updateCompleteHandler(event:FlexEvent):void
 		{
 			invalidateProperties();
+		}
+		
+		protected function onAdornerMouseMove(event:MouseEvent):void
+		{
+			trace("sdfds");
 		}
 		
 		/**
@@ -109,6 +115,7 @@ package com.hjx.diagram.editor
 			this.removeEventListener(flash.events.Event.ADDED, this.addedHandler);
 			this.removeEventListener(flash.events.Event.REMOVED, this.removedHandler);
 			this.adornedObject.removeEventListener(mx.events.FlexEvent.UPDATE_COMPLETE, this.updateCompleteHandler);
+			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onAdornerMouseMove);
 			return;
 		}
 		
