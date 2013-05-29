@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" 
-			   minWidth="955" 
-			   minHeight="600" 
-			   xmlns:uigfx="http://uigfx.lafabrick.com"  viewSourceURL="srcview/index.html" xmlns:primatives="ws.tink.spark.primatives.*" xmlns:graphics="ws.tink.spark.graphics.*" xmlns:effects="com.lafabrick.uigfx.effects.*" xmlns:primitives="com.lafabrick.uigfx.primitives.*">
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:uigfx="http://uigfx.lafabrick.com"
+			   xmlns:primatives="ws.tink.spark.primatives.*"
+			   xmlns:graphics="ws.tink.spark.graphics.*"
+			   xmlns:effects="com.lafabrick.uigfx.effects.*"
+			   xmlns:primitives="com.lafabrick.uigfx.primitives.*"
+			   minWidth="955" minHeight="600" viewSourceURL="srcview/index.html">
 	
 	<fx:Script>
 		<![CDATA[
@@ -42,59 +45,59 @@
 				}else if(grid.type == GridType.NONE){
 					grid.type = GridType.DOT;
 				}
+				
+				rotationAnimate.play();
 			}
 			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
-		<s:Elastic id="elastic" />
-		<s:Bounce id="bounce" />
+		<s:Elastic id="elastic"/>
+		<s:Bounce id="bounce"/>
 		
 		<!--<s:AnimateColor id="colorAnimIn" target="{fillCol}" colorTo="#00D5BA" />
 		<s:AnimateColor id="colorAnimOut" duration="1000" target="{fillCol}" colorTo="#009EE0" />-->
-		
+		<s:Animate id="rotationAnimate" target="{pathStr}" repeatCount="0" duration="4000">
+			<s:motionPaths>
+				<s:SimpleMotionPath property="rotation" valueFrom="0" valueTo="360"/>
+			</s:motionPaths>
+		</s:Animate>
+
 		<effects:AnimatePath id="animIn"
-						   targets="{[cmpPath]}"
-						   dataTo="M 0 15 L 1 15 L 15 0 L 76 15 L 15 30 L 1 15 L 0 15 z"  />
+							 dataTo="M 0 15 L 1 15 L 15 0 L 76 15 L 15 30 L 1 15 L 0 15 z"
+							 targets="{[cmpPath]}"/>
 		
-		<effects:AnimatePath
-			id="animOut"
-			targets="{[cmpPath]}"
-			dataTo="M 0 10 L 40 10 L 35 0 L 60 15 L 35 30 L 40 20 L 0 20 z " />
+		<effects:AnimatePath id="animOut"
+							 dataTo="M 0 10 L 40 10 L 35 0 L 60 15 L 35 30 L 40 20 L 0 20 z "
+							 targets="{[cmpPath]}"/>
 		
 		<effects:AnimatePath id="pathIn"
-						   targets="{[path]}"
-						   dataTo="M 0 0 L 0 90 Q 0 100 10 100 L 90 100 Q 100 100 100 110 L 100 190"  />
+							 dataTo="M 0 0 L 0 90 Q 0 100 10 100 L 90 100 Q 100 100 100 110 L 100 190"
+							 targets="{[path]}"/>
 		
-		<effects:AnimatePath
-			id="pathOut"
-			targets="{[path]}"
-			dataTo="M 0 0 L 90 0 Q 100 0 100 10 L 100 90 Q 100 100 110 100 L 190 100" />
+		<effects:AnimatePath id="pathOut"
+							 dataTo="M 0 0 L 90 0 Q 100 0 100 10 L 100 90 Q 100 100 110 100 L 190 100"
+							 targets="{[path]}"/>
 		
 	</fx:Declarations>
 	
-	<s:Group width="80%" height="80%"
-		horizontalCenter="0" verticalCenter="0"
-		rollOver="group1_rollOverHandler(event)"
-		rollOut="group1_rollOutHandler(event)"
-		click="group1_clickHandler(event)">
-		<s:Rect top="0" bottom="0" left="0" right="0">
+	<s:Group width="80%" height="80%" click="group1_clickHandler(event)" horizontalCenter="0"
+			 rollOut="group1_rollOutHandler(event)" rollOver="group1_rollOverHandler(event)"
+			 verticalCenter="0">
+		<s:Rect left="0" right="0" top="0" bottom="0">
 			<s:stroke>
 				<s:SolidColorStroke color="#D0D0D0" weight="1"/>
 			</s:stroke>
 		</s:Rect>
-		<primitives:Grid id="grid" top="0" bottom="0" left="0" right="0" type="none" step="15">
+		<primitives:Grid id="grid" left="0" right="0" top="0" bottom="0" step="15" type="none">
 			<primitives:stroke>
 				<s:SolidColorStroke color="#DADADA" weight="1"/>
 			</primitives:stroke>
 		</primitives:Grid>
-		<s:Path 
-			id="cmpPath"
-			horizontalCenter="0" verticalCenter="0"
-			
-			top="0" bottom="0" left="0" right="0"
-			data="M 0 10 L 40 10 L 35 0 L 60 15 L 35 30 L 40 20 L 0 20 z ">
+		<s:Path id="cmpPath" left="0" right="0" top="0" bottom="0"
+				data="M 0 10 L 40 10 L 35 0 L 60 15 L 35 30 L 40 20 L 0 20 z " horizontalCenter="0"
+				verticalCenter="0">
 			
 			<!--<s:fill>
 				<s:SolidColor id="fillCol" color="#009EE0" />
@@ -103,15 +106,34 @@
 				<s:SolidColorStroke color="0" weight="2"/>
 			</s:stroke>
 			<s:filters>
-				<s:GlowFilter inner="true" color="#000000" alpha="0.6" blurX="8" blurY="8" />
+				<s:GlowFilter alpha="0.6" blurX="8" blurY="8" color="#000000" inner="true"/>
 			</s:filters> 
 		</s:Path>
-		<primatives:Path id="path" data="M 0 0 L 90 0 Q 100 0 100 10 L 100 90 Q 100 100 110 100 L 190 100">
+		<primatives:Path id="path"
+						 data="M 0 0 L 90 0 Q 100 0 100 10 L 100 90 Q 100 100 110 100 L 190 100">
 			<primatives:stroke>
-				<graphics:SolidColorDash color="0xfff3456" weight="2" dash="8" gap="8"/>
+				<graphics:SolidColorDash color="0xfff3456" dash="8" gap="8" weight="2"/>
 				<!--<s:SolidColorStroke color="0" weight="2"/>-->
 			</primatives:stroke>
 		</primatives:Path>
+		<s:Rect width="200" height="200" horizontalCenter="0" verticalCenter="0">
+			<s:stroke>
+				<s:LinearGradientStroke>
+					<s:GradientEntry color="0x0f0f0f" ratio="0.3"/>
+					<s:GradientEntry color="0xadadad" ratio="0.5"/>
+					<s:GradientEntry color="0xffeeff" ratio="1"/>
+				</s:LinearGradientStroke>
+			</s:stroke>
+		</s:Rect>
+		<s:Path data="M 100 100 L 200 100 L 200 200 L 400 200">
+			<s:stroke>
+				<s:LinearGradientStroke id="pathStr" weight="10">
+					<s:GradientEntry color="0x0f0f0f" ratio="0.3"/>
+					<s:GradientEntry color="0xadadad" ratio="0.5"/>
+					<s:GradientEntry color="0x0" ratio="1"/>
+				</s:LinearGradientStroke>
+			</s:stroke>
+		</s:Path>
 		<!--<s:Path 
 			id="cmpPath2"
 			horizontalCenter="0" verticalCenter="0"
