@@ -293,7 +293,7 @@ package com.hjx.graphic
 			
 		}
 		
-		internal function getX(renderer:Renderer):Number
+		public function getX(renderer:Renderer):Number
 		{
 			var result:Number=NaN;
 			if (renderer.left is Number) 
@@ -307,7 +307,7 @@ package com.hjx.graphic
 			return renderer.x;
 		}
 		
-		internal function setX(renderer:Renderer, x:Number):void
+		public function setX(renderer:Renderer, x:Number):void
 		{
 			if (renderer.left is Number && !isNaN(Number(renderer.left))) 
 			{
@@ -320,7 +320,7 @@ package com.hjx.graphic
 			return;
 		}
 		
-		internal function getY(renderer:Renderer):Number
+		public function getY(renderer:Renderer):Number
 		{
 			var result:Number=NaN;
 			if (renderer.top is Number) 
@@ -334,7 +334,7 @@ package com.hjx.graphic
 			return renderer.y;
 		}
 		
-		internal function setY(renderer:Renderer, y:Number):void
+		public function setY(renderer:Renderer, y:Number):void
 		{
 			if (renderer.top is Number && !isNaN(Number(renderer.top))) 
 			{

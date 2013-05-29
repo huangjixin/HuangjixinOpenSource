@@ -1,5 +1,6 @@
 package com.hjx.diagram.editor
 {
+	import com.hjx.graphic.Graph;
 	import com.hjx.graphic.Renderer;
 	
 	import flash.display.DisplayObject;
@@ -66,6 +67,16 @@ package com.hjx.diagram.editor
 		public function get editor():DiagramEditor
 		{
 			return DiagramEditor.getEditor(this);
+		}
+		
+		public function get graph():Graph
+		{
+			var editor:DiagramEditor = this.editor;
+			if (editor != null) 
+			{
+				return editor.graph;
+			}
+			return null;
 		}
 		
 		protected function removedHandler(event:Event):void
@@ -201,15 +212,16 @@ package com.hjx.diagram.editor
 			return rect.contains(stage.mouseX, stage.mouseY);
 		}
 		
-		/*function moveDragPoint(arg1:Number, arg2:Number):void
+		function moveDragPoint(offsetX:Number, offsetY:Number):void
 		{
-			var loc1:*=new flash.geom.Point(arg1, arg2);
-			var loc2:*=this.editor.graph.localToGlobal(new flash.geom.Point(0, 0));
-			loc1 = this.editor.graph.localToGlobal(loc1);
-			this._startX = this._startX + (loc1.x - loc2.x);
-			this._startY = this._startY + (loc1.y - loc2.y);
+			var offset:Point=new Point(offsetX, offsetY);
+			var oriPoint:Point=this.editor.graph.localToGlobal(new Point(0, 0));
+			offset = this.editor.graph.localToGlobal(offset);
+			
+			this._startX = this._startX + (offset.x - oriPoint.x);
+			this._startY = this._startY + (offset.y - oriPoint.y);
 			return;
-		}*/
+		}
 		
 		protected function handlePressed(displayObject:DisplayObject, event:MouseEvent):void
 		{
