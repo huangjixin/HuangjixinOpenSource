@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkButtonSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:fb="http://ns.adobe.com/flashbuilder/2009">
+	<fx:Metadata>[HostComponent("com.hjx.diagram.editor.Arrow")]</fx:Metadata>
+     
+    <!-- states -->
+    <s:states>
+        <s:State name="up"/>
+        <s:State name="over"/>
+        <s:State name="down"/>
+        <s:State name="disabled"/>
+    </s:states>
+	<s:Group id="base" left="0" right="0" top="0" bottom="0" minWidth="10" minHeight="10">
+		<s:Path id="path" data="M -10 -5 l 10 5 l -10 5 Z">
+			<s:fill>
+				<s:SolidColor color="#0C81E8" alpha="0.5"
+							  alpha.down="1"
+							  alpha.over="1"/>
+			</s:fill>
+		</s:Path>
+	</s:Group>
+</s:SparkButtonSkin>

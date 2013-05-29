@@ -15,6 +15,7 @@ package com.hjx.diagram.editor
 	import com.hjx.graphic.Renderer;
 	
 	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
@@ -22,6 +23,7 @@ package com.hjx.diagram.editor
 	import flash.utils.Dictionary;
 	
 	import mx.events.SandboxMouseEvent;
+	import mx.graphics.SolidColor;
 	import mx.graphics.SolidColorStroke;
 	
 	import spark.components.Group;
@@ -56,9 +58,19 @@ package com.hjx.diagram.editor
 		private var _diagramChanged:Boolean = false;
 		private var _graph:Graph;
 		
+		private var _inAdornerInteraction:Boolean;
+		/**
+		 * 内部边饰器字典。 
+		 */
 		internal var adorners:Dictionary;
+		/**
+		 * 选择对象集。 
+		 */
 		internal var selectedObjects:Vector.<Renderer>;
 		
+		/**
+		 * 框选矩形框。 
+		 */
 		private var marquee:Rect;
 		
 		//--------------------------------------------------------
@@ -77,6 +89,9 @@ package com.hjx.diagram.editor
 		private var startX:Number;
 		private var startY:Number;
 		
+		internal var mouseDown:Boolean;
+		internal var isDragging:Boolean;
+		
 		public function DiagramEditor()
 		{
 			super();
@@ -92,6 +107,16 @@ package com.hjx.diagram.editor
 		//--------------------------------------------------------
 		// getter和setter函数
 		//--------------------------------------------------------
+
+		public function get inAdornerInteraction():Boolean
+		{
+			return _inAdornerInteraction;
+		}
+
+		public function set inAdornerInteraction(value:Boolean):void
+		{
+			_inAdornerInteraction = value;
+		}
 
 		public function get graph():Graph
 		{
@@ -136,8 +161,37 @@ package com.hjx.diagram.editor
 		//--------------------------------------------------------
 		// 相关事件响应函数和逻辑函数存放处
 		//--------------------------------------------------------
+		/**
+		 * 找到顶层编辑器。 
+		 * @param displayObject
+		 * @return 
+		 * 
+		 */
+		public static function getEditor(displayObject:DisplayObject):DiagramEditor
+		{
+			var displayObjectContainer:DisplayObjectContainer = displayObject.parent;
+			while (displayObjectContainer != null) 
+			{
+				if (displayObjectContainer is DiagramEditor) 
+				{
+					return DiagramEditor(displayObjectContainer);
+				}
+				displayObjectContainer = displayObjectContainer.parent;
+			}
+			return null;
+		}
+		/**
+		 * 鼠标响应函数，判断该拖拽还是框选。 
+		 * @param event
+		 * 
+		 */
 		internal function mouseDownHandler(event:MouseEvent):void
 		{
+			/*if (!this.adornersGroup.getBounds(this._graph).contains(this._graph.mouseX, this._graph.mouseY)) 
+			{
+				return;
+			}*/
+			
 			var renderer:Renderer=getRenderer(event.target);
 			this._graph.setFocus();
 			if (event.ctrlKey) 
@@ -156,6 +210,8 @@ package com.hjx.diagram.editor
 			{
 				return;
 			}
+			
+			this.mouseDown = true;
 			
 			this.startX = this.adornersGroup.mouseX;  
 			this.startY = this.adornersGroup.mouseY;
@@ -182,27 +238,32 @@ package com.hjx.diagram.editor
 		
 		internal function mouseDragHandler(event:MouseEvent):void
 		{
-			var lastX:Number = this.adornersGroup.mouseX;  
-			var lastY:Number = this.adornersGroup.mouseY; 
-
-			var renderer:Renderer = getRenderer(event.target);
-			
-			if (this.marquee == null) 
+			if (this.mouseDown && !this.inAdornerInteraction) 
 			{
-				this.marquee = new Rect();
-				this.marquee.maxWidth = Number.MAX_VALUE;
-				this.marquee.maxHeight = Number.MAX_VALUE;
-				this.marquee.stroke = new SolidColorDash(5,5,0x0,2,2,false,"normal","round");
-				this.adornersGroup.addElement(this.marquee);
+				var lastX:Number = this.adornersGroup.mouseX;  
+				var lastY:Number = this.adornersGroup.mouseY; 
+				
+				var renderer:Renderer = getRenderer(event.target);
+				
+				if (this.marquee == null) 
+				{
+					this.marquee = new Rect();
+					this.marquee.maxWidth = Number.MAX_VALUE;
+					this.marquee.maxHeight = Number.MAX_VALUE;
+					var solidColorDash:SolidColorDash = new SolidColorDash(2,2,0x2A9DFF,1,1);
+					var solidColor:SolidColor = new SolidColor(0x0576DC,0.2);
+					this.marquee.stroke = solidColorDash;
+					this.marquee.fill = solidColor;
+					this.adornersGroup.addElement(this.marquee);
+				}
+				
+				var start:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(this.startX, this.startY)));  
+				var end:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(lastX, lastY)));  
+				this.marquee.left = Math.min(start.x, end.x);  
+				this.marquee.top = Math.min(start.y, end.y);  
+				this.marquee.width = Math.abs(start.x - end.x);  
+				this.marquee.height = Math.abs(start.y - end.y);
 			}
-			
-			var start:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(this.startX, this.startY)));  
-			 var end:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(lastX, lastY)));  
-			this.marquee.left = Math.min(start.x, end.x);  
-			this.marquee.top = Math.min(start.y, end.y);  
-			this.marquee.width = Math.abs(start.x - end.x);  
-			this.marquee.height = Math.abs(start.y - end.y);  
-
 		}
 		
 		internal function mouseUpHandler(event:Event):void
@@ -227,6 +288,9 @@ package com.hjx.diagram.editor
 					++length;
 				}
 			}	
+			
+			this.mouseDown = false;
+			this.isDragging = false;
 			
 			var displayObject:DisplayObject = systemManager.getSandboxRoot();
 			displayObject.removeEventListener(MouseEvent.MOUSE_UP, this.mouseUpHandler, true);
@@ -258,6 +322,21 @@ package com.hjx.diagram.editor
 		{
 			this.deselectAllExcept();
 			return;
+		}
+		
+		function snapPoint(point:Point, displayObjectContainer:DisplayObjectContainer):flash.geom.Point
+		{
+			if (displayObjectContainer != this._graph) 
+			{
+				point = this._graph.globalToLocal(displayObjectContainer.localToGlobal(point));
+			}
+
+			if (displayObjectContainer != this._graph) 
+			{
+				point = displayObjectContainer.globalToLocal(this._graph.localToGlobal(point));
+			}
+			
+			return point;
 		}
 		
 		function deselectAllExcept(arg1:Renderer=null):void
