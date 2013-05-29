@@ -4,7 +4,7 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   minWidth="955" 
 			   minHeight="600" 
-			   xmlns:uigfx="http://uigfx.lafabrick.com"  viewSourceURL="srcview/index.html" xmlns:primatives="ws.tink.spark.primatives.*" xmlns:graphics="ws.tink.spark.graphics.*">
+			   xmlns:uigfx="http://uigfx.lafabrick.com"  viewSourceURL="srcview/index.html" xmlns:primatives="ws.tink.spark.primatives.*" xmlns:graphics="ws.tink.spark.graphics.*" xmlns:effects="com.lafabrick.uigfx.effects.*" xmlns:primitives="com.lafabrick.uigfx.primitives.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -54,20 +54,20 @@
 		<!--<s:AnimateColor id="colorAnimIn" target="{fillCol}" colorTo="#00D5BA" />
 		<s:AnimateColor id="colorAnimOut" duration="1000" target="{fillCol}" colorTo="#009EE0" />-->
 		
-		<uigfx:AnimatePath id="animIn"
+		<effects:AnimatePath id="animIn"
 						   targets="{[cmpPath]}"
 						   dataTo="M 0 15 L 1 15 L 15 0 L 76 15 L 15 30 L 1 15 L 0 15 z"  />
 		
-		<uigfx:AnimatePath
+		<effects:AnimatePath
 			id="animOut"
 			targets="{[cmpPath]}"
 			dataTo="M 0 10 L 40 10 L 35 0 L 60 15 L 35 30 L 40 20 L 0 20 z " />
 		
-		<uigfx:AnimatePath id="pathIn"
+		<effects:AnimatePath id="pathIn"
 						   targets="{[path]}"
 						   dataTo="M 0 0 L 0 90 Q 0 100 10 100 L 90 100 Q 100 100 100 110 L 100 190"  />
 		
-		<uigfx:AnimatePath
+		<effects:AnimatePath
 			id="pathOut"
 			targets="{[path]}"
 			dataTo="M 0 0 L 90 0 Q 100 0 100 10 L 100 90 Q 100 100 110 100 L 190 100" />
@@ -84,11 +84,11 @@
 				<s:SolidColorStroke color="#D0D0D0" weight="1"/>
 			</s:stroke>
 		</s:Rect>
-		<uigfx:Grid id="grid" top="0" bottom="0" left="0" right="0" type="none" step="15">
-			<uigfx:stroke>
+		<primitives:Grid id="grid" top="0" bottom="0" left="0" right="0" type="none" step="15">
+			<primitives:stroke>
 				<s:SolidColorStroke color="#DADADA" weight="1"/>
-			</uigfx:stroke>
-		</uigfx:Grid>
+			</primitives:stroke>
+		</primitives:Grid>
 		<s:Path 
 			id="cmpPath"
 			horizontalCenter="0" verticalCenter="0"
@@ -106,12 +106,12 @@
 				<s:GlowFilter inner="true" color="#000000" alpha="0.6" blurX="8" blurY="8" />
 			</s:filters> 
 		</s:Path>
-		<primatives:PathExtend id="path" data="M 0 0 L 90 0 Q 100 0 100 10 L 100 90 Q 100 100 110 100 L 190 100">
+		<primatives:Path id="path" data="M 0 0 L 90 0 Q 100 0 100 10 L 100 90 Q 100 100 110 100 L 190 100">
 			<primatives:stroke>
 				<graphics:SolidColorDash color="0xfff3456" weight="2" dash="8" gap="8"/>
 				<!--<s:SolidColorStroke color="0" weight="2"/>-->
 			</primatives:stroke>
-		</primatives:PathExtend>
+		</primatives:Path>
 		<!--<s:Path 
 			id="cmpPath2"
 			horizontalCenter="0" verticalCenter="0"

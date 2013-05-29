@@ -26,6 +26,10 @@
 			skinClass:ClassReference("com.hjx.diagram.editor.skin.NodeAdornerSkin")
 		}
 		
+		editor|ResizableNodeAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.ResizeableAdornerSkin")
+		}
+		
 		local|BPMNBtn{
 			skinClass:ClassReference("skins.BPMNBtnSkin");
 			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")	
@@ -148,13 +152,13 @@
 					return;
 				}
 				
-				if(diagramEditor.grid.type == "dot"){
+				/* if(diagramEditor.grid.type == "dot"){
 					diagramEditor.grid.type = "line";
 				}else if(diagramEditor.grid.type == "line"){
 					diagramEditor.grid.type = "none";
 				}else if(diagramEditor.grid.type == "none"){
 					diagramEditor.grid.type = "dot";
-				}
+				} */
 			}
 			
 		]]>
