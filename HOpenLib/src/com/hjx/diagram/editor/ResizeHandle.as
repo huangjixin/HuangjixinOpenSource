@@ -10,7 +10,7 @@ package com.hjx.diagram.editor
 	 **** @author huangjixin,@date 2012-7-4, @time 下午4:59:43 **
 	 **** 挂角按钮  **
 	 *******************************************/
-	public class Handle extends Button
+	public class ResizeHandle extends Button
 	{
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// private 类私有静态变量和静态常量声明处。（全部大写，使用下划线进行分割）
@@ -37,7 +37,7 @@ package com.hjx.diagram.editor
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// 构造函数，初始化相关工作可以放在里面
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-		public function Handle()
+		public function ResizeHandle()
 		{
 			super();
 		}//构造函数结束

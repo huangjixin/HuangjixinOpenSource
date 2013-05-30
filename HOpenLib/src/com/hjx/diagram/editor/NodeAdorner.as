@@ -22,7 +22,7 @@ package com.hjx.diagram.editor
 		
 		override protected function isHandle(object:Object):Boolean
 		{
-			if(object is ArrowHandle)
+			if(object is LinkHandle)
 				return true;
 			return super.isHandle(object);
 		}

@@ -158,7 +158,7 @@ package com.hjx.diagram.editor
 		
 		override protected function isHandle(object:Object):Boolean
 		{
-			if(object is Handle)
+			if(object is ResizeHandle)
 				return true;
 			return super.isHandle(object);
 		}

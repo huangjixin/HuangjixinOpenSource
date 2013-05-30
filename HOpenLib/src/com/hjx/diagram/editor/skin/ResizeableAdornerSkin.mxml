@@ -12,21 +12,21 @@
 			<graphics:SolidColorDash  color="0x00A8FF"/>
 		</primatives:stroke>
 	</primatives:Rect>
-	<editor:Handle id="topLeftHandle" left="-8" top="-8"
+	<editor:ResizeHandle id="topLeftHandle" left="-8" top="-8"
 				   skinClass="com.hjx.diagram.editor.skin.HandleSkin"/>
-	<editor:Handle id="topRightHandle" right="-8" top="-8"  
+	<editor:ResizeHandle id="topRightHandle" right="-8" top="-8"  
 				   skinClass="com.hjx.diagram.editor.skin.HandleSkin"/>
-	<editor:Handle id="bottomLeftHandle" left="-8" bottom="-8" 
+	<editor:ResizeHandle id="bottomLeftHandle" left="-8" bottom="-8" 
 				   skinClass="com.hjx.diagram.editor.skin.HandleSkin"/>
-	<editor:Handle id="bottomRightHandle" right="-8" bottom="-8"
+	<editor:ResizeHandle id="bottomRightHandle" right="-8" bottom="-8"
 				   skinClass="com.hjx.diagram.editor.skin.HandleSkin"/>
 	
-	<editor:ArrowHandle id="rightArrowHandle" right="-28" verticalCenter="5"
+	<editor:LinkHandle id="rightArrowHandle" right="-28" verticalCenter="5"
 				   skinClass="com.hjx.diagram.editor.skin.ArrowSkin"/>
-	<editor:ArrowHandle id="topArrowHandle" top="-28" horizontalCenter="5" rotation="-90"
+	<editor:LinkHandle id="topArrowHandle" top="-28" horizontalCenter="5" rotation="-90"
 				   skinClass="com.hjx.diagram.editor.skin.ArrowSkin"/>
-	<editor:ArrowHandle id="bottomArrowHandle" bottom="-28"  horizontalCenter="-5" rotation="90"
+	<editor:LinkHandle id="bottomArrowHandle" bottom="-28"  horizontalCenter="-5" rotation="90"
 				   skinClass="com.hjx.diagram.editor.skin.ArrowSkin"/>
-	<editor:ArrowHandle id="leftArrowHandle" left="-28" verticalCenter="-5" rotation="180"
+	<editor:LinkHandle id="leftArrowHandle" left="-28" verticalCenter="-5" rotation="180"
 				   skinClass="com.hjx.diagram.editor.skin.ArrowSkin"/>
 </s:Skin>

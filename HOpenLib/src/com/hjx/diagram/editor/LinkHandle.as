@@ -1,6 +1,8 @@
 package com.hjx.diagram.editor
 {
-	public class ArrowHandle extends Handle
+	import spark.components.Button;
+
+	public class LinkHandle extends Button
 	{
 		//---------------------------------------------------------------------
 		// private 类私有静态变量和静态常量声明处。（全部大写，使用下划线进行分割）
@@ -27,7 +29,7 @@ package com.hjx.diagram.editor
 		//---------------------------------------------------------------------
 		// 构造函数，初始化相关工作可以放在里面
 		//---------------------------------------------------------------------
-		public function ArrowHandle()
+		public function LinkHandle()
 		{
 			super();
 		}

@@ -430,6 +430,10 @@ package com.hjx.diagram.editor
 		
 		internal function createAdorner(renderer:Renderer):Adorner
 		{
+			var adorner:* = renderer.getStyle("adornerClass");
+			if(adorner){
+				return new adorner(renderer);
+			}
 			if (renderer is SubGraph) 
 			{
 				return new ResizableNodeAdorner(renderer);

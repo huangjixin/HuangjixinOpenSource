@@ -57,12 +57,12 @@
 		
 		<s:Rect id="border" left="0" top="0" width="100%" height="100%" radiusX="5" radiusY="5">
 			<s:stroke>
-				<mx:SolidColorStroke color="0xC4C4C4" weight="2"
-									 color.collapsed="0xACAEAF"/>
+				<s:SolidColorStroke color="0x03689A" weight="2"
+									 color.collapsed="0x03689A"/>
 			</s:stroke>
 			<s:fill>
-				<mx:SolidColor color="0xF7F7F7"
-							   color.collapsed="0xCEEDFF"/>
+				<s:SolidColor color="0xF7F7F7"
+							   color.collapsed="0xFCFCFF"/>
 			</s:fill>
 		</s:Rect>
 		

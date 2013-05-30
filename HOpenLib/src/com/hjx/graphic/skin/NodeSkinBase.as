@@ -27,8 +27,8 @@ package com.hjx.graphic.skin
 		// private 私有变量声明处，请以“_”开头定义变量
 		// 例如：private var _example:String;
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-		private var _backgroundColor : uint = 0xD1CE9C;
-		private var _borderColor : uint = 0x0;
+		private var _backgroundColor : uint = 0xFCFCFF;
+		private var _borderColor : uint = 0x03689A;
 		private var _caretColor : uint = 0xfff000;
 		private var _color : uint = 0x0;
 		private var _selectedColor : uint = 0xffffff;
@@ -62,6 +62,11 @@ package com.hjx.graphic.skin
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		
+		public function set borderColor(value:uint):void
+		{
+			_borderColor = value;
+		}
+
 		public function set caretColor(value:uint):void
 		{
 			_caretColor = value;

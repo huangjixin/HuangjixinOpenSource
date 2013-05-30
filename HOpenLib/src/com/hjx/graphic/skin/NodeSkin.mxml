@@ -23,6 +23,13 @@
 					backgroundColor = bg;
 				}      
 				
+				var borderColor:* = getStyle("borderColor");
+				
+				 if (this.borderColor != borderColor && borderColor!= undefined)
+				{
+					 this.borderColor = borderColor;
+				}      
+				 
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 			}
 		]]>

@@ -4,7 +4,7 @@
 		xmlns:mx="library://ns.adobe.com/flex/mx">
 	<!-- host component -->
 	<fx:Metadata>
-		[HostComponent("com.hjx.diagram.editor.Handle")]
+		[HostComponent("com.hjx.diagram.editor.ResizeHandle")]
 	</fx:Metadata>
 	<s:states>
 		<s:State name="up" />
