@@ -7,7 +7,7 @@
 				   xmlns:graphics="ws.tink.spark.graphics.*">
 	<!-- host component -->
 	<fx:Metadata>
-		[HostComponent("com.hjx.bpmn.graphic.Group")]
+		[HostComponent("com.hjx.bpmn.graphic.TextAnnotation")]
 	</fx:Metadata>
 	
 	<!-- states -->
@@ -24,24 +24,28 @@
 		<s:VerticalLayout gap="3" horizontalAlign="center"/>
 	</skin:layout>
 	
-	<s:Group id="base" left="0" right="0" top="0" bottom="0" minWidth="100" minHeight="50">
+	<s:Group id="base" left="0" right="0" top="0" bottom="0">
 		
 		<!--<s:filters>
 			<s:GlowFilter includeIn="ShowsCaret" alpha="0.8" blurX="8" blurY="8" color="{caretColor}">
 			</s:GlowFilter>
 		</s:filters> -->   
+		<!--<s:Rect id="rect" left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:SolidColor color="{backgroundColor}"/>
+			</s:fill>
+			<s:stroke>
+				<s:SolidColorStroke color="{borderColor}"/>
+			</s:stroke>
+		</s:Rect>-->
+		<s:Path scaleX="{hostComponent.bracketOnRight ? -1 : 1}" height="100%" right="{hostComponent.bracketOnRight ? 0 : Number.NaN}">
+			<s:data>M 15 0 L 0 0 L 0 30 L 15 30</s:data>
+			<s:stroke>
+				<s:SolidColorStroke weight="1" color="0x808080" />
+			</s:stroke>
+		</s:Path>
 		
-		<s:Rect id="rect" visible="{hostComponent.clickableInside}" left="0" right="0" top="0"
-				bottom="0" radiusX="4" radiusY="4">
-			<s:fill><s:SolidColor alpha="0"/></s:fill>
-		</s:Rect>
-		<primatives:Rect id="dashRect" left="0" right="0" top="0" bottom="0"  radiusX="4" radiusY="4">
-			<primatives:stroke>
-				<graphics:SolidColorDash dash="8" gap="4" joints="round" caps="round" weight="2" color="0xa0a0a0"/>
-			</primatives:stroke>
-		</primatives:Rect>
-		
-		<s:Group id="labelsGroup" top="5" horizontalCenter="0">
+		<s:Group id="labelsGroup" verticalCenter="0" horizontalCenter="0">
 			<s:Label id="labelElement" maxWidth="{base.width - 10}" color="{color}" fontSize="12"
 					 text="{hostComponent.label}" textAlign="center"/>
 		</s:Group>

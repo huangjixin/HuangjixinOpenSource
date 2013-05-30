@@ -7,7 +7,7 @@
 				   xmlns:graphics="ws.tink.spark.graphics.*">
 	<!-- host component -->
 	<fx:Metadata>
-		[HostComponent("com.hjx.bpmn.graphic.Group")]
+		[HostComponent("com.hjx.bpmn.graphic.DataObject")]
 	</fx:Metadata>
 	
 	<!-- states -->
@@ -31,15 +31,15 @@
 			</s:GlowFilter>
 		</s:filters> -->   
 		
-		<s:Rect id="rect" visible="{hostComponent.clickableInside}" left="0" right="0" top="0"
-				bottom="0" radiusX="4" radiusY="4">
-			<s:fill><s:SolidColor alpha="0"/></s:fill>
-		</s:Rect>
-		<primatives:Rect id="dashRect" left="0" right="0" top="0" bottom="0"  radiusX="4" radiusY="4">
-			<primatives:stroke>
-				<graphics:SolidColorDash dash="8" gap="4" joints="round" caps="round" weight="2" color="0xa0a0a0"/>
-			</primatives:stroke>
-		</primatives:Rect>
+		<s:Path>
+			<s:data>M 0 0 L 18 0 L 30 12 L 30 40 L 0 40 z</s:data>
+			<s:fill><s:SolidColor color="0xFAFAD2" /></s:fill>
+			<s:stroke><s:SolidColorStroke weight="2" color="0x808080" /></s:stroke>
+		</s:Path>
+		<s:Path>
+			<s:data>M 18 0 L 18 12 L 30 12</s:data>
+			<s:stroke><s:SolidColorStroke weight="1" color="0x808080" /></s:stroke>
+		</s:Path>
 		
 		<s:Group id="labelsGroup" top="5" horizontalCenter="0">
 			<s:Label id="labelElement" maxWidth="{base.width - 10}" color="{color}" fontSize="12"
