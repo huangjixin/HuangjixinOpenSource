@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin:NodeSkinBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:skin="com.hjx.graphic.skin.*"
+				   xmlns:primatives="ws.tink.spark.primatives.*"
+				   xmlns:graphics="ws.tink.spark.graphics.*">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("com.hjx.bpmn.graphic.Group")]
+	</fx:Metadata>
+	
+	<!-- states -->
+	<skin:states>
+		<s:State name="active"/>
+		<s:State name="done"/>
+		<s:State name="normal"/>
+		<s:State name="normalAndShowsCaret"/>
+		<s:State name="selected"/>
+		<s:State name="selectedAndShowsCaret"/>
+	</skin:states>
+	
+	<skin:layout>
+		<s:VerticalLayout gap="3" horizontalAlign="center"/>
+	</skin:layout>
+	
+	<s:Group id="base" left="0" right="0" top="0" bottom="0" minWidth="100" minHeight="50">
+		
+		<!--<s:filters>
+			<s:GlowFilter includeIn="ShowsCaret" alpha="0.8" blurX="8" blurY="8" color="{caretColor}">
+			</s:GlowFilter>
+		</s:filters> -->   
+		
+		<s:Rect id="rect" visible="{hostComponent.clickableInside}" left="0" right="0" top="0"
+				bottom="0">
+			<s:fill><s:SolidColor alpha="0"/></s:fill>
+		</s:Rect>
+		<primatives:Rect id="dashRect" left="0" right="0" top="0" bottom="0">
+			<primatives:stroke>
+				<graphics:SolidColorDash dash="8" gap="4" joints="round" caps="round" weight="2" color="0xa0a0a0"/>
+			</primatives:stroke>
+		</primatives:Rect>
+		
+		<s:Group id="labelsGroup" top="5" horizontalCenter="0">
+			<s:Label id="labelElement" maxWidth="{base.width - 10}" color="{color}" fontSize="12"
+					 text="{hostComponent.label}" textAlign="center"/>
+		</s:Group>
+	</s:Group>
+</skin:NodeSkinBase>

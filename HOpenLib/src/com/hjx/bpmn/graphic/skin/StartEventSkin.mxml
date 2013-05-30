@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin:NodeSkinBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:skin="com.hjx.graphic.skin.*">
+	<fx:Declarations>
+		<s:GlowFilter id="glowFilter" blurX="20" blurY="20" color="0x00FF00" strength="3"/>
+		
+		<s:AnimateFilter id="animateWaitEffect" bitmapFilter="{glowFilter}" duration="250"
+						 repeatBehavior="reverse" repeatCount="0" target="{wait}">
+			<s:SimpleMotionPath property="alpha" valueFrom="0" valueTo="1"/>
+		</s:AnimateFilter>
+	</fx:Declarations>
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("com.hjx.bpmn.graphic.StartEvent")]
+	</fx:Metadata>
+	
+	<!-- states -->
+	<skin:states>
+		<s:State name="active"/>
+		<s:State name="done"/>
+		<s:State name="normal"/>
+		<s:State name="normalAndShowsCaret"/>
+		<s:State name="selected"/>
+		<s:State name="selectedAndShowsCaret"/>
+	</skin:states>
+	
+	<skin:layout>
+		<s:VerticalLayout gap="3" horizontalAlign="center"/>
+	</skin:layout>
+	
+	
+	
+	<s:Group id="base">  
+		<!-- indicators for monitoring status -->
+		<mx:SWFLoader id="wait" includeIn="active" right="-8" top="-16" width="16" height="16"
+					  activate="{animateWaitEffect.play()}" deactivate="{animateWaitEffect.stop()}"
+					  source="@Embed(source='../images/wait.svg')"/>
+		<mx:SWFLoader includeIn="done" right="-8" top="-16" width="16" height="16"
+					  source="@Embed(source='../images/ok.svg')"/>
+		
+		<s:Ellipse id="ellipse" width="29" height="29" horizontalCenter="0" verticalCenter="0">
+			<s:fill>
+				<s:LinearGradient rotation="-135">
+					<s:entries>
+						<s:GradientEntry color="0xBBD982" ratio="0"/>
+						<s:GradientEntry color="0xFFFFFF" ratio="1"/>
+					</s:entries>
+				</s:LinearGradient>
+			</s:fill>
+			<s:stroke><s:SolidColorStroke color="0x71924B" weight="1.5"/></s:stroke>
+		</s:Ellipse>
+		
+		<!--<bpmn:BPMNIcon closedStrokeColor="0x71924B" filled="false"
+					   horizontalCenter="{hostComponent.trigger == 'Timer' ? 0 : 0}"
+					   openStrokeColor="0x71924B" styleName="{hostComponent.trigger + 'Trigger'}"
+					   verticalCenter="{hostComponent.trigger == 'Timer' ? 0 : 0}"/>-->
+		
+	</s:Group>
+	
+	<s:Group id="labelsGroup">
+		<s:Label id="labelElement" maxWidth="{hostComponent.maxWidth}" color="{color}" fontSize="12"
+				 text="{hostComponent.label}" textAlign="center"/>
+	</s:Group>
+</skin:NodeSkinBase>

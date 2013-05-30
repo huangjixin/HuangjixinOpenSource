@@ -45,8 +45,8 @@
 		<s:State name="collapsedSelected"/>
 		<s:State name="collapsedSelectedAndShowsCaret"/>
 	</skin:states>
-	<s:Group id="base" left="0" top="0" width="{hostComponent.expandedWidth}"
-			 height="{hostComponent.expandedHeight}"
+	<s:Group id="base" left="0" top="0" width="{hostComponent.width}"
+			 height="{hostComponent.height}"
 			 width.collapsed="{hostComponent.collapsedWidth}"
 			 height.collapsed="{hostComponent.collapsedHeight}">
 		<s:filters>
@@ -55,7 +55,7 @@
 			</s:GlowFilter>
 		</s:filters>
 		
-		<s:Rect id="border" left="0" top="0" width="100%" height="100%" radiusX="5" radiusY="5">
+		<s:Rect id="border" left="0" top="0" right="0" bottom="0" radiusX="5" radiusY="5">
 			<s:stroke>
 				<s:SolidColorStroke color="0x03689A" weight="2"
 									 color.collapsed="0x03689A"/>

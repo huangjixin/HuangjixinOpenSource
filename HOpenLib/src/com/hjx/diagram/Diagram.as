@@ -26,6 +26,7 @@ package com.hjx.diagram
 	import mx.collections.IViewCursor;
 	import mx.core.ClassFactory;
 	import mx.core.IFactory;
+	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	
 	import spark.components.Button;
@@ -333,26 +334,31 @@ package com.hjx.diagram
 				var subGraph:SubGraph;
 				var hierarchicalCollectionView :HierarchicalCollectionView;
 				if(cursor.current is XML){
+					var xml:XML = cursor.current as XML;
 					var localName:Object = XML(cursor.current).localName();
+					var className:String = xml.localName();
+					var ns:Namespace = xml.namespace();
+					if(ns != null)
+						className = ns.uri + "::" + className;
+					
 					if(localName){
-						if(localName == "node"){
-							nodeRenderer = new ClassFactory(Node);
-							node = nodeRenderer.newInstance() as Node;
-							container.addElement(node);
-							node.label = label;
-							node.x = x;
-							node.y = y;
-						}else if(localName == "graph"){
-							nodeRenderer = new ClassFactory(SubGraph);
-							subGraph = nodeRenderer.newInstance() as SubGraph;
-							container.addElement(subGraph);
-							subGraph.label = label;
-							subGraph.x = x;
-							subGraph.y = y;
-							
+						var objclass:Class = getDefinitionByName(className) as Class;
+						var object:Object = new objclass();
+						for each(var att:Object in xml.attributes()){
+							try {
+								var name:String = att.name();
+								var defaultValue:Object = object[name];
+								var value:Object = xml.attribute(name);
+								if(value != null)
+									object[name] = value;
+							} catch(err:Error){}
+						}
+						
+						container.addElement(object as IVisualElement);
+						if(object is SubGraph){
 							hierarchicalCollectionView = new HierarchicalCollectionView(new HierarchicalData(cursor.current));
 							hierarchicalCollectionView.showRoot = nodeRoot.showRoot;
-							installNodes(hierarchicalCollectionView,subGraph.graph);
+							installNodes(hierarchicalCollectionView,object as SubGraph);
 						}
 					}
 				}else if(cursor.current is Object){
