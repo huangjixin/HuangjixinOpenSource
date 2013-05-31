@@ -112,6 +112,7 @@ package com.hjx.diagram.editor
 					this.translateAdornedObject(offsetX, offsetY);
 					moveDragPoint(loc9, loc10);
 				}*/
+				//对所有的选中节点进行缩放和位置调整。
 				var selectedObjs:Vector.<Renderer> = this.editor.getSelectedObjects();
 				for each (var renderer:Renderer in selectedObjs) 
 				{
