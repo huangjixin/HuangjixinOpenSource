@@ -35,20 +35,22 @@ package com.hjx.diagram.editor
 		
 		override protected function handleDragged(displayObject:DisplayObject, event:MouseEvent, offsetX:Number, offsetY:Number):void
 		{
+			/*var loc1:*=NaN;
+			var loc2:*=NaN;
+			var loc3:*=NaN;
+			var loc4:*=NaN;
+			var loc5:*=null;
+			var loc6:*=null;
+			var loc7:*=NaN;
+			var loc8:*=NaN;
+			var loc9:*=NaN;
+			var loc10:*=NaN;*/
 			if (this.isResizeHandle(displayObject)) 
 			{
-				trace(offsetX+","+offsetY);
-				var loc1:Number=NaN;
-				var loc2:Number=NaN;
-				var loc3:Number=NaN;
-				var loc4:Number=NaN;
-				var loc5:Rectangle=null;
-				var loc6:Rectangle=null;
-				var loc7:Number=NaN;
-				var loc8:Number=NaN;
-				var loc9:Number=NaN;
-				var loc10:Number=NaN;
-			
+				/*if (!editor.dispatchEditorEvent(com.ibm.ilog.elixir.diagram.editor.DiagramEditorEvent.EDITOR_RESIZE, adornedObject)) 
+				{
+					return;
+				}
 				loc1 = 0;
 				loc2 = 0;
 				loc3 = 0;
@@ -81,8 +83,7 @@ package com.hjx.diagram.editor
 					this.resizeAdornedObject(loc3, loc4);
 				}
 				editor.validateNow();
-				loc6 = getAdornerRectangle(graph)
-				loc7 = loc6.width - (loc5.width + loc3);
+				loc7 = (loc6 = getAdornerRectangle(graph)).width - (loc5.width + loc3);
 				loc8 = loc6.height - (loc5.height + loc4);
 				if (!(loc7 == 0) || !(loc8 == 0)) 
 				{
@@ -110,7 +111,37 @@ package com.hjx.diagram.editor
 					}
 					this.translateAdornedObject(offsetX, offsetY);
 					moveDragPoint(loc9, loc10);
+				}*/
+				var offsetWidth:Number = 0;
+				var offsetHeight:Number = 0;
+				var rect:Rectangle = getAdornerRectangle(graph);
+				var changedRect:Rectangle;
+				if(displayObject == bottomRightHandle){
+					offsetWidth = offsetX;
+					offsetHeight = offsetY;
+					
+					resizeAdornedObject(offsetX, offsetY);
+					changedRect = getAdornerRectangle(graph);
+				}else if(displayObject == topLeftHandle){
+					offsetWidth = -offsetX;
+					offsetHeight = -offsetY;
+					
+					resizeAdornedObject(-offsetX, -offsetY);
+					translateAdornedObject(offsetX, offsetY);
+				}else if(displayObject == bottomLeftHandle){
+					offsetWidth = -offsetX;
+					offsetHeight = offsetY;
+					
+					resizeAdornedObject(-offsetX, offsetY);
+					translateAdornedObject(offsetX, 0);
+				}else if(displayObject == topRightHandle){
+					offsetWidth = offsetX;
+					offsetHeight = -offsetY;
+					
+					resizeAdornedObject(offsetX, -offsetY);
+					translateAdornedObject(0, offsetY);
 				}
+				editor.validateNow();
 			}
 			else 
 			{
@@ -120,8 +151,13 @@ package com.hjx.diagram.editor
 		
 		protected function translateAdornedObject(offsetX:Number, offsetY:Number):void
 		{
-			adornedObject.setX(adornedObject,adornedObject.getX(adornedObject)+offsetX);
-			adornedObject.setY(adornedObject,adornedObject.getY(adornedObject)+offsetY);
+			if(adornedObject.width>20){
+				adornedObject.setX(adornedObject,adornedObject.getX(adornedObject)+offsetX);
+			}
+			if(adornedObject.height>20){
+				adornedObject.setY(adornedObject,adornedObject.getY(adornedObject)+offsetY);
+			}
+			
 			return;
 		}
 		
