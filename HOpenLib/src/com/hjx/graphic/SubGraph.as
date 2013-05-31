@@ -69,26 +69,10 @@ package com.hjx.graphic
 		[SkinPart(required="true")]
 		public var graph:Graph;
 		
-		/**
-		 * 收缩状态宽度
-		 */
-		[Bindable]
-		public var collapsedWidth :Number;
-		/**
-		 *收缩状态高度 
-		 */
-		[Bindable]
-		public var collapsedHeight :Number;
-		/**
-		 * 张开状态宽度 
-		 */
-		[Bindable]
-		public var expandedWidth :Number;
-		/**
-		 * 张开状态高度 
-		 */
-		[Bindable]
-		public var expandedHeight :Number;
+		private var _collapsedWidth :Number;
+		private var _collapsedHeight :Number;
+		private var _expandedWidth :Number;
+		private var _expandedHeight :Number;
 		
 		[Bindable]
 		public var graphMarginLeft:Number = 0;
@@ -114,6 +98,147 @@ package com.hjx.graphic
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// getter和setter函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/		
+
+		[Bindable]
+		/**
+		 * 张开状态高度 
+		 */
+		public function get expandedHeight():Number
+		{
+			return _expandedHeight;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set expandedHeight(value:Number):void
+		{
+			if (isNaN(value) && isNaN(this._expandedHeight)) 
+			{
+				return;
+			}
+			if (value != this._expandedHeight) 
+			{
+				this._expandedHeight = value;
+				if (!this.collapsed) 
+				{
+					if (value != height) 
+					{
+						super.height = value;
+					}
+					if (value != explicitHeight) 
+					{
+						super.explicitHeight = value;
+					}
+				}
+			}
+		}
+
+		[Bindable]
+		/**
+		 * 张开状态宽度 
+		 */
+		public function get expandedWidth():Number
+		{
+			return _expandedWidth;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set expandedWidth(value:Number):void
+		{
+			if (isNaN(value) && isNaN(this._expandedWidth)) 
+			{
+				return;
+			}
+			if (value != this._expandedWidth) 
+			{
+				this._expandedWidth = value;
+				if (!this.collapsed) 
+				{
+					if (value != width) 
+					{
+						super.width = value;
+					}
+					if (value != explicitWidth) 
+					{
+						super.explicitWidth = value;
+					}
+				}
+			}
+		}
+
+		[Bindable]
+		/**
+		 *收缩状态高度 
+		 */
+		public function get collapsedHeight():Number
+		{
+			return _collapsedHeight;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set collapsedHeight(value:Number):void
+		{
+			if (isNaN(value) && isNaN(this._collapsedHeight)) 
+			{
+				return;
+			}
+			if (value != this._collapsedHeight) 
+			{
+				this._collapsedHeight = value;
+				if (this.collapsed) 
+				{
+					if (value != height) 
+					{
+						super.height = value;
+					}
+					if (value != explicitHeight) 
+					{
+						super.explicitHeight = value;
+					}
+				}
+			}
+		}
+
+		[Bindable]
+		/**
+		 * 收缩状态宽度
+		 */
+		public function get collapsedWidth():Number
+		{
+			return _collapsedWidth;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set collapsedWidth(value:Number):void
+		{
+			if (isNaN(value) && isNaN(this._collapsedWidth)) 
+			{
+				return;
+			}
+			if (value != this._collapsedWidth) 
+			{
+				this._collapsedWidth = value;
+				if (this.collapsed) 
+				{
+					if (value != width) 
+					{
+						super.width = value;
+					}
+					if (value != explicitWidth) 
+					{
+						super.explicitWidth = value;
+					}
+				}
+			}
+			return;
+		}
 
 		public function get mxmlContent():Array
 		{
@@ -145,10 +270,36 @@ package com.hjx.graphic
 		 */
 		public function set collapsed(value:Boolean):void
 		{
-			_collapsed = value;
-			invalidateSkinState();
+			if (this._collapsed != value) 
+			{
+				if (this._collapsed) 
+				{
+					this._collapsedWidth = explicitWidth;
+					this._collapsedHeight = explicitHeight;
+				}
+				else 
+				{
+					this._expandedWidth = explicitWidth;
+					this._expandedHeight = explicitHeight;
+				}
+				_collapsed = value;;
+				if (this._collapsed) 
+				{
+					explicitWidth = this._collapsedWidth;
+					explicitHeight = this._collapsedHeight;
+				}
+				else 
+				{
+					explicitWidth = this._expandedWidth;
+					explicitHeight = this._expandedHeight;
+				}
+				invalidateSkinState();
+				this.performLayoutOnParent();
+			}
+			return;
 		}
 
+		
 		/**
 		 * 该setter函数保证了可以在mxml里面进行组件声明。 
 		 * @param value
@@ -160,6 +311,29 @@ package com.hjx.graphic
 			mxmlContentChanged = true;
 		}
 		
+		override public function set width(value:Number):void{
+			super.width = value;
+			if (this._collapsed) 
+			{
+				this.collapsedWidth = value;
+			}
+			else 
+			{
+				this.expandedWidth = value;
+			}
+		} 
+		
+		override public function set height(value:Number):void{
+			super.height = value;
+			if (this._collapsed) 
+			{
+				this.collapsedHeight = value;
+			}
+			else 
+			{
+				this.expandedHeight = value;
+			}
+		} 
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// 相关事件响应函数和逻辑函数存放处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/

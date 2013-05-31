@@ -163,6 +163,11 @@ package com.hjx.diagram.editor
 			return;
 		}
 		
+		/**
+		 * 如果y舞台的移动量（纵坐标或者横坐标）大于2，就认为有了移动。
+		 * @param event
+		 * 
+		 */
 		internal function mouseMoveInStage(event:MouseEvent):void
 		{
 			if (this.interactiveHandle != null) 
@@ -178,7 +183,7 @@ package com.hjx.diagram.editor
 					if (Math.abs(offsetX) > 2 || Math.abs(offsetY) > 2) 
 					{
 						this._mouseDragged = true;
-						startPoint = new flash.geom.Point(this._startX, this._startY);
+						startPoint = new Point(this._startX, this._startY);
 						startPoint = editor.snapPoint(startPoint, stage);
 						this._startX = startPoint.x;
 						this._startY = startPoint.y;
@@ -188,6 +193,8 @@ package com.hjx.diagram.editor
 				if (this._mouseDragged) 
 				{
 					var stagePoint:Point = new flash.geom.Point(stageX, stageY);
+					stagePoint =this.editor.snapPoint(stagePoint, stage);
+					
 					stagePoint = editor.graph.globalToLocal(stage.localToGlobal(stagePoint));
 					startPoint = editor.graph.globalToLocal(stage.localToGlobal(new flash.geom.Point(this._startX, this._startY)));
 					offsetX = stagePoint.x - startPoint.x;

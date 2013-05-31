@@ -51,6 +51,8 @@ package com.hjx.diagram.editor
 		// private 私有变量声明处，请以“_”开头定义变量
 		// 例如：private var _example:String;
 		//--------------------------------------------------------
+		public var allowMoving:Boolean=true;
+		
 		private var defaultCSSStyles:Object = {
 			skinClass:DiagramEditorSkin
 		};
@@ -90,8 +92,12 @@ package com.hjx.diagram.editor
 		private var startX:Number;
 		private var startY:Number;
 		
+		private var lastX:Number;
+		private var lastY:Number;
+		
 		internal var mouseDown:Boolean;
 		internal var isDragging:Boolean;
+		
 		
 		public function DiagramEditor()
 		{
@@ -188,10 +194,11 @@ package com.hjx.diagram.editor
 		 */
 		internal function mouseDownHandler(event:MouseEvent):void
 		{
-			/*if (!this.adornersGroup.getBounds(this._graph).contains(this._graph.mouseX, this._graph.mouseY)) 
+			var graphRect:Rectangle = this.graph.getBounds(this.adornersGroup);
+			if (!graphRect.contains(this._graph.mouseX, this._graph.mouseY)) 
 			{
 				return;
-			}*/
+			}
 			
 			var renderer:Renderer=getRenderer(event.target);
 			this._graph.setFocus();
@@ -239,31 +246,48 @@ package com.hjx.diagram.editor
 		
 		internal function mouseDragHandler(event:MouseEvent):void
 		{
+			var startPoint:Point; //拖拽开始点。
 			if (this.mouseDown && !this.inAdornerInteraction) 
 			{
-				var lastX:Number = this.adornersGroup.mouseX;  
-				var lastY:Number = this.adornersGroup.mouseY; 
+				var currentX:Number = this.adornersGroup.mouseX;  
+				var currentY:Number = this.adornersGroup.mouseY; 
 				
 				var renderer:Renderer = getRenderer(event.target);
-				
-				if (this.marquee == null) 
+				if (!this.isDragging) 
 				{
-					this.marquee = new Rect();
-					this.marquee.maxWidth = Number.MAX_VALUE;
-					this.marquee.maxHeight = Number.MAX_VALUE;
-					var solidColorDash:SolidColorDash = new SolidColorDash(2,2,0x2A9DFF,1,1);
-					var solidColor:SolidColor = new SolidColor(0x0576DC,0.2);
-					this.marquee.stroke = solidColorDash;
-					this.marquee.fill = solidColor;
-					this.adornersGroup.addElement(this.marquee);
+					//此处我们认为移动的距离超过两个像素便认定在拖拽。
+					if (Math.abs(currentX - this.startX) > 2 || Math.abs(currentY - this.startY) > 2) 
+					{
+						this.isDragging = true;
+						startPoint = new Point(this.startX, this.startY);
+						//变换为graph对象的坐标。
+						startPoint = this.snapPoint(startPoint, this._graph);
+						this.lastX = startPoint.x;
+						this.lastY = startPoint.y;
+					}
 				}
 				
-				var start:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(this.startX, this.startY)));  
-				var end:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(lastX, lastY)));  
-				this.marquee.left = Math.min(start.x, end.x);  
-				this.marquee.top = Math.min(start.y, end.y);  
-				this.marquee.width = Math.abs(start.x - end.x);  
-				this.marquee.height = Math.abs(start.y - end.y);
+				if (!this.inAdornerInteraction) 
+				{
+					if (this.marquee == null) 
+					{
+						this.marquee = new Rect();
+						this.marquee.maxWidth = Number.MAX_VALUE;
+						this.marquee.maxHeight = Number.MAX_VALUE;
+						var solidColorDash:SolidColorDash = new SolidColorDash(2,2,0x2A9DFF,1,1);
+						var solidColor:SolidColor = new SolidColor(0x0576DC,0.2);
+						this.marquee.stroke = solidColorDash;
+						this.marquee.fill = solidColor;
+						this.adornersGroup.addElement(this.marquee);
+					}
+					
+					var start:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(this.startX, this.startY)));  
+					var end:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(currentX, currentY)));  
+					this.marquee.left = Math.min(start.x, end.x);  
+					this.marquee.top = Math.min(start.y, end.y);  
+					this.marquee.width = Math.abs(start.x - end.x);  
+					this.marquee.height = Math.abs(start.y - end.y);
+				}
 			}
 		}
 		
@@ -325,6 +349,13 @@ package com.hjx.diagram.editor
 			return;
 		}
 		
+		/**
+		 * 坐标转换。 
+		 * @param point
+		 * @param displayObjectContainer
+		 * @return 
+		 * 
+		 */
 		function snapPoint(point:Point, displayObjectContainer:DisplayObjectContainer):flash.geom.Point
 		{
 			if (displayObjectContainer != this._graph) 
@@ -395,8 +426,10 @@ package com.hjx.diagram.editor
 			if (diagramParent)
 			{
 				diagramParent.removeAllElements();
-				diagramParent.addElementAt(diagram, 0);
-				this.graph = diagram.graph;
+				this._diagram.percentWidth = 100;
+				this._diagram.percentHeight = 100;
+				diagramParent.addElementAt(this._diagram, 0);
+				this.graph = this._diagram.graph;
 			}
 		}
 		
@@ -452,6 +485,13 @@ package com.hjx.diagram.editor
 		//--------------------------------------------------------
 		// override 覆盖函数
 		//--------------------------------------------------------
+		override protected function partAdded(partName:String, instance:Object):void{
+			super.partAdded(partName, instance);
+			if(instance == adornersGroup){
+				/**/
+			}
+		}
+		
 		override protected function commitProperties():void{
 			super.commitProperties();
 			if(_diagramChanged){

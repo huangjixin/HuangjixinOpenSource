@@ -45,8 +45,8 @@
 		<s:State name="collapsedSelected"/>
 		<s:State name="collapsedSelectedAndShowsCaret"/>
 	</skin:states>
-	<s:Group id="base" left="0" top="0" width="{hostComponent.width}"
-			 height="{hostComponent.height}"
+	<s:Group id="base" left="0" top="0" width="{hostComponent.expandedWidth}"
+			 height="{hostComponent.expandedHeight}"
 			 width.collapsed="{hostComponent.collapsedWidth}"
 			 height.collapsed="{hostComponent.collapsedHeight}">
 		<s:filters>
@@ -74,21 +74,24 @@
 			
 			<!-- button to expand or collapse the subgraph -->
 			
-			<s:Group width="14" height="14"
+			<s:Group width="12" height="12"
 					 mouseDown="{hostComponent.collapsed = !hostComponent.collapsed; event.stopPropagation();}">
-				<s:Rect bottom="1" width="14" height="14" radiusX="3" radiusY="3">
+				<s:Rect bottom="1" width="12" height="12" radiusX="0" radiusY="0">
 					<s:fill>
-						<mx:SolidColor color="0xd0d0d0"/>
+						<s:SolidColor color="0xF7F7F7"/>
 					</s:fill>
+					<s:stroke>
+						<s:SolidColorStroke color="0x03689A" weight="1"/>
+					</s:stroke>
 				</s:Rect>
 				<s:Rect width="8" height="2" horizontalCenter="0" verticalCenter="-1">
 					<s:fill>
-						<mx:SolidColor color="0x404040"/>
+						<s:SolidColor color="0x03689A"/>
 					</s:fill>
 				</s:Rect>
 				<s:Rect visible="false" visible.collapsed="true" width="2" height="8" horizontalCenter="0" verticalCenter="-1">
 					<s:fill>
-						<mx:SolidColor color="0x404040"/>
+						<s:SolidColor color="0x03689A"/>
 					</s:fill>
 				</s:Rect>
 			</s:Group>

@@ -35,23 +35,20 @@ package com.hjx.diagram.editor
 		
 		override protected function handleDragged(displayObject:DisplayObject, event:MouseEvent, offsetX:Number, offsetY:Number):void
 		{
-			trace(offsetX+","+offsetY);
-			var loc1:Number=NaN;
-			var loc2:Number=NaN;
-			var loc3:Number=NaN;
-			var loc4:Number=NaN;
-			var loc5:Rectangle=null;
-			var loc6:Rectangle=null;
-			var loc7:Number=NaN;
-			var loc8:Number=NaN;
-			var loc9:Number=NaN;
-			var loc10:Number=NaN;
 			if (this.isResizeHandle(displayObject)) 
 			{
-				/*if (!editor.dispatchEditorEvent(com.ibm.ilog.elixir.diagram.editor.DiagramEditorEvent.EDITOR_RESIZE, adornedObject)) 
-				{
-					return;
-				}*/
+				trace(offsetX+","+offsetY);
+				var loc1:Number=NaN;
+				var loc2:Number=NaN;
+				var loc3:Number=NaN;
+				var loc4:Number=NaN;
+				var loc5:Rectangle=null;
+				var loc6:Rectangle=null;
+				var loc7:Number=NaN;
+				var loc8:Number=NaN;
+				var loc9:Number=NaN;
+				var loc10:Number=NaN;
+			
 				loc1 = 0;
 				loc2 = 0;
 				loc3 = 0;
@@ -84,7 +81,8 @@ package com.hjx.diagram.editor
 					this.resizeAdornedObject(loc3, loc4);
 				}
 				editor.validateNow();
-				loc7 = (loc6 = getAdornerRectangle(graph)).width - (loc5.width + loc3);
+				loc6 = getAdornerRectangle(graph)
+				loc7 = loc6.width - (loc5.width + loc3);
 				loc8 = loc6.height - (loc5.height + loc4);
 				if (!(loc7 == 0) || !(loc8 == 0)) 
 				{
@@ -118,7 +116,6 @@ package com.hjx.diagram.editor
 			{
 				super.handleDragged(displayObject, event, offsetX, offsetY);
 			}
-			return;
 		}
 		
 		protected function translateAdornedObject(offsetX:Number, offsetY:Number):void
@@ -130,30 +127,30 @@ package com.hjx.diagram.editor
 		
 		protected function resizeAdornedObject(offsetX:Number, offsetY:Number):void
 		{
-			var resizeX:Number=adornedObject.width + offsetX;
-			var resizeY:Number=adornedObject.height + offsetY;
+			var newWidth:Number=adornedObject.width + offsetX;
+			var newHeight:Number=adornedObject.height + offsetY;
 			
 			if (!isNaN(adornedObject.minWidth)) 
 			{
-				resizeX = Math.max(resizeX, adornedObject.minWidth);
+				newWidth = Math.max(newWidth, adornedObject.minWidth);
 			}
 			if (!isNaN(adornedObject.minHeight)) 
 			{
-				resizeY = Math.max(resizeY, adornedObject.minHeight);
+				newHeight = Math.max(newHeight, adornedObject.minHeight);
 			}
 			if (!isNaN(adornedObject.maxWidth)) 
 			{
-				resizeX = Math.min(resizeX, adornedObject.maxWidth);
+				newWidth = Math.min(newWidth, adornedObject.maxWidth);
 			}
 			if (!isNaN(adornedObject.maxHeight)) 
 			{
-				resizeY = Math.min(resizeY, adornedObject.maxHeight);
+				newHeight = Math.min(newHeight, adornedObject.maxHeight);
 			}
 			
-			resizeX = Math.max(resizeX, 10);
-			resizeY = Math.max(resizeY, 10);
-			adornedObject.width = resizeX;
-			adornedObject.height = resizeY;
+			newWidth = Math.max(newWidth, 20);
+			newHeight = Math.max(newHeight, 20);
+			adornedObject.width = newWidth;
+			adornedObject.height = newHeight;
 		}
 		
 		override protected function isHandle(object:Object):Boolean
