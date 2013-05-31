@@ -37,7 +37,7 @@
 		</s:Rect>
 		<primatives:Rect id="dashRect" left="0" right="0" top="0" bottom="0"  radiusX="4" radiusY="4">
 			<primatives:stroke>
-				<graphics:SolidColorDash dash="8" gap="4" joints="round" caps="round" weight="2" color="0xa0a0a0"/>
+				<graphics:SolidColorDash dash="8" gap="8" joints="round" caps="round" weight="2" color="0xa0a0a0"/>
 			</primatives:stroke>
 		</primatives:Rect>
 		
