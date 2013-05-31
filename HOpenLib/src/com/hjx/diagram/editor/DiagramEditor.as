@@ -99,7 +99,7 @@ package com.hjx.diagram.editor
 			
 			this.selectedObjects = new Vector.<Renderer>();
 			this.adorners = new Dictionary();
-			this.addEventListener(MouseEvent.MOUSE_DOWN, this.mouseDownHandler, true);
+			this.addEventListener(MouseEvent.MOUSE_DOWN, this.mouseDownHandler);
 			this.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseMoveHandler);
 			this.addEventListener(MouseEvent.MOUSE_OVER, this.mouseOverHandler);
 		}//构造函数结束
