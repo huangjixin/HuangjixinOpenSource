@@ -112,36 +112,50 @@ package com.hjx.diagram.editor
 					this.translateAdornedObject(offsetX, offsetY);
 					moveDragPoint(loc9, loc10);
 				}*/
-				var offsetWidth:Number = 0;
+				var selectedObjs:Vector.<Renderer> = this.editor.getSelectedObjects();
+				for each (var renderer:Renderer in selectedObjs) 
+				{
+					var adornerClass:* = renderer.getStyle("adornerClass");
+					if(undefined != adornerClass && new adornerClass(renderer) is ResizableNodeAdorner){
+						var offsetWidth:Number = 0;
+						var offsetHeight:Number = 0;
+						var rect:Rectangle = getAdornerRectangle(graph);
+						var changedRect:Rectangle;
+						if(displayObject == bottomRightHandle){
+							resizeAdornedObject(renderer,offsetX, offsetY);
+							changedRect = getAdornerRectangle(graph);
+						}else if(displayObject == topLeftHandle){
+							resizeAdornedObject(renderer,-offsetX, -offsetY);
+							translateAdornedObject(renderer,offsetX, offsetY);
+						}else if(displayObject == bottomLeftHandle){
+							resizeAdornedObject(renderer,-offsetX, offsetY);
+							translateAdornedObject(renderer,offsetX, 0);
+						}else if(displayObject == topRightHandle){
+							resizeAdornedObject(renderer,offsetX, -offsetY);
+							translateAdornedObject(renderer,0, offsetY);
+						}
+						editor.validateNow();
+					}
+				}
+				
+				/*var offsetWidth:Number = 0;
 				var offsetHeight:Number = 0;
 				var rect:Rectangle = getAdornerRectangle(graph);
 				var changedRect:Rectangle;
 				if(displayObject == bottomRightHandle){
-					offsetWidth = offsetX;
-					offsetHeight = offsetY;
-					
-					resizeAdornedObject(offsetX, offsetY);
+					resizeAdornedObject(this.adornedObject,offsetX, offsetY);
 					changedRect = getAdornerRectangle(graph);
 				}else if(displayObject == topLeftHandle){
-					offsetWidth = -offsetX;
-					offsetHeight = -offsetY;
-					
-					resizeAdornedObject(-offsetX, -offsetY);
-					translateAdornedObject(offsetX, offsetY);
+					resizeAdornedObject(this.adornedObject,-offsetX, -offsetY);
+					translateAdornedObject(this.adornedObject,offsetX, offsetY);
 				}else if(displayObject == bottomLeftHandle){
-					offsetWidth = -offsetX;
-					offsetHeight = offsetY;
-					
-					resizeAdornedObject(-offsetX, offsetY);
-					translateAdornedObject(offsetX, 0);
+					resizeAdornedObject(this.adornedObject,-offsetX, offsetY);
+					translateAdornedObject(this.adornedObject,offsetX, 0);
 				}else if(displayObject == topRightHandle){
-					offsetWidth = offsetX;
-					offsetHeight = -offsetY;
-					
-					resizeAdornedObject(offsetX, -offsetY);
-					translateAdornedObject(0, offsetY);
+					resizeAdornedObject(this.adornedObject,offsetX, -offsetY);
+					translateAdornedObject(this.adornedObject,0, offsetY);
 				}
-				editor.validateNow();
+				editor.validateNow();*/
 			}
 			else 
 			{
@@ -149,7 +163,7 @@ package com.hjx.diagram.editor
 			}
 		}
 		
-		protected function translateAdornedObject(offsetX:Number, offsetY:Number):void
+		protected function translateAdornedObject(adornedObject:Renderer,offsetX:Number, offsetY:Number):void
 		{
 			if(adornedObject.width>20){
 				adornedObject.setX(adornedObject,adornedObject.getX(adornedObject)+offsetX);
@@ -161,7 +175,7 @@ package com.hjx.diagram.editor
 			return;
 		}
 		
-		protected function resizeAdornedObject(offsetX:Number, offsetY:Number):void
+		protected function resizeAdornedObject(adornedObject:Renderer,offsetX:Number, offsetY:Number):void
 		{
 			var newWidth:Number=adornedObject.width + offsetX;
 			var newHeight:Number=adornedObject.height + offsetY;
