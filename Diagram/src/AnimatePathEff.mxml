@@ -14,11 +14,11 @@
 			import com.lafabrick.uigfx.primitives.GridType;
 			protected function group1_rollOverHandler(event:MouseEvent):void
 			{
-				animOut.stop(); 
+				/* animOut.stop(); 
 				animIn.play();
 				
 				pathOut.stop(); 
-				pathIn.play();
+				pathIn.play(); */
 				
 				/* colorAnimOut.stop();
 				colorAnimIn.play(); */
@@ -26,11 +26,11 @@
 			
 			protected function group1_rollOutHandler(event:MouseEvent):void
 			{
-				animIn.stop(); 
+				/* animIn.stop(); 
 				animOut.play();
 				
 				pathIn.stop(); 
-				pathOut.play();
+				pathOut.play(); */
 				
 				/* colorAnimIn.stop();
 				colorAnimOut.play(); */
@@ -45,8 +45,7 @@
 				}else if(grid.type == GridType.NONE){
 					grid.type = GridType.DOT;
 				}
-				
-				rotationAnimate.play();
+				colorEffect.play();
 			}
 			
 		]]>
@@ -58,11 +57,14 @@
 		
 		<!--<s:AnimateColor id="colorAnimIn" target="{fillCol}" colorTo="#00D5BA" />
 		<s:AnimateColor id="colorAnimOut" duration="1000" target="{fillCol}" colorTo="#009EE0" />-->
-		<s:Animate id="rotationAnimate" target="{pathStr}" repeatCount="0" duration="4000">
-			<s:motionPaths>
-				<s:SimpleMotionPath property="rotation" valueFrom="0" valueTo="360"/>
-			</s:motionPaths>
-		</s:Animate>
+		<s:AnimateColor id="colorEffect"
+						targets="{[pathStroke]}"
+						colorPropertyName="color"
+						colorFrom="0"
+						colorTo="0xFFfe12"
+						repeatBehavior="reverse"
+						repeatCount="0"
+						duration="500" />
 
 		<effects:AnimatePath id="animIn"
 							 dataTo="M 0 15 L 1 15 L 15 0 L 76 15 L 15 30 L 1 15 L 0 15 z"
@@ -116,22 +118,9 @@
 				<!--<s:SolidColorStroke color="0" weight="2"/>-->
 			</primatives:stroke>
 		</primatives:Path>
-		<s:Rect width="200" height="200" horizontalCenter="0" verticalCenter="0">
-			<s:stroke>
-				<s:LinearGradientStroke>
-					<s:GradientEntry color="0x0f0f0f" ratio="0.3"/>
-					<s:GradientEntry color="0xadadad" ratio="0.5"/>
-					<s:GradientEntry color="0xffeeff" ratio="1"/>
-				</s:LinearGradientStroke>
-			</s:stroke>
-		</s:Rect>
 		<s:Path data="M 100 100 L 200 100 L 200 200 L 400 200">
 			<s:stroke>
-				<s:LinearGradientStroke id="pathStr" weight="10">
-					<s:GradientEntry color="0x0f0f0f" ratio="0.3"/>
-					<s:GradientEntry color="0xadadad" ratio="0.5"/>
-					<s:GradientEntry color="0x0" ratio="1"/>
-				</s:LinearGradientStroke>
+				<s:SolidColorStroke id="pathStroke" color="0" weight="2"/>
 			</s:stroke>
 		</s:Path>
 		<!--<s:Path 
