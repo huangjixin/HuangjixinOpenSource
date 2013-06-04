@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:graphic="com.hjx.graphic.*"
+			   xmlns:local="*"
+			   xmlns:diagram="com.hjx.diagram.*"
+			   xmlns:editor="com.hjx.diagram.editor.*"
+			   xmlns:graphlayout="com.hjx.graphic.graphlayout.*"
+			   xmlns:graphic1="com.hjx.bpmn.graphic.*"
+			   minWidth="955" minHeight="600">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace graphic "com.hjx.graphic.*";
+		@namespace local "*";
+		@namespace diagram "com.hjx.diagram.*";
+		@namespace editor "com.hjx.diagram.editor.*";
+		@namespace graphlayout "com.hjx.graphic.graphlayout.*";
+		@namespace graphic1 "com.hjx.bpmn.graphic.*";
+		s|Label{
+			fontFamily:"微软雅黑";
+		}
+		
+		graphic|Node{
+			skinClass:ClassReference("com.hjx.graphic.skin.NodeSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner");
+			borderColor:"0x03689A";
+		}
+		
+		editor|NodeAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.NodeAdornerSkin")
+		}
+		
+		editor|ResizableNodeAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.ResizeableAdornerSkin")
+		}
+		
+		local|BPMNBtn{
+			skinClass:ClassReference("com.hjx.graphic.skin.NodeSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")	
+		}
+		
+		graphic|SubGraph{
+			skinClass:ClassReference("com.hjx.graphic.skin.SubGraphSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner");
+		}
+		
+		editor|DiagramEditor{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.DiagramEditorSkin")
+		}
+		
+		graphic1|Task{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.TaskSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner")
+		}
+		
+		graphic1|StartEvent{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.StartEventSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")
+		}
+		
+		graphic1|EndEvent{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.EndEventSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")
+		}
+		
+		graphic1|Gateway{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.GatewaySkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")
+		}
+		
+		graphic1|IntermediateEvent{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.IntermediateEventSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")
+		}
+		
+		graphic1|Group{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.GroupSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner")
+		}
+		
+		graphic1|DataObject{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.DataObjectSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner")
+		}
+		
+		graphic1|TextAnnotation{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.TextAnnotationSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner");
+		}
+		
+		graphic|Link{
+			skinClass:ClassReference("com.hjx.graphic.skin.LinkSkin");
+			startArrowVisible:true;
+			strokeWidth:2;
+			dashStyle:dash;
+		}
+		graphic1|SequenceFlow{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.SequenceFlowSkin");
+			dashStyle:dash;
+		}
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hjx.bpmn.graphic.ConnectObject;
+			import com.hjx.diagram.editor.DiagramEditor;
+			import com.hjx.graphic.Node;
+			import com.hjx.graphic.Renderer;
+			
+			import mx.events.SandboxMouseEvent;
+			private var dragRenderer:Renderer;
+			
+			protected function graph_mouseDownHandler(event:MouseEvent):void
+			{
+				var renderer:Renderer = DiagramEditor.getRenderer(event.target);
+				if(renderer){
+					dragRenderer = renderer;
+					if(dragRenderer is Link){
+						if(dragRenderer is ConnectObject){
+							if(ConnectObject(dragRenderer).monitoringStatus == ""){
+								ConnectObject(dragRenderer).monitoringStatus = "active"
+							}else if(ConnectObject(dragRenderer).monitoringStatus == "active"){
+								ConnectObject(dragRenderer).monitoringStatus = "done"
+							}else{
+								ConnectObject(dragRenderer).monitoringStatus = ""
+							}
+						}
+						if(Link(dragRenderer).startNode ||Link(dragRenderer).endNode){
+							return;
+						}
+					}
+					renderer.startDrag();
+					var displayObject:DisplayObject = systemManager.getSandboxRoot();  
+					displayObject.addEventListener(MouseEvent.MOUSE_UP, this.mouseUpHandler, true);  
+					displayObject.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseDragHandler, true);  
+					displayObject.addEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, this.mouseUpHandler, true);  
+					displayObject.addEventListener(SandboxMouseEvent.MOUSE_MOVE_SOMEWHERE, this.mouseDragHandler, true);  
+					systemManager.deployMouseShields(true); 
+				}
+			}
+			
+			protected function mouseDragHandler(event:Event):void  
+			{  
+				if(dragRenderer){
+					if(dragRenderer is Node){
+						Node(dragRenderer).invalidateLinkShape();
+					}
+				}
+			} 
+			
+			protected function mouseUpHandler(event:Event):void  
+			{  
+				if(dragRenderer){
+					dragRenderer.stopDrag();
+					dragRenderer = null;
+				}
+				
+				var displayObject:DisplayObject=systemManager.getSandboxRoot();  
+				displayObject.removeEventListener(MouseEvent.MOUSE_UP, this.mouseUpHandler, true);  
+				displayObject.removeEventListener(MouseEvent.MOUSE_MOVE, this.mouseDragHandler, true);  
+				displayObject.removeEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, this.mouseUpHandler, true);  
+				displayObject.removeEventListener(SandboxMouseEvent.MOUSE_MOVE_SOMEWHERE, this.mouseDragHandler, true);  
+				systemManager.deployMouseShields(false);  
+			}  
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	<graphic:Graph id="graph" x="{width/2}" width="50%" height="100%" mouseDown="graph_mouseDownHandler(event)">
+		<graphic:SubGraph id="subGraph0" y="200" width="200" height="200">
+			<graphic:SubGraph id="subGraph1" width="200" height="200">
+				<graphic1:Task id="node" x="10" y="20" label="node2"/>
+			</graphic:SubGraph>
+		</graphic:SubGraph>
+		<graphic1:StartEvent id="startEvent" x="500" y="200"/>
+		<graphic:Link startNode="{startEvent}" endNode="{gateway}"/>
+		<graphic1:Gateway id="gateway" x="300" y="290"/>
+		<graphic:Link startNode="{gateway}" endNode="{endEvent}"/>
+		<graphic1:EndEvent id="endEvent" x="500" y="390"/>
+		<graphic:Link startNode="{endEvent}" endNode="{intermediateEvent}" startArrowVisible="true" endArrowVisible="true" dashStyle="none"/>
+		<graphic1:IntermediateEvent id="intermediateEvent" x="500" y="490"/>
+		
+		<graphic1:Group id="group" x="500" y="590" width="100" height="50"/>
+		
+		<graphic1:DataObject id="dataObject" x="500" y="690"/>
+		<graphic1:SequenceFlow id="sequenceFlow" startArrowVisible="false" endArrowVisible="true" fallbackStartPoint="{new Point(100,100)}" fallbackEndPoint="{new Point(400,400)}"/>
+	</graphic:Graph>
+</s:Application>
