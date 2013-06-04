@@ -7,6 +7,7 @@
 		<s:AnimateColor id="activeEffect"
 						targets="{[path.stroke]}"
 						colorPropertyName="color"
+						colorFrom="0"
 						colorTo="red"
 						repeatBehavior="reverse"
 						repeatCount="0"
