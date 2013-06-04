@@ -3,12 +3,18 @@ package com.hjx.graphic
 	import com.hjx.graphic.skin.LinkSkin;
 	import com.hjx.uitls.Geometry;
 	
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	import mx.collections.ArrayCollection;
+	import mx.graphics.SolidColorStroke;
 	
 	import spark.primitives.Path;
+	
+	import ws.tink.spark.graphics.SolidColorDash;
 
 	/**
 	 * 所有连线的基类，用于连接节点。一条线可以没有节点，或者一个节点，或者两个节点，所以其必须有两个Node的引用。 
@@ -38,10 +44,11 @@ package com.hjx.graphic
 		private var _endNode:Node;
 		
 		private var _shapeType:String = LinkShapeType.STRAIGHT;
+		private var _shapeTypeChange:Boolean;
 		
 		private var linkTypeOrthogonal:String;
-		private var _fallbackEndPoint:Point = new Point();
-		private var _fallbackStartPoint:Point = new Point();
+		private var _fallbackEndPoint:Point;
+		private var _fallbackStartPoint:Point;
 		
 		private var _startConnectionArea:String = LinkConnectionArea.RIGHT;
 		private var _endConnectionArea:String = LinkConnectionArea.LEFT;
@@ -76,15 +83,52 @@ package com.hjx.graphic
 		[SkinPart(required="false")]
 		public var startArrow:Path;
 		
+		/**
+		 * 形状点组，它将决定连线形状。 
+		 */
+		internal var _shapePoints:Vector.<Point>;
+		private var _strokeWidth:Number;
+		private var _strokeWidthChange:Boolean;
+		private var _radius:Number = 10;
+		private var _radiusChange:Boolean;
+		private var _dashStyle:String;
+		private var _dashStyleChange:Boolean;
+		private var _startArrowVisible:Boolean;
+		private var _startArrowVisibleChange:Boolean;
+		private var _endArrowVisible:Boolean;
+		private var _endArrowVisibleChange:Boolean;
+		private var _startArrowType:String;
+		private var _startArrowTypeChange:Boolean;
+		private var _endArrowType:String;
+		private var _endArrowTypeChange:Boolean;
+		private var _orthogonalSpacing:Number;
+		private var _orthogonalSpacingChange:Boolean;
+		
+		internal static var Top:int=0;
+		
+		internal static var Right:int=1;
+		
+		internal static var Bottom:int=2;
+		
+		internal static var Left:int=3;
+		
 		public function Link(startNode:Node=null,endNode:Node=null)
 		{
-			super();
-			this.startNode = startNode;
-			this.endNode = endNode;
+			this.fallbackStartPoint = new Point(0, 0);
+			this.fallbackEndPoint = new Point(0, 0);
+			this._shapePoints = new Vector.<Point>();
 			
-			for (var i:String in defaultCSSStyles) {
-				setStyle (i, defaultCSSStyles [i]);
+			super();
+			if(startNode){
+				this.startNode = startNode;
 			}
+			if(endNode){
+				this.endNode = endNode;
+			}
+			
+			/*for (var i:String in defaultCSSStyles) {
+				setStyle (i, defaultCSSStyles [i]);
+			}*/
 		}
 		
 		/**
@@ -129,8 +173,16 @@ package com.hjx.graphic
 
 		public function set fallbackStartPoint(value:Point):void
 		{
+			/*if (!value) 
+			{
+				throw new ArgumentError("参数类型错误");
+			}*/
+			
 			_fallbackStartPoint = value;
-			invalidateDisplayList();
+			if (!this.startNode) 
+			{
+				this.invalidateShape();
+			}
 		}
 
 		[Bindable]
@@ -141,8 +193,15 @@ package com.hjx.graphic
 
 		public function set fallbackEndPoint(value:Point):void
 		{
+			/*if (!value) 
+			{
+				throw new ArgumentError("参数类型错误");
+			}*/
 			_fallbackEndPoint = value;
-			invalidateDisplayList();
+			if (!this.endNode) 
+			{
+				this.invalidateShape();
+			}
 		}
 
 		[Bindable]
@@ -155,7 +214,8 @@ package com.hjx.graphic
 		public function set shapeType(value:String):void
 		{
 			_shapeType = value;
-			invalidateDisplayList();
+			_shapeTypeChange = true;
+			this.invalidateShape();
 		}
 
 		[Bindable(event="endNodeChange")]
@@ -176,7 +236,7 @@ package com.hjx.graphic
 			{
 				_endNode = value;
 				dispatchEvent(new Event("endNodeChange"));
-				invalidateDisplayList();
+				invalidateShape();
 				if(_endNode){
 					fallbackEndPoint = null;
 					var index:int = _endNode.incomingLinks.indexOf(this);
@@ -202,7 +262,7 @@ package com.hjx.graphic
 			{
 				_startNode = value;
 				dispatchEvent(new Event("startNodeChange"));
-				invalidateDisplayList();
+				invalidateShape();
 				if(_startNode){
 					fallbackStartPoint = null;
 					var index:int = _startNode.outgoingLinks.indexOf(this);
@@ -213,6 +273,44 @@ package com.hjx.graphic
 			}
 		}
 		
+		/**
+		 * 计算Path的矩形框。 
+		 * @param path
+		 * @return 
+		 * 
+		 */
+		internal static function getPathBounds(path:Path):Rectangle
+		{
+			var rect:Rectangle = new Rectangle(path.measuredX, path.measuredY, path.measuredWidth, path.measuredHeight);
+			var weight:Number = path.stroke == null ? 0 : path.stroke.weight;
+			if (weight != 0) 
+			{
+				rect.width = rect.width + weight;
+				rect.height = rect.height + weight;
+				rect.x = rect.x - weight / 2;
+				rect.y = rect.y - weight / 2;
+			}
+			return rect;
+		}
+		
+		internal static function getDirection(arg1:flash.geom.Point, arg2:flash.geom.Point):int
+		{
+			var loc1:Number=arg2.x - arg1.x;
+			var loc2:Number=arg2.y - arg1.y;
+			if (Math.abs(loc1) >= Math.abs(loc2)) 
+			{
+				if (loc1 > 0) 
+				{
+					return Right;
+				}
+				return Left;
+			}
+			if (loc2 > 0) 
+			{
+				return Bottom;
+			}
+			return Top;
+		}
 		
 		/**
 		 * 绘制图形。 
@@ -508,12 +606,248 @@ package com.hjx.graphic
 			
 			return null;
 		}//getCollpaseSubGraph结束
+		
+		/**
+		 * 获得当前path的矩形框推荐值。 
+		 * @return 
+		 * 
+		 */
+		function getBoundsForMeasure():Rectangle
+		{
+			this.updateBoundsForMeasure();
+			if (this.path != null) 
+			{
+				return getPathBounds(this.path);
+			}
+			return new Rectangle();
+		}
+		
+		final function updateBoundsForMeasure():void
+		{
+			this.computeShapePoints();
+			return;
+		}
+		/**
+		 * 查找开始节点。 
+		 * @return 
+		 * 
+		 */
+		public function getVisibleStartNode():Node
+		{
+			if (!this.startNode) 
+			{
+				return null;
+			}
+			if (this.parent == null || this.startNode.parent == this.parent) 
+			{
+				return this.startNode;
+			}
+			return this.getRealVisible(this.startNode);
+		}
+		
+		/**
+		 * 查找可阅的结束节点。 
+		 * @return 
+		 * 
+		 */
+		public function getVisibleEndNode():Node
+		{
+			if (!this.endNode) 
+			{
+				return null;
+			}
+			if (this.parent == null || this.endNode.parent == this.parent) 
+			{
+				return this.endNode;
+			}
+			return this.getRealVisible(this.endNode);
+		}
+		
+		/**
+		 * 因为子图是可嵌套和缩放的，认为处于收缩状态的子图里面的节点不是可视化节点。 
+		 * @param node
+		 * @return 
+		 * 
+		 */
+		internal function getRealVisible(node:Node):Node
+		{
+			var subGraph:SubGraph = getParentSubGraph(node.parent);
+			while (subGraph) 
+			{
+				if(!subGraph.collapsed){
+					node = subGraph;
+					break;
+				}
+				subGraph = getParentSubGraph(subGraph.parent);
+			}
+			return node;
+		}
+		
+		/**
+		 * 计算连线的形状。 
+		 * 
+		 */
+		internal function computeShapePoints():void
+		{
+			var realVisialeStartNode:Node = this.getVisibleStartNode();
+			var realVisialeEndNode:Node = this.getVisibleEndNode();
+			var defaultStartPoint:Point = new Point();
+			var defaultEndPoint:Point = new Point();
+			var displayObjectContainer:DisplayObjectContainer = this.parent == null ? this : this.parent;
+			var startNodeRect:Rectangle;
+			var endNodeRect:Rectangle;
+			
+			if(this.startNode){
+				startNodeRect = startNode.getNodeOrBaseBounds(displayObjectContainer);
+				defaultStartPoint.x = startNodeRect.x + startNodeRect.width/2;
+				defaultStartPoint.y = startNodeRect.y + startNodeRect.height/2;
+				defaultStartPoint = new Point(startNode.centerX,startNode.centerY);
+				defaultStartPoint = startNode.parent.localToGlobal(defaultStartPoint);
+				defaultStartPoint = this.parent.globalToLocal(defaultStartPoint);
+			}else{
+				defaultStartPoint = this.fallbackStartPoint.clone();
+			}
+
+			if(this.endNode){
+				endNodeRect = endNode.getNodeOrBaseBounds(displayObjectContainer);
+				defaultEndPoint.x = endNodeRect.x + endNodeRect.width/2;
+				defaultEndPoint.y = endNodeRect.y + endNodeRect.height/2;
+				defaultEndPoint = new Point(endNode.centerX,endNode.centerY);
+				defaultEndPoint = endNode.parent.localToGlobal(defaultEndPoint);
+				defaultEndPoint = this.parent.globalToLocal(defaultEndPoint);
+			}else{
+				defaultEndPoint = this.fallbackEndPoint.clone();
+			}
+			
+			switch(this.shapeType)
+			{
+				case LinkShapeType.STRAIGHT:
+				{
+					if (this._shapePoints == null) 
+					{
+						this._shapePoints = new Vector.<flash.geom.Point>();
+					}
+					else 
+					{
+						this._shapePoints.splice(0, this._shapePoints.length);
+					}
+					this._shapePoints.push(defaultStartPoint);
+					this._shapePoints.push(defaultEndPoint);
+					break;
+				}
+					
+				default:
+				{
+					break;
+				}
+			}
+		}
+		
+		/**
+		 * 得到上级子图。 
+		 * @param object
+		 * @return 
+		 * 
+		 */
+		internal static function getParentSubGraph(object:Object):SubGraph{
+			while (object is DisplayObject) 
+			{
+				if (object is SubGraph) 
+				{
+					return SubGraph(object);
+				}
+				object = object.parent;
+			}
+			return null;
+		}
+		/**
+		 * 刷新连线形状。 
+		 * 
+		 */
+		public function invalidateShape():void
+		{
+			/*if (!this.getFlag(LinkShapeChangeFlag) || this.getFlag(ShapePointsUpToDateFlag)) 
+			{
+				this.setFlag(LinkShapeChangeFlag, true);
+				this.setFlag(ShapePointsUpToDateFlag, false);
+				invalidateProperties();
+			}*/
+			_shapeTypeChange = true;
+			invalidateProperties();
+			return;
+		}
+		
+		private function createDashRoundPolyline(shapePoints:Vector.<Point>,radius:Number):String{
+			var data:String;
+			if(shapeType == "straight"){
+				var point:Point;
+				for each (point in shapePoints) 
+				{
+					if(point == shapePoints[0]){
+						data = "M "+point.x+" "+point.y+" ";
+					}else{
+						data+="L "+point.x+" "+point.y+" ";					
+					}
+				}
+				
+			}
+			return data;
+		}
+		
 		//-----------------------------------------------------------
 		// 覆盖函数
 		//-----------------------------------------------------------
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
-			draw();
+			if(_strokeWidthChange ||
+				_radiusChange ||
+				_dashStyleChange ||
+				_startArrowVisibleChange ||
+				_endArrowVisibleChange ||
+				_startArrowTypeChange ||
+				_endArrowTypeChange ||
+				_shapeTypeChange ||
+				_orthogonalSpacingChange){
+				/*if (_shapeTypeChange || _orthogonalSpacingChange) 
+				{
+					
+				}*/
+				this.computeShapePoints();
+				if (this.path && this._shapePoints) 
+				{
+					if(this._dashStyle == DashStyle.NONE){
+						path.stroke = new SolidColorStroke(0,this._strokeWidth);
+					}else if(this._dashStyle == DashStyle.DASH){
+						path.stroke = new SolidColorDash(5,5,0,this._strokeWidth);
+					}
+					
+					this.path.data = createDashRoundPolyline(this._shapePoints, this._radius);
+					/*if (this._curved) 
+					{
+						this.configureCurvedPath(this.path);
+					}
+					else 
+					{
+						loc1 = com.ibm.ilog.elixir.diagram.utils.PathUtil.createDashRoundPolyline(this._shapePoints, this._radius, this._dashArray, this.firstPointOfPath, this.lastPointOfPath);
+						this.path.data = loc1;
+					}*/
+					/*if (this.getFlag(LinkShapeChangeFlag) || this.getFlag(ArrowVisibilityChangeFlag) || this.getFlag(ArrowTypeChangeFlag)) 
+					{
+						this.updateArrow();
+					}*/
+				}
+				
+				_strokeWidthChange=
+					_radiusChange=
+					_dashStyleChange=
+					_startArrowVisibleChange=
+					_endArrowVisibleChange=
+					_startArrowTypeChange=
+					_endArrowTypeChange = 
+					_shapeTypeChange = 
+				_orthogonalSpacingChange = false;
+			}
+//			draw();
 		}
 		override protected function partAdded(partName:String, instance:Object):void{
 			if(instance == this.startArrow){
@@ -526,12 +860,13 @@ package com.hjx.graphic
 		
 		override public function stylesInitialized():void{
 			super.stylesInitialized();
+			this.initStyles();
 		} 
 		
 		override public function styleChanged(styleProp:String):void{
 			super.styleChanged(styleProp);
-			invalidateDisplayList();
-			if(styleProp =="endArrowType"){
+			this.initStyles(styleProp);
+			/*if(styleProp =="endArrowType"){
 				if(getStyle("endArrowType") == "triangle"){
 					if(endArrow){
 						endArrow.data = "M -10 -5 l 10 5 l -10 5 Z";
@@ -557,7 +892,110 @@ package com.hjx.graphic
 					var endArrowVisible:Boolean = getStyle("endArrowVisible");
 					endArrow.visible = endArrowVisible;
 				}
-			}
+			}*/
 		} 
+		
+		internal function initStyles(styleProp:String=null):void
+		{
+			var changedStyle:Boolean = styleProp == null || styleProp == "styleName";
+			var isInvlidate:Boolean = false;
+			if (changedStyle || styleProp == "strokeWidth") 
+			{
+				var strokeWidth:* = getStyle("strokeWidth");
+				if (styleManager.isValidStyleValue(strokeWidth)) 
+				{
+					if (strokeWidth != this._strokeWidth) 
+					{
+						this._strokeWidth = strokeWidth;
+						_strokeWidthChange = true;
+					}
+				}
+			}
+			
+			if (changedStyle || styleProp == "radius") 
+			{
+				var radius:* = getStyle("radius");
+				if (styleManager.isValidStyleValue(radius)) 
+				{
+					if (radius != this._radius) 
+					{
+						this._radius = radius;
+						isInvlidate = true;
+						_radiusChange = true;
+					}
+				}
+			}
+			
+			if (changedStyle || styleProp == "dashStyle") 
+			{
+				var dashStyle:* = getStyle("dashStyle");
+				if (styleManager.isValidStyleValue(dashStyle)) 
+				{
+					this._dashStyle = dashStyle;
+					isInvlidate = true;
+					_dashStyleChange = true;
+				}
+			}
+			
+			if (changedStyle || styleProp == "startArrowVisible") 
+			{
+				var startArrowVisible:* = getStyle("startArrowVisible");
+				if (styleManager.isValidStyleValue(startArrowVisible)) 
+				{
+					this._startArrowVisible = startArrowVisible;
+					isInvlidate = true;
+					_startArrowVisibleChange = true;
+				}
+			}
+			
+			if (changedStyle || styleProp == "endArrowVisible") 
+			{
+				var endArrowVisible:* = getStyle("endArrowVisible");
+				if (styleManager.isValidStyleValue(endArrowVisible)) 
+				{
+					this._endArrowVisible = endArrowVisible;
+					isInvlidate = true;
+					_endArrowVisibleChange = true;
+				}
+			}
+			
+			if (changedStyle || styleProp == "startArrowType") 
+			{
+				var startArrowType:* = getStyle("startArrowType");
+				if (styleManager.isValidStyleValue(startArrowType)) 
+				{
+					this._startArrowType = startArrowType;
+					isInvlidate = true;
+					_startArrowTypeChange = true;
+				}
+			}
+			
+			if (changedStyle || styleProp == "endArrowType") 
+			{
+				var endArrowType:* = getStyle("endArrowType");
+				if (styleManager.isValidStyleValue(endArrowType)) 
+				{
+					this._endArrowType = endArrowType;
+					isInvlidate = true;
+					_endArrowTypeChange = true;
+				}
+			}
+			
+			if (changedStyle || styleProp == "_orthogonalSpacing") 
+			{
+				var orthogonalSpacing:* = getStyle("_orthogonalSpacing");
+				if (styleManager.isValidStyleValue(orthogonalSpacing)) 
+				{
+					this._orthogonalSpacing = orthogonalSpacing;
+					isInvlidate = true;
+					_orthogonalSpacingChange = true;
+				}
+			}
+			
+			if (isInvlidate) 
+			{
+				invalidateProperties();
+			}
+		}
 	}
 }

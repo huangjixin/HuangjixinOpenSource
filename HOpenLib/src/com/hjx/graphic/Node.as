@@ -134,7 +134,7 @@ package com.hjx.graphic
 
 		public function get centerY():Number
 		{
-			return _centerY;
+			return y+this.height/2;
 		}
 		
 		public function set centerY(value:Number):void
@@ -144,7 +144,7 @@ package com.hjx.graphic
 		
 		public function get centerX():Number
 		{
-			return _centerX;
+			return x+this.width/2;
 		}
 		
 		public function set centerX(value:Number):void
@@ -225,11 +225,11 @@ package com.hjx.graphic
 		public function invalidateLinkShape():void{
 			for each (var incomingLink:Link in incomingLinks) 
 			{
-				incomingLink.draw();	
+				incomingLink.invalidateShape();	
 			}
 			for each (var outgoingLink:Link in outgoingLinks) 
 			{
-				outgoingLink.draw();	
+				outgoingLink.invalidateShape();	
 			}
 		}
 		

@@ -29,4 +29,6 @@
 				   skinClass="com.hjx.diagram.editor.skin.ArrowSkin"/>
 	<editor:LinkHandle id="leftArrowHandle" left="-28" verticalCenter="-5" rotation="180"
 				   skinClass="com.hjx.diagram.editor.skin.ArrowSkin"/>
+	<!--<mx:SWFLoader right="-8" top="-16" width="16" height="16"
+				 source="@Embed(source='../images/delete.svg')"/>-->
 </s:Skin>

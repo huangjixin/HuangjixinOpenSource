@@ -23,6 +23,7 @@ package com.hjx.graphic
 		public static const LEFT:String = "left";
 		public static const RIGHT:String = "right";
 		public static const BOTTOM:String = "bottom";
+		public static const CENTER:String = "center";
 		
 		//--------------------------------------------------------
 		// private 私有变量声明处，请以“_”开头定义变量
