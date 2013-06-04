@@ -505,7 +505,8 @@ package com.hjx.graphic
 								if(!link.fallbackStartPoint){
 									link.fallbackStartPoint = new Point();
 								}
-								link.fallbackStartPoint.setTo(subGraph.centerX,subGraph.centerY);
+								link.fallbackStartPoint.x = subGraph.centerX;
+								link.fallbackStartPoint.y = subGraph.centerY;
 								link.fallbackStartPoint = subGraph.parent.localToGlobal(link.fallbackStartPoint);
 								link.fallbackStartPoint = link.parent.globalToLocal(link.fallbackStartPoint);
 							}
@@ -513,7 +514,8 @@ package com.hjx.graphic
 								if(!link.fallbackEndPoint){
 									link.fallbackEndPoint = new Point();
 								}
-								link.fallbackEndPoint.setTo(subGraph.centerX,subGraph.centerY);
+								link.fallbackEndPoint.x = subGraph.centerX;
+								link.fallbackEndPoint.y = subGraph.centerY;
 								link.fallbackEndPoint = subGraph.parent.localToGlobal(link.fallbackEndPoint);
 								link.fallbackEndPoint = link.parent.globalToLocal(link.fallbackEndPoint);
 							}
