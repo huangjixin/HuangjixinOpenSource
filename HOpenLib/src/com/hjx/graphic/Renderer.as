@@ -36,7 +36,7 @@ package com.hjx.graphic
 	 */
 	public class Renderer extends SkinnableComponent
 	{
-		private var _data:Object = null;
+		private var _data:Object = {};
 		private var _resizable : Boolean = true;
 		private var _selectable : Boolean = true;
 		private var _selected : Boolean = false;

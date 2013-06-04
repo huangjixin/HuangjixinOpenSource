@@ -914,6 +914,10 @@ package com.hjx.graphic
 //			draw();
 		}
 		
+		/**
+		 * 更新箭头，根据箭头是否可视计算旋转角度和偏移量。 
+		 * 
+		 */
 		internal function updateArrow():void
 		{
 			var point1:Point;
