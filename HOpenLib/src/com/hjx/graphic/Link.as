@@ -8,9 +8,11 @@ package com.hjx.graphic
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.getQualifiedClassName;
 	
 	import mx.collections.ArrayCollection;
 	import mx.graphics.SolidColorStroke;
+	import mx.styles.StyleManager;
 	
 	import spark.primitives.Path;
 	
@@ -310,6 +312,16 @@ package com.hjx.graphic
 				return Bottom;
 			}
 			return Top;
+		}
+		
+		
+		internal static function RotatePoint(point:Point, ratate:int):Point
+		{
+			var rotatePoint:Point = new Point();
+			rotatePoint.x = point.x * Math.cos(ratate) - point.y * Math.sin(ratate);
+			rotatePoint.y = point.y * Math.cos(ratate) + point.x * Math.sin(ratate);
+			
+			return rotatePoint;
 		}
 		
 		/**
@@ -671,6 +683,20 @@ package com.hjx.graphic
 		 */
 		internal function getRealVisible(node:Node):Node
 		{
+			var localNode:Node = node;
+			while (!(localNode.parent == null) &&
+				localNode.parent is Graph &&
+				Graph(localNode.parent).owningSubgraph) 
+			{
+				localNode = Graph(localNode.parent).owningSubgraph;
+				if (!(localNode is SubGraph && SubGraph(localNode).collapsed)) 
+				{
+					continue;
+				}
+				node = localNode;
+			}
+			return node;
+			
 			var subGraph:SubGraph = getParentSubGraph(node.parent);
 			while (subGraph) 
 			{
@@ -698,23 +724,21 @@ package com.hjx.graphic
 			var endNodeRect:Rectangle;
 			
 			if(this.startNode){
-				startNodeRect = startNode.getNodeOrBaseBounds(displayObjectContainer);
+				startNodeRect = realVisialeStartNode.getNodeOrBaseBounds(displayObjectContainer);
 				defaultStartPoint.x = startNodeRect.x + startNodeRect.width/2;
 				defaultStartPoint.y = startNodeRect.y + startNodeRect.height/2;
-				defaultStartPoint = new Point(startNode.centerX,startNode.centerY);
-				defaultStartPoint = startNode.parent.localToGlobal(defaultStartPoint);
-				defaultStartPoint = this.parent.globalToLocal(defaultStartPoint);
+				
+				this.fallbackStartPoint = defaultStartPoint.clone();
 			}else{
 				defaultStartPoint = this.fallbackStartPoint.clone();
 			}
 
 			if(this.endNode){
-				endNodeRect = endNode.getNodeOrBaseBounds(displayObjectContainer);
+				endNodeRect = realVisialeEndNode.getNodeOrBaseBounds(displayObjectContainer);
 				defaultEndPoint.x = endNodeRect.x + endNodeRect.width/2;
 				defaultEndPoint.y = endNodeRect.y + endNodeRect.height/2;
-				defaultEndPoint = new Point(endNode.centerX,endNode.centerY);
-				defaultEndPoint = endNode.parent.localToGlobal(defaultEndPoint);
-				defaultEndPoint = this.parent.globalToLocal(defaultEndPoint);
+				
+				this.fallbackEndPoint = defaultEndPoint.clone();
 			}else{
 				defaultEndPoint = this.fallbackEndPoint.clone();
 			}
@@ -731,8 +755,42 @@ package com.hjx.graphic
 					{
 						this._shapePoints.splice(0, this._shapePoints.length);
 					}
+					var point1:Point =defaultStartPoint;
+					var point2:Point =defaultEndPoint;
+					var radian:Number=0;
+					var minOffset:Number=0;
+					var offsetX:Number=0;
+					var offsetY:Number=0;
+					if(this.startNode){
+						//计算开始节点偏移量坐标。
+						radian= Math.atan2(point1.y - point2.y, point1.x - point2.x);
+						minOffset = Math.min(Math.abs(this.startNode.width/2/Math.cos(radian)),Math.abs(this.startNode.height/2/Math.sin(radian)));
+						offsetX = minOffset*Math.cos(radian);
+						offsetY = minOffset*Math.sin(radian);
+						defaultStartPoint.offset(-offsetX,-offsetY);
+						
+						this.fallbackStartPoint = defaultStartPoint.clone();
+					}
+					
+					if(this.endNode){
+						//计算开始节点偏移量坐标。
+						radian= Math.atan2(point2.y - point1.y, point2.x - point1.x);
+						minOffset = Math.min(Math.abs(this.endNode.width/2/Math.cos(radian)),Math.abs(this.endNode.height/2/Math.sin(radian)));
+						offsetX = minOffset*Math.cos(radian);
+						offsetY = minOffset*Math.sin(radian);
+						defaultEndPoint.offset(-offsetX,-offsetY);
+						
+						this.fallbackEndPoint = defaultEndPoint.clone();
+					}
+					
+					//
+					/*trace(this.startNode.width/2/Math.cos(radian)+","+this.startNode.height/2/Math.sin(radian));
+					var dire:int = getDirection(defaultStartPoint,defaultEndPoint);
+					trace(dire);*/
+//					this.skin.get
 					this._shapePoints.push(defaultStartPoint);
 					this._shapePoints.push(defaultEndPoint);
+					
 					break;
 				}
 					
@@ -797,8 +855,8 @@ package com.hjx.graphic
 		//-----------------------------------------------------------
 		// 覆盖函数
 		//-----------------------------------------------------------
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
-			super.updateDisplayList(unscaledWidth, unscaledHeight);
+		override protected function commitProperties():void{
+			super.commitProperties();
 			if(_strokeWidthChange ||
 				_radiusChange ||
 				_dashStyleChange ||
@@ -816,9 +874,13 @@ package com.hjx.graphic
 				if (this.path && this._shapePoints) 
 				{
 					if(this._dashStyle == DashStyle.NONE){
-						path.stroke = new SolidColorStroke(0,this._strokeWidth);
+						if(!path.stroke || path.stroke is SolidColorStroke){
+							path.stroke = new SolidColorStroke(0,this._strokeWidth);
+						}
 					}else if(this._dashStyle == DashStyle.DASH){
-						path.stroke = new SolidColorDash(5,5,0,this._strokeWidth);
+						if(!path.stroke || path.stroke is SolidColorStroke){
+							path.stroke = new SolidColorDash(8,8,0x808080,this._strokeWidth);
+						}
 					}
 					
 					this.path.data = createDashRoundPolyline(this._shapePoints, this._radius);
@@ -835,6 +897,7 @@ package com.hjx.graphic
 					{
 						this.updateArrow();
 					}*/
+					this.updateArrow();
 				}
 				
 				_strokeWidthChange=
@@ -849,6 +912,106 @@ package com.hjx.graphic
 			}
 //			draw();
 		}
+		
+		internal function updateArrow():void
+		{
+			var point1:Point;
+			var point2:Point;
+			var radian:Number;
+			if (this.startArrow) 
+			{
+				if ((this._startArrowVisible && this._endArrowVisible) || this._startArrowVisible) 
+				{
+					point1 = this._shapePoints[0];
+					point2 = this._shapePoints[1];
+					if (point1 && point2 && !(isNaN(point1.length) || isNaN(point2.length))) 
+					{
+						radian = Math.atan2(point1.y - point2.y, point1.x - point2.x);
+						this.startArrow.rotation = radian * 180 / Math.PI;
+						this.startArrow.x = point1.x;
+						this.startArrow.y = point1.y;
+						this.startArrow.visible = true;
+						
+						/*var maxStartArrowWidth:Number = this.startArrow.getMaxBoundsWidth();
+						var maxStartArrowHeight:Number = this.startArrow.getMaxBoundsHeight();
+						var startArrowRotatePoint:Point = new Point(this.startArrow.getBoundsXAtSize(maxStartArrowWidth,maxStartArrowHeight),this.startArrow.getBoundsYAtSize(maxStartArrowWidth,maxStartArrowHeight));
+						startArrowRotatePoint = RotatePoint(startArrowRotatePoint,radian);
+						point1.offset(startArrowRotatePoint.x,startArrowRotatePoint.y);*/
+					}
+				}
+				else 
+				{
+					this.startArrow.visible = false;
+				}
+			}
+			if (this.endArrow) 
+			{
+				if ((this._startArrowVisible && this._endArrowVisible) || this._endArrowVisible) 
+				{
+					point1 = this._shapePoints[this._shapePoints.length - 2];
+					point2 = this._shapePoints[(this._shapePoints.length - 1)];
+					if (point1 && point2 && !(isNaN(point1.length) || isNaN(point2.length))) 
+					{
+						radian = Math.atan2(point2.y - point1.y, point2.x - point1.x);
+						this.endArrow.rotation = radian * 180 / Math.PI;
+						this.endArrow.x = point2.x;
+						this.endArrow.y = point2.y;
+						this.endArrow.visible = true;
+						
+						/*var maxEndArrowWidth:Number = this.endArrow.getMaxBoundsWidth();
+						var maxEndArrowHeight:Number = this.endArrow.getMaxBoundsHeight();
+						var endArrowRotatePoint:Point = new Point(this.endArrow.getBoundsXAtSize(maxEndArrowWidth,maxEndArrowHeight),this.endArrow.getBoundsYAtSize(maxEndArrowWidth,maxEndArrowHeight));
+						endArrowRotatePoint = RotatePoint(endArrowRotatePoint,radian);
+						point2.offset(endArrowRotatePoint.x,endArrowRotatePoint.y);*/
+					}
+				}
+				else 
+				{
+					this.endArrow.visible = false;
+				}
+			}
+			return;
+		}
+		
+		internal function clonePointVector(shapePoints:Vector.<Point>):Vector.<Point>
+		{
+			var length:int = shapePoints ? shapePoints.length : 0;
+			if (length == 0) 
+			{
+				return null;
+			}
+			
+			var result:Vector.<Point> =new Vector.<Point>(length);
+			var flag:int = 0;
+			while (flag < length) 
+			{
+				result[flag] = shapePoints[flag].clone();
+				++flag;
+			}
+			return result;
+		}
+		
+		override protected function cloneStyle(renderer:Renderer, cloneRenderer:Renderer):void
+		{
+			cloneRenderer.setStyle("caps",renderer.getStyle("caps"));
+			cloneRenderer.setStyle("caretColor",renderer.getStyle("caretColor"));
+			cloneRenderer.setStyle("dashArray",renderer.getStyle("dashArray"));
+			cloneRenderer.setStyle("dashStyle",renderer.getStyle("dashStyle"));
+			cloneRenderer.setStyle("endArrowType",renderer.getStyle("endArrowType"));
+			cloneRenderer.setStyle("endArrowVisible",renderer.getStyle("endArrowVisible"));
+			cloneRenderer.setStyle("joints",renderer.getStyle("joints"));
+			cloneRenderer.setStyle("miterLimit",renderer.getStyle("miterLimit"));
+			cloneRenderer.setStyle("orthogonalSpacing",renderer.getStyle("orthogonalSpacing"));
+			cloneRenderer.setStyle("pixelHinting",renderer.getStyle("pixelHinting"));
+			cloneRenderer.setStyle("radius",renderer.getStyle("radius"));
+			cloneRenderer.setStyle("selectedColor",renderer.getStyle("selectedColor"));
+			cloneRenderer.setStyle("selectedStrokeWidth",renderer.getStyle("selectedStrokeWidth"));
+			cloneRenderer.setStyle("startArrowType",renderer.getStyle("startArrowType"));
+			cloneRenderer.setStyle("startArrowVisible",renderer.getStyle("startArrowVisible"));
+			cloneRenderer.setStyle("strokeColor",renderer.getStyle("strokeColor"));
+			cloneRenderer.setStyle("strokeWidth",renderer.getStyle("strokeWidth"));
+		}
+		
 		override protected function partAdded(partName:String, instance:Object):void{
 			if(instance == this.startArrow){
 				this.startArrow.visible = getStyle("startArrowVisible")
@@ -863,36 +1026,14 @@ package com.hjx.graphic
 			this.initStyles();
 		} 
 		
+		/**
+		 *  
+		 * @param styleProp
+		 * 
+		 */
 		override public function styleChanged(styleProp:String):void{
 			super.styleChanged(styleProp);
 			this.initStyles(styleProp);
-			/*if(styleProp =="endArrowType"){
-				if(getStyle("endArrowType") == "triangle"){
-					if(endArrow){
-						endArrow.data = "M -10 -5 l 10 5 l -10 5 Z";
-					}
-				}else if(getStyle("endArrowType") == "circle"){
-					if(endArrow){
-						endArrow.data = "M -10 -5 l 10 5 l -10 5 Z";
-					}
-				}else if(getStyle("endArrowType") == "square"){
-					if(endArrow){
-						endArrow.data = "M -10 -5 l -10 5 l 0 5 l 0 -5 l -10 -5";
-					}
-				}
-			}
-			if(styleProp =="startArrowVisible"){
-				if(startArrow){
-					var startArrowVisible:Boolean = getStyle("startArrowVisible");
-					startArrow.visible = startArrowVisible;
-				}
-			}
-			if(styleProp =="endArrowVisible"){
-				if(endArrow){
-					var endArrowVisible:Boolean = getStyle("endArrowVisible");
-					endArrow.visible = endArrowVisible;
-				}
-			}*/
 		} 
 		
 		internal function initStyles(styleProp:String=null):void

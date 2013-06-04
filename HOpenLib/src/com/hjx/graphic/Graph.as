@@ -22,6 +22,10 @@ package com.hjx.graphic
 		private var _nodes:Vector.<Node>;
 		private var _links:Vector.<Link>;
 		
+		private var _automaticGraphLayout:Boolean;
+		
+		private var _owningSubgraph:SubGraph;
+		
 		public function Graph()
 		{
 			super();
@@ -36,8 +40,16 @@ package com.hjx.graphic
 			addEventListener(ResizeEvent.RESIZE,onResize);*/
 		}
 		
-		private var _automaticGraphLayout:Boolean;
-		
+		public function get owningSubgraph():SubGraph
+		{
+			return _owningSubgraph;
+		}
+
+		public function set owningSubgraph(value:SubGraph):void
+		{
+			_owningSubgraph = value;
+		}
+
 		[Bindable]
 		public function get automaticGraphLayout():Boolean
 		{

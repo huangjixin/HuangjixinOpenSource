@@ -148,7 +148,7 @@ package com.hjx.diagram.editor
 			invalidateProperties();
 		}
 		
-		internal static function getRenderer(object:Object):Renderer
+		public static function getRenderer(object:Object):Renderer
 		{
 			while (object is flash.display.DisplayObject) 
 			{

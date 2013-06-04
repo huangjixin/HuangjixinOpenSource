@@ -1,6 +1,7 @@
 package com.hjx.graphic
 {
 	import flash.events.Event;
+	import flash.geom.Point;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
@@ -9,6 +10,7 @@ package com.hjx.graphic
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.events.FlexEvent;
+	import mx.styles.CSSStyleDeclaration;
 	import mx.utils.ObjectUtil;
 	
 	import spark.components.supportClasses.SkinnableComponent;
@@ -236,10 +238,15 @@ package com.hjx.graphic
 			var cloneRenderer:Renderer  = new RendererObject();
 			
 			cloneProperties(this,cloneRenderer);
+			cloneStyle(this,cloneRenderer);
 			this.cloneRenderer = cloneRenderer;
 			return cloneRenderer;
 		}
 		
+		protected function cloneStyle(renderer:Renderer, cloneRenderer:Renderer):void
+		{
+			cloneRenderer.setStyle("adornerClass",renderer.getStyle("adornerClass"));
+		}
 		/**
 		 * 克隆属性。 
 		 * @param renderer
@@ -282,10 +289,11 @@ package com.hjx.graphic
 			
 			for each (prop in cloneProperties) 
 			{
-				trace(prop.localName);
 				var p:Object = renderer[prop.localName];
 				if(p is int || p is Number || p is String || p is Boolean ){
 					cloneRenderer[prop.localName] = p;
+				}else if(p is Point){
+					cloneRenderer[prop.localName] = Point(p).clone();
 				}/*else if(p is Object){
 					cloneRenderer[prop.localName] = ObjectUtil.clone(p);
 				}*/

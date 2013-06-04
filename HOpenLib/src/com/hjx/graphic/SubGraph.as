@@ -447,6 +447,7 @@ package com.hjx.graphic
 //			collapseLinks(this,this);
 //			refresh();
 			dispatchEvent(new SubgraphEvent(SubgraphEvent.COLLAPSE_ANIMATION_START));
+			invalidateLinkShape();
 		}
 		
 		/**
@@ -715,6 +716,7 @@ package com.hjx.graphic
 			if(instance == graph){
 				if(mxmlContentChanged){
 					graph.mxmlContent = _mxmlContent;
+					graph.owningSubgraph = this;
 				}
 			}
 		}
@@ -729,6 +731,7 @@ package com.hjx.graphic
 			if(instance == graph){
 				if(mxmlContentChanged){
 					graph.mxmlContent = [];
+					graph.owningSubgraph = null;
 				}
 			}
 		}

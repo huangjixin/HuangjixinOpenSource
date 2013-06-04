@@ -246,6 +246,16 @@ package com.hjx.graphic
 		//--------------------------------------------------------
 		// override 覆盖函数
 		//--------------------------------------------------------
+		override protected function cloneStyle(renderer:Renderer, cloneRenderer:Renderer):void
+		{
+			cloneRenderer.setStyle("backgroundColor",renderer.getStyle("backgroundColor"));
+			cloneRenderer.setStyle("borderColor",renderer.getStyle("borderColor"));
+			cloneRenderer.setStyle("caretColor",renderer.getStyle("caretColor"));
+			cloneRenderer.setStyle("color",renderer.getStyle("color"));
+			cloneRenderer.setStyle("selectedColor",renderer.getStyle("selectedColor"));
+			cloneRenderer.setStyle("selectedTextColor",renderer.getStyle("selectedTextColor"));
+		}
+		
 		/**
 		 * 监控移动缩放，刷新连线。 
 		 * @param partName
