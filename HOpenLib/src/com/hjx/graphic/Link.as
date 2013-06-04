@@ -883,6 +883,7 @@ package com.hjx.graphic
 						}
 					}
 					
+					this.updateArrow();
 					this.path.data = createDashRoundPolyline(this._shapePoints, this._radius);
 					/*if (this._curved) 
 					{
@@ -897,7 +898,7 @@ package com.hjx.graphic
 					{
 						this.updateArrow();
 					}*/
-					this.updateArrow();
+					
 				}
 				
 				_strokeWidthChange=
@@ -932,6 +933,8 @@ package com.hjx.graphic
 						this.startArrow.y = point1.y;
 						this.startArrow.visible = true;
 						
+						point1.offset(-10 * Math.cos(radian),-10*Math.sin(radian));
+						this._shapePoints[0] = point1;
 						/*var maxStartArrowWidth:Number = this.startArrow.getMaxBoundsWidth();
 						var maxStartArrowHeight:Number = this.startArrow.getMaxBoundsHeight();
 						var startArrowRotatePoint:Point = new Point(this.startArrow.getBoundsXAtSize(maxStartArrowWidth,maxStartArrowHeight),this.startArrow.getBoundsYAtSize(maxStartArrowWidth,maxStartArrowHeight));
@@ -958,6 +961,8 @@ package com.hjx.graphic
 						this.endArrow.y = point2.y;
 						this.endArrow.visible = true;
 						
+						point2.offset(-10 * Math.cos(radian),-10*Math.sin(radian));
+						this._shapePoints[(this._shapePoints.length - 1)] = point2;
 						/*var maxEndArrowWidth:Number = this.endArrow.getMaxBoundsWidth();
 						var maxEndArrowHeight:Number = this.endArrow.getMaxBoundsHeight();
 						var endArrowRotatePoint:Point = new Point(this.endArrow.getBoundsXAtSize(maxEndArrowWidth,maxEndArrowHeight),this.endArrow.getBoundsYAtSize(maxEndArrowWidth,maxEndArrowHeight));
