@@ -629,7 +629,7 @@ package com.hjx.graphic
 		 * @return 
 		 * 
 		 */
-		function getBoundsForMeasure():Rectangle
+		public function getBoundsForMeasure():Rectangle
 		{
 			this.updateBoundsForMeasure();
 			if (this.path != null) 
