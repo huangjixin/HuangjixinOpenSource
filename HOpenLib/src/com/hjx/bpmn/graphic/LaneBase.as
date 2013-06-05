@@ -1,6 +1,10 @@
 package com.hjx.bpmn.graphic
 {
 	import com.hjx.graphic.SubGraph;
+	import com.hjx.jbpm.SwimLane;
+	
+	import mx.core.IVisualElement;
+	import mx.events.ResizeEvent;
 	
 	/**
 	 * 甬道基类。 
@@ -19,9 +23,12 @@ package com.hjx.bpmn.graphic
 		
 		internal var _gap:int=-1
 			
+		public var swimlane:SwimLane;
+		
 		public function LaneBase()
 		{
 			super();
+			swimlane = new SwimLane();
 		}
 		
 		public function isHorizontal():Boolean
@@ -38,22 +45,22 @@ package com.hjx.bpmn.graphic
 			return true;
 		}
 		
+		override public  function addElement(element:IVisualElement):IVisualElement{
+			var ele:IVisualElement = super.addElement(element);
+			ele.addEventListener(ResizeEvent.RESIZE,onEleResize);
+			return ele;
+		}
+		
+		protected function onEleResize(event:ResizeEvent):void
+		{
+			
+		}
+		
 		protected override function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);
 			if (partName == "graph") 
 			{
-				
-				/*loc1 = arg2 as com.ibm.ilog.elixir.diagram.Graph;
-				if (!(loc1.layout is com.ibm.ilog.elixir.diagram.LaneGraphSparkLayout)) 
-				{
-					(loc2 = new com.ibm.ilog.elixir.diagram.LaneGraphSparkLayout()).paddingTop = 0;
-					loc2.paddingBottom = 0;
-					loc2.paddingLeft = 0;
-					loc2.paddingRight = 0;
-					loc2.gap = this.gap;
-					loc1.layout = loc2;
-				}*/
 			}
 		}
 	}

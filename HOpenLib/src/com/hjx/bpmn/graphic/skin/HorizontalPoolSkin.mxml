@@ -3,11 +3,11 @@
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   xmlns:skin="com.hjx.graphic.skin.*"
-				   width="400" height="300" xmlns:graphic="com.hjx.graphic.*">
+				   xmlns:graphic="com.hjx.graphic.*">
 	<fx:Declarations>
 	</fx:Declarations>
 	<fx:Metadata>
-		[HostComponent("com.hjx.bpmn.graphic.HorizontalLane")]
+		[HostComponent("com.hjx.bpmn.graphic.HorizontalPool")]
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
@@ -47,27 +47,48 @@
 	<s:Group id="base" left="0" right="0" top="0" bottom="0">
 		<s:Rect id="border" left="0" top="0" width="100%" height="100%">
 			<s:stroke>
-				<s:SolidColorStroke color="{borderColor}" weight="2" />
+				<s:SolidColorStroke id="stroke" color="{borderColor}" weight="2" />
 			</s:stroke>
 			<s:fill>
-				<s:SolidColor color="{backgroundColor}" />
+				<s:SolidColor color="white" />
 			</s:fill>
 		</s:Rect>    
 		
-		<s:Group id="labelElement" left="0" top="0" bottom="0" 
-				 fontSize="12" minWidth="25" clipAndEnableScrolling="true"> 
-			<s:Label text="{hostComponent.label}" rotation="-90" left="5" 
-					 verticalCenter="0" color="{color}" />
+		<s:Group left="0" top="0" bottom="0" minWidth="25" clipAndEnableScrolling="true">
+			<s:Rect  left="2" top="2" right="0" bottom="2">
+				<s:fill>
+					<mx:SolidColor color="{backgroundColor}" />
+				</s:fill>
+			</s:Rect>
+			<s:Group id="labelElement" left="0" top="0" bottom="0" right="0" fontSize="12">
+				<s:Label text="{hostComponent.label}" rotation="-90" horizontalCenter="0" 
+						 verticalCenter="0" color="{color}" />
+			</s:Group>
 		</s:Group>
 		
+		<s:Line yTo="100" left="{Math.max(25, labelElement.width)}" top="0" bottom="0">
+			<s:stroke>
+				<s:SolidColorStroke color="{borderColor}" weight="2" />
+			</s:stroke>
+		</s:Line>
 		
+		<!-- group containing the graph -->
+		<!-- IMPORTANT don't use 'includeIn' to control display when state is collapsed
+		because graph parent will be null ( = pbl during link clipping)
+		Instead, let's use visibility
+		-->
 		<s:Group id="graphGroup" left="{Math.max(25, labelElement.width)}" 
-				 top="0" right="0" bottom="0" clipAndEnableScrolling="true"
-				 visible="true" 
+				 top="0" right="0" bottom="0" 
+				 clipAndEnableScrolling="true"
 				 visible.collapsed="false" 
 				 alpha="1" alpha.collapsed="0">
-			<graphic:Graph id="graph" left="0" top="0" width="100%" height="100%" 
-						automaticGraphLayout="false"/>
+			<s:Rect left="2" top="2" right="2" bottom="2">
+				<s:fill>
+					<s:SolidColor color="{backgroundColor}" />
+				</s:fill>
+			</s:Rect>    
+			<graphic:Graph  id="graph" left="0" top="0" width="100%" height="100%" 
+						 automaticGraphLayout="false"/>
 		</s:Group>
 	</s:Group>
 </skin:NodeSkinBase>

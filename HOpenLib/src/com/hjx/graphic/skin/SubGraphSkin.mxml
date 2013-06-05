@@ -109,7 +109,7 @@
 				 visible.collapsed="false" alpha.collapsed="0">
 			<s:Rect left="0" top="0" width="100%" height="100%">
 				<s:fill>
-					<mx:SolidColor color="0xF7F7F7"/>
+					<s:SolidColor color="0xF7F7F7"/>
 				</s:fill>
 			</s:Rect>
 			<graphic:Graph id="graph" left="{hostComponent.graphMarginLeft}"

@@ -10,7 +10,7 @@ package com.hjx.bpmn.graphic
 		
 		override public function isHorizontal():Boolean
 		{
-			return true;
+			return false;
 		}
 		
 		public override function set collapsed(value:Boolean):void 
