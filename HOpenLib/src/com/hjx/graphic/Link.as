@@ -93,7 +93,7 @@ package com.hjx.graphic
 		private var _strokeWidthChange:Boolean;
 		private var _radius:Number = 10;
 		private var _radiusChange:Boolean;
-		private var _dashStyle:String;
+		private var _dashStyle:String = DashStyle.NONE;
 		private var _dashStyleChange:Boolean;
 		private var _startArrowVisible:Boolean;
 		private var _startArrowVisibleChange:Boolean;
@@ -873,6 +873,8 @@ package com.hjx.graphic
 				this.computeShapePoints();
 				if (this.path && this._shapePoints) 
 				{
+					this.updateArrow();
+					this.path.data = createDashRoundPolyline(this._shapePoints, this._radius);
 					if(this._dashStyle == DashStyle.NONE){
 						if(!path.stroke || path.stroke is SolidColorStroke){
 							path.stroke = new SolidColorStroke(0,this._strokeWidth);
@@ -882,9 +884,6 @@ package com.hjx.graphic
 							path.stroke = new SolidColorDash(8,8,0x808080,this._strokeWidth);
 						}
 					}
-					
-					this.updateArrow();
-					this.path.data = createDashRoundPolyline(this._shapePoints, this._radius);
 					/*if (this._curved) 
 					{
 						this.configureCurvedPath(this.path);
