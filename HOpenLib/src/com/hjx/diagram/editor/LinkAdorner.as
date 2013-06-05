@@ -4,6 +4,7 @@ package com.hjx.diagram.editor
 	import com.hjx.graphic.Renderer;
 	
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	public class LinkAdorner extends Adorner
 	{
@@ -137,6 +138,9 @@ package com.hjx.diagram.editor
 				}
 				/*this.startHandleX = link.x;
 				this.startHandleY = link.y;*/
+				var rectangle:Rectangle = link.getBoundsForMeasure();
+				this.startHandleX = rectangle.x;
+				this.startHandleY = rectangle.y;
 			}
 			return;
 		}
