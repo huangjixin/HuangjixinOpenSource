@@ -7,8 +7,9 @@
 			   xmlns:diagram="com.hjx.diagram.*"
 			   xmlns:editor="com.hjx.diagram.editor.*"
 			   xmlns:graphlayout="com.hjx.graphic.graphlayout.*"
+			   xmlns:graphic1="com.hjx.bpmn.graphic.*"
 			   minWidth="955" minHeight="600"
-			   creationComplete="application1_creationCompleteHandler(event)" xmlns:graphic1="com.hjx.bpmn.graphic.*">
+			   creationComplete="application1_creationCompleteHandler(event)">
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace mx "library://ns.adobe.com/flex/mx";
@@ -52,7 +53,8 @@
 		
 		graphic1|Task{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.TaskSkin");
-			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner")
+			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner");
+			/* backgroundColor:"0x000333"; */
 		}
 		
 		graphic1|StartEvent{
@@ -89,6 +91,13 @@
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.TextAnnotationSkin");
 			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner");
 		}
+		
+		graphic|Link{
+			skinClass:ClassReference("com.hjx.graphic.skin.LinkSkin");
+			startArrowVisible:false;
+			endArrowVisible:true;
+			strokeWidth:2;
+		}
 	</fx:Style>
 	<fx:Script>
 		<![CDATA[
@@ -115,6 +124,8 @@
 					node.selected = !node.selected;
 					var renderer:Renderer = subGraph0.clone();
 					IVisualElementContainer(subGraph0.parent).addElementAt(renderer,0);
+					var cloneLink:Link = link.clone() as Link;
+					IVisualElementContainer(link.parent).addElementAt(cloneLink,0);
 					/* renderer.x=renderer.width+renderer.x;
 					renderer.y=renderer.height+renderer.y; */
 					
@@ -216,32 +227,69 @@
 				} */
 			}
 			
+			protected function graph_mouseDownHandler(event:MouseEvent):void
+			{
+				var renderer:Renderer = DiagramEditor.getRenderer(event.target);
+				if(renderer){
+					if(renderer is Link){
+						if(Link(renderer).startNode || Link(renderer).endNode){
+							return;
+						}
+					}
+					renderer.startDrag();
+					renderer.addEventListener(MouseEvent.MOUSE_UP,onRendererMouseUp);
+					renderer.stage.addEventListener(MouseEvent.MOUSE_UP,onRendererMouseUp);
+					renderer.addEventListener(MouseEvent.MOUSE_MOVE,onRendererMouseMove);
+					renderer.stage.addEventListener(MouseEvent.MOUSE_MOVE,onRendererMouseMove);
+				}
+			}
+			
+			protected function onRendererMouseUp(event:MouseEvent):void
+			{
+				var renderer:Renderer = event.currentTarget as Renderer;
+				if(renderer){
+					renderer.stopDrag();
+				}
+			}
+			
+			protected function onRendererMouseMove(event:MouseEvent):void
+			{
+				var renderer:Renderer = event.currentTarget as Renderer;
+				if(renderer is Node){
+					Node(renderer).invalidateLinkShape();
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<fx:XML id="data">
-			<Diagram xmlns:chg="com.hjx.graphic"  xmlns:chbg="com.hjx.bpmn.graphic">  
+			<Diagram xmlns:chg="com.hjx.graphic"
+					 xmlns:chbg="com.hjx.bpmn.graphic">  
 				<chbg:Task x="50" y="50" label="Node 1"/>
 				<chbg:Task x="50" y="200" label="任务"/>
 				<chbg:StartEvent x="50" y="320" label="开始"/>
 				<chbg:EndEvent x="50" y="370" label="结束"/>
 				<chbg:Gateway x="50" y="420" label="网关"/>
 				<chbg:TextAnnotation x="160" y="420" label="左注解"/>
-				<chg:SubGraph x="200" y="50" label="Graph 1" width="200" height="200">
+				<chg:SubGraph x="200" y="50" width="200" height="200" label="Graph 1">
 					<chbg:Task x="10" y="0" label="Node 11"/>
 					<chbg:Task x="10" y="50" label="Node 12"/>
-					<chg:SubGraph x="100" y="60" label="Graph 2" width="200" height="200">
+					<chg:SubGraph x="100" y="60" width="200" height="200" label="Graph 2">
 						<chbg:Task x="0" y="0" label="Node 21"/>
 						<chbg:Task x="60" y="60" label="Node 22"/>
 					</chg:SubGraph>  
 				</chg:SubGraph>
 			</Diagram>
 		</fx:XML>
-		<mx:HierarchicalCollectionView id="hcv" showRoot="false"
+		<mx:HierarchicalCollectionView xmlns:chg="com.hjx.graphic"
+									   id="hcv" showRoot="false"
 									   source="{new HierarchicalData(data)}"/>
 	</fx:Declarations>
-	<editor:DiagramEditor id="diagramEditor" width="100%" height="100%" click="diagramEditor_clickHandler(event)">
+	<editor:DiagramEditor xmlns:chg="com.hjx.graphic"
+						  id="diagramEditor" width="50%" height="80%"
+						  click="diagramEditor_clickHandler(event)">
 		<diagram:Diagram id="diagram1" width="100%" height="100%" automaticGraphLayout="false"
 						 labelField="@label" nodeDataProvider="{hcv}" selectionMode="multiple"
 						 xLocationField="@x" yLocationField="@y">
@@ -251,28 +299,36 @@
 		</diagram:Diagram>
 	</editor:DiagramEditor>
 	<!--<diagram:Diagram id="diagram" width="100%" height="100%"/>-->
-	<graphic:Graph id="graph" x="{width/2}" width="50%" height="100%">
+	<graphic:Graph id="graph" x="{width/2}" width="50%" height="100%"
+				   mouseDown="graph_mouseDownHandler(event)">
 		<graphic:SubGraph id="subGraph0" y="200" width="200" height="200">
 			<graphic:SubGraph id="subGraph1" width="200" height="200">
 				<graphic1:Task id="node" x="10" y="20" label="node2"/>
 				<!--<local:BPMNBtn id="node3" x="50" y="100" label="node3"/>-->
 			</graphic:SubGraph>
 		</graphic:SubGraph>
-		<graphic:Link id="link" endArrowVisible="true" endNode="{node2}" startArrowVisible="false" 
-					  startNode="{node}" strokeWidth="2"/>
-		<graphic1:Task id="node2" x="300" y="400"
-					   click="node1_clickHandler(event)"/>
-		<graphic1:StartEvent id="startEvent" x="500" y="200"/>
-		
-		<graphic1:EndEvent id="endEvent" x="500" y="290"/>
-		
-		<graphic1:Gateway id="gateway" x="500" y="390"/>
+		<!--<graphic:Link  endArrowVisible="true" endNode="{node2}" startArrowVisible="false" 
+					  startNode="{node}" strokeWidth="2"
+					  shapeType="straight" dashStyle="none"
+					  fallbackStartPoint="{new Point(0,0)}"
+					  fallbackEndPoint="{new Point(100,100)}"/>-->
+		<graphic1:Task id="node2" x="300" y="400" click="node1_clickHandler(event)"/>
 		
 		<graphic1:IntermediateEvent id="intermediateEvent" x="500" y="490"/>
 		
 		<graphic1:Group id="group" x="500" y="590" width="100" height="50"/>
 		
 		<graphic1:DataObject id="dataObject" x="500" y="690"/>
-		
+		<graphic1:Task id="task1" x="100" y="20" label="task1"/>
+		<graphic1:Task id="task2" x="10" y="500" label="task2"/>
+		<graphic:Link id="link" dashStyle="dash" endArrowVisible="true" endNode="{task1}"
+					  shapeType="straight" startArrowVisible="true" startNode="{node}"
+					  strokeWidth="2"/>
+		<graphic1:StartEvent id="startEvent" x="500" y="200" label="开始"/>
+		<graphic:Link endNode="{task}" startNode="{startEvent}"/>
+		<graphic1:Task id="task" x="100" y="20" label="申请部门活动"/>
+		<graphic:Link endNode="{endEvent}" startNode="{task}"/>
+		<graphic1:Gateway id="gateway" x="500" y="390"/>
+		<graphic1:EndEvent id="endEvent" x="400" y="290" label="结束"/>
 	</graphic:Graph>
 </s:Application>
