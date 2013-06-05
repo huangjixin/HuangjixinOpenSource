@@ -98,9 +98,35 @@
 			endArrowVisible:true;
 			strokeWidth:2;
 		}
+		
+		graphic1|HorizontalLane{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.HorizontalLaneSkin");
+			backgroundColor:"0xDDA09D";
+			borderColor:"0x3E2D2C";
+		}
+		
+		graphic1|VerticalLane{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.VerticalLaneSkin");
+			backgroundColor:"0xDDA09D";
+			borderColor:"0x3E2D2C";
+		}
+		
+		graphic1|HorizontalPool{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.HorizontalPoolSkin");
+			backgroundColor:"0x9D3C35";
+			borderColor:"0x3E2D2C";
+		}
+		
+		graphic1|VerticaltalPool{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.VerticalPoolSkin");
+			backgroundColor:"0x9D3C35";
+			borderColor:"0x3E2D2C";
+		}
 	</fx:Style>
 	<fx:Script>
 		<![CDATA[
+			import com.hjx.bpmn.graphic.LaneBase;
+			import com.hjx.bpmn.graphic.VerticalLane;
 			import com.hjx.graphic.Node;
 			import com.hjx.graphic.Renderer;
 			import com.hjx.uitls.CloneUtil;
@@ -236,6 +262,12 @@
 							return;
 						}
 					}
+					if(renderer is HorizontalLane || renderer is VerticalLane ){
+						if(renderer is HorizontalPool ){
+						}else{
+							return;
+						}
+					}
 					renderer.startDrag();
 					renderer.addEventListener(MouseEvent.MOUSE_UP,onRendererMouseUp);
 					renderer.stage.addEventListener(MouseEvent.MOUSE_UP,onRendererMouseUp);
@@ -313,14 +345,44 @@
 					  fallbackStartPoint="{new Point(0,0)}"
 					  fallbackEndPoint="{new Point(100,100)}"/>-->
 		<graphic1:Task id="node2" x="300" y="400" click="node1_clickHandler(event)"/>
-		
+		<graphic1:HorizontalPool width="500" label="横甬道池" x="-300" y="500">
+			<graphic1:HorizontalLane  width="100%" height="100" label="横甬道" >
+				<graphic1:Task id="task1" x="100" y="20" label="task1"/>
+				<graphic1:Task id="task2" x="10" y="50" label="task2"/>
+				<graphic:Link dashStyle="none" endArrowVisible="true"  startNode="{task1}"
+							  shapeType="straight" startArrowVisible="false"  endNode="{task2}"
+							  strokeWidth="2"/>
+			</graphic1:HorizontalLane>
+			<graphic1:HorizontalLane width="100%" height="100" label="横甬道">
+				<graphic1:StartEvent id="task3" x="100" y="20" label="task1"/>
+				<graphic1:Task id="task4" x="10" y="50" label="task2"/>
+				<graphic:Link dashStyle="none" endArrowVisible="true"  startNode="{task3}"
+							  shapeType="straight" startArrowVisible="false"  endNode="{task4}"
+							  strokeWidth="2"/>
+			</graphic1:HorizontalLane>
+		</graphic1:HorizontalPool>
+		<!--<graphic1:VerticalPool height="500" label="横甬道池" x="-300" y="100">
+			<graphic1:VerticalLane  height="100%" width="100" label="竖甬道" >
+				<graphic1:Task id="task5" x="10" y="200" label="task1"/>
+				<graphic1:Task id="task6" x="10" y="50" label="task2"/>
+				<graphic:Link dashStyle="none" endArrowVisible="true"  startNode="{task5}"
+							  shapeType="straight" startArrowVisible="false"  endNode="{task6}"
+							  strokeWidth="2"/>
+			</graphic1:VerticalLane>
+			<graphic1:VerticalLane height="100%" width="100" label="竖甬道">
+				<graphic1:StartEvent id="task7" x="10" y="200" label="task1"/>
+				<graphic1:Task id="task8" x="10" y="50" label="task2"/>
+				<graphic:Link dashStyle="none" endArrowVisible="true"  startNode="{task7}"
+							  shapeType="straight" startArrowVisible="false"  endNode="{task8}"
+							  strokeWidth="2"/>
+			</graphic1:VerticalLane>
+		</graphic1:VerticalPool>-->
 		<graphic1:IntermediateEvent id="intermediateEvent" x="500" y="490"/>
 		
 		<graphic1:Group id="group" x="500" y="590" width="100" height="50"/>
 		
 		<graphic1:DataObject id="dataObject" x="500" y="690"/>
-		<graphic1:Task id="task1" x="100" y="20" label="task1"/>
-		<graphic1:Task id="task2" x="10" y="500" label="task2"/>
+		
 		<graphic:Link id="link" dashStyle="dash" endArrowVisible="true" endNode="{task1}"
 					  shapeType="straight" startArrowVisible="true" startNode="{node}"
 					  strokeWidth="2"/>
@@ -328,7 +390,9 @@
 		<graphic:Link endNode="{task}" startNode="{startEvent}"/>
 		<graphic1:Task id="task" x="100" y="20" label="申请部门活动"/>
 		<graphic:Link endNode="{endEvent}" startNode="{task}"/>
-		<graphic1:Gateway id="gateway" x="500" y="390"/>
 		<graphic1:EndEvent id="endEvent" x="400" y="290" label="结束"/>
+		<graphic1:Gateway id="gateway" x="500" y="390"/>
+		
+		
 	</graphic:Graph>
 </s:Application>
