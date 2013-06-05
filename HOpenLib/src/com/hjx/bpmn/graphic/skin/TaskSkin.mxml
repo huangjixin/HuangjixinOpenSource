@@ -3,7 +3,7 @@
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   xmlns:skin="com.hjx.graphic.skin.*"
-				   width="100" height="50">
+				   width="90" height="50">
 	<fx:Declarations>
 		<s:GlowFilter id="glowFilter" blurX="18" blurY="18" color="#E3B01C" strength="3"/>
 		

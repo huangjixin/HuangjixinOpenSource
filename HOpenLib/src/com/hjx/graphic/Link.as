@@ -85,10 +85,7 @@ package com.hjx.graphic
 		[SkinPart(required="false")]
 		public var startArrow:Path;
 		
-		/**
-		 * 形状点组，它将决定连线形状。 
-		 */
-		internal var _shapePoints:Vector.<Point>;
+		private var _shapePoints:Vector.<Point>;
 		private var _strokeWidth:Number;
 		private var _strokeWidthChange:Boolean;
 		private var _radius:Number = 10;
@@ -133,6 +130,14 @@ package com.hjx.graphic
 			}*/
 		}
 		
+		/**
+		 * 形状点组，它将决定连线形状。 
+		 */
+		public function get shapePoints():Vector.<Point>
+		{
+			return _shapePoints;
+		}
+
 		/**
 		 * 结束节点的连接区域。 
 		 * @return 

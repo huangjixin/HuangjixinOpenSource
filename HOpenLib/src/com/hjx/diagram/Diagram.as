@@ -11,6 +11,7 @@ package com.hjx.diagram
 	import com.hjx.diagram.skin.DiagramSkin;
 	import com.hjx.graphic.Graph;
 	import com.hjx.graphic.GraphScroller;
+	import com.hjx.graphic.Link;
 	import com.hjx.graphic.Node;
 	import com.hjx.graphic.SubGraph;
 	import com.hjx.graphic.graphlayout.GraphLayout;
@@ -336,13 +337,14 @@ package com.hjx.diagram
 				if(cursor.current is XML){
 					var xml:XML = cursor.current as XML;
 					var localName:Object = XML(cursor.current).localName();
-					var className:String = xml.localName();
+					/*var className:String = xml.localName();
 					var ns:Namespace = xml.namespace();
 					if(ns != null)
-						className = ns.uri + "::" + className;
+						className = ns.uri + "::" + className;*/
 					
 					if(localName){
-						var objclass:Class = getDefinitionByName(className) as Class;
+						var object:Object = deserializeObject(xml);
+						/*var objclass:Class = getDefinitionByName(className) as Class;
 						var object:Object = new objclass();
 						for each(var att:Object in xml.attributes()){
 							try {
@@ -352,7 +354,7 @@ package com.hjx.diagram
 								if(value != null)
 									object[name] = value;
 							} catch(err:Error){}
-						}
+						}*/
 						
 						container.addElement(object as IVisualElement);
 						if(object is SubGraph){
@@ -391,6 +393,127 @@ package com.hjx.diagram
 			}
 		}
 		
+		protected function deserializeObject(xml:XML) : Object
+		{
+			var className:String = xml.localName();
+			var ns:Namespace = xml.namespace();
+			if(ns != null)
+				className = ns.uri + "::" + className;
+			
+			try{ 
+				var objclass:Class = getDefinitionByName(className) as Class;
+				if(objclass != null){
+					var object:Object = new objclass();
+					
+					var id:String = xml.attribute("id");
+					/*if(id != null && id != "")
+						objectsByID[id] = object;*/
+					
+					for each(var att:* in xml.attributes()){
+						try {
+							var name:String = att.name();
+							var defaultValue:Object = object[name];
+							var value:Object = deserializeProperty(object, name, xml.attribute(name), defaultValue);
+							if(value != null)
+								object[name] = value;
+						} catch(err:Error){}
+					}
+					
+					for each(var child:XML in xml.children()){
+						if(object.hasOwnProperty(child.localName()))
+						{
+							try {
+								var name1:String = child.localName();
+								var defaultValue1:Object = object[name1];
+								var value1:Object = deserializeProperty(object, name1, child, defaultValue1);
+								if(value1 != null)
+									object[name1] = value1;
+							} catch(err:Error){}
+						} else if (child.localName()=="styles") {
+//							deserializeStyle(object,child);
+						}
+					}
+					return object;
+				}
+			} catch(err:Error){
+				trace(err);
+			}
+			
+			return null;
+		}
+		
+		protected function deserializeProperty(object:Object, name:String, xmlValue:Object, defaultValue:Object) : Object
+		{
+			/*if(object is Link){
+				if(name == "startNode" || name == "endNode" ||
+					name == "startPort" || name == "endPort"){
+					var obj:Object = objectsByID[xmlValue];
+					if(obj != null){
+						return obj;
+					} else if(!resolvingForwardReferences) {
+						var ref:Object = new Object();
+						ref["object"] = object;
+						ref["name"] = name;
+						ref["xmlValue"] = xmlValue;
+						ref["defaultValue"] = defaultValue;
+						forwardReferences.push(ref);
+						return null;
+					}
+				} else if(name == "fallbackStartPoint" || name == "fallbackEndPoint"){
+					if(xmlValue is XML)
+						return deserializePropertyAsElement(XML(xmlValue));
+				} else if(name == "intermediatePoints"){
+					if(xmlValue is XML){
+						var points:Vector.<Point> = new Vector.<Point>();
+						for each(var pointXML:XML in XML(xmlValue).elements()){
+							var point:Point = deserializeObject(pointXML) as Point;
+							if(point != null)
+								points.push(point);
+						}
+						return points;
+						
+					}
+				}
+			}
+			
+			if ((object is Graph) || (object is Subgraph)) {
+				if ((name == "nodeLayout") || (name == "linkLayout")) {
+					if (xmlValue is XML)
+						return deserializePropertyAsElement(XML(xmlValue));
+				}
+			}*/
+			if(name == "fallbackStartPoint" || name == "fallbackEndPoint"){
+				if(xmlValue is XML)
+					return deserializePropertyAsElement(XML(xmlValue));
+			}	
+			var stringValue:String = String(xmlValue);
+			
+			if(stringValue != null){
+				if(defaultValue is String)
+					return stringValue;
+				
+				if(defaultValue is int)
+					return parseInt(stringValue);
+				
+				if(defaultValue is Boolean)
+					return stringValue == "true" || stringValue == "True";
+				
+				if(defaultValue is Number || name == "left" || name == "top")
+					return parseFloat(stringValue);
+			}
+			
+			return xmlValue;
+		}
+			
+		protected function deserializePropertyAsElement(xmlValue:XML) : Object
+		{
+				var elements:XMLList = xmlValue.elements();
+				if(elements.length() > 0)
+					return deserializeObject(elements[0]);
+				else
+					return null;
+		}
+			
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/

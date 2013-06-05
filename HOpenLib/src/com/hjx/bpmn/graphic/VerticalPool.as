@@ -5,15 +5,13 @@ package com.hjx.bpmn.graphic
 	
 	import spark.layouts.HorizontalAlign;
 	import spark.layouts.HorizontalLayout;
-	import spark.layouts.VerticalAlign;
-	import spark.layouts.VerticalLayout;
 	
 	/**
 	 * 竖甬道池，用于放置甬道。 
 	 * @author huangjixin
 	 * 
 	 */
-	public class VerticalPool extends HorizontalLane
+	public class VerticalPool extends VerticalLane
 	{
 		public function VerticalPool()
 		{
@@ -22,7 +20,7 @@ package com.hjx.bpmn.graphic
 		
 		override public  function addElement(element:IVisualElement):IVisualElement{
 			var ele:IVisualElement = super.addElement(element);
-			ele.percentWidth = 100;
+//			ele.percentWidth = 100;
 			ele.addEventListener(ResizeEvent.RESIZE,onEleResize);
 			return ele;
 		}
@@ -43,7 +41,8 @@ package com.hjx.bpmn.graphic
 			super.partAdded(partName, instance);
 			if (partName == "graph") 
 			{
-				var hLayout:HorizontalLayout= new HorizontalLayout();hLayout.horizontalAlign= HorizontalAlign.CENTER;
+				var hLayout:HorizontalLayout= new HorizontalLayout();
+				hLayout.horizontalAlign= HorizontalAlign.CENTER;
 				hLayout.gap = -2;
 				this.graph.layout =hLayout;
 			}

@@ -20,7 +20,7 @@
 				
 				if (backgroundColor != bg && bg!= undefined)
 				{
-					backgroundColor = bg;
+					this.backgroundColor = bg;
 				}      
 				
 				var borderColor:* = getStyle("borderColor");
@@ -47,40 +47,39 @@
 	<s:Group id="base" left="0" right="0" top="0" bottom="0">
 		<s:Rect id="border" left="0" top="0" width="100%" height="100%">
 			<s:stroke>
-				<s:SolidColorStroke id="stroke" color="{borderColor}" weight="2" />
+				<s:SolidColorStroke id="stroke" color="{borderColor}" weight="2"/>
 			</s:stroke>
 			<s:fill>
-				<s:SolidColor color="white" />
+				<s:SolidColor color="white"/>
 			</s:fill>
 		</s:Rect>    
 		
-		<s:Group left="0" top="0" right="0" minHeight="25" clipAndEnableScrolling="true">
-			<s:Rect  left="2" top="2" right="2" bottom="0">
+		<s:Group left="0" right="0" top="0" minHeight="25" clipAndEnableScrolling="true">
+			<s:Rect left="2" right="2" top="2" bottom="0">
 				<s:fill>
-					<mx:SolidColor color="{backgroundColor}" />
+					<s:SolidColor color="{backgroundColor}"/>
 				</s:fill>
 			</s:Rect>
-			<s:Group id="labelElement" left="0" top="0" right="0" bottom="0" fontSize="12">
-				<s:Label text="{hostComponent.label}" horizontalCenter="0" 
-						 verticalCenter="0" color="{color}" />
+			<s:Group id="labelElement" left="0" right="0" top="0" bottom="0" fontSize="12">
+				<s:Label color="{color}" horizontalCenter="0" text="{hostComponent.label}"
+						 verticalCenter="0"/>
 			</s:Group>
 		</s:Group>
-		<s:Line xTo="100" top="{Math.max(25, labelElement.width)}" left="0" right="0">
+		<s:Line left="0" right="0" top="{Math.max(25, labelElement.width)}" xTo="100">
 			<s:stroke>
-				<s:SolidColorStroke color="{borderColor}" weight="2" />
+				<s:SolidColorStroke color="{borderColor}" weight="2"/>
 			</s:stroke>
 		</s:Line>
 		
-		<s:Group id="graphGroup" left="0" top="{Math.max(25, labelElement.height)}" 
-				 right="0" bottom="0" clipAndEnableScrolling="true"
-				 visible.collapsed="false" 
-				 alpha="1" alpha.collapsed="0">
-			<s:Rect left="2" top="2" right="2" bottom="2">
+		<s:Group id="graphGroup" left="0" right="0" top="{Math.max(25, labelElement.height)}"
+				 bottom="0" alpha="1" clipAndEnableScrolling="true"
+				 visible.collapsed="false" alpha.collapsed="0">
+			<s:Rect left="2" right="2" top="2" bottom="2">
 				<s:fill>
-					<mx:SolidColor color="{backgroundColor}" />
+					<s:SolidColor color="{backgroundColor}"/>
 				</s:fill>
 			</s:Rect>    
-			<graphic:Graph id="graph" left="0" top="0" width="100%" height="100%" 
+			<graphic:Graph id="graph" left="0" top="0" width="100%" height="100%"
 						   automaticGraphLayout="false"/>
 			
 		</s:Group>

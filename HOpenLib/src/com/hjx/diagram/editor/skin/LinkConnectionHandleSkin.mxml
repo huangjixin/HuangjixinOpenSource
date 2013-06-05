@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("com.hjx.diagram.editor.LinkConnectionHandle")]
+	</fx:Metadata>
+	<s:states>
+		<s:State name="up" />
+		<s:State name="over" />
+		<s:State name="down" />
+		<s:State name="disabled" />
+	</s:states>
+	<s:Group id="base" left="0" right="0" top="0" bottom="0">
+		<s:Rect left="0" right="0" top="0" bottom="0" minWidth="8" minHeight="8">
+			<s:fill>
+				<s:LinearGradient>
+					<s:GradientEntry color="#CCE6FF"/>
+				</s:LinearGradient>
+			</s:fill>
+			<s:stroke>
+				<s:SolidColorStroke color="#00A8FF"  weight="1" alpha="0.5" alpha.over="0.7" alpha.down="1"/>
+			</s:stroke>
+		</s:Rect>
+		<s:Rect left="2" right="2" top="2" bottom="2">
+			<s:fill>
+				<s:LinearGradient>
+					<s:GradientEntry color="#99CCFF" alpha="0.5" alpha.over="0.7" alpha.down="1"/>
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+		<!--alpha="0.5" alpha.over="0.7" alpha.down="1"-->
+		<!--<s:Path id="path" data="M 0 0 L 10 0 M 0 0 L 0 10 ">
+			<s:stroke>
+				<s:SolidColorStroke color="0" alpha="0.3" alpha.over="0.5" alpha.down="0.8" weight="2"/>
+			</s:stroke>
+		</s:Path>-->
+	</s:Group>
+</s:Skin>

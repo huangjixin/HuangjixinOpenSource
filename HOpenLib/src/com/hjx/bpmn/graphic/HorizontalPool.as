@@ -20,7 +20,7 @@ package com.hjx.bpmn.graphic
 		
 		override public  function addElement(element:IVisualElement):IVisualElement{
 			var ele:IVisualElement = super.addElement(element);
-			ele.percentHeight = 100;
+//			ele.percentHeight = 100;
 			ele.addEventListener(ResizeEvent.RESIZE,onEleResize);
 			return ele;
 		}
