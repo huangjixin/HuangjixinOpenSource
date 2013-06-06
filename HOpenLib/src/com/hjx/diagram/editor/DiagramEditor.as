@@ -23,10 +23,12 @@ package com.hjx.diagram.editor
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
+	import flash.utils.setTimeout;
 	
 	import mx.events.SandboxMouseEvent;
 	import mx.graphics.SolidColor;
 	import mx.graphics.SolidColorStroke;
+	import mx.managers.DragManager;
 	
 	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
@@ -53,6 +55,8 @@ package com.hjx.diagram.editor
 		// 例如：private var _example:String;
 		//--------------------------------------------------------
 		public var allowMoving:Boolean=true;
+		
+		public var allowReparenting:Boolean=true;
 		
 		private var defaultCSSStyles:Object = {
 			skinClass:DiagramEditorSkin
@@ -99,6 +103,8 @@ package com.hjx.diagram.editor
 		internal var mouseDown:Boolean;
 		internal var isDragging:Boolean;
 		
+		internal var _currentSubgraph:SubGraph=null;
+		private var currentSubgraphFlashing:Boolean;
 		
 		public function DiagramEditor()
 		{
@@ -115,7 +121,29 @@ package com.hjx.diagram.editor
 		//--------------------------------------------------------
 		// getter和setter函数
 		//--------------------------------------------------------
-
+		internal function get currentSubgraph():SubGraph
+		{
+			return this._currentSubgraph;
+		}
+		
+		internal function set currentSubgraph(subGraph:SubGraph):void
+		{
+			if (subGraph != this._currentSubgraph) 
+			{
+				if (this._currentSubgraph != null) 
+				{
+					this.updateAdorner(this._currentSubgraph);
+				}
+				this._currentSubgraph = subGraph;
+				if (this._currentSubgraph != null) 
+				{
+					this.updateAdorner(this._currentSubgraph);
+				}
+			}
+			this.currentSubgraphFlashing = false;
+			return;
+		}
+		
 		public function get inAdornerInteraction():Boolean
 		{
 			return _inAdornerInteraction;
@@ -294,7 +322,7 @@ package com.hjx.diagram.editor
 							{
 								continue;
 							}*/
-							var currentPoint:Point = new flash.geom.Point(currentX, currentY);
+							var currentPoint:Point = new Point(currentX, currentY);
 							this.translate(selectedRenderer, new Point(currentPoint.x - this.lastX, currentPoint.y - this.lastY));
 							translated = true;
 							selectedRenderer.invalidateProperties();
@@ -306,6 +334,16 @@ package com.hjx.diagram.editor
 					}
 					if(translated){
 						validateNow();
+						if (this.allowReparenting) 
+						{
+							this.trackCurrentSubgraph(event);
+							playDraggingMoveAdorner(this.currentSubgraph);
+							var graph:Graph = this.currentSubgraph == null ? this._graph : this.currentSubgraph.graph;
+							if (this.reparent(this.selectedObjects, graph)) 
+							{
+								this.flashCurrentSubgraph();
+							}
+						}
 					}else if (!this.inAdornerInteraction) 
 					{
 						if (this.marquee == null) 
@@ -358,7 +396,7 @@ package com.hjx.diagram.editor
 			
 			this.mouseDown = false;
 			this.isDragging = false;
-			
+			this.resetCurrentSubgraph();
 			var displayObject:DisplayObject = systemManager.getSandboxRoot();
 			displayObject.removeEventListener(MouseEvent.MOUSE_UP, this.mouseUpHandler, true);
 			displayObject.removeEventListener(MouseEvent.MOUSE_MOVE, this.mouseDragHandler, true);
@@ -409,6 +447,119 @@ package com.hjx.diagram.editor
 				renderer.setY(renderer, renderer.getY(renderer) + point.y);
 			}
 		}
+		
+		internal function trackCurrentSubgraph(event:MouseEvent):void
+		{
+			var subGraph:SubGraph=null;
+			var flag:Boolean =false;
+			var objectsUnderPoint:Array = this._graph.stage.getObjectsUnderPoint(new Point(event.stageX, event.stageY));
+			var length:int = (objectsUnderPoint.length - 1);
+			while (length >= 0) 
+			{
+				subGraph = getRenderer(objectsUnderPoint[length]) as SubGraph;
+				
+				if (subGraph && !subGraph.collapsed && DiagramEditor.getEditor(subGraph)) 
+				{
+					flag = false;
+					if (!DragManager.isDragging) 
+					{
+						var displayObje:DisplayObject = subGraph;
+						while (displayObje != null) 
+						{
+							if (displayObje is Renderer && this.isSelected(Renderer(displayObje))) 
+							{
+								flag = true;
+							}
+							displayObje = displayObje.parent;
+						}
+					}
+					if (!flag) 
+					{
+						this.currentSubgraph = subGraph;
+						return;
+					}
+				}
+				--length;
+			}
+			this.currentSubgraph = null;
+			return;
+		}
+		
+		internal function flashCurrentSubgraph():void
+		{
+			/*var loc1:*=null;
+			if (this.currentSubgraph != null) 
+			{
+				loc1 = this.getAdorner(this.currentSubgraph) as com.ibm.ilog.elixir.diagram.editor.SubgraphAdorner;
+				if (loc1 != null) 
+				{
+					loc1.flash = true;
+					this.currentSubgraphFlashing = true;
+				}
+			}
+			return;*/
+		}
+		
+		internal function resetCurrentSubgraph():void
+		{
+			if (this.currentSubgraphFlashing) 
+			{
+				setTimeout(this.clearCurrentSubgraph, 200);
+			}
+			else 
+			{
+				this.currentSubgraph = null;
+			}
+			return;
+		}
+		
+		internal function clearCurrentSubgraph():void
+		{
+			this.currentSubgraph = null;
+			return;
+		}
+		
+		public function reparent(seleObjs:Vector.<Renderer>, graph:Graph):Boolean
+		{
+			var reparentd:Boolean;
+			
+			for each (var renderer:Renderer in seleObjs) 
+			{
+				if (renderer.parent == graph) 
+				{
+					continue;
+				}
+				
+				var point:Point = new Point(renderer.getX(renderer), renderer.getY(renderer));
+				point = renderer.parent.localToGlobal(point);
+				point = graph.globalToLocal(point);
+				Graph(renderer.parent).removeElement(renderer);
+				if (!(renderer is Link)) 
+				{
+					renderer.setX(renderer, point.x);
+					renderer.setY(renderer, point.y);
+				}
+				graph.addElement(renderer);
+				var node:Node = renderer as Node;
+				var sub:SubGraph = renderer as SubGraph;
+				if (node) 
+				{
+					var length:int=0;
+					var links:Vector.<Link> = node.getLinks();
+					/*for each (var link:Link in links) 
+					{
+					reparentLink(loc7);
+					}
+					if (loc6) 
+					{
+					reparentIntergraphLinks(loc6);
+					}*/
+				}
+				reparentd = true;
+			}
+			return reparentd;
+		}
+		
 		
 		public function setSelected(renderer:Renderer, isSelected:Boolean):void
 		{
@@ -534,7 +685,7 @@ package com.hjx.diagram.editor
 			var adorner:Adorner=this.getAdorner(renderer);
 			if (this.isSelected(renderer as Renderer)) 
 			{
-				if (adorner == null) 
+				if (!adorner) 
 				{
 					adorner = this.createAdorner(renderer);
 					this.adorners[renderer] = adorner;
@@ -545,6 +696,17 @@ package com.hjx.diagram.editor
 			{
 				this.adornersGroup.removeElement(adorner);
 				this.adorners[renderer] = null;
+			}
+			return;
+		}
+		
+		internal function playDraggingMoveAdorner(renderer:Renderer):void
+		{
+			this.adornersGroup.graphics.clear();
+			if(renderer){
+				var rect:Rectangle = renderer.getBounds(this.adornersGroup);
+				this.adornersGroup.graphics.lineStyle(4,0x00A8FF);
+				this.adornersGroup.graphics.drawRect(rect.left,rect.top,rect.width,rect.height);
 			}
 			return;
 		}
