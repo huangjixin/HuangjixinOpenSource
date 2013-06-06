@@ -94,9 +94,14 @@
 		
 		graphic|Link{
 			skinClass:ClassReference("com.hjx.graphic.skin.LinkSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.LinkAdorner");
 			startArrowVisible:false;
 			endArrowVisible:true;
 			strokeWidth:2;
+		}
+		
+		editor|LinkAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.LinkAdornerSkin");
 		}
 		
 		graphic1|HorizontalLane{
@@ -117,7 +122,7 @@
 			borderColor:"0x3E2D2C";
 		}
 		
-		graphic1|VerticaltalPool{
+		graphic1|VerticalPool{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.VerticalPoolSkin");
 			backgroundColor:"0x9D3C35";
 			borderColor:"0x3E2D2C";
@@ -263,7 +268,7 @@
 						}
 					}
 					if(renderer is HorizontalLane || renderer is VerticalLane ){
-						if(renderer is HorizontalPool ){
+						if(renderer is HorizontalPool ||renderer is VerticalPool ){
 						}else{
 							return;
 						}
@@ -298,13 +303,32 @@
 	<fx:Declarations>
 		<fx:XML id="data">
 			<Diagram xmlns:chg="com.hjx.graphic"
-					 xmlns:chbg="com.hjx.bpmn.graphic">  
-				<chbg:Task x="50" y="50" label="Node 1"/>
-				<chbg:Task x="50" y="200" label="任务"/>
+					 xmlns:chbg="com.hjx.bpmn.graphic"
+					 xmlns:fg="flash.geom"
+					 >  
+				<chbg:Task id="task1" x="50" y="50" label="任务1"/>
+				<chbg:Task id="task2" x="50" y="200" label="任务2"/>
 				<chbg:StartEvent x="50" y="320" label="开始"/>
 				<chbg:EndEvent x="50" y="370" label="结束"/>
 				<chbg:Gateway x="50" y="420" label="网关"/>
 				<chbg:TextAnnotation x="160" y="420" label="左注解"/>
+				<chg:Link startNode="task1" endNode="task2">
+					<fallbackEndPoint>
+						<fg:Point id="point5" x="400" y="400"/>
+					</fallbackEndPoint>
+					<fallbackStartPoint>
+						<fg:Point id="point6" x="250" y="300"/>
+					</fallbackStartPoint>
+				</chg:Link>
+				<chg:Link >
+					<fallbackEndPoint>
+						<fg:Point id="point5" x="600" y="400"/>
+					</fallbackEndPoint>
+					<fallbackStartPoint>
+						<fg:Point id="point6" x="250" y="500"/>
+					</fallbackStartPoint>
+				</chg:Link>
+					
 				<chg:SubGraph x="200" y="50" width="200" height="200" label="Graph 1">
 					<chbg:Task x="10" y="0" label="Node 11"/>
 					<chbg:Task x="10" y="50" label="Node 12"/>
@@ -320,7 +344,7 @@
 									   source="{new HierarchicalData(data)}"/>
 	</fx:Declarations>
 	<editor:DiagramEditor xmlns:chg="com.hjx.graphic"
-						  id="diagramEditor" width="50%" height="80%"
+						  id="diagramEditor" width="100%" height="100%"
 						  click="diagramEditor_clickHandler(event)">
 		<diagram:Diagram id="diagram1" width="100%" height="100%" automaticGraphLayout="false"
 						 labelField="@label" nodeDataProvider="{hcv}" selectionMode="multiple"
@@ -361,7 +385,7 @@
 							  strokeWidth="2"/>
 			</graphic1:HorizontalLane>
 		</graphic1:HorizontalPool>
-		<!--<graphic1:VerticalPool height="500" label="横甬道池" x="-300" y="100">
+		<graphic1:VerticalPool height="500" label="竖甬道池" x="-300" y="100">
 			<graphic1:VerticalLane  height="100%" width="100" label="竖甬道" >
 				<graphic1:Task id="task5" x="10" y="200" label="task1"/>
 				<graphic1:Task id="task6" x="10" y="50" label="task2"/>
@@ -376,7 +400,7 @@
 							  shapeType="straight" startArrowVisible="false"  endNode="{task8}"
 							  strokeWidth="2"/>
 			</graphic1:VerticalLane>
-		</graphic1:VerticalPool>-->
+		</graphic1:VerticalPool>
 		<graphic1:IntermediateEvent id="intermediateEvent" x="500" y="490"/>
 		
 		<graphic1:Group id="group" x="500" y="590" width="100" height="50"/>

@@ -7,7 +7,7 @@
 			   xmlns:graphics="ws.tink.spark.graphics.*"
 			   xmlns:effects="com.lafabrick.uigfx.effects.*"
 			   xmlns:primitives="com.lafabrick.uigfx.primitives.*"
-			   minWidth="955" minHeight="600" viewSourceURL="srcview/index.html">
+			   minWidth="955" minHeight="600">
 	
 	<fx:Script>
 		<![CDATA[
