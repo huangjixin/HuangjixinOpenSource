@@ -6,11 +6,12 @@ package com.hjx.diagram.editor
 {
 	/*******************************************
 	 **** huangjixin,2013-4-2,下午2:06:27 作者：黄记新**
-	 **** Diagram编辑器  **
+	 **** Diagram编辑器  **635152644@qq.com bb2wb4cM6qU2 https://code.google.com/p/flex-visiual
 	 *******************************************/
 	import com.hjx.diagram.Diagram;
 	import com.hjx.diagram.editor.skin.DiagramEditorSkin;
 	import com.hjx.graphic.Graph;
+	import com.hjx.graphic.Link;
 	import com.hjx.graphic.Node;
 	import com.hjx.graphic.Renderer;
 	import com.hjx.graphic.SubGraph;
@@ -267,27 +268,68 @@ package com.hjx.diagram.editor
 					}
 				}
 				
-				if (!this.inAdornerInteraction) 
+				if (this.isDragging) 
 				{
-					if (this.marquee == null) 
+					var translated:Boolean = false;
+					if (this.allowMoving) 
 					{
-						this.marquee = new Rect();
-						this.marquee.maxWidth = Number.MAX_VALUE;
-						this.marquee.maxHeight = Number.MAX_VALUE;
-						var solidColorDash:SolidColorDash = new SolidColorDash(2,2,0x2A9DFF,1,1);
-						var solidColor:SolidColor = new SolidColor(0x0576DC,0.2);
-						this.marquee.stroke = solidColorDash;
-						this.marquee.fill = solidColor;
-						this.adornersGroup.addElement(this.marquee);
+						for each (var selectedRenderer:Renderer in getSelectedObjects()) 
+						{
+							var adorner:Adorner = this.getAdorner(selectedRenderer);
+							if (!adorner) 
+							{
+								continue;
+							}
+							if (selectedRenderer is Link) 
+							{
+								var moveLink:Link;
+								var startNode:Node = Link(selectedRenderer).startNode;
+								var endNode:Node = Link(selectedRenderer).endNode;
+								if (startNode && endNode && this.isSelected(startNode) && this.isSelected(endNode)) 
+								{
+									continue;
+								}
+							}
+							/*if (!moveLink) 
+							{
+								continue;
+							}*/
+							var currentPoint:Point = new flash.geom.Point(currentX, currentY);
+							this.translate(selectedRenderer, new Point(currentPoint.x - this.lastX, currentPoint.y - this.lastY));
+							translated = true;
+							selectedRenderer.invalidateProperties();
+							adorner.invalidateProperties();
+							if(selectedRenderer is Node){
+								Node(selectedRenderer).invalidateLinkShape();
+							}
+						}
 					}
-					
-					var start:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(this.startX, this.startY)));  
-					var end:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(currentX, currentY)));  
-					this.marquee.left = Math.min(start.x, end.x);  
-					this.marquee.top = Math.min(start.y, end.y);  
-					this.marquee.width = Math.abs(start.x - end.x);  
-					this.marquee.height = Math.abs(start.y - end.y);
+					if(translated){
+						validateNow();
+					}else if (!this.inAdornerInteraction) 
+					{
+						if (this.marquee == null) 
+						{
+							this.marquee = new Rect();
+							this.marquee.maxWidth = Number.MAX_VALUE;
+							this.marquee.maxHeight = Number.MAX_VALUE;
+							var solidColorDash:SolidColorDash = new SolidColorDash(2,2,0x2A9DFF,1,1);
+							var solidColor:SolidColor = new SolidColor(0x0576DC,0.2);
+							this.marquee.stroke = solidColorDash;
+							this.marquee.fill = solidColor;
+							this.adornersGroup.addElement(this.marquee);
+						}
+						
+						var start:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(this.startX, this.startY)));  
+						var end:Point = this.adornersGroup.globalToLocal(this.adornersGroup.localToGlobal(new flash.geom.Point(currentX, currentY)));  
+						this.marquee.left = Math.min(start.x, end.x);  
+						this.marquee.top = Math.min(start.y, end.y);  
+						this.marquee.width = Math.abs(start.x - end.x);  
+						this.marquee.height = Math.abs(start.y - end.y);
+					}
 				}
+				this.lastX = currentX;
+				this.lastY = currentY;
 			}
 		}
 		
@@ -324,6 +366,48 @@ package com.hjx.diagram.editor
 			displayObject.removeEventListener(SandboxMouseEvent.MOUSE_MOVE_SOMEWHERE, this.mouseDragHandler, true);
 			systemManager.deployMouseShields(false);
 			return;
+		}
+		
+		internal function translate(renderer:Renderer, point:Point):void
+		{
+			/*var loc1:*=null;
+			var loc2:*=null;
+			var loc3:*=null;
+			if (!this.dispatchEditorEvent(com.ibm.ilog.elixir.diagram.editor.DiagramEditorEvent.EDITOR_MOVE, arg1)) 
+			{
+				return;
+			}
+			if (arg1 is com.ibm.ilog.elixir.diagram.Link) 
+			{
+				loc1 = com.ibm.ilog.elixir.diagram.Link(arg1);
+				loc1.fallbackStartPoint = loc1.fallbackStartPoint.add(arg2);
+				if (loc1.intermediatePoints != null) 
+				{
+					loc2 = new Vector.<flash.geom.Point>();
+					var loc4:*=0;
+					var loc5:*=loc1.intermediatePoints;
+					for each (loc3 in loc5) 
+					{
+						loc2.push(loc3.add(arg2));
+					}
+					loc1.intermediatePoints = loc2;
+				}
+				loc1.fallbackEndPoint = loc1.fallbackEndPoint.add(arg2);
+			}
+			else 
+			{
+				setX(arg1, getX(arg1) + arg2.x);
+				setY(arg1, getY(arg1) + arg2.y);
+				this.layoutPorts(com.ibm.ilog.elixir.diagram.Node(arg1));
+			}*/
+			if(renderer is Link){
+				var link:Link = Link(renderer);
+				link.fallbackStartPoint = link.fallbackStartPoint.add(point);
+				link.fallbackEndPoint = link.fallbackEndPoint.add(point);
+			}else{
+				renderer.setX(renderer, renderer.getX(renderer) + point.x);
+				renderer.setY(renderer, renderer.getY(renderer) + point.y);
+			}
 		}
 		
 		public function setSelected(renderer:Renderer, isSelected:Boolean):void
@@ -428,6 +512,10 @@ package com.hjx.diagram.editor
 				diagramParent.removeAllElements();
 				this._diagram.percentWidth = 100;
 				this._diagram.percentHeight = 100;
+				this._diagram.top = 0;
+				this._diagram.bottom = 0;
+				this._diagram.left = 0;
+				this._diagram.right = 0;
 				diagramParent.addElementAt(this._diagram, 0);
 				this.graph = this._diagram.graph;
 			}

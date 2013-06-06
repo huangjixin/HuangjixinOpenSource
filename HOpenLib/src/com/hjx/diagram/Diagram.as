@@ -18,6 +18,7 @@ package com.hjx.diagram
 	
 	import flash.events.Event;
 	import flash.net.getClassByAlias;
+	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
 	
 	import mx.collections.HierarchicalCollectionView;
@@ -137,6 +138,7 @@ package com.hjx.diagram
 		private var _yLocationField:String ="@y"; 
 		private var _labelField:String ="@label";
 		
+		private var objectsByID:Dictionary;
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// public 公有变量声明处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -152,6 +154,8 @@ package com.hjx.diagram
 		public function Diagram()
 		{
 			super();
+			
+			objectsByID = new Dictionary();
 		}//构造函数结束
 		
 		
@@ -406,8 +410,8 @@ package com.hjx.diagram
 					var object:Object = new objclass();
 					
 					var id:String = xml.attribute("id");
-					/*if(id != null && id != "")
-						objectsByID[id] = object;*/
+					if(id != null && id != "")
+						objectsByID[id] = object;
 					
 					for each(var att:* in xml.attributes()){
 						try {
@@ -444,25 +448,18 @@ package com.hjx.diagram
 		
 		protected function deserializeProperty(object:Object, name:String, xmlValue:Object, defaultValue:Object) : Object
 		{
-			/*if(object is Link){
-				if(name == "startNode" || name == "endNode" ||
-					name == "startPort" || name == "endPort"){
-					var obj:Object = objectsByID[xmlValue];
+			if(object is Link){
+				if(name == "startNode" || name == "endNode"){
+					var obj:Object = objectsByID[xmlValue.toString()];
 					if(obj != null){
 						return obj;
-					} else if(!resolvingForwardReferences) {
-						var ref:Object = new Object();
-						ref["object"] = object;
-						ref["name"] = name;
-						ref["xmlValue"] = xmlValue;
-						ref["defaultValue"] = defaultValue;
-						forwardReferences.push(ref);
+					} else{
 						return null;
 					}
 				} else if(name == "fallbackStartPoint" || name == "fallbackEndPoint"){
 					if(xmlValue is XML)
 						return deserializePropertyAsElement(XML(xmlValue));
-				} else if(name == "intermediatePoints"){
+				} /*else if(name == "intermediatePoints"){
 					if(xmlValue is XML){
 						var points:Vector.<Point> = new Vector.<Point>();
 						for each(var pointXML:XML in XML(xmlValue).elements()){
@@ -473,19 +470,19 @@ package com.hjx.diagram
 						return points;
 						
 					}
-				}
+				}*/
 			}
 			
-			if ((object is Graph) || (object is Subgraph)) {
+			/*if ((object is Graph) || (object is Subgraph)) {
 				if ((name == "nodeLayout") || (name == "linkLayout")) {
 					if (xmlValue is XML)
 						return deserializePropertyAsElement(XML(xmlValue));
 				}
 			}*/
-			if(name == "fallbackStartPoint" || name == "fallbackEndPoint"){
+			/*if(name == "fallbackStartPoint" || name == "fallbackEndPoint"){
 				if(xmlValue is XML)
 					return deserializePropertyAsElement(XML(xmlValue));
-			}	
+			}	*/
 			var stringValue:String = String(xmlValue);
 			
 			if(stringValue != null){

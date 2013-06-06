@@ -137,10 +137,31 @@ package com.hjx.diagram.editor
 					this.placeHandle(link.fallbackStartPoint,link.fallbackEndPoint, false);
 				}
 				/*this.startHandleX = link.x;
-				this.startHandleY = link.y;*/
-				var rectangle:Rectangle = link.getBoundsForMeasure();
-				this.startHandleX = rectangle.x;
-				this.startHandleY = rectangle.y;
+				this.startHandleY = link.y;
+				this.endHandleX = link.path.measuredWidth;
+				this.endHandleY = link.path.measuredHeight;
+				trace(link.path.measuredWidth+","+link.path.measuredHeight);
+				var point:Point = new Point(endHandleX,endHandleY);
+				point = link.path.localToGlobal(point);
+				point = this.globalToLocal(point);*/
+				/*var fallbackStartPoint:Point = link.fallbackStartPoint;
+				fallbackStartPoint = link.path.parent.localToGlobal(fallbackStartPoint);
+				fallbackStartPoint = this.parent.globalToLocal(fallbackStartPoint);
+				this.startHandleX = fallbackStartPoint.x;
+				this.startHandleY = fallbackStartPoint.y;*/
+				
+				
+				/*var fallbackEndPoint:Point = link.fallbackEndPoint;*/
+				
+//				trace(fallbackEndPoint);
+				/*fallbackEndPoint = link.parent.localToGlobal(fallbackEndPoint);
+				fallbackEndPoint = this.globalToLocal(fallbackEndPoint);
+				this.endHandleX = fallbackEndPoint.x;
+				this.endHandleY = fallbackEndPoint.y;*/
+//				trace(fallbackEndPoint);
+				/*trace(link.x+link.y);
+				trace(link.fallbackStartPoint+","+link.fallbackEndPoint);
+				trace(this.startHandleX+","+this.startHandleY+";"+this.endHandleX+","+this.endHandleY);*/
 			}
 			return;
 		}

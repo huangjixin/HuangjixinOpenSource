@@ -277,11 +277,12 @@ package com.hjx.graphic
 				base.removeEventListener(ResizeEvent.RESIZE,baseGeometryChanged);
 			}
 		}
-		/*		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+		
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			super.updateDisplayList(unscaledWidth,unscaledHeight);
 //			refresh();
 		} 
-		override public function stylesInitialized():void{
+		/*override public function stylesInitialized():void{
 			super.stylesInitialized();
 		}*/
 	}

@@ -860,6 +860,15 @@ package com.hjx.graphic
 		//-----------------------------------------------------------
 		// 覆盖函数
 		//-----------------------------------------------------------
+		/*override protected function measure():void{
+			super.measure();
+			this.measuredWidth = getBoundsForMeasure().width;
+			this.measuredHeight = getBoundsForMeasure().height;
+		}*/
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+			super.updateDisplayList(unscaledWidth,unscaledHeight);
+		}
+		
 		override protected function commitProperties():void{
 			super.commitProperties();
 			if(_strokeWidthChange ||
@@ -902,7 +911,6 @@ package com.hjx.graphic
 					{
 						this.updateArrow();
 					}*/
-					
 				}
 				
 				_strokeWidthChange=
