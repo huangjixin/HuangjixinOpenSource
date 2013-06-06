@@ -7,6 +7,7 @@ package com.hjx.diagram.editor
 	/*******************************************
 	 **** huangjixin,2013-4-2,下午2:06:27 作者：黄记新**
 	 **** Diagram编辑器  **635152644@qq.com bb2wb4cM6qU2 https://code.google.com/p/flex-visiual
+	 * https://flex-visiual.googlecode.com/svn/trunk
 	 *******************************************/
 	import com.hjx.diagram.Diagram;
 	import com.hjx.diagram.editor.skin.DiagramEditorSkin;
@@ -130,15 +131,7 @@ package com.hjx.diagram.editor
 		{
 			if (subGraph != this._currentSubgraph) 
 			{
-				if (this._currentSubgraph != null) 
-				{
-					this.updateAdorner(this._currentSubgraph);
-				}
 				this._currentSubgraph = subGraph;
-				if (this._currentSubgraph != null) 
-				{
-					this.updateAdorner(this._currentSubgraph);
-				}
 			}
 			this.currentSubgraphFlashing = false;
 			return;
@@ -273,6 +266,11 @@ package com.hjx.diagram.editor
 			
 		}
 		
+		/**
+		 * 鼠标拖拽。 
+		 * @param event
+		 * 
+		 */
 		internal function mouseDragHandler(event:MouseEvent):void
 		{
 			var startPoint:Point; //拖拽开始点。
@@ -397,6 +395,8 @@ package com.hjx.diagram.editor
 			this.mouseDown = false;
 			this.isDragging = false;
 			this.resetCurrentSubgraph();
+			this.playDraggingMoveAdorner(null);
+			
 			var displayObject:DisplayObject = systemManager.getSandboxRoot();
 			displayObject.removeEventListener(MouseEvent.MOUSE_UP, this.mouseUpHandler, true);
 			displayObject.removeEventListener(MouseEvent.MOUSE_MOVE, this.mouseDragHandler, true);
@@ -519,6 +519,13 @@ package com.hjx.diagram.editor
 			return;
 		}
 		
+		/**
+		 * 重新定义父亲。 
+		 * @param seleObjs
+		 * @param graph
+		 * @return 
+		 * 
+		 */
 		public function reparent(seleObjs:Vector.<Renderer>, graph:Graph):Boolean
 		{
 			var reparentd:Boolean;
@@ -533,6 +540,13 @@ package com.hjx.diagram.editor
 				var point:Point = new Point(renderer.getX(renderer), renderer.getY(renderer));
 				point = renderer.parent.localToGlobal(point);
 				point = graph.globalToLocal(point);
+				
+				var link:Link = renderer as Link;
+				if(link){
+					link.fallbackStartPoint = graph.globalToLocal(link.parent.localToGlobal(link.fallbackStartPoint));
+					link.fallbackEndPoint = graph.globalToLocal(link.parent.localToGlobal(link.fallbackEndPoint));
+				}
+				
 				Graph(renderer.parent).removeElement(renderer);
 				if (!(renderer is Link)) 
 				{
@@ -700,12 +714,12 @@ package com.hjx.diagram.editor
 			return;
 		}
 		
-		internal function playDraggingMoveAdorner(renderer:Renderer):void
+		internal function playDraggingMoveAdorner(displayObj:DisplayObject):void
 		{
 			this.adornersGroup.graphics.clear();
-			if(renderer){
-				var rect:Rectangle = renderer.getBounds(this.adornersGroup);
-				this.adornersGroup.graphics.lineStyle(4,0x00A8FF);
+			if(displayObj){
+				var rect:Rectangle = displayObj.getBounds(this.adornersGroup);
+				this.adornersGroup.graphics.lineStyle(2,0xff0000);
 				this.adornersGroup.graphics.drawRect(rect.left,rect.top,rect.width,rect.height);
 			}
 			return;

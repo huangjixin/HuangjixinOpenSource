@@ -716,10 +716,8 @@ package com.hjx.graphic
 		override protected function partAdded(partName:String, instance:Object):void{
 			super.partAdded(partName, instance);
 			if(instance == graph){
-				if(mxmlContentChanged){
-					graph.mxmlContent = _mxmlContent;
-					graph.owningSubgraph = this;
-				}
+				graph.mxmlContent = _mxmlContent;
+				graph.owningSubgraph = this;
 			}
 		}
 		/**
@@ -731,10 +729,8 @@ package com.hjx.graphic
 		override protected function partRemoved(partName:String, instance:Object):void{
 			super.partRemoved(partName, instance);
 			if(instance == graph){
-				if(mxmlContentChanged){
-					graph.mxmlContent = [];
-					graph.owningSubgraph = null;
-				}
+				graph.mxmlContent = [];
+				graph.owningSubgraph = null;
 			}
 		}
 	}//类结束

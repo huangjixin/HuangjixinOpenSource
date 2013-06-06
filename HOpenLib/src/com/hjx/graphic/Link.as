@@ -8,6 +8,7 @@ package com.hjx.graphic
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.describeType;
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.collections.ArrayCollection;
@@ -1014,6 +1015,10 @@ package com.hjx.graphic
 		
 		override protected function cloneStyle(renderer:Renderer, cloneRenderer:Renderer):void
 		{
+			// 利用这个工具来查找style.
+			var describe:* = describeType(renderer);
+			var objectMetadata:* = describe.metadata;
+			
 			cloneRenderer.setStyle("caps",renderer.getStyle("caps"));
 			cloneRenderer.setStyle("caretColor",renderer.getStyle("caretColor"));
 			cloneRenderer.setStyle("dashArray",renderer.getStyle("dashArray"));
