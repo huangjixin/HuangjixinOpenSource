@@ -12,6 +12,7 @@ package com.hjx.graphic
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
 	import mx.graphics.SolidColorStroke;
 	import mx.styles.StyleManager;
 	
@@ -949,8 +950,10 @@ package com.hjx.graphic
 						this.startArrow.x = point1.x;
 						this.startArrow.y = point1.y;
 						this.startArrow.visible = true;
+						var midWidth:Number;
+						var startRect:Rectangle = getPathBounds(this.startArrow);
 						
-						point1.offset(-10 * Math.cos(radian),-10*Math.sin(radian));
+						point1.offset(-startRect.width * Math.cos(radian),-startRect.width*Math.sin(radian));
 						this._shapePoints[0] = point1;
 						/*var maxStartArrowWidth:Number = this.startArrow.getMaxBoundsWidth();
 						var maxStartArrowHeight:Number = this.startArrow.getMaxBoundsHeight();
@@ -977,8 +980,9 @@ package com.hjx.graphic
 						this.endArrow.x = point2.x;
 						this.endArrow.y = point2.y;
 						this.endArrow.visible = true;
+						var endRect:Rectangle = getPathBounds(this.startArrow);
 						
-						point2.offset(-10 * Math.cos(radian),-10*Math.sin(radian));
+						point2.offset(-endRect.width * Math.cos(radian),-endRect.width*Math.sin(radian));
 						this._shapePoints[(this._shapePoints.length - 1)] = point2;
 						/*var maxEndArrowWidth:Number = this.endArrow.getMaxBoundsWidth();
 						var maxEndArrowHeight:Number = this.endArrow.getMaxBoundsHeight();
@@ -1018,7 +1022,7 @@ package com.hjx.graphic
 			// 利用这个工具来查找style.
 			var describe:* = describeType(renderer);
 			var objectMetadata:* = describe.metadata;
-			
+			Alert.show(describe.toString());
 			cloneRenderer.setStyle("caps",renderer.getStyle("caps"));
 			cloneRenderer.setStyle("caretColor",renderer.getStyle("caretColor"));
 			cloneRenderer.setStyle("dashArray",renderer.getStyle("dashArray"));
