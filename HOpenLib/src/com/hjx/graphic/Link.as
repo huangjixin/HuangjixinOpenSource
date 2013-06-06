@@ -770,7 +770,7 @@ package com.hjx.graphic
 					if(this.startNode){
 						//计算开始节点偏移量坐标。
 						radian= Math.atan2(point1.y - point2.y, point1.x - point2.x);
-						minOffset = Math.min(Math.abs(this.startNode.width/2/Math.cos(radian)),Math.abs(this.startNode.height/2/Math.sin(radian)));
+						minOffset = Math.min(Math.abs(realVisialeStartNode.width/2/Math.cos(radian)),Math.abs(realVisialeStartNode.height/2/Math.sin(radian)));
 						offsetX = minOffset*Math.cos(radian);
 						offsetY = minOffset*Math.sin(radian);
 						defaultStartPoint.offset(-offsetX,-offsetY);
@@ -781,7 +781,7 @@ package com.hjx.graphic
 					if(this.endNode){
 						//计算开始节点偏移量坐标。
 						radian= Math.atan2(point2.y - point1.y, point2.x - point1.x);
-						minOffset = Math.min(Math.abs(this.endNode.width/2/Math.cos(radian)),Math.abs(this.endNode.height/2/Math.sin(radian)));
+						minOffset = Math.min(Math.abs(realVisialeEndNode.width/2/Math.cos(radian)),Math.abs(realVisialeEndNode.height/2/Math.sin(radian)));
 						offsetX = minOffset*Math.cos(radian);
 						offsetY = minOffset*Math.sin(radian);
 						defaultEndPoint.offset(-offsetX,-offsetY);
