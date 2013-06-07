@@ -1,0 +1,120 @@
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace graphic "com.hjx.graphic.*";
+		@namespace local "*";
+		@namespace diagram "com.hjx.diagram.*";
+		@namespace editor "com.hjx.diagram.editor.*";
+		@namespace graphlayout "com.hjx.graphic.graphlayout.*";
+		@namespace graphic1 "com.hjx.bpmn.graphic.*";
+		s|Label{
+			fontFamily:"微软雅黑";
+		}
+		
+		graphic|Node{
+			skinClass:ClassReference("com.hjx.graphic.skin.NodeSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner");
+			borderColor:"0x03689A";
+		}
+		
+		editor|NodeAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.NodeAdornerSkin")
+		}
+		
+		editor|ResizableNodeAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.ResizeableAdornerSkin")
+		}
+		
+		local|BPMNBtn{
+			skinClass:ClassReference("com.hjx.graphic.skin.NodeSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")	
+		}
+		
+		graphic|SubGraph{
+			skinClass:ClassReference("com.hjx.graphic.skin.SubGraphSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner");
+		}
+		
+		editor|DiagramEditor{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.DiagramEditorSkin")
+		}
+		
+		graphic1|Task{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.TaskSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner");
+			/* backgroundColor:"0x000333"; */
+		}
+		
+		graphic1|StartEvent{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.StartEventSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")
+		}
+		
+		graphic1|EndEvent{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.EndEventSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")
+		}
+		
+		graphic1|Gateway{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.GatewaySkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")
+		}
+		
+		graphic1|IntermediateEvent{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.IntermediateEventSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")
+		}
+		
+		graphic1|Group{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.GroupSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner")
+		}
+		
+		graphic1|DataObject{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.DataObjectSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner")
+		}
+		
+		graphic1|TextAnnotation{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.TextAnnotationSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner");
+		}
+		
+		graphic|Link{
+			skinClass:ClassReference("com.hjx.graphic.skin.LinkSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.LinkAdorner");
+			startArrowVisible:false;
+			endArrowVisible:true;
+			strokeWidth:2;
+		}
+		
+		editor|LinkAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.LinkAdornerSkin");
+		}
+		
+		graphic1|HorizontalLane{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.HorizontalLaneSkin");
+			backgroundColor:"0xDDA09D";
+			borderColor:"0x3E2D2C";
+		}
+		
+		graphic1|VerticalLane{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.VerticalLaneSkin");
+			backgroundColor:"0xDDA09D";
+			borderColor:"0x3E2D2C";
+		}
+		
+		graphic1|HorizontalPool{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.HorizontalPoolSkin");
+			backgroundColor:"0x9D3C35";
+			borderColor:"0x3E2D2C";
+		}
+		
+		graphic1|VerticalPool{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.VerticalPoolSkin");
+			backgroundColor:"0x9D3C35";
+			borderColor:"0x3E2D2C";
+		}
+		
+		graphic1|SequenceFlow{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.SequenceFlowSkin");
+		}

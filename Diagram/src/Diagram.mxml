@@ -104,7 +104,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.hjx.bpmn.graphic.ConnectObject;
+			import com.hjx.bpmn.graphic.ConnectingObject;
 			import com.hjx.diagram.editor.DiagramEditor;
 			import com.hjx.graphic.Node;
 			import com.hjx.graphic.Renderer;
@@ -118,13 +118,13 @@
 				if(renderer){
 					dragRenderer = renderer;
 					if(dragRenderer is Link){
-						if(dragRenderer is ConnectObject){
-							if(ConnectObject(dragRenderer).monitoringStatus == ""){
-								ConnectObject(dragRenderer).monitoringStatus = "active"
-							}else if(ConnectObject(dragRenderer).monitoringStatus == "active"){
-								ConnectObject(dragRenderer).monitoringStatus = "done"
+						if(dragRenderer is ConnectingObject){
+							if(ConnectingObject(dragRenderer).monitoringStatus == ""){
+								ConnectingObject(dragRenderer).monitoringStatus = "active"
+							}else if(ConnectingObject(dragRenderer).monitoringStatus == "active"){
+								ConnectingObject(dragRenderer).monitoringStatus = "done"
 							}else{
-								ConnectObject(dragRenderer).monitoringStatus = ""
+								ConnectingObject(dragRenderer).monitoringStatus = ""
 							}
 						}
 						if(Link(dragRenderer).startNode ||Link(dragRenderer).endNode){

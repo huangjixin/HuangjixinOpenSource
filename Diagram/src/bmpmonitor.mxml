@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////////
+// Licensed Materials - Property of IBM
+// 5724-Z78
+// © Copyright IBM Corporation 2007, 2011. All Rights Reserved.
+//
+// Note to U.S. Government Users Restricted Rights:
+// Use, duplication or disclosure restricted by GSA ADP Schedule
+// Contract with IBM Corp.
+///////////////////////////////////////////////////////////////////////////////
+-->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:ns="library://ns.adobe.com/flex/mx"
+			   viewSourceURL="srcview/index.html"
+			   xmlns:local="*"
+			   xmlns:ibm="http://www.ibm.com/xmlns/prod/ilog/elixir/diagram/2010"
+			   initialize="{init()}" xmlns:diagram="com.hjx.diagram.*"
+			   >  
+	<s:layout>
+		<s:BasicLayout>
+		</s:BasicLayout>
+	</s:layout>
+	
+	<fx:Declarations>
+		<fx:XML id="data">
+			<Diagram xmlns:chg="com.hjx.graphic"
+					 xmlns:chbg="com.hjx.bpmn.graphic"
+					 xmlns:fg="flash.geom"
+					 >  
+				<chbg:HorizontalPool width="700" label="横甬道池" x="500" y="200">
+					<chbg:HorizontalLane  width="658" height="400" label="横甬道" >
+						<chbg:StartEvent id="startEvent" x="10" y="30" label="开始"/>
+						<chbg:Task id="task1" x="150" y="40" label="任务"/>
+						<chbg:SequenceFlow startNode="startEvent" endNode="task1"/>
+						<chbg:Task id="task2" x="350" y="60" label="任务"/>
+						<chbg:SequenceFlow startNode="task1" endNode="task2"/>
+						<chbg:EndEvent id="endEvent" x="450" y="80" label="结束"/>
+						<chbg:SequenceFlow startNode="task2" endNode="endEvent"/>
+					</chbg:HorizontalLane>
+				</chbg:HorizontalPool>
+			</Diagram>
+		</fx:XML>
+		<mx:HierarchicalCollectionView xmlns:chg="com.hjx.graphic"
+									   id="hcv" showRoot="false"
+									   source="{new HierarchicalData(data)}"/>
+	</fx:Declarations>
+	
+	<fx:Style source="bpmgraphic.css"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hjx.bpmn.graphic.ConnectingObject;
+			import com.hjx.bpmn.graphic.EndEvent;
+			import com.hjx.bpmn.graphic.FlowObject;
+			import com.hjx.bpmn.graphic.HorizontalLane;
+			import com.hjx.bpmn.graphic.HorizontalPool;
+			import com.hjx.bpmn.graphic.VerticalLane;
+			import com.hjx.bpmn.graphic.VerticalPool;
+			import com.hjx.diagram.DiagramRunner;
+			import com.hjx.diagram.DiagramRunnerEvent;
+			import com.hjx.diagram.editor.DiagramEditor;
+			import com.hjx.graphic.Link;
+			import com.hjx.graphic.Renderer;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.collections.HierarchicalData;
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			
+			import spark.components.Application;
+			import spark.events.IndexChangeEvent;
+			
+			// messages displayed in the log area
+			private static var UNKNOWN:String;
+			
+			
+			
+			// the timer in charge of simulating the workflow
+			private var runner:DiagramRunner = null;
+			
+			
+			// data to be used in the combo box to choose sample workflow
+			[Bindable]
+			public var samplefiles:ArrayCollection = new ArrayCollection(
+				[ {label:"Application Process", data:"ApplicationProcess.idfl"},
+					{label:"Support Process", data:"SupportProcess.idfl"}, 
+					{label:"Doctor", data:"doctor.idfl"}]);
+			
+			// indicates that the diagram runner is currently paused.
+			private var _paused:Boolean = false;
+			
+			// loader for samples
+			private var loader:URLLoader;
+			
+			// regular expression to match html tags
+			private var htmlTagRegexp:RegExp = new RegExp("<[^<>]+>", "gs");
+			
+			
+			//------------------------------------------------------------------------------------
+			//  Functions to open an URL
+			//------------------------------------------------------------------------------------
+			
+					
+			/**
+			 * Listener called when URL is successfuly open.
+			 */
+			private function completeHandler(event:Event):void
+			{ 
+				    
+			}
+			
+			//------------------------------------------------------------------------------------
+			//  Initialization
+			//------------------------------------------------------------------------------------
+			
+			private function init():void
+			{
+			}
+			
+			
+			//------------------------------------------------------------------------------------
+			//  Management of the DiagramRunner 
+			//------------------------------------------------------------------------------------
+			
+			/**
+			 * This function creates the diagram runner if needed, and
+			 * add listeners to manage several of its event.
+			 */
+			private function testRunner():void
+			{
+				if(runner==null){
+					runner = new DiagramRunner(diagram,10000);
+					runner.addEventListener("timerStop",timerStopHandler);
+					runner.addEventListener(DiagramRunnerEvent.ENTER,runnerEnterHandler);
+					runner.addEventListener(DiagramRunnerEvent.LEAVE,runnerLeaveHandler);
+					runner.addEventListener(DiagramRunnerEvent.ENDNODE,runnerEndNodeHandler);
+					runner.addEventListener(DiagramRunnerEvent.AWAITMESSAGE,runnerAwaitMessageHandler);
+				}
+			}
+			
+			/**
+			 * Initialise the diagram and start the diagram runner.
+			 */
+			private function startRunner():void
+			{
+				// initialise he diagram
+//				diagram.clearSelection();
+//				diagram.selectionMode = SelectionMode.NONE;
+//				diagram.keyboardNavigationPolicy= KeyboardNavigationPolicy.NONE;
+				
+				// initialise and start the diagram runner
+				testRunner();
+				_paused = false;
+				runner.start();
+			}
+			
+			
+			/**
+			 * Pause the diagram runner.
+			 */
+			private function pauseRunner():void
+			{
+				// pause the runner
+				runner.stop();
+				_paused = true;
+				
+				// reset default diagram properties, until the runner is resumed
+//				diagram.selectionMode=SelectionMode.SINGLE;       
+//				diagram.keyboardNavigationPolicy= KeyboardNavigationPolicy.NODES_BY_CONNECTION;
+			}
+			
+			
+			/**
+			 * Stops the diagram runner.
+			 */
+			private function endRunner():void
+			{
+				// stop the timer
+				runner.reset();
+				_paused = false;
+				
+				// reset default diagram properties, until the runner is resumed
+//				diagram.selectionMode=SelectionMode.SINGLE;
+//				diagram.keyboardNavigationPolicy= KeyboardNavigationPolicy.NODES_BY_CONNECTION;
+			}
+			
+			
+			/**
+			 * Returns a the string containing the names
+			 * of the parent hierarchy of the given object.
+			 */
+			private function getHierarchy(object:FlowObject):String
+			{
+//				var str:String = null;
+//				var p:Graph = Graph(object.parent);
+//				while(p.owningSubgraph is LaneBase ){
+//					var lane:LaneBase = LaneBase(p.owningSubgraph);
+//					str==null ? str=lane.label : str=lane.label+"." + str;
+//					p = Graph(lane.parent);
+//				}
+//				return str;
+				return "";
+			}
+			
+			
+			/**
+			 * Invoked when the diagram runner is entering a node of the diagram.
+			 * This funcion will create message indicating which task is starting,
+			 * and in which lane it is located. Then the message is displayed in
+			 * the log area.
+			 */
+			private function runnerEnterHandler(event:DiagramRunnerEvent):void
+			{
+//				// do not log event from: end node
+//				if(event.current is EndEvent) return;
+//				
+//				// the message
+//				var msg:String = new String();
+//				
+//				// p1 is the name of task/intermediate event/choice
+//				var p1:String = null;
+//				if(event.current.label && event.current.label.length>0){
+//					p1 = ""+event.current.label+""; 
+//				}else{
+//					p1 = ""+UNKNOWN+""; 
+//				}       
+//				
+//				// p2 is the hierarchy
+//				var h:String = getHierarchy(event.current);
+//				var p2:String = null;
+//				if(h && h.length>0) p2 = ""+h+"";
+//				
+//				// create the log message for a "intermediate event"
+//				if(event.current is IntermediateEvent){
+//					if(p2)
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.starting_intermediate_event_in_pool.text", [p1,p2]);
+//					else
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.starting_intermediate_event.text", [p1]);
+//				}        
+//					// create the log message for a gateway (a choice)
+//				else if(event.current is Gateway){
+//					// p3 is the liste of possible choices
+//					var p3:String = ""+event.extraMessage+""; 
+//					if(p2)
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.starting_choice_in_pool.text", [p1,p2,p3]);
+//					else
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.starting_choice.text", [p1,p3]);
+//				}
+//					// create the log message for a "task"
+//				else if(event.current is Task){
+//					
+//					// p3 is the liste of possible involved documents
+//					// If there is an extra message, then it means that there's involved documents
+//					p3 = "";
+//					if(event.extraMessage){
+//						var tmp:String =  ""+event.extraMessage+"";
+//						p3 = resourceManager.getString("bpmmonitor", "bpmmonitor.involving.text", [tmp]); 
+//					}
+//					
+//					if(p2)
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.starting_task_in_pool.text", [p1,p2,p3]);
+//					else
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.starting_task.text", [p1,p3]);
+//				}
+//					// special case when entering start event which is in a pool (hierarchy string is not null and not empty)
+//					// message looks like: Starting pool 
+//				else if( event.current is StartEvent){
+//					if(p2)
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.starting_pool.text", [p2]);
+//					else
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.starting_workflow.text");
+//				}
+//				
+//				// add the message to the log area
+//				addLog(msg);
+			}
+			
+			
+			/**
+			 * Invoked when the diagram runner is leaving a task.
+			 * It creates a message and add it in the log.
+			 */
+			private function runnerLeaveHandler(event:DiagramRunnerEvent):void
+			{
+//				// do not log event from: start, gateway, end node
+//				if(event.current is StartEvent ||
+//					event.current is EndEvent ) return;
+//				
+//				// the message
+//				var msg:String = new String();
+//				
+//				// p1 is the name of task/intermediate event/choice
+//				var p1:String = null;
+//				if(event.current.label && event.current.label.length>0){
+//					p1 = ""+event.current.label+""; 
+//				}else{
+//					p1 = ""+UNKNOWN+""; 
+//				}       
+//				
+//				// p2 is the hierarchy
+//				var h:String = getHierarchy(event.current);
+//				var p2:String = null;
+//				if(h && h.length>0) p2 = ""+h+"";
+//				
+//				// create the log message for a "intermediate event"
+//				if(event.current is IntermediateEvent){
+//					if(p2)
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.completed_intermediate_event_in_pool.text", [p1,p2]);
+//					else
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.completed_intermediate_event.text", [p1]);
+//				}        
+//					// create the log message for a gateway (a choice)
+//				else if(event.current is Gateway){
+//					// p3 is the name of the choosen decision
+//					var p3:String = ""+event.extraMessage+""; 
+//					if(p2)
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.completed_choice_in_pool.text", [p1,p2,p3]);
+//					else
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.completed_choice.text", [p1,p3]);
+//				}
+//					// create the log message for a "task"
+//				else if(event.current is Task){
+//					if(p2)
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.completed_task_in_pool.text", [p1,p2]);
+//					else
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.completed_task.text", [p1]);
+//				}
+//				
+//				// log the message
+//				addLog(msg);
+			}  
+			
+			
+			/**
+			 * Invoked by the diagram runner when it is processing a end task.
+			 * It creates a message and add it in the log.
+			 */
+			private function runnerEndNodeHandler(event:DiagramRunnerEvent):void
+			{
+//				// create the message
+//				var msg:String = new String();
+//				
+//				// p2 is the hierarchy
+//				var h:String = getHierarchy(event.current);
+//				var p2:String = null;
+//				if(h && h.length>0) p2 = ""+h+"";
+//				
+//				if(p2){
+//					msg = resourceManager.getString("bpmmonitor", "bpmmonitor.end_node_in_pool.text", [p2]); 
+//				}else{
+//					msg = resourceManager.getString("bpmmonitor", "bpmmonitor.end_node.text");  
+//				}
+//				
+//				// log the message
+//				addLog(msg);
+			}  
+			
+			
+			/**
+			 * Invoked by the diagram runner when it processes a task which is waiting for incoming message(s).
+			 * It creates a message and add it in the log
+			 */
+			private function runnerAwaitMessageHandler(event:DiagramRunnerEvent):void
+			{        
+				// the message
+//				var msg:String = new String();
+//				
+//				// p1 is the name of task or intermediate event
+//				var p1:String = null;
+//				if(event.current.label && event.current.label.length>0){
+//					p1 = ""+event.current.label+""; 
+//				}else{
+//					p1 = ""+UNKNOWN+""; 
+//				}       
+//				
+//				// p2 is the hierarchy
+//				var h:String = getHierarchy(event.current);
+//				var p2:String = null;
+//				if(h && h.length>0) p2 = ""+h+"";
+//				
+//				// p3 is the list of message senders
+//				var p3:String = ""+event.extraMessage+"";
+//				
+//				// create the log message for a "intermediate event"
+//				if(event.current is IntermediateEvent){
+//					if(p2)
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.awaitingmessage_intermediate_event_in_pool.text", [p1,p2,p3]);
+//					else
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.awaitingmessage_intermediate_event.text", [p1]);
+//				}        
+//					// create the log message for a "task"
+//				else if(event.current is Task){
+//					if(p2)
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.awaitingmessage_task_in_pool.text", [p1,p2,p3]);
+//					else
+//						msg = resourceManager.getString("bpmmonitor", "bpmmonitor.awaitingmessage_task.text", [p1,p3]);
+//				}
+//				
+//				// add the message to the log area
+//				addLog(msg);        
+			}      
+			
+			
+			/**
+			 * Add the given message in the data provider of the log, which is a list.
+			 * Also ensure that newly added message is visible.
+			 */
+			private function addLog(item:String):void 
+			{
+//				var proxyItem:Object = new Object();
+//				proxyItem.label = new String(item);
+//				// remove html tags to get the accessibility string
+//				item = item.replace(htmlTagRegexp, "");
+//				proxyItem.accLabel = new String(item);
+//				
+//				log.dataProvider.addItem( proxyItem);
+//				log.selectedItem = proxyItem;
+//				callLater(log.ensureIndexIsVisible,[log.dataProvider.length-1]);
+			}
+			
+			
+			/**
+			 * Invoked when the diagram runner stops.
+			 * Reset VCR-like button states.
+			 */
+			private function timerStopHandler(event:Event):void
+			{
+//				endButton.enabled = false;
+//				endButton.setStyle("icon",iconStopOff);
+//				
+//				pauseButton.enabled = false;
+//				pauseButton.setStyle("icon",iconPauseOff);
+//				
+//				startButton.enabled = true;
+//				startButton.setStyle("icon",iconPlay);
+			}
+			
+			
+			/**
+			 * Invoked when the value of the slider controlling the delay of the diagram runner
+			 * is changing.
+			 */
+			private function delaySliderHandler(event:Event):void
+			{
+				// change the timer's delay
+				testRunner();
+				runner.delay = delaySlider.value;
+			}
+			
+			
+			/**
+			 * Adapt the size of the displayed workflow to the diagram size
+			 */
+			private function fitContent():void 
+			{
+//				diagram.fitContent(true);
+			}
+			
+			
+			//------------------------------------------------------------------------------------
+			//  GUI object's event handlers
+			//------------------------------------------------------------------------------------
+			
+			/**
+			 * Invoked when the selected item in the combo box of predefined sample changes.
+			 */
+			protected function combobox1_changeHandler(event:IndexChangeEvent):void
+			{
+				callLater(loadFileFromCombo);
+			}   
+			
+			
+			/**
+			 * Loads a sample file from the combo box.
+			 */
+			private function loadFileFromCombo(): void {
+				// open the workflow corresponding to the selected item
+//				var file:String = sampleCombobox.selectedItem.data as String;
+//				openURL(file);
+//				
+//				// clear the log
+//				if(log.dataProvider) log.dataProvider.removeAll();
+			}      
+			
+			
+			/**
+			 * Invoked when the diagram creation is complete.
+			 * It loads a default workflow.
+			 */
+			private function diagramCreationComplete(event:FlexEvent):void
+			{
+				// open a default workflow
+//				openURL(samplefiles[0].data);
+//				diagram.addEventListener(KeyboardEvent.KEY_DOWN, diagramKeyDown);
+			}
+			
+			
+			/**
+			 * Invoked when the user press a key on the focused diagram.
+			 * It switches the the keyboard navigation policy of this diagram.
+			 */
+			private function diagramKeyDown(event:KeyboardEvent):void
+			{
+				/* if (event.keyCode == Keyboard.F8) {
+					if (diagram.keyboardNavigationPolicy == "none"
+						|| diagram.keyboardNavigationPolicy == "nodesByConnection") {
+						diagram.keyboardNavigationPolicy = "nodesByHierarchy";
+					} else {
+						diagram.keyboardNavigationPolicy = "nodesByConnection";
+					}
+					diagram.scroller.allowKeyboardScroll = false;
+					event.stopPropagation();
+				} else if (event.keyCode == Keyboard.F9) {
+					diagram.keyboardNavigationPolicy = "none";
+					diagram.scroller.allowKeyboardScroll = true;
+					event.stopPropagation();
+				}         */
+			}      
+			
+			
+			/**
+			 * Invoked when the "play" button is clicked.
+			 * It initialises the VCR-like controls and starts the diagram runner. 
+			 */
+			protected function startButton_clickHandler(event:MouseEvent):void
+			{
+//				startButton.enabled=false;
+//				startButton.setStyle("icon",iconPlayOff);
+//				pauseButton.enabled=true;
+//				pauseButton.setStyle("icon",iconPause);
+//				endButton.enabled=true;
+//				endButton.setStyle("icon",iconStop);
+//				log.setFocus();
+				startRunner();
+			}
+			
+			
+			/**
+			 * Invoked when the "pause" button is clicked.
+			 * It initialises the VCR-like controls and pauses the diagram runner. 
+			 */
+			protected function pauseButton_clickHandler(event:MouseEvent):void
+			{
+//				startButton.enabled=true;
+//				startButton.setStyle("icon",iconPlay);
+//				pauseButton.enabled=false;
+//				pauseButton.setStyle("icon",iconPauseOff);
+//				endButton.enabled=true;
+//				endButton.setStyle("icon",iconStop);
+				pauseRunner();
+			}
+			
+			
+			/**
+			 * Invoked when the "stop" button is clicked.
+			 * It initialises the VCR-like controls and stops the diagram runner. 
+			 */
+			protected function endButton_clickHandler(event:MouseEvent):void
+			{
+//				startButton.enabled=true;
+//				startButton.setStyle("icon",iconPlay);
+//				pauseButton.enabled=false;
+//				pauseButton.setStyle("icon",iconPauseOff);
+//				endButton.enabled=false;
+//				endButton.setStyle("icon",iconStopOff);
+				endRunner();
+			}
+			
+			protected function diagram_mouseDownHandler(event:MouseEvent):void
+			{
+				var renderer:Renderer = DiagramEditor.getRenderer(event.target);
+				if(renderer){
+					if(renderer is Link){
+						if(renderer is ConnectingObject){
+							if(ConnectingObject(renderer).monitoringStatus == ""){
+								ConnectingObject(renderer).monitoringStatus = "active"
+							}else if(ConnectingObject(renderer).monitoringStatus == "active"){
+								ConnectingObject(renderer).monitoringStatus = "done"
+							}else{
+								ConnectingObject(renderer).monitoringStatus = ""
+							}
+						}
+						
+						if(Link(renderer).startNode || Link(renderer).endNode){
+							return;
+						}
+					}
+					if(renderer is FlowObject ){
+						if(FlowObject(renderer).monitoringStatus == ""){
+							FlowObject(renderer).monitoringStatus = "active"
+						}else if(FlowObject(renderer).monitoringStatus == "active"){
+							FlowObject(renderer).monitoringStatus = "done"
+						}else{
+							FlowObject(renderer).monitoringStatus = "";
+						}
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:VGroup id="mainGroup" width="100%" height="100%" left="5" right="5" top="5" bottom="5" gap="8" clipAndEnableScrolling="true" autoLayout="true" >		
+		<s:HGroup width="100%" gap="5" verticalAlign="middle">
+			<ns:Button 
+				id="startButton"
+				click="startButton_clickHandler(event)"
+				/>
+			<ns:Button 
+				id="pauseButton"
+				click="pauseButton_clickHandler(event)" 
+				/>
+			<ns:Button 
+				id="endButton"
+				enabled="false"
+				click="endButton_clickHandler(event)"
+				/>
+			<ns:Spacer width="6"/>
+			<s:HSlider
+				id="delaySlider"
+				width="150"
+				maximum="6000"
+				minimum="100"
+				snapInterval="100"
+				dataTipPrecision="0"
+				showDataTip="false"
+				value="1000"
+				change="delaySliderHandler(event)"
+				/>
+		</s:HGroup>      
+		<s:Group width="100%" height="100%">          
+			<s:Panel id="titlePanel" width="100%" height="100%">
+				<diagram:Diagram id="diagram" left="0" width="100%" height="100%" 
+								 name="工作流" nodeDataProvider="{hcv}"
+								 mouseDown="diagram_mouseDownHandler(event)">
+				</diagram:Diagram>     
+			</s:Panel>
+		</s:Group>  
+	</s:VGroup>
+</s:Application>
