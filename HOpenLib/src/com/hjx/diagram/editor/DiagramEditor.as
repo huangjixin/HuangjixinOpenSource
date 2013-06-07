@@ -560,11 +560,11 @@ package com.hjx.diagram.editor
 				{
 					var length:int=0;
 					var links:Vector.<Link> = node.getLinks();
-					/*for each (var link:Link in links) 
+					for each (link in links) 
 					{
-					reparentLink(loc7);
+						reparentLink(link);
 					}
-					if (loc6) 
+					/*if (loc6) 
 					{
 					reparentIntergraphLinks(loc6);
 					}*/
@@ -574,6 +574,175 @@ package com.hjx.diagram.editor
 			return reparentd;
 		}
 		
+		
+		static function reparentLink(link:Link):void
+		{
+			var graph:Graph=link.parent as Graph;
+			if (!graph) 
+			{
+				return;
+			}
+			var startNode:Renderer=link.startNode;
+			var endNode:Renderer=link.endNode;
+			
+			if (startNode == null) 
+			{
+				startNode = link;
+			}
+			if (endNode == null) 
+			{
+				endNode = link;
+			}
+			if (startNode && endNode) 
+			{
+				var lowestCommonGraph:Graph = getLowestCommonGraph(startNode, endNode);
+				if (lowestCommonGraph == null) 
+				{
+					return;
+				}
+				var editor:DiagramEditor = DiagramEditor.getEditor(link);
+				if (lowestCommonGraph == graph) 
+				{
+					if (!(startNode == null) && !(startNode.parent == null) && !(startNode.parent == graph) || 
+						!(endNode == null) && !(endNode.parent == null) && !(endNode.parent == graph)) 
+					{
+						var index:int = -1;
+						if (startNode != null) 
+						{
+							var renderer:Renderer = startNode;
+							var nodeGrpah:Graph;
+							while (!(renderer == null) && !(renderer.parent == graph)) 
+							{
+								nodeGrpah = renderer.parent as Graph;
+								if (nodeGrpah.owningSubgraph) 
+								{
+									renderer = nodeGrpah.owningSubgraph;
+									continue;
+								}
+								break;
+							}
+							if (renderer != null) 
+							{
+								index = graph.getElementIndex(renderer);
+							}
+						}
+						if (endNode != null) 
+						{
+							renderer = endNode;
+							while (!(renderer == null) && !(renderer.parent == graph)) 
+							{
+								nodeGrpah = renderer.parent as Graph;
+								if (nodeGrpah.owningSubgraph) 
+								{
+									renderer = nodeGrpah.owningSubgraph;
+									continue;
+								}
+								break;
+							}
+							if (renderer != null) 
+							{
+								index = Math.max(index, graph.getElementIndex(renderer));
+							}
+						}
+						if (index > graph.getElementIndex(link)) 
+						{
+							/*if (loc5) 
+							{
+								if (!loc5.dispatchEditorEvent(com.ibm.ilog.elixir.diagram.editor.DiagramEditorEvent.EDITOR_CHANGE_ZORDER, arg1)) 
+								{
+									return;
+								}
+							}*/
+							graph.setElementIndex(link, index);
+						}
+					}
+				}
+				else 
+				{
+					/*if (loc5) 
+					{
+						if (!loc5.dispatchEditorEvent(com.ibm.ilog.elixir.diagram.editor.DiagramEditorEvent.EDITOR_REPARENT, arg1)) 
+						{
+							return;
+						}
+					}*/
+					graph.removeElement(link);
+					/*if ((loc6 = link.intermediatePoints).length != 0) 
+					{
+						loc7 = 0;
+						while (loc7 < loc6.length) 
+						{
+							loc6[loc7] = loc2.globalToLocal(loc1.localToGlobal(loc6[loc7]));
+							++loc7;
+						}
+						arg1.intermediatePoints = loc6;
+					}*/
+					link.fallbackStartPoint = lowestCommonGraph.globalToLocal(graph.localToGlobal(link.fallbackStartPoint));
+					link.fallbackEndPoint = lowestCommonGraph.globalToLocal(graph.localToGlobal(link.fallbackEndPoint));
+					lowestCommonGraph.addElement(link);
+				}
+			}
+			return;
+		}
+		
+		
+		public static function getLowestCommonGraph(renderer1:Renderer, renderer2:Renderer):Graph
+		{
+			if (renderer1 == null || renderer2 == null) 
+			{
+				throw new ArgumentError("参数不得为null");
+			}
+			var graph1:Graph=renderer1.parent as Graph;
+			var graph2:Graph=renderer2.parent as Graph;
+			if (graph1 == null || graph2 == null) 
+			{
+				return null;
+			}
+			if (graph1 == graph2) 
+			{
+				return graph1;
+			}
+			if (isGraphAncestorOf(graph1, graph2)) 
+			{
+				return graph1;
+			}
+			if (isGraphAncestorOf(graph2, graph1)) 
+			{
+				return graph2;
+			}
+			if (graph1.owningSubgraph == null) 
+			{
+				return graph1;
+			}
+			return getLowestCommonGraph(graph1.owningSubgraph, renderer2);
+		}
+		
+		internal static function isGraphAncestorOf(graph1:Graph, graph2:Graph):Boolean
+		{
+			var graph:Graph;
+			if (graph2.owningSubgraph == null) 
+			{
+				graph = graph2.parent as Graph;
+			}
+			else 
+			{
+				graph = graph2.owningSubgraph.parent as  Graph;
+			}
+			while (graph != null) 
+			{
+				if (graph == graph1) 
+				{
+					return true;
+				}
+				if (graph.owningSubgraph != null) 
+				{
+					graph = graph.owningSubgraph.parent as  Graph;
+					continue;
+				}
+				graph = graph.parent as Graph;
+			}
+			return false;
+		}
 		
 		public function setSelected(renderer:Renderer, isSelected:Boolean):void
 		{

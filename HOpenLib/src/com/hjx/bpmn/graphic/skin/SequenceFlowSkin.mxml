@@ -2,10 +2,10 @@
 <skin:NodeSkinBase xmlns:fx="http://ns.adobe.com/mxml/2009"
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
-				   xmlns:skin="com.hjx.graphic.skin.*" xmlns:primatives="ws.tink.spark.primatives.*">
+				   xmlns:skin="com.hjx.graphic.skin.*" xmlns:primatives="ws.tink.spark.primatives.*" xmlns:graphics="ws.tink.spark.graphics.*">
 	<fx:Declarations>
 		<s:AnimateColor id="activeEffect"
-						targets="{[path.stroke]}"
+						targets="{[animatePath.stroke]}"
 						colorPropertyName="color"
 						colorFrom="0"
 						colorTo="red"
@@ -50,11 +50,20 @@
 				if(hostComponent.monitoringStatus == "active"){
 					activeEffect.play();
 					doneEffect.stop();
+					path.visible= false;
+					animatePath.visible = !path.visible;
+					animatePath.data = path.data;
 				}else if(hostComponent.monitoringStatus == "done"){
 					doneEffect.play();
 					activeEffect.stop();
+					path.visible= true;
+					animatePath.visible = !path.visible;
+					animatePath.data = path.data;
 				}else{
+					activeEffect.stop();
 					doneEffect.stop();
+					path.visible= true;
+					animatePath.visible = !path.visible;
 				}
 			}
 			
@@ -81,6 +90,12 @@
 		</s:filters>-->    
 		<primatives:Path id="path" data="M 0 0 L 0 0" stroke="{strokecolor}">
 			
+		</primatives:Path>  
+		<primatives:Path id="animatePath" visible="false">
+			<primatives:stroke>
+				<graphics:SolidColorDash caps="none" color="{strokeColor}"
+										 weight="{strokeWidth}" dash="8" gap="8"/>
+			</primatives:stroke>
 		</primatives:Path>  
 		<s:Path id="startArrow" data="M -10 -5 l 10 5 l -10 5 Z" fill="{fillcolor}">
 		</s:Path>
