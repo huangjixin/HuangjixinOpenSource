@@ -1022,8 +1022,12 @@ package com.hjx.graphic
 			// 利用这个工具来查找style.
 			var describe:* = describeType(renderer);
 			var objectMetadata:* = describe.metadata;
-			Alert.show(describe.toString());
-			cloneRenderer.setStyle("caps",renderer.getStyle("caps"));
+			var styleProp:XMLList = objectMetadata.(@name=="Style").arg.(@key=="name");
+			for each (var xml:XML in styleProp) 
+			{
+				cloneRenderer.setStyle(xml.@value,renderer.getStyle(xml.@value));
+			}
+			/*cloneRenderer.setStyle("caps",renderer.getStyle("caps"));
 			cloneRenderer.setStyle("caretColor",renderer.getStyle("caretColor"));
 			cloneRenderer.setStyle("dashArray",renderer.getStyle("dashArray"));
 			cloneRenderer.setStyle("dashStyle",renderer.getStyle("dashStyle"));
@@ -1039,7 +1043,7 @@ package com.hjx.graphic
 			cloneRenderer.setStyle("startArrowType",renderer.getStyle("startArrowType"));
 			cloneRenderer.setStyle("startArrowVisible",renderer.getStyle("startArrowVisible"));
 			cloneRenderer.setStyle("strokeColor",renderer.getStyle("strokeColor"));
-			cloneRenderer.setStyle("strokeWidth",renderer.getStyle("strokeWidth"));
+			cloneRenderer.setStyle("strokeWidth",renderer.getStyle("strokeWidth"));*/
 		}
 		
 		override protected function partAdded(partName:String, instance:Object):void{

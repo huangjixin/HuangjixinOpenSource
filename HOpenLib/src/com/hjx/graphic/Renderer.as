@@ -2,6 +2,7 @@ package com.hjx.graphic
 {
 	import flash.events.Event;
 	import flash.geom.Point;
+	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
@@ -245,7 +246,15 @@ package com.hjx.graphic
 		
 		protected function cloneStyle(renderer:Renderer, cloneRenderer:Renderer):void
 		{
-			cloneRenderer.setStyle("adornerClass",renderer.getStyle("adornerClass"));
+//			cloneRenderer.setStyle("adornerClass",renderer.getStyle("adornerClass"));
+			// 利用这个工具来查找style.
+			var describe:* = describeType(renderer);
+			var objectMetadata:* = describe.metadata;
+			var styleProp:XMLList = objectMetadata.(@name=="Style").arg.(@key=="name");
+			for each (var xml:XML in styleProp) 
+			{
+				cloneRenderer.setStyle(xml.@value,renderer.getStyle(xml.@value));
+			}
 		}
 		/**
 		 * 克隆属性。 
