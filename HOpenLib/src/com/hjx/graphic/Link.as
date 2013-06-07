@@ -29,6 +29,7 @@ package com.hjx.graphic
 	[Style(name="caretColor", inherit="no", type="uint",format="Color")]
 	[Style(name="dashArray", inherit="no", type="Array")]
 	[Style(name="dashStyle", inherit="no", type="String",enumeration="none,dash,dot,dashDot")]
+	[Style(name="dash", inherit="yes", type="Number")]
 	[Style(name="endArrowType", inherit="yes", type="String",enumeration="triangle,open,sunken,curved,square,diamond,circle,star")]
 	[Style(name="endArrowVisible", inherit="yes", type="Boolean",format="Boolean",enumeration="true,false")]
 	[Style(name="joints", inherit="yes", type="String",enumeration="round,miter,bevel")]
@@ -104,6 +105,8 @@ package com.hjx.graphic
 		private var _endArrowTypeChange:Boolean;
 		private var _orthogonalSpacing:Number;
 		private var _orthogonalSpacingChange:Boolean;
+		private var _dash:Number = 8;
+		private var _dashChange:Boolean;
 		
 		internal static var Top:int=0;
 		
@@ -790,11 +793,6 @@ package com.hjx.graphic
 						this.fallbackEndPoint = defaultEndPoint.clone();
 					}
 					
-					//
-					/*trace(this.startNode.width/2/Math.cos(radian)+","+this.startNode.height/2/Math.sin(radian));
-					var dire:int = getDirection(defaultStartPoint,defaultEndPoint);
-					trace(dire);*/
-//					this.skin.get
 					this._shapePoints.push(defaultStartPoint);
 					this._shapePoints.push(defaultEndPoint);
 					
@@ -881,7 +879,8 @@ package com.hjx.graphic
 				_startArrowTypeChange ||
 				_endArrowTypeChange ||
 				_shapeTypeChange ||
-				_orthogonalSpacingChange){
+				_orthogonalSpacingChange||
+				_dashChange){
 				/*if (_shapeTypeChange || _orthogonalSpacingChange) 
 				{
 					
@@ -897,7 +896,7 @@ package com.hjx.graphic
 						}
 					}else if(this._dashStyle == DashStyle.DASH){
 						if(!path.stroke || path.stroke is SolidColorStroke){
-							path.stroke = new SolidColorDash(8,8,0x808080,this._strokeWidth);
+							path.stroke = new SolidColorDash(_dash,_dash,0x808080,this._strokeWidth);
 						}
 					}
 					/*if (this._curved) 
@@ -923,7 +922,8 @@ package com.hjx.graphic
 					_startArrowTypeChange=
 					_endArrowTypeChange = 
 					_shapeTypeChange = 
-				_orthogonalSpacingChange = false;
+				_orthogonalSpacingChange = 
+				_dashChange=false;
 			}
 //			draw();
 		}
@@ -1164,6 +1164,17 @@ package com.hjx.graphic
 					this._orthogonalSpacing = orthogonalSpacing;
 					isInvlidate = true;
 					_orthogonalSpacingChange = true;
+				}
+			}
+			
+			if (changedStyle || styleProp == "_dash") 
+			{
+				var dash:* = getStyle("_dash");
+				if (styleManager.isValidStyleValue(_dash)) 
+				{
+					this._dash = dash;
+					isInvlidate = true;
+					_dashChange = true;
 				}
 			}
 			

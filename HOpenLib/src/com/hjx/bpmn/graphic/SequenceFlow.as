@@ -6,7 +6,7 @@ package com.hjx.bpmn.graphic
 	import com.hjx.graphic.LinkShapeType;
 	import com.hjx.graphic.Node;
 	
-	public class SequenceFlow extends ConnectObject
+	public class SequenceFlow extends ConnectingObject
 	{
 		public function SequenceFlow(startNode:Node=null, endNode:Node=null)
 		{
