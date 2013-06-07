@@ -189,11 +189,11 @@ package com.hjx.graphic
 		
 		
 		public function getIncomingLinks():Vector.<Link>{
-			return null;
+			return _incomingLinks;
 		}
 		
 		public function getIncomingLinksCount():int{
-			return 0;
+			return _incomingLinks.length;
 		}
 		
 		public function getLinks():Vector.<Link>{
@@ -201,7 +201,7 @@ package com.hjx.graphic
 		}
 		
 		public function getLinksCount():int{
-			return 0;
+			return getIncomingLinksCount()+getOutgoingLinksCount();
 		}
 		
 		public function getNodeOrBaseBounds(targetCoordinateSpace:DisplayObject):Rectangle{
@@ -209,11 +209,11 @@ package com.hjx.graphic
 		}
 		
 		public function getOutgoingLinks():Vector.<Link>{
-			return null;
+			return _outgoingLinks;
 		}
 		
 		public function getOutgoingLinksCount():int{
-			return 0;
+			return _outgoingLinks.length;
 		}
 		
 		public function resumeGraphLayoutInvalidationOnMoveResize():void{

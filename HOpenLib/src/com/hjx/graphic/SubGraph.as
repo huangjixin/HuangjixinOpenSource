@@ -717,7 +717,7 @@ package com.hjx.graphic
 			super.partAdded(partName, instance);
 			if(instance == graph){
 				graph.mxmlContent = _mxmlContent;
-				graph.owningSubgraph = this;
+				graph.owningSubGraph = this;
 			}
 		}
 		/**
@@ -730,7 +730,7 @@ package com.hjx.graphic
 			super.partRemoved(partName, instance);
 			if(instance == graph){
 				graph.mxmlContent = [];
-				graph.owningSubgraph = null;
+				graph.owningSubGraph = null;
 			}
 		}
 	}//类结束

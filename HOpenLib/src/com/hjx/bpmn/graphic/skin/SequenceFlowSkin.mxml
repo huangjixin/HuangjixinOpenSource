@@ -5,15 +5,15 @@
 				   xmlns:skin="com.hjx.graphic.skin.*" xmlns:primatives="ws.tink.spark.primatives.*" xmlns:graphics="ws.tink.spark.graphics.*">
 	<fx:Declarations>
 		<s:AnimateColor id="activeEffect"
-						targets="{[animatePath.stroke]}"
+						targets="{[path.stroke,startArrow.fill,endArrow.fill]}"
 						colorPropertyName="color"
 						colorFrom="0"
-						colorTo="red"
+						colorTo="white"
 						repeatBehavior="reverse"
 						repeatCount="0"
-						duration="500" />
+						duration="1000" />
 		<s:AnimateColor id="doneEffect"
-						targets="{[path.stroke]}"
+						targets="{[path.stroke,startArrow.fill,endArrow.fill]}"
 						colorPropertyName="color"
 						colorTo="green"
 						repeatBehavior="reverse"
@@ -50,20 +50,20 @@
 				if(hostComponent.monitoringStatus == "active"){
 					activeEffect.play();
 					doneEffect.stop();
-					path.visible= false;
+					/* path.visible= false;
 					animatePath.visible = !path.visible;
-					animatePath.data = path.data;
+					animatePath.data = path.data; */
 				}else if(hostComponent.monitoringStatus == "done"){
 					doneEffect.play();
 					activeEffect.stop();
-					path.visible= true;
+					/* path.visible= true;
 					animatePath.visible = !path.visible;
-					animatePath.data = path.data;
+					animatePath.data = path.data; */
 				}else{
 					activeEffect.stop();
 					doneEffect.stop();
-					path.visible= true;
-					animatePath.visible = !path.visible;
+					/* path.visible= true;
+					animatePath.visible = !path.visible; */
 				}
 			}
 			

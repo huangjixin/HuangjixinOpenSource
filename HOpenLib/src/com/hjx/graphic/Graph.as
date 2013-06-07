@@ -18,36 +18,36 @@ package com.hjx.graphic
 	 */
 	public class Graph extends Group
 	{
-		private var _subGraphs:Vector.<SubGraph>;
+		private var _subgraphs:Vector.<SubGraph>;
 		private var _nodes:Vector.<Node>;
 		private var _links:Vector.<Link>;
 		
 		private var _automaticGraphLayout:Boolean;
 		
-		private var _owningSubgraph:SubGraph;
+		private var _owningSubGraph:SubGraph;
 		
 		public function Graph()
 		{
 			super();
 			
-			_subGraphs = new Vector.<SubGraph>();
+			_subgraphs = new Vector.<SubGraph>();
 			_nodes = new Vector.<Node>();
 			_links = new Vector.<Link>();
 			
-			/*addEventListener(ElementExistenceEvent.ELEMENT_ADD,onElementAdd);
-			addEventListener(ElementExistenceEvent.ELEMENT_REMOVE,onElementRemove);
-			addEventListener(MoveEvent.MOVE,onMove);
+			addEventListener(ElementExistenceEvent.ELEMENT_ADD,elementAddedHandler);
+			addEventListener(ElementExistenceEvent.ELEMENT_REMOVE,elementRemovedHandler);
+			/*addEventListener(MoveEvent.MOVE,onMove);
 			addEventListener(ResizeEvent.RESIZE,onResize);*/
 		}
 		
-		public function get owningSubgraph():SubGraph
+		public function get owningSubGraph():SubGraph
 		{
-			return _owningSubgraph;
+			return _owningSubGraph;
 		}
 
-		public function set owningSubgraph(value:SubGraph):void
+		public function set owningSubGraph(value:SubGraph):void
 		{
-			_owningSubgraph = value;
+			_owningSubGraph = value;
 		}
 
 		[Bindable]
@@ -61,6 +61,110 @@ package com.hjx.graphic
 			_automaticGraphLayout = value;
 		}
 
+		public function getNodes():Vector.<Node>
+		{
+			return this._nodes.slice(0);
+		}
+		
+		internal function nodeAdded(node:Node):void
+		{
+			this._nodes.push(node);
+			return;
+		}
+		
+		internal function nodeRemoved(node:Node):void
+		{
+			var index:int=this._nodes.indexOf(node);
+			if (index != -1) 
+			{
+				this._nodes.splice(index, 1);
+			}
+			return;
+		}
+		
+		public function getLinks():Vector.<Link>
+		{
+			return this._links.slice(0);
+		}
+		internal function linkAdded(link:Link):void
+		{
+			this._links.push(link);
+			return;
+		}
+		
+		internal function linkRemoved(link:Link):void
+		{
+			var index:int=this._links.indexOf(link);
+			if (index != -1) 
+			{
+				this._links.splice(index, 1);
+			}
+			return;
+		}
+		
+		public function getSubGraphs():Vector.<SubGraph>
+		{
+			return this._subgraphs.slice(0);
+		}
+		
+		internal function subgraphAdded(subGraph:SubGraph):void
+		{
+			this._subgraphs.push(subGraph);
+			return;
+		}
+		
+		internal function subgraphRemoved(subGraph:SubGraph):void
+		{
+			var index:int=this._subgraphs.indexOf(subGraph);
+			if (index != -1) 
+			{
+				this._subgraphs.splice(index, 1);
+			}
+			return;
+		}
+		
+		internal function elementAddedHandler(event:ElementExistenceEvent):void
+		{
+			var link:Link=null;
+			var element:Node =event.element as Node;
+			if (element) 
+			{
+				if (event.element is SubGraph) 
+				{
+					this.subgraphAdded(SubGraph(event.element));
+				}
+				this.nodeAdded(element);
+			}
+			else if (event.element is Link) 
+			{
+				link = event.element as Link;
+				this.linkAdded(link);
+			}
+			return;
+		}
+		
+		internal function elementRemovedHandler(event:ElementExistenceEvent):void
+		{
+			var node:Node=null;
+			var link:Link;
+			
+			if (event.element is SubGraph) 
+			{
+				this.subgraphRemoved(SubGraph(event.element));
+			}
+			if (event.element is Node) 
+			{
+				node = event.element as Node;
+				this.nodeRemoved(node);
+			}
+			else if (event.element is Link) 
+			{
+				link = event.element as Link;
+				this.linkRemoved(link);
+			}
+			return;
+		}
+		
 		/**
 		 * 
 		 * @param graphic — 事件发生的地方。

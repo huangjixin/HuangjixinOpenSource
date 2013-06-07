@@ -696,9 +696,9 @@ package com.hjx.graphic
 			var localNode:Node = node;
 			while (!(localNode.parent == null) &&
 				localNode.parent is Graph &&
-				Graph(localNode.parent).owningSubgraph) 
+				Graph(localNode.parent).owningSubGraph) 
 			{
-				localNode = Graph(localNode.parent).owningSubgraph;
+				localNode = Graph(localNode.parent).owningSubGraph;
 				if (!(localNode is SubGraph && SubGraph(localNode).collapsed)) 
 				{
 					continue;
@@ -1167,10 +1167,10 @@ package com.hjx.graphic
 				}
 			}
 			
-			if (changedStyle || styleProp == "_dash") 
+			if (changedStyle || styleProp == "dash") 
 			{
-				var dash:* = getStyle("_dash");
-				if (styleManager.isValidStyleValue(_dash)) 
+				var dash:* = getStyle("dash");
+				if (styleManager.isValidStyleValue(dash)) 
 				{
 					this._dash = dash;
 					isInvlidate = true;

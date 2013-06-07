@@ -111,7 +111,7 @@ package com.hjx.diagram
 			for each (var link:Link in links) {
 				init(link);
 			}
-			var subgraphs:Vector.<SubGraph> = graph.getSubgraphs();
+			var subgraphs:Vector.<SubGraph> = graph.getSubGraphs();
 			for each (var subgraph:SubGraph in subgraphs) {
 				doInit(subgraph.graph);
 			}      
@@ -141,7 +141,7 @@ package com.hjx.diagram
 					ConnectingObject(link).monitoringDelay = value; 
 				}
 			}
-			var subgraphs:Vector.<SubGraph> = graph.getSubgraphs();
+			var subgraphs:Vector.<SubGraph> = graph.getSubGraphs();
 			for each (var subgraph:SubGraph in subgraphs) {
 				doInitDelay(subgraph.graph,value);
 			}      
@@ -246,8 +246,8 @@ package com.hjx.diagram
 					// if the flowobject is in a subgraph then set the subgraph monitoring statur to "done"
 					if(current is FlowObject){
 						var flowObject:FlowObject = current as FlowObject;
-						if(flowObject.parent is Graph && (flowObject.parent as Graph).owningSubgraph is SubProcess ){
-							((flowObject.parent as Graph).owningSubgraph as SubProcess).monitoringStatus = "done";
+						if(flowObject.parent is Graph && (flowObject.parent as Graph).owningSubGraph is SubProcess ){
+							((flowObject.parent as Graph).owningSubGraph as SubProcess).monitoringStatus = "done";
 						}            
 					}          
 					
@@ -431,8 +431,8 @@ package com.hjx.diagram
 				}
 				
 				// if the flowobject is in a subgraph then set the subgraph monitoring status to "active"
-				if(flowObject.parent is Graph && (flowObject.parent as Graph).owningSubgraph is SubProcess ){
-					((flowObject.parent as Graph).owningSubgraph as SubProcess).monitoringStatus = "active";
+				if(flowObject.parent is Graph && (flowObject.parent as Graph).owningSubGraph is SubProcess ){
+					((flowObject.parent as Graph).owningSubGraph as SubProcess).monitoringStatus = "active";
 				}        
 				
 				// if object is a gateway, prepare a message that indicates the choices given by this "decision" node

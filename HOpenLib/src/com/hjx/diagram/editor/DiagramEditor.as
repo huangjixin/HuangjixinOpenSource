@@ -107,6 +107,8 @@ package com.hjx.diagram.editor
 		internal var _currentSubgraph:SubGraph=null;
 		private var currentSubgraphFlashing:Boolean;
 		
+		public var linkPrototype:Link;
+		
 		public function DiagramEditor()
 		{
 			super();
@@ -614,9 +616,9 @@ package com.hjx.diagram.editor
 							while (!(renderer == null) && !(renderer.parent == graph)) 
 							{
 								nodeGrpah = renderer.parent as Graph;
-								if (nodeGrpah.owningSubgraph) 
+								if (nodeGrpah.owningSubGraph) 
 								{
-									renderer = nodeGrpah.owningSubgraph;
+									renderer = nodeGrpah.owningSubGraph;
 									continue;
 								}
 								break;
@@ -632,9 +634,9 @@ package com.hjx.diagram.editor
 							while (!(renderer == null) && !(renderer.parent == graph)) 
 							{
 								nodeGrpah = renderer.parent as Graph;
-								if (nodeGrpah.owningSubgraph) 
+								if (nodeGrpah.owningSubGraph) 
 								{
-									renderer = nodeGrpah.owningSubgraph;
+									renderer = nodeGrpah.owningSubGraph;
 									continue;
 								}
 								break;
@@ -710,23 +712,23 @@ package com.hjx.diagram.editor
 			{
 				return graph2;
 			}
-			if (graph1.owningSubgraph == null) 
+			if (graph1.owningSubGraph == null) 
 			{
 				return graph1;
 			}
-			return getLowestCommonGraph(graph1.owningSubgraph, renderer2);
+			return getLowestCommonGraph(graph1.owningSubGraph, renderer2);
 		}
 		
 		internal static function isGraphAncestorOf(graph1:Graph, graph2:Graph):Boolean
 		{
 			var graph:Graph;
-			if (graph2.owningSubgraph == null) 
+			if (graph2.owningSubGraph == null) 
 			{
 				graph = graph2.parent as Graph;
 			}
 			else 
 			{
-				graph = graph2.owningSubgraph.parent as  Graph;
+				graph = graph2.owningSubGraph.parent as  Graph;
 			}
 			while (graph != null) 
 			{
@@ -734,9 +736,9 @@ package com.hjx.diagram.editor
 				{
 					return true;
 				}
-				if (graph.owningSubgraph != null) 
+				if (graph.owningSubGraph != null) 
 				{
-					graph = graph.owningSubgraph.parent as  Graph;
+					graph = graph.owningSubGraph.parent as  Graph;
 					continue;
 				}
 				graph = graph.parent as Graph;
@@ -855,6 +857,36 @@ package com.hjx.diagram.editor
 			}
 		}
 		
+		public function createLink():Link
+		{
+			var link:Link=null;
+			if (this.linkPrototype == null) 
+			{
+				link = new Link();
+			}
+			else 
+			{
+				link = Link(this.linkPrototype.clone());
+			}
+			return link;
+		}
+		
+		public function connectNodes():void
+		{
+			var selObjs:Vector.<Renderer> = getSelectedObjects();
+			if (selObjs.length == 2) {
+				// There must be two nodes selected
+				if ((selObjs[0] is Node) && (selObjs[1] is Node)) {
+					var link:Link = createLink();
+					if (link) {
+						link.startNode = Node(selObjs[0]);
+						link.endNode = Node(selObjs[1]);
+						var linkParent:Graph = DiagramEditor.getLowestCommonGraph(link.startNode, link.endNode);
+						linkParent.addElement(link);
+					}            
+				}
+			}        
+		}
 		//--------------------------------------------------------
 		// 相关事件响应函数和逻辑函数存放处
 		//--------------------------------------------------------
