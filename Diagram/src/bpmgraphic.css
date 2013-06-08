@@ -12,7 +12,7 @@
 		
 		graphic|Node{
 			skinClass:ClassReference("com.hjx.graphic.skin.NodeSkin");
-			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner");
+/*			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner");*/
 			borderColor:"0x03689A";
 		}
 		
@@ -22,11 +22,6 @@
 		
 		editor|ResizableNodeAdorner{
 			skinClass:ClassReference("com.hjx.diagram.editor.skin.ResizeableAdornerSkin")
-		}
-		
-		local|BPMNBtn{
-			skinClass:ClassReference("com.hjx.graphic.skin.NodeSkin");
-			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner")	
 		}
 		
 		graphic|SubGraph{
@@ -93,28 +88,36 @@
 		
 		graphic1|HorizontalLane{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.HorizontalLaneSkin");
-			backgroundColor:"0xDDA09D";
-			borderColor:"0x3E2D2C";
+/*			backgroundColor:"0xDDA09D";
+			borderColor:"0x3E2D2C";*/
 		}
 		
 		graphic1|VerticalLane{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.VerticalLaneSkin");
-			backgroundColor:"0xDDA09D";
-			borderColor:"0x3E2D2C";
+/*			backgroundColor:"0xDDA09D";
+			borderColor:"0x3E2D2C";*/
 		}
 		
 		graphic1|HorizontalPool{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.HorizontalPoolSkin");
-			backgroundColor:"0x9D3C35";
-			borderColor:"0x3E2D2C";
+			backgroundColor:"0xFFFDE4";
+			/*borderColor:"0x3E2D2C";*/
 		}
 		
 		graphic1|VerticalPool{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.VerticalPoolSkin");
-			backgroundColor:"0x9D3C35";
-			borderColor:"0x3E2D2C";
+			backgroundColor:"0xFFFDE4";
+			/*borderColor:"0x3E2D2C";*/
 		}
 		
 		graphic1|SequenceFlow{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.SequenceFlowSkin");
+		}
+		
+		graphic1|MessageFlow{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.MessageFlowSkin");
+		}
+
+		editor|LaneAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.LaneAdornerSkin")
 		}
