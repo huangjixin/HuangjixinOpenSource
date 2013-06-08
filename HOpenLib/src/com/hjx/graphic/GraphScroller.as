@@ -23,8 +23,8 @@ package com.hjx.graphic
 	import spark.core.NavigationUnit;
 	import spark.effects.animation.Animation;
 
-	[Style(name="verticalScrollPolicy", inherit="yes", type="String",enumeration="on,off,auto")]
-	[Style(name="horizontalScrollPolicy", inherit="yes", type="String",enumeration="on,off,auto")]
+	/*[Style(name="verticalScrollPolicy", inherit="yes", type="String",enumeration="on,off,auto")]
+	[Style(name="horizontalScrollPolicy", inherit="yes", type="String",enumeration="on,off,auto")]*/
 	[DefaultProperty("graph")]
 	public class GraphScroller extends SkinnableComponent
 	{
