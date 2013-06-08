@@ -26,6 +26,7 @@ package com.hjx.diagram.editor
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
 	
+	import mx.events.DragEvent;
 	import mx.events.SandboxMouseEvent;
 	import mx.graphics.SolidColor;
 	import mx.graphics.SolidColorStroke;
@@ -108,6 +109,7 @@ package com.hjx.diagram.editor
 		private var currentSubgraphFlashing:Boolean;
 		
 		public var linkPrototype:Link;
+		private var allowDropping:Boolean;
 		
 		public function DiagramEditor()
 		{
@@ -118,6 +120,10 @@ package com.hjx.diagram.editor
 			this.addEventListener(MouseEvent.MOUSE_DOWN, this.mouseDownHandler);
 			this.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseMoveHandler);
 			this.addEventListener(MouseEvent.MOUSE_OVER, this.mouseOverHandler);
+			
+			this.addEventListener(DragEvent.DRAG_ENTER, this.dragEnterHandler);
+			this.addEventListener(DragEvent.DRAG_OVER, this.dragOverHandler);
+			this.addEventListener(DragEvent.DRAG_DROP, this.dragDropHandler);
 		}//构造函数结束
 		
 		
@@ -886,6 +892,105 @@ package com.hjx.diagram.editor
 					}            
 				}
 			}        
+		}
+		
+		/**
+		 * 拖拽enter的时候 
+		 * @param arg1
+		 * 
+		 */
+		internal function dragEnterHandler(event:DragEvent):void
+		{
+			var loc1:*=null;
+			var loc2:*=null;
+			var loc3:*=null;
+			if (this.allowDropping && event.dragSource.hasFormat("diagram_dragFormat"))
+			{
+				var renderer:Renderer = Renderer(event.dragInitiator);
+				/*loc2 = loc1.parent as com.ibm.ilog.elixir.diagram.editor.DiagramPalette;
+				if (loc2 != null) 
+				{
+					loc3 = this.cloneRenderer(loc1);
+					loc2.dragImage.removeAllElements();
+					loc2.dragImage.addElement(loc3);
+					this.cloneChildren(loc1, loc3);
+					setX(loc3, 0);
+					setY(loc3, 0);
+				}*/
+				DragManager.acceptDragDrop(this);
+			}
+		}
+		
+		internal function dragOverHandler(event:DragEvent):void
+		{
+			if (this.allowDropping) 
+			{
+				this.trackCurrentSubgraph(event);
+			}
+			return;
+		}
+		
+		internal function dragDropHandler(arg1:mx.events.DragEvent):void
+		{
+			/*var loc1:*=null;
+			var loc2:*=null;
+			var loc3:*=NaN;
+			var loc4:*=NaN;
+			var loc5:*=null;
+			var loc6:*=null;
+			var loc7:*=null;
+			var loc8:*=null;
+			var loc9:*=null;
+			if (this.allowDropping && arg1.dragSource.hasFormat(com.ibm.ilog.elixir.diagram.editor.DiagramPalette.RENDERER_DRAG_DROP_FORMAT)) 
+			{
+				loc1 = com.ibm.ilog.elixir.diagram.Renderer(arg1.dragInitiator);
+				loc2 = loc1.parent as com.ibm.ilog.elixir.diagram.editor.DiagramPalette;
+				loc3 = loc2 == null ? 0 : loc2.offsetX;
+				loc4 = loc2 == null ? 0 : loc2.offsetY;
+				if (this.currentSubgraph == null) 
+				{
+					loc5 = this._graph;
+				}
+				else 
+				{
+					loc5 = this.currentSubgraph.graph;
+				}
+				loc6 = new flash.geom.Point(this._graph.mouseX, this._graph.mouseY);
+				loc6.x = loc6.x - loc3;
+				loc6.y = loc6.y - loc4;
+				loc6 = this._graph.localToGlobal(loc6);
+				loc6 = loc5.globalToLocal(loc6);
+				loc6 = this.snapPoint(loc6, loc5);
+				loc7 = this.cloneRenderer(loc1);
+				if (!this.dispatchEditorEvent(com.ibm.ilog.elixir.diagram.editor.DiagramEditorEvent.EDITOR_CREATE, loc7)) 
+				{
+					this.resetCurrentSubgraph();
+					return;
+				}
+				if (loc7 is com.ibm.ilog.elixir.diagram.Link) 
+				{
+					loc8 = com.ibm.ilog.elixir.diagram.Link(loc1);
+					(loc9 = com.ibm.ilog.elixir.diagram.Link(loc7)).fallbackStartPoint = loc6;
+					loc9.fallbackEndPoint = new flash.geom.Point(loc6.x + (loc8.fallbackEndPoint.x - loc8.fallbackStartPoint.x), loc6.y + (loc8.fallbackEndPoint.y - loc8.fallbackStartPoint.y));
+				}
+				else 
+				{
+					setX(loc7, loc6.x);
+					setY(loc7, loc6.y);
+				}
+				loc5.addElement(loc7);
+				this.cloneChildren(loc1, loc7);
+				this.selectOnly(loc7);
+				this._graph.setFocus();
+				if (this.allowEditingText && this.allowEditingTextOnCreate) 
+				{
+					this.startEditingText(loc7);
+				}
+				this.flashCurrentSubgraph();
+				this.doHighlighting(arg1, loc7, false);
+			}
+			this.resetCurrentSubgraph();
+			return;*/
 		}
 		//--------------------------------------------------------
 		// 相关事件响应函数和逻辑函数存放处

@@ -5,11 +5,10 @@
 				   xmlns:skin="com.hjx.graphic.skin.*" xmlns:primatives="ws.tink.spark.primatives.*" xmlns:graphics="ws.tink.spark.graphics.*">
 	<fx:Declarations>
 		<s:AnimateColor id="activeEffect"
-						targets="{[animatePath.stroke]}"
+						targets="{[path.stroke]}"
 						colorPropertyName="color"
 						colorFrom="0"
 						colorTo="red"
-						repeatBehavior="reverse"
 						repeatCount="0"
 						duration="500" />
 		<s:AnimateColor id="doneEffect"
@@ -50,20 +49,20 @@
 				if(hostComponent.monitoringStatus == "active"){
 					activeEffect.play();
 					doneEffect.stop();
-					path.visible= false;
+					/* path.visible= false;
 					animatePath.visible = !path.visible;
-					animatePath.data = path.data;
+					animatePath.data = path.data; */
 				}else if(hostComponent.monitoringStatus == "done"){
 					doneEffect.play();
 					activeEffect.stop();
-					path.visible= true;
+					/* path.visible= true;
 					animatePath.visible = !path.visible;
-					animatePath.data = path.data;
+					animatePath.data = path.data; */
 				}else{
 					activeEffect.stop();
 					doneEffect.stop();
-					path.visible= true;
-					animatePath.visible = !path.visible;
+					/* path.visible= true;
+					animatePath.visible = !path.visible; */
 				}
 			}
 			
@@ -79,7 +78,7 @@
 	</skin:states>
 	<fx:Declarations>
 		<s:SolidColorStroke id="strokecolor" caps="none" color="{strokeColor}"
-							 weight="{strokeWidth}"/>
+							 weight="1"/>
 		<s:SolidColor id="fillcolor" color="{strokeColor}"/>
 	</fx:Declarations>
 	
@@ -97,10 +96,13 @@
 										 weight="{strokeWidth}" dash="8" gap="8"/>
 			</primatives:stroke>
 		</primatives:Path>  
-		<s:Path id="startArrow" data="M -10 -5 l 10 5 l -10 5 Z" fill="{fillcolor}">
+		<s:Path id="startArrow" data="M -10 -5 l 10 5 l -10 5 Z" stroke="{strokecolor}">
 		</s:Path>
 		<!-- data path must be relative to (0,0) because arrow are centered on path end/start points-->
-		<s:Path id="endArrow" data="M -10 -5 l 10 5 l -10 5 Z" fill="{fillcolor}">
+		<s:Path id="endArrow" data="M -10 -5 l 10 5 l -10 5 Z" stroke="{strokecolor}">
+			<s:fill>
+				<s:SolidColor color="white"/>
+			</s:fill>
 		</s:Path>     
 	</s:Group>
 </skin:NodeSkinBase>
