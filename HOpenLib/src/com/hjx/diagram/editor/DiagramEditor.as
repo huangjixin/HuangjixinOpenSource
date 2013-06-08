@@ -21,9 +21,11 @@ package com.hjx.diagram.editor
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
 	
@@ -125,6 +127,8 @@ package com.hjx.diagram.editor
 			this.addEventListener(MouseEvent.MOUSE_DOWN, this.mouseDownHandler);
 			this.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseMoveHandler);
 			this.addEventListener(MouseEvent.MOUSE_OVER, this.mouseOverHandler);
+			
+			this.addEventListener(KeyboardEvent.KEY_DOWN, this.editorKeyDownHandler);
 			
 			this.addEventListener(DragEvent.DRAG_ENTER, this.dragEnterHandler);
 			this.addEventListener(DragEvent.DRAG_OVER, this.dragOverHandler);
@@ -852,6 +856,28 @@ package com.hjx.diagram.editor
 		{
 			return this.selectedObjects.concat();
 		}
+		
+		/**
+		 * 清理。 
+		 * 
+		 */
+		public function clear():void
+		{
+//			this.finishTextEditing(true);
+			this.deselectAll();
+//			this.unhighlightAll();
+			this._graph.removeAllElements();
+			this.selectedObjects = new Vector.<Renderer>();
+			this.adorners = new Dictionary();
+			this._currentSubgraph = null;
+//			this.textEditingAdorner = null;
+//			this.textPart = null;
+			if (this.adornersGroup != null) 
+			{
+				this.adornersGroup.removeAllElements();
+			}
+			return;
+		}
 		/**
 		 * 安装Diagram。 
 		 * 
@@ -886,11 +912,14 @@ package com.hjx.diagram.editor
 			return link;
 		}
 		
+		/**
+		 * 链接节点。 
+		 * 
+		 */
 		public function connectNodes():void
 		{
 			var selObjs:Vector.<Renderer> = getSelectedObjects();
 			if (selObjs.length == 2) {
-				// There must be two nodes selected
 				if ((selObjs[0] is Node) && (selObjs[1] is Node)) {
 					var link:Link = createLink();
 					if (link) {
@@ -903,6 +932,76 @@ package com.hjx.diagram.editor
 			}        
 		}
 		
+		internal function editorKeyDownHandler(event:KeyboardEvent):void
+		{
+			switch(event.keyCode)
+			{
+				case Keyboard.DELETE:
+				{
+					deleteSelection();
+					break;
+				}
+					
+				default:
+				{
+					break;
+				}
+			}
+		}
+		
+		public function deleteSelection():void
+		{
+			if(getSelectedObjects().length>0){
+			
+			}
+			this.reallyDeleteSelection(this.selectedObjects);
+			return;
+		}
+		
+		/**
+		 * 真正实现删除节点的方法。 
+		 * @param selectedObjs
+		 * 
+		 */
+		internal function reallyDeleteSelection(selectedObjs:Vector.<Renderer>):void
+		{
+			var objects:Vector.<Renderer> = selectedObjs.concat();
+			for each (var renderer:Renderer in objects) 
+			{
+				if (renderer is Node) 
+				{
+					var links:Vector.<Link>=Node(renderer).getLinks();
+					for each (var link:Link in links) 
+					{
+						
+						this.deleteRenderer(link);
+					}
+				}
+				this.deleteRenderer(renderer);
+			}
+			return;
+		}
+		
+		internal function deleteRenderer(renderer:Renderer):void
+		{
+			var link:Link= renderer as Link;
+			if (link != null) 
+			{
+				/*this.disconnectLink(loc1, true);
+				this.disconnectLink(loc1, false);*/
+			}
+			/*if (!(this.textEditingAdorner == null) && this.textEditingAdorner.adornedObject == arg1) 
+			{
+				this.finishTextEditing(true);
+			}
+			this.setHighlighted(arg1, false);*/
+			this.setSelected(renderer, false);
+			if (renderer.parent != null) 
+			{
+				Graph(renderer.parent).removeElement(renderer);
+			}
+			return;
+		}
 		/**
 		 * 拖拽enter的时候 
 		 * @param arg1
