@@ -192,7 +192,7 @@ package com.hjx.diagram.editor
 			var dragSource:DragSource = null;
 			var gapX:Number=mouseX - this._startX;
 			var gapY:Number=mouseY - this._startY;
-			if (!this._draggedRenderer && !DragManager.isDragging && (Math.abs(gapX) > 2 || Math.abs(gapY) > 2)) 
+			if (this._draggedRenderer && !DragManager.isDragging && (Math.abs(gapX) > 2 || Math.abs(gapY) > 2)) 
 			{
 				this._offsetX = this._startX - this._draggedRenderer.x;
 				this._offsetY = this._startY - this._draggedRenderer.y;

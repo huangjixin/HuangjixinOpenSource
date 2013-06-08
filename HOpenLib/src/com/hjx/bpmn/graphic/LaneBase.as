@@ -45,23 +45,9 @@ package com.hjx.bpmn.graphic
 			return true;
 		}
 		
-		override public  function addElement(element:IVisualElement):IVisualElement{
-			var ele:IVisualElement = super.addElement(element);
-			ele.addEventListener(ResizeEvent.RESIZE,onEleResize);
-			return ele;
-		}
-		
-		protected function onEleResize(event:ResizeEvent):void
-		{
-			
-		}
-		
 		protected override function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);
-			if (partName == "graph") 
-			{
-			}
 		}
 	}
 }

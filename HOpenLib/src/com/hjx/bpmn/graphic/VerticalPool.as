@@ -18,17 +18,6 @@ package com.hjx.bpmn.graphic
 			super();
 		}
 		
-		override public  function addElement(element:IVisualElement):IVisualElement{
-			var ele:IVisualElement = super.addElement(element);
-//			ele.percentWidth = 100;
-			ele.addEventListener(ResizeEvent.RESIZE,onEleResize);
-			return ele;
-		}
-		
-		override protected function onEleResize(event:ResizeEvent):void
-		{
-			(this.graph.layout as HorizontalLayout).target.invalidateDisplayList();
-		}
 		
 		/**
 		 * 更改布局为横布局。 
