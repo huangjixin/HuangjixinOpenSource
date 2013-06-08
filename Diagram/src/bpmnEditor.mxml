@@ -8,191 +8,126 @@
 			   xmlns:editor="com.hjx.diagram.editor.*"
 			   xmlns:graphlayout="com.hjx.graphic.graphlayout.*"
 			   xmlns:graphic1="com.hjx.bpmn.graphic.*"
-			   minWidth="955" minHeight="600"
-			   creationComplete="application1_creationCompleteHandler(event)">
+			   minWidth="955" minHeight="600">
 	<fx:Style source="bpmgraphic.css">
 		
 	</fx:Style>
 	<fx:Script>
 		<![CDATA[
+			import mx.events.CloseEvent;
 			import com.hjx.bpmn.graphic.ConnectingObject;
 			import com.hjx.bpmn.graphic.LaneBase;
 			import com.hjx.bpmn.graphic.VerticalLane;
+			import com.hjx.diagram.serialization.XMLSerializer;
 			import com.hjx.graphic.Node;
 			import com.hjx.graphic.Renderer;
 			import com.hjx.uitls.CloneUtil;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.HierarchicalData;
+			import mx.controls.Alert;
 			import mx.core.IVisualElementContainer;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			import mx.events.MoveEvent;
 			
-			[Bindable]
-			private var hac:ArrayCollection = new ArrayCollection([{nodeType:"graph",label:"root",children:[{nodeType:"node",label:"node0",x:0,y:0},{nodeType:"node",label:"node1",x:50,y:100}]}]);
+			private var file:FileReference;
+			private var currentFileName:String;
+			// -----------------------------------------
+			// 保存和加载
+			// -----------------------------------------
+			private var isModified:Boolean;
 			
-			protected function node1_clickHandler(event:MouseEvent):void
+			private function saveXML() : void 
 			{
-//				if(node.selectable){
-//					node.monitoringStatus = "active";
-//					node2.monitoringStatus = "done";
-//					
-//					node.selected = !node.selected;
-//					var renderer:Renderer = subGraph0.clone();
-//					IVisualElementContainer(subGraph0.parent).addElementAt(renderer,0);
-//					/* var cloneLink:Link = link.clone() as Link;
-//					IVisualElementContainer(link.parent).addElementAt(cloneLink,0); */
-//					/* renderer.x=renderer.width+renderer.x;
-//					renderer.y=renderer.height+renderer.y; */
-//					
-////					node.width+=10;
-////					node.height+=10;
-////					node.invalidateLinkShape();
-////					node.base.dispatchEvent(new MoveEvent(MoveEvent.MOVE));
-////					link0.setStyle("startArrowVisible",node.selected);
-////					link.setStyle("startArrowVisible",node.selected);
-////					link0.setStyle("endArrowVisible",node.selected);
-////					link.setStyle("endArrowVisible",node.selected);
-//				}
+				file = new FileReference();
+				var xml:XML = new XMLSerializer().serialize(diagramEditor.graph, "diagram");
+				var fileName:String = currentFileName;
+				if(fileName == null)
+					fileName = "新建流程";
+				file.addEventListener(flash.events.Event.COMPLETE, fileSaved);
+				file.addEventListener(flash.events.IOErrorEvent.IO_ERROR, ioError);
+				file.save(xml, fileName);
 			}
 			
-			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			private function fileSaved(event:flash.events.Event) : void 
 			{
-//				this.addEventListener(MouseEvent.MOUSE_MOVE, onMoveHandler);
-//				node.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
-//				node2.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
-//				subGraph1.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
-//				subGraph0.addEventListener(MouseEvent.MOUSE_DOWN,onNodeMouseDown);
-				
-//				trace(this.diagramEditor.getBounds(this));
-//				trace(this.diagramEditor.diagramParent.getBounds(this.diagramEditor));
-//				trace(this.diagramEditor.);
-//				trace(link.width+","+link.height);
-			}
-			
-			protected function onMoveHandler(event:MouseEvent):void
-			{
-//				var currentObject:Object = graph.getHitRenderer(event.target);
-//				if(currentObject){
-////					trace(currentObject["id"]);
-//				}
-				
-			}
-			
-			protected function onNodeMouseDown(event:MouseEvent):void
-			{
-				event.stopPropagation();
-				var ui:UIComponent = event.currentTarget as UIComponent;
-				ui.startDrag();
-				ui.addEventListener(MouseEvent.MOUSE_UP,onNodeMouseUp);
-				ui.addEventListener(MouseEvent.MOUSE_MOVE,onNodeMouseMove);
-			}
-			
-			protected function onNodeMouseUp(event:MouseEvent):void
-			{
-				var ui:UIComponent = event.currentTarget as UIComponent;
-				ui.stopDrag();
-				ui.removeEventListener(MouseEvent.MOUSE_UP,onNodeMouseUp);
-				ui.removeEventListener(MouseEvent.MOUSE_MOVE,onNodeMouseMove);
-				
-				var rect:Rectangle = ui.getBounds(diagramEditor.grid.parent);
-				var gridRect:Rectangle = new Rectangle(diagramEditor.grid.x,diagramEditor.grid.y,diagramEditor.grid.width,diagramEditor.grid.height);
-				if(gridRect.intersects(rect)){
-					var step:Number = diagramEditor.grid.step;
-					/* step /=2; */
-					var modeX:Number = rect.x % step;
-					var modeY:Number = rect.y % step;
-					if(modeX < step/2){
-						ui.x-=modeX;
-					}else if(modeX > step/2){
-						ui.x += step - modeX;
-					}
+				if(file != null){
+					currentFileName = file.name;
+					isModified = false;
 					
-					if(modeY < step/2){
-						ui.y-=modeY;
-					}else if(modeY > step/2){
-						ui.y += step - modeY;
+					file = null;
+				}
+			}
+			
+			private function loadXML() : void 
+			{
+				if(isModified){
+					Alert.show("流程没有保存哦","",
+						Alert.YES|Alert.NO, this, loadAlertCloseHandler, null, Alert.NO);
+				} else {
+					doLoadXML();
+				}
+			}
+			
+			private function loadAlertCloseHandler(event:CloseEvent) : void 
+			{
+				if(event.detail == Alert.YES)
+					doLoadXML();
+			}
+			
+			private function doLoadXML(): void
+			{
+				file = new FileReference();
+				file.addEventListener(flash.events.Event.SELECT, fileSelectedForLoad);
+				file.browse();
+			}
+			
+			private function fileSelectedForLoad(event:flash.events.Event) : void 
+			{
+				if(file != null){
+					file.addEventListener(flash.events.Event.COMPLETE, fileLoaded);
+					file.addEventListener(flash.events.IOErrorEvent.IO_ERROR, ioError);
+					file.load();
+				}
+			}
+			
+			private function fileLoaded(event:flash.events.Event) : void 
+			{
+				if(file != null){
+					try {
+						var xml:XML = new XML(file.data.toString());
+						if(xml.localName() != "diagram"){
+							Alert.show("该文件不是流程文件");
+							return;
+						}
+						diagramEditor.clear();
+						new XMLSerializer().deserialize(diagramEditor.graph, xml);
+						currentFileName = file.name;
+						isModified = false;
+//						undoManager.clearUndo();
+					} catch(err:Error){
+						Alert.show(err.message);
 					}
+					file = null;
 				}
-			}
+			}    
 			
-			protected function onNodeMouseMove(event:MouseEvent):void
+			private function ioError(event:IOErrorEvent) : void 
 			{
-				var ui:UIComponent = event.currentTarget as UIComponent;
-				var node:Node = null;
-				if(event.currentTarget is Node){
-					node = event.currentTarget as Node;
-					node.invalidateLinkShape();
-//					node.refresh();
-				}
-				
+				var msg:String = event.text;
+				var title:String = "出错";
+				Alert.show(msg, title, Alert.OK|Alert.CANCEL, null, ioErrorAlertHandler);
 			}
 			
-			protected function diagramEditor_clickHandler(event:MouseEvent):void
+			private function ioErrorAlertHandler(event:CloseEvent):void
 			{
-				if(!diagramEditor.grid){
-					return;
-				}
-				
-				/* if(diagramEditor.grid.type == "dot"){
-					diagramEditor.grid.type = "line";
-				}else if(diagramEditor.grid.type == "line"){
-					diagramEditor.grid.type = "none";
-				}else if(diagramEditor.grid.type == "none"){
-					diagramEditor.grid.type = "dot";
-				} */
+				if (event.detail == Alert.OK)
+					saveXML();        
 			}
-			
-			protected function graph_mouseDownHandler(event:MouseEvent):void
-			{
-//				var renderer:Renderer = DiagramEditor.getRenderer(event.target);
-//				if(renderer){
-//					if(renderer is Link){
-//						if(renderer is ConnectingObject){
-//							if(ConnectingObject(renderer).monitoringStatus == null){
-//								ConnectingObject(renderer).monitoringStatus = "active"
-//							}else if(ConnectingObject(renderer).monitoringStatus == "active"){
-//								ConnectingObject(renderer).monitoringStatus = "done"
-//							}else{
-//								ConnectingObject(renderer).monitoringStatus = null
-//							}
-//						}
-//						
-//						if(Link(renderer).startNode || Link(renderer).endNode){
-//							return;
-//						}
-//					}
-//					if(renderer is HorizontalLane || renderer is VerticalLane ){
-//						if(renderer is HorizontalPool ||renderer is VerticalPool ){
-//						}else{
-//							return;
-//						}
-//					}
-//					renderer.startDrag();
-//					renderer.addEventListener(MouseEvent.MOUSE_UP,onRendererMouseUp);
-//					renderer.stage.addEventListener(MouseEvent.MOUSE_UP,onRendererMouseUp);
-//					renderer.addEventListener(MouseEvent.MOUSE_MOVE,onRendererMouseMove);
-//					renderer.stage.addEventListener(MouseEvent.MOUSE_MOVE,onRendererMouseMove);
-//				}
-			}
-			
-			protected function onRendererMouseUp(event:MouseEvent):void
-			{
-				var renderer:Renderer = event.currentTarget as Renderer;
-				if(renderer){
-					renderer.stopDrag();
-				}
-			}
-			
-			protected function onRendererMouseMove(event:MouseEvent):void
-			{
-				var renderer:Renderer = event.currentTarget as Renderer;
-				if(renderer is Node){
-					Node(renderer).invalidateLinkShape();
-				}
-			}
-			
+			//-------------------------------------------------------------------------------------------
+			// 克隆函数。
+			//-------------------------------------------------------------------------------------------
 			private function cloneFunction(obj:Renderer, clone:Renderer, inCopyPaste:Boolean = false) : void 
 			{
 				if(!inCopyPaste){
@@ -374,13 +309,14 @@
 		<s:VGroup  width="100%" height="100%">
 			<s:VGroup  width="100%" paddingBottom="5" paddingTop="5">
 				<s:HGroup>
-					<s:Button label="保存"/>
+					<s:Button label="保存" click="saveXML();"/>
+					<s:Button label="打开" click="loadXML();"/>
+					<s:Button label="连线" click="diagramEditor.connectNodes();"/>
 				</s:HGroup>
 			</s:VGroup>
 			<s:Panel width="100%" height="100%">
 				<editor:DiagramEditor xmlns:chg="com.hjx.graphic"
 									  id="diagramEditor" width="100%" height="100%"
-									  click="diagramEditor_clickHandler(event)"
 									  cloneFunction="cloneFunction">
 					<diagram:Diagram id="diagram1" width="100%" height="100%"
 									 automaticGraphLayout="false" labelField="@label"

@@ -1,0 +1,18 @@
+<diagram xmlns:chbg="com.hjx.bpmn.graphic" xmlns:chg="com.hjx.graphic" xmlns:fg="flash.geom">
+  <chbg:Task id="task1" centerX="184" centerY="196" height="50" width="90" x="139" y="171">
+    <label>任务</label>
+  </chbg:Task>
+  <chbg:Task id="task2" centerX="277" centerY="300" height="50" width="90" x="232" y="275">
+    <label>任务</label>
+  </chbg:Task>
+  <chg:Link id="link1">
+    <endNode>task2</endNode>
+    <fallbackEndPoint>
+      <fg:Point id="point1" x="254.64423076923077" y="275"/>
+    </fallbackEndPoint>
+    <fallbackStartPoint>
+      <fg:Point id="point2" x="206.35576923076923" y="221"/>
+    </fallbackStartPoint>
+    <startNode>task1</startNode>
+  </chg:Link>
+</diagram>
