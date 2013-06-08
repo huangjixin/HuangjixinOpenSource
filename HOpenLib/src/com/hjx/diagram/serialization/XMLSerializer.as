@@ -6,6 +6,7 @@ package com.hjx.diagram.serialization
 	import com.hjx.graphic.Node;
 	import com.hjx.graphic.Renderer;
 	import com.hjx.graphic.SubGraph;
+	import com.hjx.jbpm.JbpmBase;
 	
 	import flash.geom.Point;
 	import flash.net.getClassByAlias;
@@ -350,6 +351,9 @@ package com.hjx.diagram.serialization
 				} else if (name == "linkLayout") {
 					return serializePropertyAsElement(name, value, root);
 				}
+			}
+			if ((value is JbpmBase)) {
+				return serializePropertyAsElement(name, value, root);
 			}
 			
 			if(value is String) {
