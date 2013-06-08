@@ -26,6 +26,8 @@ package com.hjx.graphic
 		
 		private var _owningSubGraph:SubGraph;
 		
+		public var allowReparenting:Boolean=true;
+		
 		public function Graph()
 		{
 			super();

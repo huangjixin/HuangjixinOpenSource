@@ -17,20 +17,7 @@ package com.hjx.bpmn.graphic
 	{
 		public function HorizontalPool()
 		{
-			super();
-			this.addEventListener(ResizeEvent.RESIZE,onResize);
-		}
-		
-		override public  function addElement(element:IVisualElement):IVisualElement{
-			if(element is HorizontalLane){
-				super.addElement(element)
-			}
-			return element;
-		}
-		
-		protected function onResize(event:ResizeEvent):void
-		{
-			
+			super();	
 		}
 		
 		/**
@@ -42,24 +29,12 @@ package com.hjx.bpmn.graphic
 		protected override function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);
-			if (partName == "graph") 
+			if (instance == graph) 
 			{
-				/*var length:int = mxmlContent.length;
-				for (var i:int = 0; i < length; i++) 
-				{
-					var laneBase:LaneBase = mxmlContent[i] as LaneBase;
-					if(laneBase){
-						if(i!=0){
-							laneBase.y = (mxmlContent[i-1] as LaneBase).y+(mxmlContent[i-1] as LaneBase).height-2;
-						}
-					}
-				}*/
-				/*graph.mxmlContent = _mxmlContent;
-				graph.owningSubGraph = this;*/
-				
 				var vLayout:VerticalLayout= new VerticalLayout();vLayout.verticalAlign= VerticalAlign.MIDDLE;
 				vLayout.gap = -2;
 				this.graph.layout =vLayout;
+				this.graph.allowReparenting = false;
 			}
 		}
 	}

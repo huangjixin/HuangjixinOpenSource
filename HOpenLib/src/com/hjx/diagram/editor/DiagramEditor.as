@@ -9,6 +9,7 @@ package com.hjx.diagram.editor
 	 **** Diagram编辑器  **635152644@qq.com bb2wb4cM6qU2 https://code.google.com/p/flex-visiual
 	 * https://flex-visiual.googlecode.com/svn/trunk
 	 *******************************************/
+	import com.hjx.bpmn.graphic.HorizontalPool;
 	import com.hjx.diagram.Diagram;
 	import com.hjx.diagram.editor.skin.DiagramEditorSkin;
 	import com.hjx.graphic.Graph;
@@ -113,6 +114,7 @@ package com.hjx.diagram.editor
 		
 		public var linkPrototype:Link;
 		
+		public var cloneFunction:Function;
 		
 		public function DiagramEditor()
 		{
@@ -547,6 +549,10 @@ package com.hjx.diagram.editor
 				{
 					continue;
 				}
+				if (!Graph(graph).allowReparenting) 
+				{
+					continue;
+				}
 				
 				var point:Point = new Point(renderer.getX(renderer), renderer.getY(renderer));
 				point = renderer.parent.localToGlobal(point);
@@ -911,11 +917,15 @@ package com.hjx.diagram.editor
 				if (diagramPalette != null) 
 				{
 					var cloneRenderer:Renderer = renderer.clone();
+					if(cloneFunction!=null){
+						cloneFunction.call(this,renderer,cloneRenderer);
+					}
 					diagramPalette.dragImage.removeAllElements();
 					diagramPalette.dragImage.addElement(cloneRenderer);
 //					this.cloneChildren(loc1, loc3);
 					cloneRenderer.setX(cloneRenderer, 0);
 					cloneRenderer.setY(cloneRenderer, 0);
+					
 				}
 				DragManager.acceptDragDrop(this);
 			}
@@ -933,15 +943,6 @@ package com.hjx.diagram.editor
 		
 		internal function dragDropHandler(event:DragEvent):void
 		{
-			var loc1:*=null;
-			var loc2:*=null;
-			var loc3:*=NaN;
-			var loc4:*=NaN;
-			var loc5:*=null;
-			var loc6:*=null;
-			var loc7:*=null;
-			var loc8:*=null;
-			var loc9:*=null;
 			if (this.allowDropping && event.dragSource.hasFormat(DiagramPalette.DRAG_DROP_FORMAT)) 
 			{
 				var renderer:Renderer = Renderer(event.dragInitiator);
@@ -957,7 +958,9 @@ package com.hjx.diagram.editor
 				{
 					dropGraph = this.currentSubgraph.graph;
 				}
-				
+				if(!dropGraph.allowReparenting){
+					return;
+				}
 				var graphMousePoint:Point = new Point(this._graph.mouseX, this._graph.mouseY);
 				graphMousePoint.x = graphMousePoint.x - offsetX;
 				graphMousePoint.y = graphMousePoint.y - offsetY;
@@ -966,6 +969,10 @@ package com.hjx.diagram.editor
 				graphMousePoint = this.snapPoint(graphMousePoint, dropGraph);
 				
 				var cloneRenderer:Renderer = renderer.clone();
+				if(cloneFunction!=null){
+					cloneFunction.call(this,renderer,cloneRenderer);
+				}
+				
 				var link:Link;
 				if (cloneRenderer is Link) 
 				{

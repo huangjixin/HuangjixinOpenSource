@@ -34,6 +34,7 @@ package com.hjx.bpmn.graphic
 				hLayout.horizontalAlign= HorizontalAlign.CENTER;
 				hLayout.gap = -2;
 				this.graph.layout =hLayout;
+				this.graph.allowReparenting = false;
 			}
 		}
 	}
