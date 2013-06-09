@@ -1020,13 +1020,13 @@ package com.hjx.graphic
 		override protected function cloneStyle(renderer:Renderer, cloneRenderer:Renderer):void
 		{
 			// 利用这个工具来查找style.
-			var describe:* = describeType(renderer);
+			/*var describe:* = describeType(renderer);
 			var objectMetadata:* = describe.metadata;
 			var styleProp:XMLList = objectMetadata.(@name=="Style").arg.(@key=="name");
 			for each (var xml:XML in styleProp) 
 			{
 				cloneRenderer.setStyle(xml.@value,renderer.getStyle(xml.@value));
-			}
+			}*/
 			/*cloneRenderer.setStyle("caps",renderer.getStyle("caps"));
 			cloneRenderer.setStyle("caretColor",renderer.getStyle("caretColor"));
 			cloneRenderer.setStyle("dashArray",renderer.getStyle("dashArray"));
