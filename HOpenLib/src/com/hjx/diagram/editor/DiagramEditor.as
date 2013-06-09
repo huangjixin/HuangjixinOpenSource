@@ -26,9 +26,12 @@ package com.hjx.diagram.editor
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
+	import flash.ui.Mouse;
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
 	
+	import mx.core.IVisualElement;
+	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
 	import mx.events.DragEvent;
 	import mx.events.SandboxMouseEvent;
@@ -117,6 +120,7 @@ package com.hjx.diagram.editor
 		public var linkPrototype:Link;
 		
 		public var cloneFunction:Function;
+		public var autoAlign:Boolean = true;
 		
 		public function DiagramEditor()
 		{
@@ -352,7 +356,7 @@ package com.hjx.diagram.editor
 						if (this.allowReparenting) 
 						{
 							this.trackCurrentSubgraph(event);
-							playDraggingMoveAdorner(this.currentSubgraph);
+							playDraggingMoveAdorner(this.currentSubgraph,event);
 							var graph:Graph = this.currentSubgraph == null ? this._graph : this.currentSubgraph.graph;
 							if (this.reparent(this.selectedObjects, graph)) 
 							{
@@ -393,7 +397,7 @@ package com.hjx.diagram.editor
 			var renderer:Renderer = null;
 			if (this.marquee != null) 
 			{
-				rectangle = new flash.geom.Rectangle(Number(this.marquee.left), Number(this.marquee.top), this.marquee.width, this.marquee.height);
+				rectangle = new Rectangle(Number(this.marquee.left), Number(this.marquee.top), this.marquee.width, this.marquee.height);
 				this.adornersGroup.removeElement(this.marquee);
 				this.marquee = null;
 				this.deselectAllExcept();
@@ -408,6 +412,13 @@ package com.hjx.diagram.editor
 					++length;
 				}
 			}	
+			
+			renderer = getRenderer(event.target);
+			if(renderer){
+				if(autoAlign){
+					autoAlignRenderer(renderer,renderer.parent as IVisualElementContainer);
+				}
+			}
 			
 			this.mouseDown = false;
 			this.isDragging = false;
@@ -878,6 +889,37 @@ package com.hjx.diagram.editor
 			}
 			return;
 		}
+		
+		private function autoAlignRenderer(renderer:Renderer, parent:IVisualElementContainer):void
+		{
+			var ele:IVisualElement;
+			var length:int = 0;
+			while(length < parent.numElements){
+				ele = parent.getElementAt(length);
+				if(ele != renderer){
+					if(Math.abs(ele.x-renderer.x)<3){
+						renderer.x = ele.x;
+					}
+					if(Math.abs(ele.y-renderer.y)<3){
+						renderer.y = ele.y;
+					}
+					if(Math.abs(ele.x+ele.width-renderer.x)<3){
+						renderer.x = ele.x+ele.width;
+					}
+					if(Math.abs(ele.y+ele.height-renderer.y)<3){
+						renderer.y = ele.y+ele.height;
+					}
+					
+					if(Math.abs(ele.x+ele.width-renderer.x-renderer.width)<3){
+						renderer.x = ele.x+ele.width-renderer.width;
+					}
+					if(Math.abs(ele.y+ele.height-renderer.y-renderer.height)<3){
+						renderer.y = ele.y+ele.height-renderer.height;
+					}
+				}
+				length++;
+			}
+		}
 		/**
 		 * 安装Diagram。 
 		 * 
@@ -1129,12 +1171,47 @@ package com.hjx.diagram.editor
 			return;
 		}
 		
-		internal function playDraggingMoveAdorner(displayObj:DisplayObject):void
+		internal function playDraggingMoveAdorner(displayObj:DisplayObject,event:MouseEvent=null):void
 		{
 			this.adornersGroup.graphics.clear();
+			this.adornersGroup.graphics.lineStyle(2,0xff0000);
+			if(event){
+				var renderer:Renderer = getRenderer(event.target);
+				if(renderer){
+					var ele:Renderer;
+					var length:int = 0;
+					var rendererRect:Rectangle = renderer.getBounds(this.adornersGroup);
+					var eleRect:Rectangle;
+					var parentGraph:Graph = Graph(renderer.parent);
+					if(parentGraph){
+						while(length < parentGraph.numElements){
+							ele = parentGraph.getElementAt(length) as Renderer;
+							eleRect = ele.getBounds(this.adornersGroup);
+							if(ele != renderer){
+								if(Math.abs(ele.x-renderer.x)<3){
+									this.adornersGroup.graphics.moveTo(eleRect.left,eleRect.top);
+									this.adornersGroup.graphics.lineTo(eleRect.left,rendererRect.top+rendererRect.height);
+								}else if(Math.abs(ele.y-renderer.y)<3){
+									this.adornersGroup.graphics.moveTo(eleRect.left,eleRect.top);
+									this.adornersGroup.graphics.lineTo(rendererRect.left+rendererRect.width,eleRect.top);
+								}else if(Math.abs(ele.x+ele.width-renderer.x)<3){
+									this.adornersGroup.graphics.moveTo(eleRect.left+eleRect.width,eleRect.top);
+									this.adornersGroup.graphics.lineTo(eleRect.left+eleRect.width,rendererRect.top+rendererRect.height);
+								}else if(Math.abs(ele.y+ele.height-renderer.y)<3){
+									this.adornersGroup.graphics.moveTo(eleRect.left,eleRect.top+eleRect.height);
+									this.adornersGroup.graphics.lineTo(rendererRect.left+rendererRect.width,eleRect.top+eleRect.height);
+								}else if(Math.abs(ele.x+ele.width-renderer.x-renderer.width)<3){
+								}else if(Math.abs(ele.y+ele.height-renderer.y-renderer.height)<3){
+								}
+							}
+							length++;
+						}
+					}
+				}
+			}
+			
 			if(displayObj){
 				var rect:Rectangle = displayObj.getBounds(this.adornersGroup);
-				this.adornersGroup.graphics.lineStyle(2,0xff0000);
 				this.adornersGroup.graphics.drawRect(rect.left,rect.top,rect.width,rect.height);
 			}
 			return;
