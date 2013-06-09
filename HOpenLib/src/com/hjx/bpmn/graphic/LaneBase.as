@@ -1,7 +1,7 @@
 package com.hjx.bpmn.graphic
 {
 	import com.hjx.graphic.SubGraph;
-	import com.hjx.jbpm.SwimLane;
+	import com.hjx.jbpm.Swim_lane;
 	
 	import mx.core.IVisualElement;
 	import mx.events.ResizeEvent;
@@ -23,12 +23,12 @@ package com.hjx.bpmn.graphic
 		
 		internal var _gap:int=-1
 			
-		public var swimlane:SwimLane;
+		public var swimlane:Swim_lane;
 		
 		public function LaneBase()
 		{
 			super();
-			swimlane = new SwimLane();
+			swimlane = new Swim_lane();
 		}
 		
 		public function isHorizontal():Boolean

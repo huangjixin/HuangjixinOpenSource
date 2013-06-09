@@ -13,7 +13,7 @@ package com.hjx.jbpm
 		
 		private var _duedate:String;
 		
-		private var _swimlane:SwimLane;
+		private var _swimlane:Swim_lane;
 		
 		[Inspectable(enumeration="highest, high, normal, low, lowest")]
 		private var _priority:String;
@@ -80,12 +80,12 @@ package com.hjx.jbpm
 			_priority = value;
 		}
 
-		public function get swimlane():SwimLane
+		public function get swimlane():Swim_lane
 		{
 			return _swimlane;
 		}
 
-		public function set swimlane(value:SwimLane):void
+		public function set swimlane(value:Swim_lane):void
 		{
 			_swimlane = value;
 		}
