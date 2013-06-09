@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark">
+
+  <Metadata>
+    [HostComponent("com.hjx.bpmn.graphic.icons.BPMNIcon")]
+  </Metadata>
+
+  <s:Group>
+    <s:Ellipse left="0" top="0" width="15.3" height="15.3">
+      <s:stroke><s:SolidColorStroke caps="none" color="{hostComponent.closedStrokeColor}" weight="1"/></s:stroke>
+      <s:fill><s:SolidColor alpha="{hostComponent.filled ? 1 : 0}" color="{hostComponent.fillColor}"/></s:fill>
+    </s:Ellipse>
+  </s:Group>
+
+</s:Skin>
