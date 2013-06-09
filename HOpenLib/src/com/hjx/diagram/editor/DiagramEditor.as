@@ -1075,9 +1075,10 @@ package com.hjx.diagram.editor
 				var link:Link;
 				if (cloneRenderer is Link) 
 				{
-//					loc8 = com.ibm.ilog.elixir.diagram.Link(loc1);
-//					(loc9 = com.ibm.ilog.elixir.diagram.Link(loc7)).fallbackStartPoint = loc6;
-//					loc9.fallbackEndPoint = new flash.geom.Point(loc6.x + (loc8.fallbackEndPoint.x - loc8.fallbackStartPoint.x), loc6.y + (loc8.fallbackEndPoint.y - loc8.fallbackStartPoint.y));
+					link = Link(renderer);
+					var cloneLink:Link = Link(cloneRenderer);
+					cloneLink.fallbackStartPoint = graphMousePoint;
+					cloneLink.fallbackEndPoint = new Point(graphMousePoint.x + (link.fallbackEndPoint.x - link.fallbackStartPoint.x), graphMousePoint.y + (link.fallbackEndPoint.y - link.fallbackStartPoint.y));
 				}
 				else 
 				{
