@@ -49,20 +49,12 @@
 				if(hostComponent.monitoringStatus == "active"){
 					activeEffect.play();
 					doneEffect.stop();
-					/* path.visible= false;
-					animatePath.visible = !path.visible;
-					animatePath.data = path.data; */
 				}else if(hostComponent.monitoringStatus == "done"){
 					doneEffect.play();
 					activeEffect.stop();
-					/* path.visible= true;
-					animatePath.visible = !path.visible;
-					animatePath.data = path.data; */
 				}else{
 					activeEffect.stop();
 					doneEffect.stop();
-					/* path.visible= true;
-					animatePath.visible = !path.visible; */
 				}
 			}
 			

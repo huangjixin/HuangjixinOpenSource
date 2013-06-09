@@ -1,5 +1,6 @@
 package com.hjx.bpmn.graphic
 {
+	import com.hjx.graphic.DashStyle;
 	import com.hjx.graphic.Node;
 	
 	public class Association extends ConnectingObject
@@ -8,6 +9,7 @@ package com.hjx.bpmn.graphic
 		{
 			super(startNode, endNode);
 			this.setStyle("dash",4);
+			setStyle("dashStyle",DashStyle.DASH);
 		}
 	}
 }

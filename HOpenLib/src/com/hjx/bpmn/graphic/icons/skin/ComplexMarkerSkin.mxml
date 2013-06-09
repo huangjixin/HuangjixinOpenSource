@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+ >
+
+  <Metadata>
+    [HostComponent("com.hjx.bpmn.graphic.icons.BPMNIcon")]
+  </Metadata>
+
+  <s:Group>
+    <s:Path data="M 16.65 29.70 L 16.65 2.70">
+      <s:stroke><s:SolidColorStroke weight="5" color="{hostComponent.openStrokeColor}" caps="none"/></s:stroke>
+    </s:Path>
+    <s:Path data="M 2.70 16.20 L 29.70 16.20">
+      <s:stroke><s:SolidColorStroke weight="5" color="{hostComponent.openStrokeColor}" caps="none"/></s:stroke>
+    </s:Path>
+    <s:Path data="M 6.30 25.20 L 26.55 6.30">
+      <s:stroke><s:SolidColorStroke weight="5" color="{hostComponent.openStrokeColor}" caps="none"/></s:stroke>
+    </s:Path>
+    <s:Path data="M 6.75 6.75 L 26.55 24.75">
+      <s:stroke><s:SolidColorStroke weight="5" color="{hostComponent.openStrokeColor}" caps="none"/></s:stroke>
+    </s:Path>
+  </s:Group>
+
+</s:Skin>

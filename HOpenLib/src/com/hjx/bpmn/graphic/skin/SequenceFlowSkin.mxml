@@ -2,22 +2,16 @@
 <skin:NodeSkinBase xmlns:fx="http://ns.adobe.com/mxml/2009"
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
-				   xmlns:skin="com.hjx.graphic.skin.*" xmlns:primatives="ws.tink.spark.primatives.*" xmlns:graphics="ws.tink.spark.graphics.*">
+				   xmlns:skin="com.hjx.graphic.skin.*"
+				   xmlns:primatives="ws.tink.spark.primatives.*"
+				   xmlns:graphics="ws.tink.spark.graphics.*">
 	<fx:Declarations>
-		<s:AnimateColor id="activeEffect"
-						targets="{[path.stroke,startArrow.fill,endArrow.fill]}"
-						colorPropertyName="color"
-						colorFrom="0"
-						colorTo="white"
+		<s:AnimateColor id="activeEffect" colorFrom="0" colorPropertyName="color" colorTo="white"
+						duration="1000" repeatBehavior="reverse" repeatCount="0"
+						targets="{[path.stroke,startArrow.fill,endArrow.fill]}"/>
+		<s:AnimateColor id="doneEffect" colorPropertyName="color" colorTo="green" duration="100"
 						repeatBehavior="reverse"
-						repeatCount="0"
-						duration="1000" />
-		<s:AnimateColor id="doneEffect"
-						targets="{[path.stroke,startArrow.fill,endArrow.fill]}"
-						colorPropertyName="color"
-						colorTo="green"
-						repeatBehavior="reverse"
-						duration="100" />
+						targets="{[path.stroke,startArrow.fill,endArrow.fill]}"/>
 	</fx:Declarations>
 	<fx:Metadata>
 		[HostComponent("com.hjx.bpmn.graphic.SequenceFlow")]
@@ -50,20 +44,12 @@
 				if(hostComponent.monitoringStatus == "active"){
 					activeEffect.play();
 					doneEffect.stop();
-					/* path.visible= false;
-					animatePath.visible = !path.visible;
-					animatePath.data = path.data; */
 				}else if(hostComponent.monitoringStatus == "done"){
 					doneEffect.play();
 					activeEffect.stop();
-					/* path.visible= true;
-					animatePath.visible = !path.visible;
-					animatePath.data = path.data; */
 				}else{
 					activeEffect.stop();
 					doneEffect.stop();
-					/* path.visible= true;
-					animatePath.visible = !path.visible; */
 				}
 			}
 			
@@ -78,8 +64,7 @@
 		<s:State name="done"/>
 	</skin:states>
 	<fx:Declarations>
-		<s:SolidColorStroke id="strokecolor" caps="none" color="{strokeColor}"
-							 weight="{strokeWidth}"/>
+		<s:SolidColorStroke id="strokecolor" caps="none" color="{strokeColor}" weight="{strokeWidth}"/>
 		<s:SolidColor id="fillcolor" color="{strokeColor}"/>
 	</fx:Declarations>
 	
@@ -93,8 +78,8 @@
 		</primatives:Path>  
 		<primatives:Path id="animatePath" visible="false">
 			<primatives:stroke>
-				<graphics:SolidColorDash caps="none" color="{strokeColor}"
-										 weight="{strokeWidth}" dash="8" gap="8"/>
+				<graphics:SolidColorDash caps="none" color="{strokeColor}" dash="8" gap="8"
+										 weight="{strokeWidth}"/>
 			</primatives:stroke>
 		</primatives:Path>  
 		<s:Path id="startArrow" data="M -10 -5 l 10 5 l -10 5 Z" fill="{fillcolor}">

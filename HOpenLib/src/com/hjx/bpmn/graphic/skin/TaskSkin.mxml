@@ -3,6 +3,7 @@
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   xmlns:skin="com.hjx.graphic.skin.*"
+				   xmlns:icons="com.hjx.bpmn.graphic.icons.*"
 				   width="90" height="50">
 	<fx:Declarations>
 		<s:GlowFilter id="glowFilter" blurX="18" blurY="18" color="#E3B01C" strength="3"/>
@@ -69,15 +70,17 @@
 			<s:layout>
 				<s:HorizontalLayout gap="3"/>
 			</s:layout>
-			<!--<bpmn:BPMNIcon visible="{hostComponent.loop}" includeInLayout="{hostComponent.loop}"
-						   openStrokeColor="0x444444" styleName="LoopMarker"/>
-			<bpmn:BPMNIcon visible="{hostComponent.multiInstance}"
-						   includeInLayout="{hostComponent.multiInstance}"
-						   openStrokeColor="0x444444" styleName="MultipleInstanceMarker"/>
-			<bpmn:BPMNIcon visible="{hostComponent.compensation}" closedStrokeColor="0x444444"
-						   fillColor="0xdddddd" filled="true"
-						   includeInLayout="{hostComponent.compensation}"
-						   styleName="CompensationMarker"/>-->
+			<icons:BPMNIcon visible="{hostComponent.loop}" includeInLayout="{hostComponent.loop}"
+							openStrokeColor="0x444444"
+							skinClass="com.hjx.bpmn.graphic.icons.skin.LoopMarkerSkin"/>
+			<icons:BPMNIcon visible="{hostComponent.multiInstance}"
+							includeInLayout="{hostComponent.multiInstance}"
+							openStrokeColor="0x444444"
+							skinClass="com.hjx.bpmn.graphic.icons.skin.MultipleInstanceMarkerSkin"/>
+			<icons:BPMNIcon visible="{hostComponent.compensation}" closedStrokeColor="0x444444"
+							fillColor="0xdddddd" filled="true"
+							includeInLayout="{hostComponent.compensation}"
+							skinClass="com.hjx.bpmn.graphic.icons.skin.CompensationMarkerSkin"/>
 		</s:Group>
 		
 		<s:Group id="labelsGroup" horizontalCenter="0" verticalCenter="{-(markers.height+5)/2}">
