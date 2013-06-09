@@ -7,6 +7,8 @@ package com.hjx.jbpm
 		
 		public function SwimLane()
 		{
+			assignment.className="swim-lane";
+			assignment.name="swim-lane";
 		}
 
 	}
