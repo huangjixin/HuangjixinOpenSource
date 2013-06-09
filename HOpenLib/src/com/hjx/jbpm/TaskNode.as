@@ -8,13 +8,25 @@ package com.hjx.jbpm
 		private var _create_tasks:Boolean = true;
 		private var _end_tasks:Boolean = false;
 		private var _task:Task;
-		
+		private var _commonNodeElements:CommonNodeElements ;
 		
 		[Bindable]
 		public var transition:Vector.<Transition> = new Vector.<Transition>();
 		
 		public function TaskNode()
 		{
+			task= new Task();
+			commonNodeElements = new CommonNodeElements()
+		}
+
+		public function get commonNodeElements():CommonNodeElements
+		{
+			return _commonNodeElements;
+		}
+
+		public function set commonNodeElements(value:CommonNodeElements):void
+		{
+			_commonNodeElements = value;
 		}
 
 		public function get task():Task

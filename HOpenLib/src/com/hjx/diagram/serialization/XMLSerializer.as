@@ -316,6 +316,16 @@ package com.hjx.diagram.serialization
 				}*/
 				return ports;
 			}
+			
+			if (object is Node && value is Vector) {
+				var vectorsXML:XML = new XML("<"+name+"></"+name+">");
+				for each(var object:Object in Vector(value)){
+					var vectorXML:XML = serializeObject(object, root);
+					if(vectorXML != null)
+						vectorsXML.appendChild(vectorXML);
+				}
+				return vectorsXML;
+			}
 			if (object is Link) {
 				if (name == "width" || name == "height")
 					return null;

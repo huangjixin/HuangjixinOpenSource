@@ -21,5 +21,6 @@ package com.hjx.bpmn.graphic
 			task.description = "我是bpm描述";
 			task.createTasks = true;
 		}
+		
 	}
 }

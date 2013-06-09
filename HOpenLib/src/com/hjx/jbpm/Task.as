@@ -19,15 +19,23 @@ package com.hjx.jbpm
 		private var _priority:String;
 		
 		private var _assignment:Assignment;
-		
 		private var _events:Vector.<Event>;
-		private var _exception_handlers:Vector.<Exception_handler>;
+		private var _exception_handlers:Vector.<Exception_handler> ;
 		private var _timers:Vector.<Timer>;
 		
 //		private var controller
 		public function Task()
 		{
 			super();
+			blocking = false;
+			signalling = true;
+			duedate = "";
+			swimlane = new Swim_lane();
+			priority = "normal";
+			assignment = new Assignment();
+			events = new Vector.<Event>();
+			exception_handlers = new Vector.<Exception_handler>();
+			timers = new Vector.<Timer>();
 		}
 
 		public function get timers():Vector.<Timer>
