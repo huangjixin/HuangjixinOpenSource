@@ -17,6 +17,12 @@ package com.hjx.jbpm
 		public function Action()
 		{
 			super();
+			className="";
+			ref_name="";
+			expression="";
+			accept_propagated_events = true;
+			async = false;
+			_config_type="";
 		}
 		
 		public function get async():Boolean

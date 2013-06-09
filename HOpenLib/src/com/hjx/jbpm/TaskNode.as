@@ -4,12 +4,58 @@ package com.hjx.jbpm
 	{
 		private var _createTasks:Boolean;
 		private var _description:String;
+		private var _signal:String = "last";
+		private var _create_tasks:Boolean = true;
+		private var _end_tasks:Boolean = false;
+		private var _task:Task;
+		
 		
 		[Bindable]
 		public var transition:Vector.<Transition> = new Vector.<Transition>();
 		
 		public function TaskNode()
 		{
+		}
+
+		public function get task():Task
+		{
+			return _task;
+		}
+
+		public function set task(value:Task):void
+		{
+			_task = value;
+		}
+
+		public function get end_tasks():Boolean
+		{
+			return _end_tasks;
+		}
+
+		public function set end_tasks(value:Boolean):void
+		{
+			_end_tasks = value;
+		}
+
+		public function get create_tasks():Boolean
+		{
+			return _create_tasks;
+		}
+
+		public function set create_tasks(value:Boolean):void
+		{
+			_create_tasks = value;
+		}
+
+		[Inspectable(enumeration="unsynchronized,never,first,first-wait,last,last-wait")]
+		public function get signal():String
+		{
+			return _signal;
+		}
+
+		public function set signal(value:String):void
+		{
+			_signal = value;
 		}
 
 		[Bindable]
