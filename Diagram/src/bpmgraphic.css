@@ -118,6 +118,14 @@
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.MessageFlowSkin");
 		}
 
+		graphic1|Association{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.AssociationSkin")	
+		}
+
 		editor|LaneAdorner{
 			skinClass:ClassReference("com.hjx.diagram.editor.skin.LaneAdornerSkin")
+		}
+
+		graphic1|SubProcess{
+			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.SubProcessSkin")
 		}

@@ -25,27 +25,6 @@
 	</s:layout>
 	
 	<fx:Declarations>
-		<fx:XML id="data">
-			<Diagram xmlns:chg="com.hjx.graphic"
-					 xmlns:chbg="com.hjx.bpmn.graphic"
-					 xmlns:fg="flash.geom"
-					 >  
-				<chbg:HorizontalPool width="700" label="横甬道池" x="500" y="200">
-					<chbg:HorizontalLane  width="658" height="400" label="横甬道" >
-						<chbg:StartEvent id="startEvent" x="10" y="30" label="开始"/>
-						<chbg:Task id="task1" x="150" y="40" label="任务"/>
-						<chbg:SequenceFlow startNode="startEvent" endNode="task1"/>
-						<chbg:Task id="task2" x="350" y="60" label="任务"/>
-						<chbg:SequenceFlow startNode="task1" endNode="task2"/>
-						<chbg:EndEvent id="endEvent" x="450" y="80" label="结束"/>
-						<chbg:SequenceFlow startNode="task2" endNode="endEvent"/>
-					</chbg:HorizontalLane>
-				</chbg:HorizontalPool>
-			</Diagram>
-		</fx:XML>
-		<mx:HierarchicalCollectionView xmlns:chg="com.hjx.graphic"
-									   id="hcv" showRoot="false"
-									   source="{new HierarchicalData(data)}"/>
 	</fx:Declarations>
 	
 	<fx:Style source="bpmgraphic.css"/>
@@ -62,6 +41,7 @@
 			import com.hjx.diagram.DiagramRunner;
 			import com.hjx.diagram.DiagramRunnerEvent;
 			import com.hjx.diagram.editor.DiagramEditor;
+			import com.hjx.diagram.serialization.XMLSerializer;
 			import com.hjx.graphic.Link;
 			import com.hjx.graphic.Renderer;
 			
@@ -105,6 +85,7 @@
 			//------------------------------------------------------------------------------------
 			//  Functions to open an URL
 			//------------------------------------------------------------------------------------
+			private var file:FileReference;
 			
 					
 			/**
@@ -572,7 +553,7 @@
 				endRunner();
 			}
 			
-			protected function diagram_mouseDownHandler(event:MouseEvent):void
+			 protected function diagram_mouseDownHandler(event:MouseEvent):void
 			{
 				var renderer:Renderer = DiagramEditor.getRenderer(event.target);
 				if(renderer){
@@ -601,6 +582,52 @@
 						}
 					}
 				}
+			} 
+			private function loadXML() : void 
+			{
+				doLoadXML();
+			}
+			
+			private function doLoadXML(): void
+			{
+				file = new FileReference();
+				file.addEventListener(flash.events.Event.SELECT, fileSelectedForLoad);
+				file.browse();
+			}
+			
+			private function fileSelectedForLoad(event:flash.events.Event) : void 
+			{
+				if(file != null){
+					file.addEventListener(flash.events.Event.COMPLETE, fileLoaded);
+					file.addEventListener(flash.events.IOErrorEvent.IO_ERROR, ioError);
+					file.load();
+				}
+			}
+			
+			private function fileLoaded(event:flash.events.Event) : void 
+			{
+				if(file != null){
+					try {
+						var xml:XML = new XML(file.data.toString());
+						if(xml.localName() != "diagram"){
+							Alert.show("该文件不是流程文件");
+							return;
+						}
+						diagram.graph.removeAllElements();
+						new XMLSerializer().deserialize(diagram.graph, xml);
+						//						undoManager.clearUndo();
+					} catch(err:Error){
+						Alert.show(err.message);
+					}
+					file = null;
+				}
+			}    
+			
+			private function ioError(event:IOErrorEvent) : void 
+			{
+				var msg:String = event.text;
+				var title:String = "出错";
+				Alert.show(msg, title);
 			}
 			
 		]]>
@@ -610,18 +637,19 @@
 	<s:VGroup id="mainGroup" width="100%" height="100%" left="5" right="5" top="5" bottom="5" gap="8" clipAndEnableScrolling="true" autoLayout="true" >		
 		<s:HGroup width="100%" gap="5" verticalAlign="middle">
 			<ns:Button 
-				id="startButton"
+				id="startButton" label="开始"
 				click="startButton_clickHandler(event)"
 				/>
 			<ns:Button 
-				id="pauseButton"
+				id="pauseButton" label="暂停"
 				click="pauseButton_clickHandler(event)" 
 				/>
 			<ns:Button 
 				id="endButton"
-				enabled="false"
+				enabled="false" label="结束"
 				click="endButton_clickHandler(event)"
 				/>
+			<s:Button label="打开" click="loadXML();"/>
 			<ns:Spacer width="6"/>
 			<s:HSlider
 				id="delaySlider"
@@ -637,9 +665,7 @@
 		</s:HGroup>      
 		<s:Group width="100%" height="100%">          
 			<s:Panel id="titlePanel" width="100%" height="100%">
-				<diagram:Diagram id="diagram" left="0" width="100%" height="100%" 
-								 name="工作流" nodeDataProvider="{hcv}"
-								 mouseDown="diagram_mouseDownHandler(event)">
+				<diagram:Diagram id="diagram" left="0" width="100%" height="100%" mouseDown="diagram_mouseDownHandler(event)">
 				</diagram:Diagram>     
 			</s:Panel>
 		</s:Group>  
