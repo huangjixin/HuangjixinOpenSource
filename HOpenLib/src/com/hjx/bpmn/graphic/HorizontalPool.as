@@ -31,10 +31,10 @@ package com.hjx.bpmn.graphic
 			super.partAdded(partName, instance);
 			if (instance == graph) 
 			{
-				var vLayout:VerticalLayout= new VerticalLayout();vLayout.verticalAlign= VerticalAlign.MIDDLE;
+				/*var vLayout:VerticalLayout= new VerticalLayout();vLayout.verticalAlign= VerticalAlign.MIDDLE;
 				vLayout.gap = -2;
 				this.graph.layout =vLayout;
-				this.graph.allowReparenting = false;
+				this.graph.allowReparenting = false;*/
 			}
 		}
 	}

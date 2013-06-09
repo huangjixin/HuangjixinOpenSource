@@ -30,11 +30,11 @@ package com.hjx.bpmn.graphic
 			super.partAdded(partName, instance);
 			if (partName == "graph") 
 			{
-				var hLayout:HorizontalLayout= new HorizontalLayout();
+				/*var hLayout:HorizontalLayout= new HorizontalLayout();
 				hLayout.horizontalAlign= HorizontalAlign.CENTER;
 				hLayout.gap = -2;
 				this.graph.layout =hLayout;
-				this.graph.allowReparenting = false;
+				this.graph.allowReparenting = false;*/
 			}
 		}
 	}
