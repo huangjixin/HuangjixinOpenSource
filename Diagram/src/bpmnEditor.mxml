@@ -234,6 +234,7 @@
 			}
 			
 			private var excluded:Dictionary = new Dictionary();
+			private var xml:XML = new XML(<process-denifition/>);
 			
 			public function serialize(object:Object, rootTag:String, childrenOnly:Boolean = true) : XML
 			{
@@ -251,9 +252,6 @@
 			
 			protected function serializeObject(object:Object, root:XML) : XML
 			{
-				if(object is LaneBase){
-					trace(LaneBase(object).swimlane.toXml().toString());
-				}
 				var options:Object = new Object();
 				options["includeReadOnly"] = false;
 				
@@ -270,6 +268,10 @@
 					var propertyName:String = property.localName;
 					try {
 						var v:Object = object[propertyName];
+						if(v is JbpmBase){
+							var proXml:XML = JbpmBase(v).toXml();
+							trace(proXml.toString());
+						}
 						var sv:Object = serializeProperty(object, propertyName, v, null, root);
 						if(sv is XML)
 							root.appendChild(sv);
