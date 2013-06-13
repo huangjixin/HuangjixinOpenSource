@@ -228,13 +228,40 @@
 				}
 			}
 			
+			private var xml:XML;
+			
 			protected function getJbpmBtn_clickHandler(event:MouseEvent):void
 			{
-				var xml:XML = serialize(diagramEditor.graph, "process-denifition");
+				xml= new XML(<process-denifition/>);
+				serializeToJbpm();
+				Alert.show(xml.toString());
+			}
+			
+			public function serializeToJbpm():void{
+				for (var i:int = 0;i<diagramEditor.graph.numElements;i++) 
+				{
+					var ele:Renderer = diagramEditor.graph.getElementAt(i) as Renderer;
+					serializeRenderer(ele);
+				}
+			}
+			
+			public function serializeRenderer(renderer:Renderer):void{
+				if(renderer is Task ){
+					xml.appendChild(Task(renderer).task.toXml());
+				}else if(renderer is LaneBase){
+					xml.appendChild(LaneBase(renderer).swimlane.toXml());
+					for (var i:int = 0;i<LaneBase(renderer).numElements;i++) 
+					{
+						var ele:Renderer = LaneBase(renderer).getElementAt(i) as Renderer;
+						serializeRenderer(ele);
+					}
+					
+				}
+				
 			}
 			
 			private var excluded:Dictionary = new Dictionary();
-			private var xml:XML = new XML(<process-denifition/>);
+			
 			
 			public function serialize(object:Object, rootTag:String, childrenOnly:Boolean = true) : XML
 			{
