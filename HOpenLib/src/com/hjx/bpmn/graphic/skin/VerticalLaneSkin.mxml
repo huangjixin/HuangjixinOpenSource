@@ -3,7 +3,7 @@
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   xmlns:skin="com.hjx.graphic.skin.*"
-				   width="400" height="300" xmlns:graphic="com.hjx.graphic.*">
+				   xmlns:graphic="com.hjx.graphic.*">
 	<fx:Declarations>
 	</fx:Declarations>
 	<fx:Metadata>

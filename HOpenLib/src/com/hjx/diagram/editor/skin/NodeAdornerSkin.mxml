@@ -29,4 +29,13 @@
 				   skinClass="com.hjx.diagram.editor.skin.ArrowSkin"/>
 	<editor:LinkHandle id="leftArrowHandle" left="-28" verticalCenter="-5" rotation="180"
 				   skinClass="com.hjx.diagram.editor.skin.ArrowSkin"/>
+	
+	<!--<editor:ConnectingAreaHandle id="rightConnectingHandle" right="0" verticalCenter="{-rightConnectingHandle.height/2}"
+				   skinClass="com.hjx.diagram.editor.skin.ConnectingAreaHandleSkin"/>
+	<editor:ConnectingAreaHandle id="topConnectingHandle" top="-10" horizontalCenter="0"
+				   skinClass="com.hjx.diagram.editor.skin.ConnectingAreaHandleSkin"/>
+	<editor:ConnectingAreaHandle id="bottomConnectingHandle" bottom="-10"  horizontalCenter="-0" 
+				   skinClass="com.hjx.diagram.editor.skin.ConnectingAreaHandleSkin"/>
+	<editor:ConnectingAreaHandle id="leftConnectingHandle" left="0" verticalCenter="{-leftConnectingHandle.height/2}"
+				   skinClass="com.hjx.diagram.editor.skin.ConnectingAreaHandleSkin"/>-->
 </s:Skin>

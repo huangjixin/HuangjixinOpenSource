@@ -1,6 +1,7 @@
 package com.hjx.diagram.editor
 {
 	import spark.components.Button;
+	import spark.primitives.Path;
 
 	public class LinkHandle extends Button
 	{
@@ -24,7 +25,8 @@ package com.hjx.diagram.editor
 		//---------------------------------------------------------------------
 		// public 公有变量声明处
 		//---------------------------------------------------------------------
-		
+		[SkinPart]
+		public var path:Path;
 		
 		//---------------------------------------------------------------------
 		// 构造函数，初始化相关工作可以放在里面

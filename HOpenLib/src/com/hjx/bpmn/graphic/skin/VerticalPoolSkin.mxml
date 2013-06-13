@@ -55,7 +55,7 @@
 		</s:Rect>    
 		
 		<s:Group left="0" right="0" top="0" minHeight="25" clipAndEnableScrolling="true">
-			<s:Rect left="2" right="2" top="2" bottom="0">
+			<s:Rect left="2" right="2" top="2" bottom="2">
 				<s:fill>
 					<s:SolidColor color="{backgroundColor}"/>
 				</s:fill>
@@ -65,7 +65,7 @@
 						 verticalCenter="0"/>
 			</s:Group>
 		</s:Group>
-		<s:Line left="0" right="0" top="{Math.max(25, labelElement.width)}" xTo="100">
+		<s:Line left="0" right="0" top="{Math.max(25, labelElement.height)}" xTo="100">
 			<s:stroke>
 				<s:SolidColorStroke color="{borderColor}" weight="2"/>
 			</s:stroke>

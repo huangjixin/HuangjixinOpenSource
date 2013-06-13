@@ -14,6 +14,7 @@ package com.hjx.diagram.editor
 	import com.hjx.diagram.editor.skin.DiagramEditorSkin;
 	import com.hjx.graphic.Graph;
 	import com.hjx.graphic.Link;
+	import com.hjx.graphic.LinkConnectionArea;
 	import com.hjx.graphic.Node;
 	import com.hjx.graphic.Renderer;
 	import com.hjx.graphic.SubGraph;
@@ -137,6 +138,8 @@ package com.hjx.diagram.editor
 			this.addEventListener(DragEvent.DRAG_ENTER, this.dragEnterHandler);
 			this.addEventListener(DragEvent.DRAG_OVER, this.dragOverHandler);
 			this.addEventListener(DragEvent.DRAG_DROP, this.dragDropHandler);
+			
+			this.addEventListener(Event.SELECT_ALL,selectAll);
 		}//构造函数结束
 		
 		
@@ -776,6 +779,15 @@ package com.hjx.diagram.editor
 			return false;
 		}
 		
+		internal function selectAll(event:Event):void{
+			for (var i:int = 0; i < _graph.numElements; i++) 
+			{
+				var renderer:Renderer = _graph.getElementAt(i) as Renderer;
+				setSelected(renderer,true);
+			}
+			
+		}
+		
 		public function setSelected(renderer:Renderer, isSelected:Boolean):void
 		{
 			if (this.isSelected(renderer) != isSelected) 
@@ -940,7 +952,8 @@ package com.hjx.diagram.editor
 			}
 		}
 		
-		public function createLink():Link
+		public function createLink(startNodeConnectingArea:String = LinkConnectionArea.CENTER,
+								   endNodeConnectingArea:String = LinkConnectionArea.CENTER):Link
 		{
 			var link:Link=null;
 			if (this.linkPrototype == null) 
@@ -951,6 +964,8 @@ package com.hjx.diagram.editor
 			{
 				link = Link(this.linkPrototype.clone());
 			}
+			link.startConnectionArea = startNodeConnectingArea;
+			link.endConnectionArea = endNodeConnectingArea;
 			return link;
 		}
 		
@@ -958,12 +973,13 @@ package com.hjx.diagram.editor
 		 * 链接节点。 
 		 * 
 		 */
-		public function connectNodes():void
+		public function connectNodes(startNodeConnectingArea:String = LinkConnectionArea.CENTER,
+									 endNodeConnectingArea:String = LinkConnectionArea.CENTER):void
 		{
 			var selObjs:Vector.<Renderer> = getSelectedObjects();
 			if (selObjs.length == 2) {
 				if ((selObjs[0] is Node) && (selObjs[1] is Node)) {
-					var link:Link = createLink();
+					var link:Link = createLink(startNodeConnectingArea,endNodeConnectingArea);
 					if (link) {
 						link.startNode = Node(selObjs[0]);
 						link.endNode = Node(selObjs[1]);
@@ -1059,7 +1075,7 @@ package com.hjx.diagram.editor
 				{
 					var cloneRenderer:Renderer = renderer.clone();
 					if(cloneFunction!=null){
-						cloneFunction.call(this,renderer,cloneRenderer);
+						cloneFunction.call(this,renderer,cloneRenderer,true);
 					}
 					diagramPalette.dragImage.removeAllElements();
 					diagramPalette.dragImage.addElement(cloneRenderer);
@@ -1177,7 +1193,7 @@ package com.hjx.diagram.editor
 			this.adornersGroup.graphics.lineStyle(2,0xff0000);
 			if(event){
 				var renderer:Renderer = getRenderer(event.target);
-				if(renderer){
+				if(renderer && !(renderer is Link)){
 					var ele:Renderer;
 					var length:int = 0;
 					var rendererRect:Rectangle = renderer.getBounds(this.adornersGroup);
@@ -1186,6 +1202,10 @@ package com.hjx.diagram.editor
 					if(parentGraph){
 						while(length < parentGraph.numElements){
 							ele = parentGraph.getElementAt(length) as Renderer;
+							length++;
+							if(ele is Link){
+								continue;
+							}
 							eleRect = ele.getBounds(this.adornersGroup);
 							if(ele != renderer){
 								if(Math.abs(ele.x-renderer.x)<3){
@@ -1204,7 +1224,6 @@ package com.hjx.diagram.editor
 								}else if(Math.abs(ele.y+ele.height-renderer.y-renderer.height)<3){
 								}
 							}
-							length++;
 						}
 					}
 				}

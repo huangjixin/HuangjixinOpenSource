@@ -55,8 +55,8 @@ package com.hjx.graphic
 		private var _fallbackEndPoint:Point;
 		private var _fallbackStartPoint:Point;
 		
-		private var _startConnectionArea:String = LinkConnectionArea.RIGHT;
-		private var _endConnectionArea:String = LinkConnectionArea.LEFT;
+		private var _startConnectionArea:String = LinkConnectionArea.CENTER;
+		private var _endConnectionArea:String = LinkConnectionArea.CENTER;
 		
 		private static const EXTEND_LENGTH:Number = 20;
 		
@@ -291,7 +291,7 @@ package com.hjx.graphic
 		 * @return 
 		 * 
 		 */
-		internal static function getPathBounds(path:Path):Rectangle
+		public static function getPathBounds(path:Path):Rectangle
 		{
 			var rect:Rectangle = new Rectangle(path.measuredX, path.measuredY, path.measuredWidth, path.measuredHeight);
 			var weight:Number = path.stroke == null ? 0 : path.stroke.weight;
@@ -771,24 +771,63 @@ package com.hjx.graphic
 					var minOffset:Number=0;
 					var offsetX:Number=0;
 					var offsetY:Number=0;
+					
+					//计算连接区域的点。
 					if(this.startNode){
-						//计算开始节点偏移量坐标。
-						radian= Math.atan2(point1.y - point2.y, point1.x - point2.x);
-						minOffset = Math.min(Math.abs(realVisialeStartNode.width/2/Math.cos(radian)),Math.abs(realVisialeStartNode.height/2/Math.sin(radian)));
-						offsetX = minOffset*Math.cos(radian);
-						offsetY = minOffset*Math.sin(radian);
-						defaultStartPoint.offset(-offsetX,-offsetY);
-						
+						if(startConnectionArea == LinkConnectionArea.CENTER){
+							//计算开始节点偏移量坐标。
+							radian= Math.atan2(point1.y - point2.y, point1.x - point2.x);
+							minOffset = Math.min(Math.abs(realVisialeStartNode.width/2/Math.cos(radian)),Math.abs(realVisialeStartNode.height/2/Math.sin(radian)));
+							offsetX = minOffset*Math.cos(radian);
+							offsetY = minOffset*Math.sin(radian);
+							defaultStartPoint.offset(-offsetX,-offsetY);
+							
+						}else if(startConnectionArea == LinkConnectionArea.LEFT){
+							offsetX = Math.abs(realVisialeStartNode.width/2);
+							offsetY = 0;
+							defaultStartPoint.offset(-offsetX,-offsetY);
+						}else if(startConnectionArea == LinkConnectionArea.RIGHT){
+							offsetX = Math.abs(realVisialeStartNode.width/2);
+							offsetY = 0;
+							defaultStartPoint.offset(offsetX,-offsetY);
+						}else if(startConnectionArea == LinkConnectionArea.TOP){
+							offsetX = 0;
+							offsetY = Math.abs(realVisialeStartNode.height/2);
+							defaultStartPoint.offset(-offsetX,-offsetY);
+						}else if(startConnectionArea == LinkConnectionArea.BOTTOM){
+							offsetX = 0;
+							offsetY = Math.abs(realVisialeStartNode.height/2);
+							defaultStartPoint.offset(-offsetX,offsetY);
+						}
+
 						this.fallbackStartPoint = defaultStartPoint.clone();
 					}
 					
 					if(this.endNode){
-						//计算开始节点偏移量坐标。
-						radian= Math.atan2(point2.y - point1.y, point2.x - point1.x);
-						minOffset = Math.min(Math.abs(realVisialeEndNode.width/2/Math.cos(radian)),Math.abs(realVisialeEndNode.height/2/Math.sin(radian)));
-						offsetX = minOffset*Math.cos(radian);
-						offsetY = minOffset*Math.sin(radian);
-						defaultEndPoint.offset(-offsetX,-offsetY);
+						if(endConnectionArea == LinkConnectionArea.CENTER){
+							//计算开始节点偏移量坐标。
+							radian= Math.atan2(point2.y - point1.y, point2.x - point1.x);
+							minOffset = Math.min(Math.abs(realVisialeEndNode.width/2/Math.cos(radian)),Math.abs(realVisialeEndNode.height/2/Math.sin(radian)));
+							offsetX = minOffset*Math.cos(radian);
+							offsetY = minOffset*Math.sin(radian);
+							defaultEndPoint.offset(-offsetX,-offsetY);							
+						}else if(endConnectionArea == LinkConnectionArea.LEFT){
+							offsetX = Math.abs(realVisialeEndNode.width/2);
+							offsetY = 0;
+							defaultEndPoint.offset(-offsetX,-offsetY);
+						}else if(endConnectionArea == LinkConnectionArea.RIGHT){
+							offsetX = Math.abs(realVisialeEndNode.width/2);
+							offsetY = 0;
+							defaultEndPoint.offset(offsetX,-offsetY);
+						}else if(endConnectionArea == LinkConnectionArea.TOP){
+							offsetX = 0;
+							offsetY = Math.abs(realVisialeEndNode.height/2);
+							defaultEndPoint.offset(-offsetX,-offsetY);
+						}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
+							offsetX = 0;
+							offsetY = Math.abs(realVisialeEndNode.height/2);
+							defaultEndPoint.offset(-offsetX,offsetY);
+						}
 						
 						this.fallbackEndPoint = defaultEndPoint.clone();
 					}
@@ -955,11 +994,6 @@ package com.hjx.graphic
 						
 						point1.offset(-startRect.width * Math.cos(radian),-startRect.width*Math.sin(radian));
 						this._shapePoints[0] = point1;
-						/*var maxStartArrowWidth:Number = this.startArrow.getMaxBoundsWidth();
-						var maxStartArrowHeight:Number = this.startArrow.getMaxBoundsHeight();
-						var startArrowRotatePoint:Point = new Point(this.startArrow.getBoundsXAtSize(maxStartArrowWidth,maxStartArrowHeight),this.startArrow.getBoundsYAtSize(maxStartArrowWidth,maxStartArrowHeight));
-						startArrowRotatePoint = RotatePoint(startArrowRotatePoint,radian);
-						point1.offset(startArrowRotatePoint.x,startArrowRotatePoint.y);*/
 					}
 				}
 				else 
@@ -984,11 +1018,6 @@ package com.hjx.graphic
 						
 						point2.offset(-endRect.width * Math.cos(radian),-endRect.width*Math.sin(radian));
 						this._shapePoints[(this._shapePoints.length - 1)] = point2;
-						/*var maxEndArrowWidth:Number = this.endArrow.getMaxBoundsWidth();
-						var maxEndArrowHeight:Number = this.endArrow.getMaxBoundsHeight();
-						var endArrowRotatePoint:Point = new Point(this.endArrow.getBoundsXAtSize(maxEndArrowWidth,maxEndArrowHeight),this.endArrow.getBoundsYAtSize(maxEndArrowWidth,maxEndArrowHeight));
-						endArrowRotatePoint = RotatePoint(endArrowRotatePoint,radian);
-						point2.offset(endArrowRotatePoint.x,endArrowRotatePoint.y);*/
 					}
 				}
 				else 
