@@ -18,11 +18,16 @@
 			import com.hjx.bpmn.graphic.LaneBase;
 			import com.hjx.bpmn.graphic.VerticalLane;
 			import com.hjx.diagram.serialization.XMLSerializer;
+			import com.hjx.graphic.Graph;
 			import com.hjx.graphic.Link;
 			import com.hjx.graphic.LinkConnectionArea;
 			import com.hjx.graphic.Node;
 			import com.hjx.graphic.Renderer;
+			import com.hjx.graphic.SubGraph;
+			import com.hjx.jbpm.JbpmBase;
 			import com.hjx.uitls.CloneUtil;
+			
+			import flash.globalization.NumberFormatter;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.HierarchicalData;
@@ -32,8 +37,10 @@
 			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			import mx.events.MoveEvent;
+			import mx.utils.ObjectUtil;
 			
 			import spark.effects.Resize;
+			import spark.formatters.NumberFormatter;
 			
 			private var file:FileReference;
 			private var currentFileName:String;
@@ -221,6 +228,168 @@
 				}
 			}
 			
+			protected function getJbpmBtn_clickHandler(event:MouseEvent):void
+			{
+				var xml:XML = serialize(diagramEditor.graph, "process-denifition");
+			}
+			
+			private var excluded:Dictionary = new Dictionary();
+			
+			public function serialize(object:Object, rootTag:String, childrenOnly:Boolean = true) : XML
+			{
+				var root:XML = new XML("<"+rootTag+"></"+rootTag+">");
+				
+				if(childrenOnly){
+					serializeChildren(object, root, root);
+				} else {
+					var child:XML = serializeObject(object, root);
+					if(child != null)
+						root.appendChild(child);
+				}
+				return root;
+			}
+			
+			protected function serializeObject(object:Object, root:XML) : XML
+			{
+				if(object is LaneBase){
+					trace(LaneBase(object).swimlane.toXml().toString());
+				}
+				var options:Object = new Object();
+				options["includeReadOnly"] = false;
+				
+				var excludes:Array = excluded[className] as Array;
+				if(excludes == null){
+					excludes = getExcludedProperties(object);
+					excluded[className] = excludes;
+				}
+				
+				var classInfo:Object = mx.utils.ObjectUtil.getClassInfo(object, excludes, options);
+				var properties:Array = classInfo["properties"];
+				
+				for each(var property:QName in properties){
+					var propertyName:String = property.localName;
+					try {
+						var v:Object = object[propertyName];
+						var sv:Object = serializeProperty(object, propertyName, v, null, root);
+						if(sv is XML)
+							root.appendChild(sv);
+						else if(sv is String)
+							root.@[propertyName] = sv;
+					} catch(err:Error){
+						// ignore property
+					}
+				}
+				
+//				serializeChildren(object, root, root);
+				
+				return root;
+			}
+			
+			protected function getExcludedProperties(object:Object) : Array
+			{
+				if(object is Renderer)
+					return getRendererProperties();
+				else
+					return new Array();
+			}
+			
+			private var rendererProperties:Array = null;
+			
+			private function getRendererProperties() : Array 
+			{
+				if(rendererProperties == null){
+					rendererProperties = new Array();
+					for each(var name:QName in ObjectUtil.getClassInfo(new Renderer())["properties"]){
+						var pname:String = name.localName;
+						if(pname != "left" &&
+							pname != "top" &&
+							pname != "x" &&
+							pname != "y" &&
+							pname != "width" &&
+							pname != "height")
+							rendererProperties.push(pname);
+					}
+				}
+				return rendererProperties;
+			}
+			
+			protected function serializeProperty(object:Object, name:String, value:Object, defaultValue:Object, root:XML) : Object
+			{
+				if ((value is JbpmBase)) {
+					var propertyEleXml:XML = serializePropertyAsElement(name, value, root);
+					return propertyEleXml;
+				}
+				
+				if(value is String) {
+					var propXML:XML = new XML("<"+name+"></"+name+">");
+					propXML.appendChild(String(value));
+					return propXML;
+				}
+				if(value is int || value is Boolean)
+					return value.toString();
+				
+				if(value is Number && !isNaN(Number(value))){
+					//return Number(value).toFixed();
+					return ""+value;
+				}
+				
+				return null;
+			}
+			
+			protected function serializePropertyAsElement(name:String, value:Object, root:XML) : XML
+			{
+				var propXML:XML = new XML("<"+name+"></"+name+">");
+				var valueXML:XML = serializeObject(value, root);
+				if(valueXML != null){
+					propXML.appendChild(valueXML);
+					return propXML;
+				} else {
+					return null;
+				}
+			}
+			
+			private function serializeChildren(object:Object, parent:XML, root:XML) : void
+			{
+				var children:Array = getChildrenToSerialize(object);
+				if(children != null){
+					for each(var childObject:Object in children)
+					{
+						var child:XML = serializeObject(childObject, root);
+						if(child != null)
+							parent.appendChild(child);
+					}
+				}
+			}
+			
+			protected function getChildrenToSerialize(object:Object) : Array
+			{
+				var graph:Graph = getGraph(object);
+				if(graph != null){
+					var children:Array = new Array();
+					for(var i:int = 0; i < graph.numElements; i++)
+						children.push(graph.getElementAt(i));
+					return children;
+				}
+				return null;
+			}
+			
+			private function getGraph(object:Object) : Graph
+			{
+				if(object is Graph)
+					return Graph(object);
+				if(object is com.hjx.diagram.Diagram)
+					return com.hjx.diagram.Diagram(object).graph;
+				if(object is SubGraph){
+					SubGraph(object).validateNow();
+					return SubGraph(object).graph;
+				}
+				return null;
+			}
+			
+			private function serialChildren():void
+			{
+				
+			}
 		]]>
 	</fx:Script>
 	
@@ -488,6 +657,7 @@
 					<s:Button label="打开" click="loadXML();"/>
 					<s:Button label="连线" click="diagramEditor.connectNodes(LinkConnectionArea.TOP,LinkConnectionArea.BOTTOM);"/>
 					<s:Button id="setProBtn" label="设置属性" click="setProBtn_clickHandler(event)"/>
+					<s:Button id="getJbpmBtn" label="抽取jbpm文件" click="getJbpmBtn_clickHandler(event)"/>
 				</s:HGroup>
 			</s:VGroup>
 			<s:Panel width="100%" height="100%">
