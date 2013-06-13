@@ -248,6 +248,10 @@
 			public function serializeRenderer(renderer:Renderer):void{
 				if(renderer is Task ){
 					xml.appendChild(Task(renderer).task.toXml());
+				}else if(renderer is StartEvent ){
+					xml.appendChild(StartEvent(renderer).star_state.toXml());
+				}else if(renderer is EndEvent ){
+					xml.appendChild(EndEvent(renderer).end_state.toXml());
 				}else if(renderer is LaneBase){
 					xml.appendChild(LaneBase(renderer).swimlane.toXml());
 					for (var i:int = 0;i<LaneBase(renderer).numElements;i++) 
