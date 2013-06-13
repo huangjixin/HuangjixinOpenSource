@@ -18,6 +18,12 @@ package com.hjx.jbpm
 		{
 			_to = value;
 		}
-
+		
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.@["to"] = to;
+			return xml;
+		}
 	}
 }

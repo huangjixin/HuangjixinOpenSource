@@ -4,7 +4,6 @@ package com.hjx.jbpm
 	{
 		public function Exception_handler()
 		{
-			//TODO: implement function
 			super();
 		}
 	}

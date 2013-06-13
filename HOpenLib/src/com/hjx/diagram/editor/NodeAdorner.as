@@ -150,6 +150,24 @@ package com.hjx.diagram.editor
 				
 				editor.adornersGroup.graphics.clear();
 				var renderer:Renderer = trackCurrentRenderer(event);
+				var startNodeConnectingArea:String = LinkConnectionArea.CENTER;
+				var endNodeConnectingArea:String = LinkConnectionArea.CENTER;
+				var link:Link;
+				var linkParent:Graph;
+				
+				if(displayObject == this.topArrowHandle){
+					startNodeConnectingArea = LinkConnectionArea.TOP;
+				}else if(displayObject == this.rightArrowHandle){
+					startNodeConnectingArea = LinkConnectionArea.RIGHT;
+				}else if(displayObject == this.bottomArrowHandle){
+					startNodeConnectingArea = LinkConnectionArea.BOTTOM;
+				}else if(displayObject == this.leftArrowHandle){
+					startNodeConnectingArea = LinkConnectionArea.LEFT;
+				}else{
+					startNodeConnectingArea = LinkConnectionArea.CENTER;
+				}
+				
+				//如果放到节点上面就创建连线。
 				if(renderer){
 					if(renderer is Link){
 						return ;
@@ -179,9 +197,6 @@ package com.hjx.diagram.editor
 						flag = 4;
 					}
 					
-					var startNodeConnectingArea:String = LinkConnectionArea.CENTER;
-					var endNodeConnectingArea:String = LinkConnectionArea.CENTER;
-					
 					if(flag ==0){
 						endNodeConnectingArea = LinkConnectionArea.TOP;
 					}else if(flag ==1){
@@ -194,27 +209,23 @@ package com.hjx.diagram.editor
 						endNodeConnectingArea = LinkConnectionArea.CENTER;
 					}
 					
-					
-					if(displayObject == this.topArrowHandle){
-						startNodeConnectingArea = LinkConnectionArea.TOP;
-					}else if(displayObject == this.rightArrowHandle){
-						startNodeConnectingArea = LinkConnectionArea.RIGHT;
-					}else if(displayObject == this.bottomArrowHandle){
-						startNodeConnectingArea = LinkConnectionArea.BOTTOM;
-					}else if(displayObject == this.leftArrowHandle){
-						startNodeConnectingArea = LinkConnectionArea.LEFT;
-					}else{
-						startNodeConnectingArea = LinkConnectionArea.CENTER;
-					}
-					
-					var link:Link = editor.createLink(startNodeConnectingArea,endNodeConnectingArea);
+					link = editor.createLink(startNodeConnectingArea,endNodeConnectingArea);
 					if (link) {
 						link.startNode = adornedObject as Node;
 						link.endNode = renderer as Node;
-						var linkParent:Graph = DiagramEditor.getLowestCommonGraph(link.startNode, link.endNode);
+						linkParent = DiagramEditor.getLowestCommonGraph(link.startNode, link.endNode);
 						linkParent.addElement(link);
 						link.invalidateShape();
 					} 
+				}else{
+					link = editor.createLink(startNodeConnectingArea,endNodeConnectingArea);
+					if (link) {
+						link.startNode = adornedObject as Node;
+						linkParent = DiagramEditor.getLowestCommonGraph(link.startNode, link.startNode);
+						linkParent.addElement(link);
+						link.fallbackEndPoint = new Point(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY);
+						link.invalidateShape();
+					}
 				}
 			}else{
 				super.handleReleased(displayObject, event);

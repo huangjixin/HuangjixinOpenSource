@@ -28,5 +28,30 @@ package com.hjx.jbpm
 			_async = value;
 		}
 
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			for each (var transition:Transition in transitions) 
+			{
+				xml.appendChild(transition.toXml());
+			}
+			
+			for each (var event:com.hjx.jbpm.Event in events) 
+			{
+				xml.appendChild(event.toXml());
+			}
+			
+			for each (var exception_handler:Exception_handler in exception_handlers) 
+			{
+				xml.appendChild(exception_handler.toXml());
+			}
+			
+			for each (var timer:Timer in timers) 
+			{
+				xml.appendChild(timer.toXml());
+			}
+			
+			return xml;
+		}
 	}
 }

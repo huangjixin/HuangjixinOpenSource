@@ -31,5 +31,12 @@ package com.hjx.jbpm
 			_config_type = value;
 		}
 
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.@["class"] = className;
+			xml.@["config-type"] = config_type;
+			return xml;
+		}
 	}
 }

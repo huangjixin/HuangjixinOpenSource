@@ -22,6 +22,11 @@ package com.hjx.jbpm
 		{
 			_version = value;
 		}
-
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.@["version"] = version;
+			return xml;
+		}
 	}
 }

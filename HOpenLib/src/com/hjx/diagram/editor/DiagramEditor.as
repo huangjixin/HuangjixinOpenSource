@@ -335,7 +335,11 @@ package com.hjx.diagram.editor
 								var moveLink:Link;
 								var startNode:Node = Link(selectedRenderer).startNode;
 								var endNode:Node = Link(selectedRenderer).endNode;
-								if (startNode && endNode && this.isSelected(startNode) && this.isSelected(endNode)) 
+								if (startNode && this.isSelected(startNode) && endNode && this.isSelected(endNode)) 
+								{
+									continue;
+								}
+								if (startNode || endNode) 
 								{
 									continue;
 								}

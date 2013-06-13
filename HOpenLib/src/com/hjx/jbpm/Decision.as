@@ -2,8 +2,8 @@ package com.hjx.jbpm
 {
 	public class Decision extends JbpmBase
 	{
-		private var _handler:Handler;
-		private var _transition_conditions:String;
+		private var _handler:Handler = new Handler();
+		private var _transition_conditions:String="";
 		
 		public function Decision()
 		{
@@ -30,5 +30,12 @@ package com.hjx.jbpm
 			_handler = value;
 		}
 
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.appendChild(handler.toXml());
+			xml.@["transition-conditions"] = transition_conditions;
+			return xml;
+		}
 	}
 }

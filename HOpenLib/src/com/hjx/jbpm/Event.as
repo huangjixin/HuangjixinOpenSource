@@ -23,5 +23,12 @@ package com.hjx.jbpm
 			_type = value;
 		}
 
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.appendChild(action.toXml());
+			xml.@["type"] = type;
+			return xml;
+		}
 	}
 }

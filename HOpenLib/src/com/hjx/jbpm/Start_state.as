@@ -57,5 +57,14 @@ package com.hjx.jbpm
 			_task = value;
 		}
 
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.appendChild(task.toXml());
+			xml.appendChild(event.toXml());
+			xml.appendChild(transition.toXml());
+			xml.appendChild(exception_handler.toXml());
+			return xml;
+		}
 	}
 }

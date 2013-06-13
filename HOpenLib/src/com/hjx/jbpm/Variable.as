@@ -30,5 +30,12 @@ package com.hjx.jbpm
 			_access = value;
 		}
 
+		
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.@["access"] = access;
+			return xml;
+		}
 	}
 }

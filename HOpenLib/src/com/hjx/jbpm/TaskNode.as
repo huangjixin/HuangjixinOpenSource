@@ -97,5 +97,17 @@ package com.hjx.jbpm
 			_createTasks = value;
 		}
 
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.@["createTasks"] = createTasks;
+			xml.@["description"] = description;
+			xml.@["signal"] = signal;
+			xml.appendChild(task.toXml());
+			xml.@["create-tasks"] = create_tasks;
+			xml.appendChild(commonNodeElements.toXml());
+			xml.@["end-tasks"] = end_tasks;
+			return xml;
+		}
 	}
 }

@@ -90,5 +90,17 @@ package com.hjx.jbpm
 		{
 			_className = value;
 		}
+		
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.@["class"] = className;
+			xml.@["ref-name"] = ref_name;
+			xml.@["expression"] = expression;
+			xml.@["accept-propagated-events"] = accept_propagated_events;
+			xml.@["async"] = async;
+			xml.@["config-type"] = config_type;
+			return xml;
+		}
 	}
 }

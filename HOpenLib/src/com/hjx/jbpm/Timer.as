@@ -57,6 +57,15 @@ package com.hjx.jbpm
 		{
 			_duedate = value;
 		}
-
+		
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.@["duedate"] = duedate;
+			xml.@["repeat"] = repeat;
+			xml.@["transition"] = transition;
+			xml.@["cancel-event"] = cancel_event;
+			return xml;
+		}
 	}
 }

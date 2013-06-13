@@ -70,6 +70,16 @@ package com.hjx.jbpm
 		{
 			_className = value;
 		}
-
+		
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.@["class"] = className;
+			xml.@["expression"] = expression;
+			xml.@["actor-id"] = actor_id;
+			xml.@["pooled-actors"] = pooled_actors;
+			xml.@["config-type"] = config_type;
+			return xml;
+		}
 	}
 }

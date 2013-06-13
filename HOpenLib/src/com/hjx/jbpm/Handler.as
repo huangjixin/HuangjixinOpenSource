@@ -49,5 +49,13 @@ package com.hjx.jbpm
 			_expression = value;
 		}
 
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.@["expression"] = expression;
+			xml.@["class"] = className;
+			xml.@["config-type"] = config_type;
+			return xml;
+		}
 	}
 }

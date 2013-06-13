@@ -128,5 +128,18 @@ package com.hjx.jbpm
 			_blocking = value;
 		}
 
+		override public function toXml():XML
+		{
+			var xml:XML = super.toXml();
+			xml.@["blocking"] = blocking;
+			xml.@["signalling"] = signalling;
+			xml.@["duedate"] = duedate;
+			xml.appendChild(swimlane.toXml());
+			xml.@["priority"] = priority;
+			xml.appendChild(assignment.toXml());
+			xml.@["blocking"] = blocking;
+			xml.@["blocking"] = blocking;
+			return xml;
+		}
 	}
 }
