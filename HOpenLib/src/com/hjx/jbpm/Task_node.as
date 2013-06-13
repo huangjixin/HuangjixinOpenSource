@@ -1,6 +1,6 @@
 package com.hjx.jbpm
 {
-	public class TaskNode extends JbpmBase
+	public class Task_node extends JbpmBase
 	{
 		private var _createTasks:Boolean;
 		private var _description:String;
@@ -13,7 +13,7 @@ package com.hjx.jbpm
 		[Bindable]
 		public var transition:Vector.<Transition> = new Vector.<Transition>();
 		
-		public function TaskNode()
+		public function Task_node()
 		{
 			task= new Task();
 			commonNodeElements = new CommonNodeElements()

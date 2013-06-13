@@ -1,6 +1,6 @@
 package com.hjx.bpmn.graphic
 {
-	import com.hjx.jbpm.TaskNode;
+	import com.hjx.jbpm.Task_node;
 
 	public class Task extends Activity
 	{
@@ -13,7 +13,7 @@ package com.hjx.bpmn.graphic
 		[Bindable]
 		public var compensation:Boolean;
 		
-		public var task:TaskNode = new TaskNode();
+		public var task:Task_node = new Task_node();
 		
 		public function Task()
 		{
