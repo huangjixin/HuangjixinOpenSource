@@ -1,18 +1,413 @@
-<diagram xmlns:chbg="com.hjx.bpmn.graphic" xmlns:chg="com.hjx.graphic" xmlns:fg="flash.geom">
-  <chbg:Task id="task1" centerX="184" centerY="196" height="50" width="90" x="139" y="171">
-    <label>任务</label>
-  </chbg:Task>
-  <chbg:Task id="task2" centerX="277" centerY="300" height="50" width="90" x="232" y="275">
-    <label>任务</label>
-  </chbg:Task>
-  <chg:Link id="link1">
-    <endNode>task2</endNode>
-    <fallbackEndPoint>
-      <fg:Point id="point1" x="254.64423076923077" y="275"/>
-    </fallbackEndPoint>
-    <fallbackStartPoint>
-      <fg:Point id="point2" x="206.35576923076923" y="221"/>
-    </fallbackStartPoint>
-    <startNode>task1</startNode>
-  </chg:Link>
+<diagram xmlns:chbg="com.hjx.bpmn.graphic" xmlns:chj="com.hjx.jbpm" xmlns:chg="com.hjx.graphic" xmlns:fg="flash.geom">
+  <chbg:HorizontalPool id="horizontalPool1" centerX="518.5" centerY="264.5" expandedHeight="425" expandedWidth="965" height="425" width="965" x="36" y="52">
+    <label>横甬道池</label>
+    <swimlane>
+      <chj:Swim_lane id="swim_lane1">
+        <assignment>
+          <chj:Assignment id="assignment1">
+            <className>swim-lane</className>
+            <name>swim-lane</name>
+          </chj:Assignment>
+        </assignment>
+      </chj:Swim_lane>
+    </swimlane>
+    <chbg:HorizontalLane id="horizontalLane1" centerX="469.5" centerY="72.5" expandedHeight="125" expandedWidth="919" height="125" width="919" x="10" y="10">
+      <label>横甬道</label>
+      <swimlane>
+        <chj:Swim_lane id="swim_lane2">
+          <assignment>
+            <chj:Assignment id="assignment2">
+              <className>swim-lane</className>
+              <name>swim-lane</name>
+            </chj:Assignment>
+          </assignment>
+        </chj:Swim_lane>
+      </swimlane>
+      <chbg:StartEvent id="startEvent1" centerX="46.5" centerY="59.5" height="47" width="31" x="31" y="36">
+        <label>开始</label>
+        <star_state>
+          <chj:Start_state id="start_state1">
+            <event>
+              <chj:Event id="event1">
+                <action>
+                  <chj:Action id="action1"/>
+                </action>
+              </chj:Event>
+            </event>
+            <exception_handler>
+              <chj:Exception_handler id="exception_handler1"/>
+            </exception_handler>
+            <task>
+              <chj:Task id="task1">
+                <assignment>
+                  <chj:Assignment id="assignment3"/>
+                </assignment>
+                <swimlane>
+                  <chj:Swim_lane id="swim_lane3">
+                    <assignment>
+                      <chj:Assignment id="assignment4">
+                        <className>swim-lane</className>
+                        <name>swim-lane</name>
+                      </chj:Assignment>
+                    </assignment>
+                  </chj:Swim_lane>
+                </swimlane>
+              </chj:Task>
+            </task>
+            <transition>
+              <chj:Transition id="transition1"/>
+            </transition>
+          </chj:Start_state>
+        </star_state>
+      </chbg:StartEvent>
+      <chbg:Task id="task2" centerX="182" centerY="58" explicitHeight="50" explicitWidth="90" height="50" initialized="true" nestLevel="31" processedDescriptors="true" width="90" x="137" y="33">
+        <id>task1</id>
+        <label>任务</label>
+        <layoutDirection>ltr</layoutDirection>
+        <name>Task599</name>
+        <task>
+          <chj:TaskNode id="taskNode1" createTasks="true">
+            <commonNodeElements>
+              <chj:CommonNodeElements id="commonNodeElements1"/>
+            </commonNodeElements>
+            <description>我是bpm描述</description>
+            <task>
+              <chj:Task id="task3">
+                <assignment>
+                  <chj:Assignment id="assignment5"/>
+                </assignment>
+                <swimlane>
+                  <chj:Swim_lane id="swim_lane4">
+                    <assignment>
+                      <chj:Assignment id="assignment6">
+                        <className>swim-lane</className>
+                        <name>swim-lane</name>
+                      </chj:Assignment>
+                    </assignment>
+                  </chj:Swim_lane>
+                </swimlane>
+              </chj:Task>
+            </task>
+          </chj:TaskNode>
+        </task>
+        <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup389.Panel388.PanelSkin400._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin410.diagramParent.diagram1.DiagramSkin413.graphScroller.GraphScrollerSkin416.graph.horizontalPool1.HorizontalPoolSkin577.base.graphGroup.graph.horizontalLane1.HorizontalLaneSkin585.base.graphGroup.graph.task1</uid>
+      </chbg:Task>
+      <chbg:Task id="task4" centerX="365" centerY="58" explicitHeight="50" explicitWidth="90" height="50" initialized="true" nestLevel="31" processedDescriptors="true" width="90" x="320" y="33">
+        <id>task2</id>
+        <label>任务</label>
+        <layoutDirection>ltr</layoutDirection>
+        <name>Task614</name>
+        <task>
+          <chj:TaskNode id="taskNode2" createTasks="true">
+            <commonNodeElements>
+              <chj:CommonNodeElements id="commonNodeElements2"/>
+            </commonNodeElements>
+            <description>我是bpm描述</description>
+            <task>
+              <chj:Task id="task5">
+                <assignment>
+                  <chj:Assignment id="assignment7"/>
+                </assignment>
+                <swimlane>
+                  <chj:Swim_lane id="swim_lane5">
+                    <assignment>
+                      <chj:Assignment id="assignment8">
+                        <className>swim-lane</className>
+                        <name>swim-lane</name>
+                      </chj:Assignment>
+                    </assignment>
+                  </chj:Swim_lane>
+                </swimlane>
+              </chj:Task>
+            </task>
+          </chj:TaskNode>
+        </task>
+        <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup389.Panel388.PanelSkin400._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin410.diagramParent.diagram1.DiagramSkin413.graphScroller.GraphScrollerSkin416.graph.horizontalPool1.HorizontalPoolSkin577.base.graphGroup.graph.horizontalLane1.HorizontalLaneSkin585.base.graphGroup.graph.task2</uid>
+      </chbg:Task>
+      <chbg:Task id="task6" centerX="568" centerY="58" explicitHeight="50" explicitWidth="90" height="50" initialized="true" nestLevel="31" processedDescriptors="true" width="90" x="523" y="33">
+        <id>task3</id>
+        <label>任务</label>
+        <layoutDirection>ltr</layoutDirection>
+        <name>Task629</name>
+        <task>
+          <chj:TaskNode id="taskNode3" createTasks="true">
+            <commonNodeElements>
+              <chj:CommonNodeElements id="commonNodeElements3"/>
+            </commonNodeElements>
+            <description>我是bpm描述</description>
+            <task>
+              <chj:Task id="task7">
+                <assignment>
+                  <chj:Assignment id="assignment9"/>
+                </assignment>
+                <swimlane>
+                  <chj:Swim_lane id="swim_lane6">
+                    <assignment>
+                      <chj:Assignment id="assignment10">
+                        <className>swim-lane</className>
+                        <name>swim-lane</name>
+                      </chj:Assignment>
+                    </assignment>
+                  </chj:Swim_lane>
+                </swimlane>
+              </chj:Task>
+            </task>
+          </chj:TaskNode>
+        </task>
+        <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup389.Panel388.PanelSkin400._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin410.diagramParent.diagram1.DiagramSkin413.graphScroller.GraphScrollerSkin416.graph.horizontalPool1.HorizontalPoolSkin577.base.graphGroup.graph.horizontalLane1.HorizontalLaneSkin585.base.graphGroup.graph.task3</uid>
+      </chbg:Task>
+      <chbg:EndEvent id="endEvent1" centerX="762.5" centerY="58.5" height="49" width="33" x="746" y="34">
+        <label>结束</label>
+      </chbg:EndEvent>
+      <chg:Link id="link1">
+        <endNode>task2</endNode>
+        <fallbackEndPoint>
+          <fg:Point id="point1" x="135.9" y="57.96017452655032"/>
+        </fallbackEndPoint>
+        <fallbackStartPoint>
+          <fg:Point id="point2" x="61.75" y="59.130384329743784"/>
+        </fallbackStartPoint>
+        <startNode>startEvent1</startNode>
+      </chg:Link>
+      <chg:Link id="link2">
+        <endNode>task4</endNode>
+        <fallbackEndPoint>
+          <fg:Point id="point3" x="318.9" y="57.25"/>
+        </fallbackEndPoint>
+        <fallbackStartPoint>
+          <fg:Point id="point4" x="225.9" y="57.24999999999999"/>
+        </fallbackStartPoint>
+        <startNode>task2</startNode>
+      </chg:Link>
+      <chg:Link id="link3">
+        <endNode>task6</endNode>
+        <fallbackEndPoint>
+          <fg:Point id="point5" x="521.9" y="57.25"/>
+        </fallbackEndPoint>
+        <fallbackStartPoint>
+          <fg:Point id="point6" x="408.9" y="57.24999999999999"/>
+        </fallbackStartPoint>
+        <startNode>task4</startNode>
+      </chg:Link>
+      <chg:Link id="link4">
+        <endNode>endEvent1</endNode>
+        <fallbackEndPoint>
+          <fg:Point id="point7" x="746" y="58.39455521472392"/>
+        </fallbackEndPoint>
+        <fallbackStartPoint>
+          <fg:Point id="point8" x="611.9" y="57.537576687116555"/>
+        </fallbackStartPoint>
+        <startNode>task6</startNode>
+      </chg:Link>
+    </chbg:HorizontalLane>
+    <chbg:HorizontalLane id="horizontalLane2" centerX="469.5" centerY="202.5" expandedHeight="115" expandedWidth="919" height="115" width="919" x="10" y="145">
+      <label>横甬道</label>
+      <swimlane>
+        <chj:Swim_lane id="swim_lane7">
+          <assignment>
+            <chj:Assignment id="assignment11">
+              <className>swim-lane</className>
+              <name>swim-lane</name>
+            </chj:Assignment>
+          </assignment>
+        </chj:Swim_lane>
+      </swimlane>
+      <chbg:Task id="task8" centerX="182" centerY="57" explicitHeight="50" explicitWidth="90" height="50" initialized="true" nestLevel="31" processedDescriptors="true" width="90" x="137" y="32">
+        <id>task4</id>
+        <label>任务</label>
+        <layoutDirection>ltr</layoutDirection>
+        <name>Task671</name>
+        <task>
+          <chj:TaskNode id="taskNode4" createTasks="true">
+            <commonNodeElements>
+              <chj:CommonNodeElements id="commonNodeElements4"/>
+            </commonNodeElements>
+            <description>我是bpm描述</description>
+            <task>
+              <chj:Task id="task9">
+                <assignment>
+                  <chj:Assignment id="assignment12"/>
+                </assignment>
+                <swimlane>
+                  <chj:Swim_lane id="swim_lane8">
+                    <assignment>
+                      <chj:Assignment id="assignment13">
+                        <className>swim-lane</className>
+                        <name>swim-lane</name>
+                      </chj:Assignment>
+                    </assignment>
+                  </chj:Swim_lane>
+                </swimlane>
+              </chj:Task>
+            </task>
+          </chj:TaskNode>
+        </task>
+        <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup389.Panel388.PanelSkin400._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin410.diagramParent.diagram1.DiagramSkin413.graphScroller.GraphScrollerSkin416.graph.horizontalPool1.HorizontalPoolSkin577.base.graphGroup.graph.horizontalLane2.HorizontalLaneSkin665.base.graphGroup.graph.task4</uid>
+      </chbg:Task>
+      <chbg:Task id="task10" centerX="360" centerY="57" explicitHeight="50" explicitWidth="90" height="50" initialized="true" nestLevel="31" processedDescriptors="true" width="90" x="315" y="32">
+        <id>task5</id>
+        <label>任务</label>
+        <layoutDirection>ltr</layoutDirection>
+        <name>Task686</name>
+        <task>
+          <chj:TaskNode id="taskNode5" createTasks="true">
+            <commonNodeElements>
+              <chj:CommonNodeElements id="commonNodeElements5"/>
+            </commonNodeElements>
+            <description>我是bpm描述</description>
+            <task>
+              <chj:Task id="task11">
+                <assignment>
+                  <chj:Assignment id="assignment14"/>
+                </assignment>
+                <swimlane>
+                  <chj:Swim_lane id="swim_lane9">
+                    <assignment>
+                      <chj:Assignment id="assignment15">
+                        <className>swim-lane</className>
+                        <name>swim-lane</name>
+                      </chj:Assignment>
+                    </assignment>
+                  </chj:Swim_lane>
+                </swimlane>
+              </chj:Task>
+            </task>
+          </chj:TaskNode>
+        </task>
+        <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup389.Panel388.PanelSkin400._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin410.diagramParent.diagram1.DiagramSkin413.graphScroller.GraphScrollerSkin416.graph.horizontalPool1.HorizontalPoolSkin577.base.graphGroup.graph.horizontalLane2.HorizontalLaneSkin665.base.graphGroup.graph.task5</uid>
+      </chbg:Task>
+      <chbg:SequenceFlow id="sequenceFlow1">
+        <endNode>task10</endNode>
+        <fallbackEndPoint>
+          <fg:Point id="point9" x="313.9" y="56.25"/>
+        </fallbackEndPoint>
+        <fallbackStartPoint>
+          <fg:Point id="point10" x="225.9" y="56.24999999999999"/>
+        </fallbackStartPoint>
+        <label>时序流</label>
+        <startNode>task8</startNode>
+      </chbg:SequenceFlow>
+    </chbg:HorizontalLane>
+    <chbg:HorizontalLane id="horizontalLane3" centerX="470" centerY="336" expandedHeight="120" expandedWidth="918" height="120" width="918" x="11" y="276">
+      <label>横甬道</label>
+      <swimlane>
+        <chj:Swim_lane id="swim_lane10">
+          <assignment>
+            <chj:Assignment id="assignment16">
+              <className>swim-lane</className>
+              <name>swim-lane</name>
+            </chj:Assignment>
+          </assignment>
+        </chj:Swim_lane>
+      </swimlane>
+      <chbg:Task id="task12" centerX="361" centerY="69" explicitHeight="50" explicitWidth="90" height="50" initialized="true" nestLevel="31" processedDescriptors="true" width="90" x="316" y="44">
+        <id>task6</id>
+        <label>任务</label>
+        <layoutDirection>ltr</layoutDirection>
+        <name>Task711</name>
+        <task>
+          <chj:TaskNode id="taskNode6" createTasks="true">
+            <commonNodeElements>
+              <chj:CommonNodeElements id="commonNodeElements6"/>
+            </commonNodeElements>
+            <description>我是bpm描述</description>
+            <task>
+              <chj:Task id="task13">
+                <assignment>
+                  <chj:Assignment id="assignment17"/>
+                </assignment>
+                <swimlane>
+                  <chj:Swim_lane id="swim_lane11">
+                    <assignment>
+                      <chj:Assignment id="assignment18">
+                        <className>swim-lane</className>
+                        <name>swim-lane</name>
+                      </chj:Assignment>
+                    </assignment>
+                  </chj:Swim_lane>
+                </swimlane>
+              </chj:Task>
+            </task>
+          </chj:TaskNode>
+        </task>
+        <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup389.Panel388.PanelSkin400._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin410.diagramParent.diagram1.DiagramSkin413.graphScroller.GraphScrollerSkin416.graph.horizontalPool1.HorizontalPoolSkin577.base.graphGroup.graph.horizontalLane3.HorizontalLaneSkin705.base.graphGroup.graph.task6</uid>
+      </chbg:Task>
+      <chbg:Task id="task14" centerX="578" centerY="69" explicitHeight="50" explicitWidth="90" height="50" initialized="true" nestLevel="31" processedDescriptors="true" width="90" x="533" y="44">
+        <id>task7</id>
+        <label>任务</label>
+        <layoutDirection>ltr</layoutDirection>
+        <name>Task726</name>
+        <task>
+          <chj:TaskNode id="taskNode7" createTasks="true">
+            <commonNodeElements>
+              <chj:CommonNodeElements id="commonNodeElements7"/>
+            </commonNodeElements>
+            <description>我是bpm描述</description>
+            <task>
+              <chj:Task id="task15">
+                <assignment>
+                  <chj:Assignment id="assignment19"/>
+                </assignment>
+                <swimlane>
+                  <chj:Swim_lane id="swim_lane12">
+                    <assignment>
+                      <chj:Assignment id="assignment20">
+                        <className>swim-lane</className>
+                        <name>swim-lane</name>
+                      </chj:Assignment>
+                    </assignment>
+                  </chj:Swim_lane>
+                </swimlane>
+              </chj:Task>
+            </task>
+          </chj:TaskNode>
+        </task>
+        <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup389.Panel388.PanelSkin400._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin410.diagramParent.diagram1.DiagramSkin413.graphScroller.GraphScrollerSkin416.graph.horizontalPool1.HorizontalPoolSkin577.base.graphGroup.graph.horizontalLane3.HorizontalLaneSkin705.base.graphGroup.graph.task7</uid>
+      </chbg:Task>
+      <chbg:SequenceFlow id="sequenceFlow2">
+        <endNode>task14</endNode>
+        <fallbackEndPoint>
+          <fg:Point id="point11" x="531.9" y="68.25"/>
+        </fallbackEndPoint>
+        <fallbackStartPoint>
+          <fg:Point id="point12" x="404.9" y="68.25"/>
+        </fallbackStartPoint>
+        <label>时序流</label>
+        <startNode>task12</startNode>
+      </chbg:SequenceFlow>
+    </chbg:HorizontalLane>
+    <chbg:MessageFlow id="messageFlow1">
+      <endNode>task8</endNode>
+      <fallbackEndPoint>
+        <fg:Point id="point13" x="215.9" y="176.25"/>
+      </fallbackEndPoint>
+      <fallbackStartPoint>
+        <fg:Point id="point14" x="215.9" y="92.25"/>
+      </fallbackStartPoint>
+      <label>消息流</label>
+      <startNode>task2</startNode>
+    </chbg:MessageFlow>
+    <chbg:SequenceFlow id="sequenceFlow3">
+      <endNode>endEvent1</endNode>
+      <fallbackEndPoint>
+        <fg:Point id="point15" x="781.0985494106981" y="93"/>
+      </fallbackEndPoint>
+      <fallbackStartPoint>
+        <fg:Point id="point16" x="629.6361740707162" y="319.25"/>
+      </fallbackStartPoint>
+      <label>时序流</label>
+      <startNode>task14</startNode>
+    </chbg:SequenceFlow>
+    <chbg:MessageFlow id="messageFlow2">
+      <endNode>task12</endNode>
+      <fallbackEndPoint>
+        <fg:Point id="point17" x="395.55034965034963" y="319.25"/>
+      </fallbackEndPoint>
+      <fallbackStartPoint>
+        <fg:Point id="point18" x="394.2496503496503" y="226.25"/>
+      </fallbackStartPoint>
+      <label>消息流</label>
+      <startNode>task10</startNode>
+    </chbg:MessageFlow>
+  </chbg:HorizontalPool>
 </diagram>

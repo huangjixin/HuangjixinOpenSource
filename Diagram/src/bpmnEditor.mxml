@@ -19,6 +19,7 @@
 			import com.hjx.bpmn.graphic.VerticalLane;
 			import com.hjx.diagram.serialization.XMLSerializer;
 			import com.hjx.graphic.Link;
+			import com.hjx.graphic.LinkConnectionArea;
 			import com.hjx.graphic.Node;
 			import com.hjx.graphic.Renderer;
 			import com.hjx.uitls.CloneUtil;
@@ -31,6 +32,8 @@
 			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			import mx.events.MoveEvent;
+			
+			import spark.effects.Resize;
 			
 			private var file:FileReference;
 			private var currentFileName:String;
@@ -129,9 +132,9 @@
 			//-------------------------------------------------------------------------------------------
 			// 克隆函数。
 			//-------------------------------------------------------------------------------------------
-			private function cloneFunction(obj:Renderer, clone:Renderer, inCopyPaste:Boolean = false) : void 
+			private function cloneFunction(obj:Renderer, clone:Renderer, playResize:Boolean = false) : void 
 			{
-				if(!inCopyPaste){
+				var resize:Resize = new Resize(clone);
 					/* if(clone is SubProcess){
 						clone.width = resourceManager.getNumber("bpmeditor", "bpmeditor.subprocess.drop.width");
 						clone.height = resourceManager.getNumber("bpmeditor", "bpmeditor.subprocess.drop.height");
@@ -149,20 +152,75 @@
 						bpm.graphic.Group(clone).clickableInside = false;
 					} */
 					if(clone is HorizontalPool){
-						clone.width = 500;
+						if (playResize) 
+						{
+							resize.widthTo = 500;	
+							resize.play();
+						}
+						else 
+							clone.width = 500;	
+						
 					} else if(clone is VerticalPool){
-						clone.height = 500;
+						if (playResize) 
+						{
+							resize.heightTo = 500;	
+							resize.play();
+						}
+						else 
+							clone.height = 500;
 					} else if(clone is SubProcess){
-						clone.height = 200;
-						clone.width = 200;
+						if (playResize) 
+						{
+							resize.widthTo = 200;	
+							resize.heightTo = 200;	
+							resize.play();
+						}
+						else {
+							clone.height = 200;
+							clone.width = 200;						
+						}
+					}else if(clone is HorizontalLane){
+						if (playResize) 
+						{
+							resize.widthTo = 480;	
+							resize.play();
+						}
+						else {
+							clone.width = 480;					
+						}
+					}else if(clone is VerticalLane){
+						if (playResize) 
+						{
+							resize.heightTo = 480;	
+							resize.play();
+						}
+						else {
+							clone.height = 480;					
+						}
 					}
-				}
+				
 				
 				/* if(clone is SubProcess){
 					if(SubProcess(obj).nodeLayout != null)
 						SubProcess(clone).nodeLayout = SubProcess(obj).nodeLayout.copy();
 				}   */             
 			}
+			
+			protected function setProBtn_clickHandler(event:MouseEvent):void
+			{
+				var selObjs:Vector.<Renderer>  = diagramEditor.getSelectedObjects();
+				if(selObjs.length>0){
+					for each (var renderer:Renderer in selObjs) 
+					{
+						if(renderer is Task){
+							var task:Task = renderer as Task;
+							task.task.commonNodeElements.name = "commonNodeElements";
+						}
+					}
+					
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -216,7 +274,7 @@
 				</s:ButtonBar>
 				
 				<!--<s:TabBar width="100%" dataProvider="{rendererView}"/>-->
-				<mx:ViewStack id="rendererView" width="100%" height="100%">
+				<mx:ViewStack id="rendererView" width="100%" height="100%" creationPolicy="all">
 					<s:NavigatorContent width="100%" height="100%" label="任务"
 										backgroundColor="#EEF0F3">
 						<editor:DiagramPalette top="10" width="100%" height="100%">
@@ -277,22 +335,22 @@
 								<graphic1:EndEvent label="结束"/>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
-								<graphic1:EndEvent label="开始" trigger="Message"/>
+								<graphic1:EndEvent label="结束" trigger="Message"/>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
-								<graphic1:EndEvent label="开始" trigger="Timer"/>
+								<graphic1:EndEvent label="结束" trigger="Timer"/>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
-								<graphic1:EndEvent label="开始" trigger="Error"/>
+								<graphic1:EndEvent label="结束" trigger="Error"/>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
-								<graphic1:EndEvent label="开始" trigger="Compensation"/>
+								<graphic1:EndEvent label="结束" trigger="Compensation"/>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
-								<graphic1:EndEvent label="开始" trigger="Rule"/>
+								<graphic1:EndEvent label="结束" trigger="Rule"/>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
-								<graphic1:EndEvent label="开始" trigger="Multiple"/>
+								<graphic1:EndEvent label="结束" trigger="Multiple"/>
 							</editor:DiagramPalette>
 						</editor:DiagramPalette>
 					</s:NavigatorContent>
@@ -354,10 +412,12 @@
 								</graphic1:VerticalPool>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
-								<graphic1:VerticalLane width="120" height="120" label="竖甬道">
-								</graphic1:VerticalLane>
 								<graphic1:HorizontalLane width="120" height="120" label="横甬道">
 								</graphic1:HorizontalLane>
+							</editor:DiagramPalette>
+							<editor:DiagramPalette>
+								<graphic1:VerticalLane width="120" height="120" label="竖甬道">
+								</graphic1:VerticalLane>
 							</editor:DiagramPalette>
 						</editor:DiagramPalette>
 					</s:NavigatorContent>
@@ -426,7 +486,8 @@
 				<s:HGroup>
 					<s:Button label="保存" click="saveXML();"/>
 					<s:Button label="打开" click="loadXML();"/>
-					<s:Button label="连线" click="diagramEditor.connectNodes();"/>
+					<s:Button label="连线" click="diagramEditor.connectNodes(LinkConnectionArea.TOP,LinkConnectionArea.BOTTOM);"/>
+					<s:Button id="setProBtn" label="设置属性" click="setProBtn_clickHandler(event)"/>
 				</s:HGroup>
 			</s:VGroup>
 			<s:Panel width="100%" height="100%">
