@@ -18,8 +18,8 @@ package com.hjx.bpmn.graphic
 		public function Task()
 		{
 			super();
-			task.description = "我是bpm描述";
-			task.createTasks = true;
+			task.description = "";
+			task.create_tasks = true;
 		}
 		
 	}
