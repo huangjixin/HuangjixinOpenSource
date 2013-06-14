@@ -991,8 +991,8 @@ package com.hjx.graphic
 						this.startArrow.visible = true;
 						var midWidth:Number;
 						var startRect:Rectangle = getPathBounds(this.startArrow);
-						
-						point1.offset(-startRect.width * Math.cos(radian),-startRect.width*Math.sin(radian));
+						var startOffsetW:Number = Math.max(10,startRect.width);
+						point1.offset(-startOffsetW * Math.cos(radian),-startOffsetW*Math.sin(radian));
 						this._shapePoints[0] = point1;
 					}
 				}
@@ -1015,9 +1015,9 @@ package com.hjx.graphic
 						this.endArrow.y = point2.y;
 						this.endArrow.visible = true;
 						var endRect:Rectangle = getPathBounds(this.startArrow);
-						
-						point2.offset(-endRect.width * Math.cos(radian),-endRect.width*Math.sin(radian));
-						this._shapePoints[(this._shapePoints.length - 1)] = point2;
+						var endOffsetW:Number = Math.max(10,endRect.width);
+						point2.offset(-endOffsetW * Math.cos(radian),-endOffsetW*Math.sin(radian));
+						this._shapePoints[this._shapePoints.length - 1] = point2;
 					}
 				}
 				else 
@@ -1044,35 +1044,6 @@ package com.hjx.graphic
 				++flag;
 			}
 			return result;
-		}
-		
-		override protected function cloneStyle(renderer:Renderer, cloneRenderer:Renderer):void
-		{
-			// 利用这个工具来查找style.
-			/*var describe:* = describeType(renderer);
-			var objectMetadata:* = describe.metadata;
-			var styleProp:XMLList = objectMetadata.(@name=="Style").arg.(@key=="name");
-			for each (var xml:XML in styleProp) 
-			{
-				cloneRenderer.setStyle(xml.@value,renderer.getStyle(xml.@value));
-			}*/
-			/*cloneRenderer.setStyle("caps",renderer.getStyle("caps"));
-			cloneRenderer.setStyle("caretColor",renderer.getStyle("caretColor"));
-			cloneRenderer.setStyle("dashArray",renderer.getStyle("dashArray"));
-			cloneRenderer.setStyle("dashStyle",renderer.getStyle("dashStyle"));
-			cloneRenderer.setStyle("endArrowType",renderer.getStyle("endArrowType"));
-			cloneRenderer.setStyle("endArrowVisible",renderer.getStyle("endArrowVisible"));
-			cloneRenderer.setStyle("joints",renderer.getStyle("joints"));
-			cloneRenderer.setStyle("miterLimit",renderer.getStyle("miterLimit"));
-			cloneRenderer.setStyle("orthogonalSpacing",renderer.getStyle("orthogonalSpacing"));
-			cloneRenderer.setStyle("pixelHinting",renderer.getStyle("pixelHinting"));
-			cloneRenderer.setStyle("radius",renderer.getStyle("radius"));
-			cloneRenderer.setStyle("selectedColor",renderer.getStyle("selectedColor"));
-			cloneRenderer.setStyle("selectedStrokeWidth",renderer.getStyle("selectedStrokeWidth"));
-			cloneRenderer.setStyle("startArrowType",renderer.getStyle("startArrowType"));
-			cloneRenderer.setStyle("startArrowVisible",renderer.getStyle("startArrowVisible"));
-			cloneRenderer.setStyle("strokeColor",renderer.getStyle("strokeColor"));
-			cloneRenderer.setStyle("strokeWidth",renderer.getStyle("strokeWidth"));*/
 		}
 		
 		override protected function partAdded(partName:String, instance:Object):void{

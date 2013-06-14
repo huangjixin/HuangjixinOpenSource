@@ -20,6 +20,7 @@ package com.hjx.graphic
 	[Style(name="color", inherit="yes", type="uint",format="Color")]
 	[Style(name="selectedColor", inherit="yes", type="uint",format="Color")]
 	[Style(name="selectedTextColor", inherit="yes", type="uint",format="Color")]
+	[Style(name="toBeAddedPalette", inherit="yes", type="Class")]
 	/**
 	 * 节点类基类，该节点继承自Renderer，组件可分为两大类，节点和连线。 
 	 * @author huangjixin

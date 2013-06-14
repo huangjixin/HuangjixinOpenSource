@@ -12,6 +12,8 @@ package com.hjx.diagram.editor
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import mx.core.IVisualElementContainer;
+	
 	public class NodeAdorner extends Adorner
 	{
 		[SkinPart(required="false")]
@@ -24,6 +26,7 @@ package com.hjx.diagram.editor
 		public var leftArrowHandle:DisplayObject;
 		
 		private var link:Link;
+		private var toBeAddedPalette:ToBeAddedPalette;
 		
 		public function NodeAdorner(adornedObject:Renderer)
 		{
@@ -39,8 +42,8 @@ package com.hjx.diagram.editor
 		
 		override protected function onAdornerMouseMove(event:MouseEvent):void
 		{
-			rightArrowHandle.visible=topArrowHandle.visible=bottomArrowHandle.visible=leftArrowHandle.visible
-				= isMouseNear(8);
+			var isNear:Boolean = rightArrowHandle.visible=topArrowHandle.visible=bottomArrowHandle.visible=leftArrowHandle.visible
+				= isMouseNear(toBeAddedPalette?Math.min(toBeAddedPalette.width,toBeAddedPalette.height):8);
 		}
 		
 		internal function isArrowHandle(object:Object):Boolean
@@ -61,6 +64,55 @@ package com.hjx.diagram.editor
 			}
 		}
 		
+		internal function createToBeAddedPalette():ToBeAddedPalette
+		{
+			var toBeAddedPalette:* = adornedObject.getStyle("toBeAddedPalette");
+			if(toBeAddedPalette){
+				return new toBeAddedPalette();
+			}
+			return null;
+		}
+		
+		override protected function handleMouseOver(displayObject:DisplayObject, event:MouseEvent):void
+		{
+				
+			/*if(!toBeAddedPalette){
+				toBeAddedPalette = createToBeAddedPalette();
+			}
+			if(!toBeAddedPalette){
+				return;
+			}
+			
+//			editor.adornersGroup.addElement(toBeAddedPalette);
+			
+			var rect:Rectangle;
+			if(displayObject == rightArrowHandle){
+				toBeAddedPalette.isVertical = true;
+				rect = adornedObject.getBounds(editor.adornersGroup);
+				toBeAddedPalette.x = rect.x+rect.width+10;
+				toBeAddedPalette.y = rect.y-toBeAddedPalette.height/2;
+			}else if(displayObject == topArrowHandle){
+				rect = adornedObject.getBounds(editor.adornersGroup);
+				toBeAddedPalette.x = rect.x-toBeAddedPalette.width/2+rect.width/2;
+				toBeAddedPalette.y = rect.y-rect.height-toBeAddedPalette.height;
+				toBeAddedPalette.isVertical = false;
+			}
+			
+			if(!rect){
+				return;
+			}*/
+			
+			
+		}
+		
+		/**
+		 * 处理拖拽的情况。 
+		 * @param displayObject
+		 * @param event
+		 * @param offsetX
+		 * @param offsetY
+		 * 
+		 */
 		override protected function handleDragged(displayObject:DisplayObject, event:MouseEvent, offsetX:Number, offsetY:Number):void
 		{
 			if (this.isArrowHandle(displayObject)) 
@@ -76,7 +128,7 @@ package com.hjx.diagram.editor
 				editor.adornersGroup.graphics.clear();
 				editor.adornersGroup.graphics.lineStyle(2,0);
 				
-				
+				//绘制箭头。
 				var g:Graphics = editor.adornersGroup.graphics;
 				
 				var fP:Point = new Point(displayObjectRect.x+displayObjectRect.width/2,displayObjectRect.y+displayObjectRect.height/2);
@@ -106,7 +158,7 @@ package com.hjx.diagram.editor
 				g.lineTo(tP.x, tP.y);
 				g.endFill();
 				
-				
+				//找当前的节点，根据鼠标位置绘制红色框。
 				var renderer:Renderer = trackCurrentRenderer(event);
 				if(renderer){
 					if(renderer is Link){
@@ -139,6 +191,12 @@ package com.hjx.diagram.editor
 			}
 		}
 		
+		/**
+		 * 判断鼠标是否在节点下放开，如果是就连线节点。 
+		 * @param displayObject
+		 * @param event
+		 * 
+		 */
 		override protected function handleReleased(displayObject:DisplayObject, event:MouseEvent):void
 		{
 			if (this.isArrowHandle(displayObject)) 
@@ -223,7 +281,10 @@ package com.hjx.diagram.editor
 						link.startNode = adornedObject as Node;
 						linkParent = DiagramEditor.getLowestCommonGraph(link.startNode, link.startNode);
 						linkParent.addElement(link);
-						link.fallbackEndPoint = new Point(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY);
+						var point:Point = new Point(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY);
+						point = editor.adornersGroup.localToGlobal(point);
+						point = link.globalToLocal(point);
+						link.fallbackEndPoint = point;
 						link.invalidateShape();
 					}
 				}
@@ -249,6 +310,15 @@ package com.hjx.diagram.editor
 				--length;
 			}
 			return renderer;
+		}
+		
+		override protected function cleanup():void
+		{
+			/*if(toBeAddedPalette){
+				IVisualElementContainer(toBeAddedPalette.parent).removeElement(toBeAddedPalette);
+				toBeAddedPalette = null;
+			}*/
+			super.cleanup();
 		}
 	}
 }

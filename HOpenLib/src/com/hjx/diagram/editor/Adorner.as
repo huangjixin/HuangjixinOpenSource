@@ -141,6 +141,15 @@ package com.hjx.diagram.editor
 			return false;
 		}
 		
+		
+		internal  function mouseOverInHandle(event:MouseEvent):void
+		{
+			this.interactiveHandle = DisplayObject(event.currentTarget);
+			handleMouseOver(this.interactiveHandle, event);
+//			event.stopPropagation();
+			return;
+		}
+		
 		/**
 		 *  
 		 * @param event
@@ -230,6 +239,11 @@ package com.hjx.diagram.editor
 			return;
 		}
 		
+		protected function handleMouseOver(displayObject:DisplayObject, event:MouseEvent):void
+		{
+			return;
+		}
+		
 		protected function handlePressed(displayObject:DisplayObject, event:MouseEvent):void
 		{
 			event.stopPropagation();
@@ -299,6 +313,7 @@ package com.hjx.diagram.editor
 			super.partAdded(partName, instance);
 			return;
 		}
+		
 		
 		/**
 		 * 复写 commitProperties函数以便让其自动更新位置。
