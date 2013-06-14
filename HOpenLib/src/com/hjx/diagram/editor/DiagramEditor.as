@@ -247,6 +247,7 @@ package com.hjx.diagram.editor
 			}
 			
 			var renderer:Renderer=getRenderer(event.target);
+			
 			this._graph.setFocus();
 			if (event.ctrlKey) 
 			{
@@ -263,6 +264,10 @@ package com.hjx.diagram.editor
 			if (event.ctrlKey || event.shiftKey) 
 			{
 				return;
+			}
+			
+			if(renderer is Link){
+				renderer.invalidateProperties();
 			}
 			
 			this.mouseDown = true;
@@ -412,7 +417,14 @@ package com.hjx.diagram.editor
 				while (length < this._graph.numElements) 
 				{
 					renderer = this._graph.getElementAt(length) as Renderer;
-					if (renderer && rectangle.intersects(renderer.getBounds(this.adornersGroup))) 
+					if(renderer is Link){
+						var link:Link = renderer as Link;
+						var linkRect:Rectangle = Link.getPathBounds(link.path);
+						if(rectangle.intersects(linkRect)){
+							this.setSelected(renderer, true);
+							renderer.invalidateProperties();
+						}
+					}else if (renderer && rectangle.intersects(renderer.getBounds(this.adornersGroup))) 
 					{
 						this.setSelected(renderer, true);
 					}
@@ -1083,7 +1095,6 @@ package com.hjx.diagram.editor
 					}
 					diagramPalette.dragImage.removeAllElements();
 					diagramPalette.dragImage.addElement(cloneRenderer);
-//					this.cloneChildren(loc1, loc3);
 					cloneRenderer.setX(cloneRenderer, 0);
 					cloneRenderer.setY(cloneRenderer, 0);
 					
@@ -1197,7 +1208,7 @@ package com.hjx.diagram.editor
 			this.adornersGroup.graphics.lineStyle(2,0xff0000);
 			if(event){
 				var renderer:Renderer = getRenderer(event.target);
-				if(renderer && !(renderer is Link)){
+				if(renderer&& !(renderer is Link)){// 
 					var ele:Renderer;
 					var length:int = 0;
 					var rendererRect:Rectangle = renderer.getBounds(this.adornersGroup);

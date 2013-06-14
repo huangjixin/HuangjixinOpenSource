@@ -3,6 +3,8 @@ package com.hjx.diagram.editor
 	import com.hjx.graphic.Link;
 	import com.hjx.graphic.Renderer;
 	
+	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -105,6 +107,22 @@ package com.hjx.diagram.editor
 			return super.isHandle(arg1);
 		}
 		
+		public function placeHandleObject():void{
+			var link:Link=null;
+			var shapePoints:Vector.<Point>;
+			
+			if (parent != null) 
+			{
+				link = Link(adornedObject);
+				shapePoints = link.shapePoints;
+				if (shapePoints.length >= 2) 
+				{
+					this.placeHandle(shapePoints[1], shapePoints[0], true);
+					this.placeHandle(shapePoints[shapePoints.length - 2], shapePoints[(shapePoints.length - 1)], false);
+				}
+			}
+		}
+		
 		protected override function partAdded(partName:String, instance:Object):void
 		{
 			/*var loc1:*=null;*/
@@ -131,10 +149,10 @@ package com.hjx.diagram.editor
 				shapePoints = link.shapePoints;
 				if (shapePoints.length >= 2) 
 				{
-					/*this.placeHandle(shapePoints[1], shapePoints[0], true);
-					this.placeHandle(shapePoints[shapePoints.length - 2], shapePoints[(shapePoints.length - 1)], false);*/
-					this.placeHandle(link.fallbackEndPoint, link.fallbackStartPoint, true);
-					this.placeHandle(link.fallbackStartPoint,link.fallbackEndPoint, false);
+					this.placeHandle(shapePoints[1], shapePoints[0], true);
+					this.placeHandle(shapePoints[shapePoints.length - 2], shapePoints[(shapePoints.length - 1)], false);
+					/*this.placeHandle(link.fallbackEndPoint, link.fallbackStartPoint, true);
+					this.placeHandle(link.fallbackStartPoint,link.fallbackEndPoint, false);*/
 				}
 				/*this.startHandleX = link.x;
 				this.startHandleY = link.y;
@@ -173,14 +191,14 @@ package com.hjx.diagram.editor
 			endPoint = this.globalToLocal(link.parent.localToGlobal(endPoint));
 			if (isStartHandle) 
 			{
-				this.startHandleX = endPoint.x;
-				this.startHandleY = endPoint.y;
+				this.startHandleX = endPoint.x+startHandle.width/2;
+				this.startHandleY = endPoint.y+startHandle.height/2;
 				this.startHandleRotation = radian;
 			}
 			else 
 			{
-				this.endHandleX = endPoint.x;
-				this.endHandleY = endPoint.y;
+				this.endHandleX = endPoint.x+endHandle.width/2;
+				this.endHandleY = endPoint.y-endHandle.height/2;
 				this.endHandleRotation = radian;
 			}
 			return;
@@ -198,25 +216,32 @@ package com.hjx.diagram.editor
 			}
 			super.handlePressed(arg1, arg2);
 			return;
-		}
+		}*/
 		
-		protected override function handleDragged(arg1:flash.display.DisplayObject, arg2:flash.events.MouseEvent, arg3:Number, arg4:Number):void
+		protected override function handleDragged(displayObject:DisplayObject, event:MouseEvent, offsetX:Number, offsetY:Number):void
 		{
-			if (this.isReconnectHandle(arg1)) 
+			if (this.isReconnectHandle(displayObject)) 
 			{
-				if (this.linkConnectionHelper != null) 
-				{
-					this.linkConnectionHelper.handleDragged(arg1, arg2, arg3, arg4);
+				var adornerObjectRect:Rectangle = this.adornedObject.getBounds(editor.adornersGroup);
+				var displayObjectRect:Rectangle = displayObject.getBounds(editor.adornersGroup);
+				var fP:Point;
+				var tP:Point;
+				
+				if(displayObject ==startHandle){
+					
+				}else if(displayObject == endHandle){
+					fP = Link(adornedObject).fallbackStartPoint;
+					tP = new Point(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY);
+					LinkHelper.drawLineArrow(this,displayObject,event,fP,tP);
 				}
-			}
-			else 
-			{
-				super.handleDragged(arg1, arg2, arg3, arg4);
+				
+			}else{
+				super.handleDragged(displayObject, event, offsetX, offsetY);
 			}
 			return;
 		}
 		
-		protected override function handleReleased(arg1:flash.display.DisplayObject, arg2:flash.events.MouseEvent):void
+		/*protected override function handleReleased(arg1:flash.display.DisplayObject, arg2:flash.events.MouseEvent):void
 		{
 			if (this.isReconnectHandle(arg1)) 
 			{

@@ -44,15 +44,8 @@
 		<mx:SolidColor id="fillcolor" color="{strokeColor}"/>
 	</fx:Declarations>
 
-	<s:Group id="base" includeInLayout="false">  
-		<!--<s:filters>
-			<s:GlowFilter includeIn="ShowsCaret" color="{caretColor}" alpha="0.8" blurX="8" blurY="8">
-			</s:GlowFilter>
-		</s:filters>-->    
-		<primatives:Path id="path" data="M 0 0 L 0 0" stroke="{strokecolor}">
-			
-		</primatives:Path>  
-		
+	<s:Group id="base" includeInLayout="false">
+		<primatives:Path id="path" data="M 0 0 L 0 0" stroke="{strokecolor}"/>
 		<s:Path id="startArrow" data="M -10 -5 l 10 5 l -10 5 Z" fill="{fillcolor}">
 		</s:Path>
 		<!-- data path must be relative to (0,0) because arrow are centered on path end/start points-->

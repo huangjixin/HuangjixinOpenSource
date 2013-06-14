@@ -801,6 +801,8 @@ package com.hjx.graphic
 						}
 
 						this.fallbackStartPoint = defaultStartPoint.clone();
+					}else{
+						defaultStartPoint = this.fallbackStartPoint.clone();
 					}
 					
 					if(this.endNode){
@@ -830,6 +832,8 @@ package com.hjx.graphic
 						}
 						
 						this.fallbackEndPoint = defaultEndPoint.clone();
+					}else{
+						defaultEndPoint = this.fallbackEndPoint.clone();
 					}
 					
 					this._shapePoints.push(defaultStartPoint);

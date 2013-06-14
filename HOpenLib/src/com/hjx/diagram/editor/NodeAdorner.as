@@ -117,75 +117,11 @@ package com.hjx.diagram.editor
 		{
 			if (this.isArrowHandle(displayObject)) 
 			{
-				var editor:DiagramEditor = DiagramEditor.getEditor(this);
-				if(!editor){
-					return;
-				}
-				
 				var adornerObjectRect:Rectangle = this.adornedObject.getBounds(editor.adornersGroup);
 				var displayObjectRect:Rectangle = displayObject.getBounds(editor.adornersGroup);
-				
-				editor.adornersGroup.graphics.clear();
-				editor.adornersGroup.graphics.lineStyle(2,0);
-				
-				//绘制箭头。
-				var g:Graphics = editor.adornersGroup.graphics;
-				
 				var fP:Point = new Point(displayObjectRect.x+displayObjectRect.width/2,displayObjectRect.y+displayObjectRect.height/2);
 				var tP:Point = new Point(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY);
-				
-				var lArrowBase:Point;
-				var rArrowBase:Point;
-				var mArrowBase:Point;
-				
-				var edgeAngle:Number;
-				
-				edgeAngle = Math.atan2(tP.y - fP.y,tP.x - fP.x);
-				mArrowBase = Point.polar(Point.distance(tP,fP) - 10,edgeAngle);
-				mArrowBase.offset(fP.x,fP.y);
-				
-				lArrowBase = Point.polar(10 / 2.9,(edgeAngle - (Math.PI / 2.0)));
-				rArrowBase = Point.polar(10 / 2.9,(edgeAngle + (Math.PI / 2.0)));
-				
-				lArrowBase.offset(mArrowBase.x,mArrowBase.y);			
-				rArrowBase.offset(mArrowBase.x,mArrowBase.y);
-				
-				g.beginFill(0);
-				g.moveTo(fP.x, fP.y);
-				g.lineTo(tP.x, tP.y);
-				g.lineTo(lArrowBase.x, lArrowBase.y);
-				g.lineTo(rArrowBase.x, rArrowBase.y);
-				g.lineTo(tP.x, tP.y);
-				g.endFill();
-				
-				//找当前的节点，根据鼠标位置绘制红色框。
-				var renderer:Renderer = trackCurrentRenderer(event);
-				if(renderer){
-					if(renderer is Link){
-						return ;
-					}
-					var node:Node = renderer as Node;
-					editor.adornersGroup.graphics.lineStyle(2,0xff0000);
-					var nodeRect:Rectangle = node.getBounds(editor.adornersGroup);
-					var nodeTopRect:Rectangle = new Rectangle(nodeRect.x + nodeRect.width/3,nodeRect.y,nodeRect.width/3,nodeRect.height/3);
-					var nodeBottomRect:Rectangle = new Rectangle(nodeRect.x + nodeRect.width/3,nodeRect.y+nodeRect.height*2/3,nodeRect.width/3,nodeRect.height/3);
-					var nodeLeftRect:Rectangle = new Rectangle(nodeRect.x,nodeRect.y+nodeRect.height/3,nodeRect.width/3,nodeRect.height/3);
-					var nodeRightRect:Rectangle = new Rectangle(nodeRect.x + nodeRect.width*2/3,nodeRect.y+nodeRect.height/3,nodeRect.width/3,nodeRect.height/3);
-					var rect:Rectangle;
-					if(nodeTopRect.contains(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY)){
-						rect = nodeTopRect;
-					}else if(nodeBottomRect.contains(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY)){
-						rect = nodeBottomRect;
-					}else if(nodeLeftRect.contains(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY)){
-						rect = nodeLeftRect;
-					}else if(nodeRightRect.contains(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY)){
-						rect = nodeRightRect;
-					}else{
-						rect = nodeRect;
-					}
-					
-					editor.adornersGroup.graphics.drawRect(rect.x,rect.y,rect.width,rect.height);
-				}
+				LinkHelper.drawLineArrow(this,displayObject,event,fP,tP);
 			}else{
 				super.handleDragged(displayObject, event, offsetX, offsetY);
 			}
