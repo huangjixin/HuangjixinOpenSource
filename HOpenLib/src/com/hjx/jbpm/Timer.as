@@ -12,12 +12,56 @@ package com.hjx.jbpm
 		private var _transition:String;
 		private var _cancel_event:String;
 		
-//		{action|script|create-timer|cancel-timer}
+		private var _action:Action = new Action;
+		private var _script:Script = new Script();
+		private var _create_timer:Create_timer = new Create_timer();
+		private var _cancel_timer:Cancel_timer = new Cancel_timer();
+		
 		public function Timer()
 		{
 			super();
 		}
-
+	
+		public function get cancel_timer():Cancel_timer
+		{
+			return _cancel_timer;
+		}
+		
+		public function set cancel_timer(value:Cancel_timer):void
+		{
+			_cancel_timer = value;
+		}
+		
+		public function get create_timer():Create_timer
+		{
+			return _create_timer;
+		}
+		
+		public function set create_timer(value:Create_timer):void
+		{
+			_create_timer = value;
+		}
+		
+		public function get script():Script
+		{
+			return _script;
+		}
+		
+		public function set script(value:Script):void
+		{
+			_script = value;
+		}
+		
+		public function get action():Action
+		{
+			return _action;
+		}
+		
+		public function set action(value:Action):void
+		{
+			_action = value;
+		}
+		
 		public function get cancel_event():String
 		{
 			return _cancel_event;
@@ -65,6 +109,11 @@ package com.hjx.jbpm
 			xml.@["repeat"] = repeat;
 			xml.@["transition"] = transition;
 			xml.@["cancel-event"] = cancel_event;
+			
+			xml.appendChild(action.toXml());
+			xml.appendChild(cancel_timer.toXml());
+			xml.appendChild(create_timer.toXml());
+			xml.appendChild(script.toXml());
 			return xml;
 		}
 	}

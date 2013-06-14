@@ -1,14 +1,8 @@
 package com.hjx.jbpm
 {
-	/**
-	 * 
-	 * @author huangjixin
-	 * 
-	 */
-	public class condition extends JbpmBase
+	public class Condition extends JbpmBase
 	{
-		
-		public function condition()
+		public function Condition()
 		{
 			super();
 		}

@@ -2,15 +2,15 @@ package com.hjx.jbpm
 {
 	public class Assignment extends JbpmBase
 	{
-		private var _className:String;
+		private var _className:String="";
 		
-		private var _expression:String;
+		private var _expression:String="";
 		
-		private var _actor_id:String;
+		private var _actor_id:String="";
 		
-		private var _pooled_actors:String;
+		private var _pooled_actors:String="";
 		
-		private var _config_type:String;
+		private var _config_type:String="";
 		
 		public function Assignment()
 		{

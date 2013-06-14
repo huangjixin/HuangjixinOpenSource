@@ -2,7 +2,6 @@ package com.hjx.jbpm
 {
 	public class Task_node extends JbpmBase
 	{
-		private var _createTasks:Boolean;
 		private var _description:String;
 		private var _signal:String = "last";
 		private var _create_tasks:Boolean = true;
@@ -81,32 +80,20 @@ package com.hjx.jbpm
 			_description = value;
 		}
 
-		[Bindable]
-		/**
-		 * create-tasks
-		 * @return 
-		 * 
-		 */
-		public function get createTasks():Boolean
-		{
-			return _createTasks;
-		}
-
-		public function set createTasks(value:Boolean):void
-		{
-			_createTasks = value;
-		}
 
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.@["createTasks"] = createTasks;
 			xml.@["description"] = description;
 			xml.@["signal"] = signal;
 			xml.appendChild(task.toXml());
 			xml.@["create-tasks"] = create_tasks;
-			xml.appendChild(commonNodeElements.toXml());
 			xml.@["end-tasks"] = end_tasks;
+			var xmllist:XMLList = commonNodeElements.toXml().children();
+			for each (var x:XML in xmllist) 
+			{
+				xml.appendChild(x);
+			}
 			return xml;
 		}
 	}

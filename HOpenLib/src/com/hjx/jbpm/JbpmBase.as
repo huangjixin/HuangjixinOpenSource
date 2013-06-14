@@ -4,7 +4,7 @@ package com.hjx.jbpm
 
 	public class JbpmBase
 	{
-		private var _name:String = "jbpm元素名称";
+		private var _name:String = "";
 		
 		public function JbpmBase()
 		{
@@ -28,10 +28,7 @@ package com.hjx.jbpm
 			var dotIndex:int = className.lastIndexOf("::");
 			if(dotIndex > 0){
 				className = className.substr(dotIndex + 2);
-				var start:String = className.substr(0,1);
-				start = start.toLocaleLowerCase();
-				className= className.substr(1,className.length);
-				className = start+className;
+				className = className.toLocaleLowerCase();
 				className = className.replace("_","-");
 			}	
 			
