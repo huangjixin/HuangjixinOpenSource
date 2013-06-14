@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editor:ToBeAddedPalette xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:editor="com.hjx.diagram.editor.*"
+						 xmlns:graphic="com.hjx.bpmn.graphic.*">
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import spark.layouts.HorizontalAlign;
+			import spark.layouts.HorizontalLayout;
+			import spark.layouts.VerticalAlign;
+			import spark.layouts.VerticalLayout;
+			internal var layoutChanged:Boolean = false;
+			
+			override public function set isVertical(value:Boolean):void{
+				super.isVertical = value;
+				layoutChanged = true;
+				invalidateProperties();
+			}
+			
+			override protected function commitProperties():void{
+				super.commitProperties();
+				if(layoutChanged){
+					layoutChanged = false;
+					if(isVertical){
+						var vert:VerticalLayout = new VerticalLayout();
+						vert.horizontalAlign = HorizontalAlign.CENTER;
+						elementsGroup.layout = vert;
+					}else{
+						var hori:HorizontalLayout = new HorizontalLayout();
+						hori.verticalAlign = VerticalAlign.MIDDLE;
+						elementsGroup.layout = hori;
+					}
+				}
+			} 
+		]]>
+	</fx:Script>
+	<s:Group left="0" right="0" top="0" bottom="0">
+		<s:Rect left="0" right="0" top="0" bottom="0" radiusX="2" radiusY="2">
+			<s:stroke>
+				<s:SolidColorStroke color="0xF0F0F0"/>
+			</s:stroke>
+		</s:Rect>
+	</s:Group>
+	
+	<s:Group id="elementsGroup" left="4" right="4" top="4" bottom="4">
+		<graphic:Task width="16" height="16" label="" skinClass="skins.ToBeAddedPaletteTask"/>
+		<graphic:Task width="16" height="16" label="" skinClass="skins.ToBeAddedPaletteTask"/>
+	</s:Group>
+</editor:ToBeAddedPalette>

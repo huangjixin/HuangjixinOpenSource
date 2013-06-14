@@ -49,16 +49,21 @@
 			// -----------------------------------------
 			private var isModified:Boolean;
 			
+			private var jbpmXml:XML;
+			
 			private function saveXML() : void 
 			{
+				getJbpmBtn_clickHandler();
+				////////////////////////////
 				file = new FileReference();
-				var xml:XML = new XMLSerializer().serialize(diagramEditor.graph, "diagram");
+				var xml:XML = new XMLSerializer().serialize(diagramEditor.graph, "BpmnDiagram");
+				xml.appendChild(jbpmXml);
 				var fileName:String = currentFileName;
 				if(fileName == null)
 					fileName = "新建流程";
 				file.addEventListener(flash.events.Event.COMPLETE, fileSaved);
 				file.addEventListener(flash.events.IOErrorEvent.IO_ERROR, ioError);
-				file.save(xml, fileName);
+				file.save(xml, fileName+".xml");
 			}
 			
 			private function fileSaved(event:flash.events.Event) : void 
@@ -108,7 +113,7 @@
 				if(file != null){
 					try {
 						var xml:XML = new XML(file.data.toString());
-						if(xml.localName() != "diagram"){
+						if(xml.localName() != "BpmnDiagram"){
 							Alert.show("该文件不是流程文件");
 							return;
 						}
@@ -228,13 +233,10 @@
 				}
 			}
 			
-			private var xml:XML;
-			
-			protected function getJbpmBtn_clickHandler(event:MouseEvent):void
+			protected function getJbpmBtn_clickHandler(event:MouseEvent= null):void
 			{
-				xml= new XML(<process-denifition/>);
+				jbpmXml= new XML('<?xml version="1.0" encoding="UTF-8"?><process-denifition/>');
 				serializeToJbpm();
-				Alert.show(xml.toString());
 			}
 			
 			public function serializeToJbpm():void{
@@ -247,13 +249,16 @@
 			
 			public function serializeRenderer(renderer:Renderer):void{
 				if(renderer is Task ){
-					xml.appendChild(Task(renderer).task.toXml());
+					jbpmXml.appendChild(Task(renderer).task.toXml());
 				}else if(renderer is StartEvent ){
-					xml.appendChild(StartEvent(renderer).star_state.toXml());
+					jbpmXml.appendChild(StartEvent(renderer).star_state.toXml());
 				}else if(renderer is EndEvent ){
-					xml.appendChild(EndEvent(renderer).end_state.toXml());
-				}else if(renderer is LaneBase){
-					xml.appendChild(LaneBase(renderer).swimlane.toXml());
+					jbpmXml.appendChild(EndEvent(renderer).end_state.toXml());
+				}else if(renderer is SubGraph){
+					if(renderer is LaneBase){
+						jbpmXml.appendChild(LaneBase(renderer).swimlane.toXml());
+					}
+					
 					for (var i:int = 0;i<LaneBase(renderer).numElements;i++) 
 					{
 						var ele:Renderer = LaneBase(renderer).getElementAt(i) as Renderer;
@@ -264,165 +269,6 @@
 				
 			}
 			
-			private var excluded:Dictionary = new Dictionary();
-			
-			
-			public function serialize(object:Object, rootTag:String, childrenOnly:Boolean = true) : XML
-			{
-				var root:XML = new XML("<"+rootTag+"></"+rootTag+">");
-				
-				if(childrenOnly){
-					serializeChildren(object, root, root);
-				} else {
-					var child:XML = serializeObject(object, root);
-					if(child != null)
-						root.appendChild(child);
-				}
-				return root;
-			}
-			
-			protected function serializeObject(object:Object, root:XML) : XML
-			{
-				var options:Object = new Object();
-				options["includeReadOnly"] = false;
-				
-				var excludes:Array = excluded[className] as Array;
-				if(excludes == null){
-					excludes = getExcludedProperties(object);
-					excluded[className] = excludes;
-				}
-				
-				var classInfo:Object = mx.utils.ObjectUtil.getClassInfo(object, excludes, options);
-				var properties:Array = classInfo["properties"];
-				
-				for each(var property:QName in properties){
-					var propertyName:String = property.localName;
-					try {
-						var v:Object = object[propertyName];
-						if(v is JbpmBase){
-							var proXml:XML = JbpmBase(v).toXml();
-							trace(proXml.toString());
-						}
-						var sv:Object = serializeProperty(object, propertyName, v, null, root);
-						if(sv is XML)
-							root.appendChild(sv);
-						else if(sv is String)
-							root.@[propertyName] = sv;
-					} catch(err:Error){
-						// ignore property
-					}
-				}
-				
-//				serializeChildren(object, root, root);
-				
-				return root;
-			}
-			
-			protected function getExcludedProperties(object:Object) : Array
-			{
-				if(object is Renderer)
-					return getRendererProperties();
-				else
-					return new Array();
-			}
-			
-			private var rendererProperties:Array = null;
-			
-			private function getRendererProperties() : Array 
-			{
-				if(rendererProperties == null){
-					rendererProperties = new Array();
-					for each(var name:QName in ObjectUtil.getClassInfo(new Renderer())["properties"]){
-						var pname:String = name.localName;
-						if(pname != "left" &&
-							pname != "top" &&
-							pname != "x" &&
-							pname != "y" &&
-							pname != "width" &&
-							pname != "height")
-							rendererProperties.push(pname);
-					}
-				}
-				return rendererProperties;
-			}
-			
-			protected function serializeProperty(object:Object, name:String, value:Object, defaultValue:Object, root:XML) : Object
-			{
-				if ((value is JbpmBase)) {
-					var propertyEleXml:XML = serializePropertyAsElement(name, value, root);
-					return propertyEleXml;
-				}
-				
-				if(value is String) {
-					var propXML:XML = new XML("<"+name+"></"+name+">");
-					propXML.appendChild(String(value));
-					return propXML;
-				}
-				if(value is int || value is Boolean)
-					return value.toString();
-				
-				if(value is Number && !isNaN(Number(value))){
-					//return Number(value).toFixed();
-					return ""+value;
-				}
-				
-				return null;
-			}
-			
-			protected function serializePropertyAsElement(name:String, value:Object, root:XML) : XML
-			{
-				var propXML:XML = new XML("<"+name+"></"+name+">");
-				var valueXML:XML = serializeObject(value, root);
-				if(valueXML != null){
-					propXML.appendChild(valueXML);
-					return propXML;
-				} else {
-					return null;
-				}
-			}
-			
-			private function serializeChildren(object:Object, parent:XML, root:XML) : void
-			{
-				var children:Array = getChildrenToSerialize(object);
-				if(children != null){
-					for each(var childObject:Object in children)
-					{
-						var child:XML = serializeObject(childObject, root);
-						if(child != null)
-							parent.appendChild(child);
-					}
-				}
-			}
-			
-			protected function getChildrenToSerialize(object:Object) : Array
-			{
-				var graph:Graph = getGraph(object);
-				if(graph != null){
-					var children:Array = new Array();
-					for(var i:int = 0; i < graph.numElements; i++)
-						children.push(graph.getElementAt(i));
-					return children;
-				}
-				return null;
-			}
-			
-			private function getGraph(object:Object) : Graph
-			{
-				if(object is Graph)
-					return Graph(object);
-				if(object is com.hjx.diagram.Diagram)
-					return com.hjx.diagram.Diagram(object).graph;
-				if(object is SubGraph){
-					SubGraph(object).validateNow();
-					return SubGraph(object).graph;
-				}
-				return null;
-			}
-			
-			private function serialChildren():void
-			{
-				
-			}
 		]]>
 	</fx:Script>
 	
