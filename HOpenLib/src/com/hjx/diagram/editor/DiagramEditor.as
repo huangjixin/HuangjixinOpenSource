@@ -1131,7 +1131,7 @@ package com.hjx.diagram.editor
 				
 				var cloneRenderer:Renderer = renderer.clone();
 				if(cloneFunction!=null){
-					cloneFunction.call(this,renderer,cloneRenderer,false);
+					cloneFunction.call(this,renderer,cloneRenderer);
 				}
 				
 				var link:Link;

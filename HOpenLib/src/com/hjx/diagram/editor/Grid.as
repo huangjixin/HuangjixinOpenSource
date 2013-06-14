@@ -131,8 +131,8 @@ public class Grid extends GraphicElement {
 					graphics.drawCircle(_step-2*weight, _step-2*weight, weight);
 				break;
 			case "line":
-				graphics.drawRect(step-weight, 0, weight, step);
-				graphics.drawRect(0, step-weight, step, weight);
+					graphics.drawRect(step-weight, 0, weight, step);
+					graphics.drawRect(0, step-weight, step, weight);
 				break;
 			case "none":
 				break;
