@@ -19,6 +19,7 @@ package com.hjx.diagram.editor
 	import com.hjx.graphic.Renderer;
 	import com.hjx.graphic.SubGraph;
 	
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
@@ -446,6 +447,8 @@ package com.hjx.diagram.editor
 					if(renderer is Link){
 						var link:Link = renderer as Link;
 						var linkRect:Rectangle = Link.getPathBounds(link.path);
+						var linkBmpData:BitmapData = new BitmapData(linkRect.width, linkRect.height, true, 0);
+						linkBmpData.draw(link);
 						if(rectangle.intersects(linkRect)){
 							this.setSelected(renderer, true);
 							renderer.invalidateProperties();

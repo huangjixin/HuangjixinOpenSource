@@ -59,6 +59,7 @@ public class Grid extends GraphicElement {
 	 *  @default 20
 	 */
 	[Inspectable("General", minValue="2.0")]
+	[Bindable]
 	public function get step():Number
 	{
 		return _step;
