@@ -191,15 +191,15 @@ package com.hjx.diagram.editor
 			endPoint = this.globalToLocal(link.parent.localToGlobal(endPoint));
 			if (isStartHandle) 
 			{
-				this.startHandleX = endPoint.x+startHandle.width/2;
-				this.startHandleY = endPoint.y+startHandle.height/2;
-				this.startHandleRotation = radian;
+				this.startHandleX = endPoint.x;
+				this.startHandleY = endPoint.y;
+				this.startHandleRotation = radian-(45)*180/Math.PI;
 			}
 			else 
 			{
-				this.endHandleX = endPoint.x+endHandle.width/2;
-				this.endHandleY = endPoint.y-endHandle.height/2;
-				this.endHandleRotation = radian;
+				this.endHandleX = endPoint.x;
+				this.endHandleY = endPoint.y;
+				this.endHandleRotation = radian-(45)*180/Math.PI;;
 			}
 			return;
 		}
@@ -228,11 +228,13 @@ package com.hjx.diagram.editor
 				var tP:Point;
 				
 				if(displayObject ==startHandle){
-					
+					fP = Link(adornedObject).fallbackEndPoint;
+					tP = new Point(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY);
+					LinkHelper.handleDragged(this,displayObject,event,fP,tP,true);
 				}else if(displayObject == endHandle){
 					fP = Link(adornedObject).fallbackStartPoint;
 					tP = new Point(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY);
-					LinkHelper.drawLineArrow(this,displayObject,event,fP,tP);
+					LinkHelper.handleDragged(this,displayObject,event,fP,tP);
 				}
 				
 			}else{
@@ -241,22 +243,18 @@ package com.hjx.diagram.editor
 			return;
 		}
 		
-		/*protected override function handleReleased(arg1:flash.display.DisplayObject, arg2:flash.events.MouseEvent):void
+		protected override function handleReleased(displayObject:DisplayObject, event:MouseEvent):void
 		{
-			if (this.isReconnectHandle(arg1)) 
+			if (this.isReconnectHandle(displayObject)) 
 			{
-				if (this.linkConnectionHelper != null) 
-				{
-					this.linkConnectionHelper.handleReleased(arg1, arg2);
-					this.linkConnectionHelper = null;
-				}
+				LinkHelper.handleReleased(this,displayObject,event);
 			}
 			else 
 			{
-				super.handleReleased(arg1, arg2);
+				super.handleReleased(displayObject, event);
 			}
 			return;
-		}*/
+		}
 
 	}
 }

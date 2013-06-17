@@ -121,7 +121,7 @@ package com.hjx.diagram.editor
 				var displayObjectRect:Rectangle = displayObject.getBounds(editor.adornersGroup);
 				var fP:Point = new Point(displayObjectRect.x+displayObjectRect.width/2,displayObjectRect.y+displayObjectRect.height/2);
 				var tP:Point = new Point(editor.adornersGroup.mouseX,editor.adornersGroup.mouseY);
-				LinkHelper.drawLineArrow(this,displayObject,event,fP,tP);
+				LinkHelper.handleDragged(this,displayObject,event,fP,tP);
 			}else{
 				super.handleDragged(displayObject, event, offsetX, offsetY);
 			}
@@ -137,13 +137,14 @@ package com.hjx.diagram.editor
 		{
 			if (this.isArrowHandle(displayObject)) 
 			{
-				var editor:DiagramEditor = DiagramEditor.getEditor(this);
+				LinkHelper.handleReleased(this,displayObject,event);
+				/*var editor:DiagramEditor = DiagramEditor.getEditor(this);
 				if(!editor){
 					return;
 				}
 				
 				editor.adornersGroup.graphics.clear();
-				var renderer:Renderer = trackCurrentRenderer(event);
+				var renderer:Renderer = LinkHelper.trackCurrentRenderer(this,event);
 				var startNodeConnectingArea:String = LinkConnectionArea.CENTER;
 				var endNodeConnectingArea:String = LinkConnectionArea.CENTER;
 				var link:Link;
@@ -223,13 +224,13 @@ package com.hjx.diagram.editor
 						link.fallbackEndPoint = point;
 						link.invalidateShape();
 					}
-				}
+				}*/
 			}else{
 				super.handleReleased(displayObject, event);
 			}
 		}
 		
-		internal function trackCurrentRenderer(event:MouseEvent):Renderer
+		/*internal function trackCurrentRenderer(event:MouseEvent):Renderer
 		{
 			var renderer:Renderer=null;
 			var flag:Boolean =false;
@@ -246,7 +247,7 @@ package com.hjx.diagram.editor
 				--length;
 			}
 			return renderer;
-		}
+		}*/
 		
 		override protected function cleanup():void
 		{
