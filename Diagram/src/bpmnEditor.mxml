@@ -534,7 +534,7 @@
 				<s:HGroup>
 					<s:Button label="保存" click="saveXML();"/>
 					<s:Button label="打开" click="loadXML();"/>
-					<s:Button label="连线" click="diagramEditor.connectNodes(LinkConnectionArea.TOP,LinkConnectionArea.BOTTOM);"/>
+					<s:Button label="连线" click="diagramEditor.connectNodes();"/>
 					<s:Button id="setProBtn" label="设置属性" click="setProBtn_clickHandler(event)"/>
 					<s:Button id="getJbpmBtn" label="抽取jbpm文件" click="getJbpmBtn_clickHandler(event)"/>
 				</s:HGroup>
