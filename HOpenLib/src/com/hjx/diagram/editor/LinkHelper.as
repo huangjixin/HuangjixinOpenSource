@@ -196,6 +196,8 @@ package com.hjx.diagram.editor
 							endNodeConnectingArea= LinkConnectionArea.LEFT;
 						}else if(flag == 1){
 							endNodeConnectingArea= LinkConnectionArea.RIGHT;
+						}else if(flag == 4){
+							endNodeConnectingArea= LinkConnectionArea.CENTER;
 						}
 						
 						adornedLink.startConnectionArea = startNodeConnectingArea;
@@ -217,6 +219,8 @@ package com.hjx.diagram.editor
 						isStart? endNodeConnectingArea= LinkConnectionArea.LEFT: startNodeConnectingArea= LinkConnectionArea.LEFT;
 					}else if(flag == 1){
 						isStart?endNodeConnectingArea = LinkConnectionArea.RIGHT: startNodeConnectingArea= LinkConnectionArea.RIGHT;
+					}else if(flag == 4){
+						isStart?endNodeConnectingArea = LinkConnectionArea.CENTER: startNodeConnectingArea= LinkConnectionArea.CENTER;
 					}
 					
 					if(displayObject == linkAdorner.endHandle){
@@ -259,13 +263,15 @@ package com.hjx.diagram.editor
 						adornedLink.startNode = null;
 						adornedLink.fallbackStartPoint = point;
 					}
-					
+
+//					adornedLink.invalidateShape();
 					adornedLink.invalidateProperties();
-					adornedLink.invalidateShape();
 				}
 			}
 			if(adornedLink){
-				editor.setSelected(adornedLink,true);
+//				editor.deselectAllExcept(adornedLink);
+//				adornedLink.invalidateShape();
+//				editor.deselectAll();
 			}
 		}
 		

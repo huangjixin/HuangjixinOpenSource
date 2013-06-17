@@ -248,6 +248,11 @@ package com.hjx.diagram.editor
 			if (this.isReconnectHandle(displayObject)) 
 			{
 				LinkHelper.handleReleased(this,displayObject,event);
+				var editor:DiagramEditor = DiagramEditor.getEditor(this);
+				if(!editor){
+					return;
+				}
+				callLater(function dels():void{editor.deselectAll()});
 			}
 			else 
 			{
