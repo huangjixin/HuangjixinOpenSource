@@ -123,6 +123,14 @@ package com.hjx.diagram.editor
 		public var cloneFunction:Function;
 		public var autoAlign:Boolean = true;
 		
+		internal static var Top:int=0;
+		
+		internal static var Right:int=1;
+		
+		internal static var Bottom:int=2;
+		
+		internal static var Left:int=3;
+		
 		public function DiagramEditor()
 		{
 			super();
@@ -192,6 +200,24 @@ package com.hjx.diagram.editor
 			_diagram = value;
 			_diagramChanged = true;
 			invalidateProperties();
+		}
+		internal static function getDirection(point1:flash.geom.Point, point2:flash.geom.Point):int
+		{
+			var offX:Number=point2.x - point1.x;
+			var offY:Number=point2.y - point1.y;
+			if (Math.abs(offX) >= Math.abs(offY)) 
+			{
+				if (offX > 0) 
+				{
+					return Right;
+				}
+				return Left;
+			}
+			if (offY > 0) 
+			{
+				return Bottom;
+			}
+			return Top;
 		}
 		
 		public static function getRenderer(object:Object):Renderer
