@@ -20,7 +20,12 @@
 	</s:Rect>
 	<editor:Grid id="grid" left="0" right="0" top="0" bottom="0" step="8">
 		<editor:stroke>
-			<s:SolidColorStroke color="#DADADA" weight="1"/>
+			<s:SolidColorStroke color="#DADADA" alpha="0.5" weight="1"/>
+		</editor:stroke>
+	</editor:Grid>
+	<editor:Grid left="0" right="0" top="0" bottom="0" step="32">
+		<editor:stroke>
+			<s:SolidColorStroke color="#DADADA" alpha="0.5" weight="1"/>
 		</editor:stroke>
 	</editor:Grid>
 	<s:Group id="diagramParent" left="0" right="0" top="0" bottom="0"/>
