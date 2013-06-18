@@ -449,11 +449,11 @@ package com.hjx.diagram.editor
 						var linkRect:Rectangle = Link.getPathBounds(link.path);
 						var linkBmpData:BitmapData = new BitmapData(linkRect.width, linkRect.height, true, 0);
 						linkBmpData.draw(link);
-						if(rectangle.intersects(linkRect)){
+						if(rectangle.containsRect(linkRect)){
 							this.setSelected(renderer, true);
 							renderer.invalidateProperties();
 						}
-					}else if (renderer && rectangle.intersects(renderer.getBounds(this.adornersGroup))) 
+					}else if (renderer && rectangle.containsRect(renderer.getBounds(this.adornersGroup))) 
 					{
 						this.setSelected(renderer, true);
 					}
@@ -975,6 +975,9 @@ package com.hjx.diagram.editor
 					}
 				}
 				length++;
+				if(renderer is Node){
+					Node(renderer).invalidateLinkShape();
+				}
 			}
 		}
 		/**
