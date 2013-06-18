@@ -28,7 +28,10 @@ package com.hjx.jbpm
 			var dotIndex:int = className.lastIndexOf("::");
 			if(dotIndex > 0){
 				className = className.substr(dotIndex + 2);
-				className = className.toLocaleLowerCase();
+				var firsChar:String = className.substr(0,1);
+				firsChar = firsChar.toLocaleLowerCase();
+				var subClassName:String = className.substr(1,className.length);
+				className = firsChar + subClassName;
 				className = className.replace("_","-");
 			}	
 			
