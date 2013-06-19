@@ -4,7 +4,7 @@ package com.hjx.jbpm
 	{
 		public var action:Action = new Action;
 		
-		private var _type:String = "node-enter";
+		private var _type:String = "";
 		
 		private var _script:Script = new Script();
 		private var _create_timer:Create_timer = new Create_timer();
@@ -44,7 +44,7 @@ package com.hjx.jbpm
 			_script = value;
 		}
 
-		[Inspectable(enumeration="node-enter,task-end")]
+		[Inspectable(enumeration="node-enter,task-end,node-leave")]
 		public function get type():String
 		{
 			return _type;

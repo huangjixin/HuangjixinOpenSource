@@ -3,7 +3,9 @@
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   xmlns:skin="com.hjx.graphic.skin.*"
-				   xmlns:graphic="com.hjx.graphic.*" xmlns:graphic1="com.hjx.bpmn.graphic.*" xmlns:icons="com.hjx.bpmn.graphic.icons.*">
+				   xmlns:graphic="com.hjx.graphic.*" 
+				   xmlns:graphic1="com.hjx.bpmn.graphic.*" 
+				   xmlns:icons="com.hjx.bpmn.graphic.icons.*">
 	<fx:Metadata>
 		[HostComponent("com.hjx.bpmn.graphic.SubProcess")]
 	</fx:Metadata>
@@ -51,11 +53,11 @@
 			 height="{hostComponent.expandedHeight}"
 			 width.collapsed="{hostComponent.collapsedWidth}"
 			 height.collapsed="{hostComponent.collapsedHeight}">
-		<s:filters>
+		<!--<s:filters>
 			<s:GlowFilter includeIn="normalAndShowsCaret" alpha="0.8" blurX="8" blurY="8"
 						  color="{caretColor}">
 			</s:GlowFilter>
-		</s:filters>
+		</s:filters>-->
 		
 		<s:Rect id="border" left="0" top="0" right="0" bottom="0" radiusX="5" radiusY="5">
 			<s:stroke>

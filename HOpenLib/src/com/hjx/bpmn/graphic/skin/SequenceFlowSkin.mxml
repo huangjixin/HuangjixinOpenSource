@@ -6,7 +6,7 @@
 				   xmlns:primatives="ws.tink.spark.primatives.*"
 				   xmlns:graphics="ws.tink.spark.graphics.*">
 	<fx:Declarations>
-		<s:AnimateColor id="activeEffect" colorFrom="0" colorPropertyName="color" colorTo="white"
+		<s:AnimateColor id="activeEffect" colorFrom="0" colorPropertyName="color" colorTo="red"
 						duration="1000" repeatBehavior="reverse" repeatCount="0"
 						targets="{[path.stroke,startArrow.fill,endArrow.fill]}"/>
 		<s:AnimateColor id="doneEffect" colorPropertyName="color" colorTo="green" duration="100"

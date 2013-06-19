@@ -18,6 +18,7 @@
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
+			import com.hjx.bpmn.graphic.icons.IconClass;
 			/**
 			 *  @private
 			 */
@@ -52,10 +53,10 @@
 	<s:Group id="base" left="0" right="0" top="0" bottom="0">
 		<!-- indicators for monitoring status -->
 		<mx:SWFLoader id="wait" includeIn="active" right="-8" top="-16" width="16" height="16"
-					  add="{animateWaitEffect.play()}" remove="{animateWaitEffect.stop()}"
-					  source="@Embed(source='../images/wait.svg')"/>
+					  activate="{animateWaitEffect.play()}" deactivate="{animateWaitEffect.stop()}"
+					  source="{IconClass.iconClass(IconClass.WAIT)}"/>
 		<mx:SWFLoader includeIn="done" right="-8" top="-16" width="16" height="16"
-					  source="@Embed(source='../images/ok.svg')"/>
+					  source="{IconClass.iconClass(IconClass.OK)}"/>
 		
 		
 		<s:Rect id="rect" left="0" right="0" top="0" bottom="0" radiusX="5" radiusY="5">

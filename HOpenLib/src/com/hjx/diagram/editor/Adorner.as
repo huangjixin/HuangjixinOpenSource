@@ -228,7 +228,7 @@ package com.hjx.diagram.editor
 			return rect.contains(stage.mouseX, stage.mouseY);
 		}
 		
-		function moveDragPoint(offsetX:Number, offsetY:Number):void
+		internal function moveDragPoint(offsetX:Number, offsetY:Number):void
 		{
 			var offset:Point=new Point(offsetX, offsetY);
 			var oriPoint:Point=this.editor.graph.localToGlobal(new Point(0, 0));

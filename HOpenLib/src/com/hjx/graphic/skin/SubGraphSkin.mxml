@@ -49,11 +49,11 @@
 			 height="{hostComponent.expandedHeight}"
 			 width.collapsed="{hostComponent.collapsedWidth}"
 			 height.collapsed="{hostComponent.collapsedHeight}">
-		<s:filters>
+		<!--<s:filters>
 			<s:GlowFilter includeIn="normalAndShowsCaret" alpha="0.8" blurX="8" blurY="8"
 						  color="{caretColor}">
 			</s:GlowFilter>
-		</s:filters>
+		</s:filters>-->
 		
 		<s:Rect id="border" left="0" top="0" right="0" bottom="0" radiusX="5" radiusY="5">
 			<s:stroke>

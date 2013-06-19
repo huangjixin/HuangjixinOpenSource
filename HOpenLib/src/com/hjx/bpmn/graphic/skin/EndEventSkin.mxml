@@ -5,6 +5,7 @@
 				   xmlns:skin="com.hjx.graphic.skin.*" xmlns:icons="com.hjx.bpmn.graphic.icons.*">
 	<fx:Script>
 		<![CDATA[
+			import com.hjx.bpmn.graphic.icons.IconClass;
 			import com.hjx.bpmn.graphic.icons.skin.CompensationTriggerSkin;
 			import com.hjx.bpmn.graphic.icons.skin.ErrorTriggerSkin;
 			import com.hjx.bpmn.graphic.icons.skin.MessageTriggerSkin;
@@ -67,9 +68,9 @@
 		<!-- indicators for monitoring status -->
 		<mx:SWFLoader id="wait" includeIn="active" right="-8" top="-16" width="16" height="16"
 					  activate="{animateWaitEffect.play()}" deactivate="{animateWaitEffect.stop()}"
-					  source="@Embed(source='../images/wait.svg')"/>
+					  source="{IconClass.iconClass(IconClass.WAIT)}"/>
 		<mx:SWFLoader includeIn="done" right="-8" top="-16" width="16" height="16"
-					  source="@Embed(source='../images/ok.svg')"/>
+					  source="{IconClass.iconClass(IconClass.OK)}"/>
 		
 		<s:Ellipse id="ellipse" width="29" height="29" horizontalCenter="0" verticalCenter="0">
 			<s:fill>

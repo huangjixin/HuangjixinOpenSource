@@ -644,7 +644,7 @@ package com.hjx.graphic
 			return new Rectangle();
 		}
 		
-		final function updateBoundsForMeasure():void
+		private final function updateBoundsForMeasure():void
 		{
 			this.computeShapePoints();
 			return;
@@ -756,7 +756,7 @@ package com.hjx.graphic
 			var point1:Point =defaultStartPoint;
 			var point2:Point =defaultEndPoint;
 			var radian:Number=0;
-			var minOffset:Number=0;
+			var minOffset:Number=0; //直连线偏移量。
 			var offsetX:Number=0;
 			var offsetY:Number=0;
 			
@@ -846,7 +846,6 @@ package com.hjx.graphic
 				{
 					
 					var direction:int = getDirection(defaultStartPoint,defaultEndPoint);
-					trace(direction);
 					if (this._shapePoints == null) 
 					{
 						this._shapePoints = new Vector.<flash.geom.Point>();
@@ -920,8 +919,7 @@ package com.hjx.graphic
 						defaultEndPoint = this.fallbackEndPoint.clone();
 					}
 					
-					/*var startPoint:Point =defaultStartPoint;
-					var endPoint:Point =defaultEndPoint;*/
+					
 					computeOrthogonal(defaultStartPoint,defaultEndPoint,this._shapePoints);
 				}	
 				default:
@@ -932,6 +930,13 @@ package com.hjx.graphic
 		}
 		
 		
+		/**
+		 * 计算正交线。 
+		 * @param startPoint
+		 * @param endPoint
+		 * @param shapePoints
+		 * 
+		 */
 		internal function computeOrthogonal(startPoint:Point, endPoint:Point, shapePoints:Vector.<Point>):void
 		{
 			var direction:int = getDirection(startPoint,endPoint);

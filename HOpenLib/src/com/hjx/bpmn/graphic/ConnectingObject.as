@@ -5,6 +5,7 @@ package com.hjx.bpmn.graphic
 	 */
 	import com.hjx.graphic.Link;
 	import com.hjx.graphic.Node;
+	import com.hjx.jbpm.Transition;
 	
 	import flash.events.Event;
 	
@@ -18,10 +19,12 @@ package com.hjx.bpmn.graphic
 		
 		public var label:String = "";
 		
+		private var _transition:Transition;
+		
 		public function ConnectingObject(startNode:Node=null, endNode:Node=null)
 		{
-			//TODO: implement function
 			super(startNode, endNode);
+			transition = new Transition();
 		}
 		
 		/*[Bindable]
@@ -34,6 +37,16 @@ package com.hjx.bpmn.graphic
 			invalidateSkinState();
 		}*/
 		
+		public function get transition():Transition
+		{
+			return _transition;
+		}
+
+		public function set transition(value:Transition):void
+		{
+			_transition = value;
+		}
+
 		[Bindable(event="monitoringStatusChange")]
 		/** Indicates the monitoring status: either active or done*/
 		public function get monitoringStatus():String
@@ -46,11 +59,8 @@ package com.hjx.bpmn.graphic
 		 */
 		public function set monitoringStatus(value:String):void
 		{
-			if( _monitoringStatus !== value)
-			{
-				_monitoringStatus = value;
-				dispatchEvent(new flash.events.Event("monitoringStatusChange"));
-			}
+			_monitoringStatus = value;
+			dispatchEvent(new flash.events.Event("monitoringStatusChange"));
 			invalidateSkinState();
 		}
 
@@ -58,8 +68,10 @@ package com.hjx.bpmn.graphic
 		 * @inheritDoc
 		 */
 		override protected function getCurrentSkinState() : String{
-			if(monitoringStatus=="active") return "active";
-			if(monitoringStatus=="done") return "done";
+			if(monitoringStatus=="active") 
+				return "active";
+			if(monitoringStatus=="done") 
+				return "done";
 			return super.getCurrentSkinState();
 		}
 	}

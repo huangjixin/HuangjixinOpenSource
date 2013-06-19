@@ -655,7 +655,7 @@ package com.hjx.diagram.editor
 		}
 		
 		
-		static function reparentLink(link:Link):void
+		private static function reparentLink(link:Link):void
 		{
 			var graph:Graph=link.parent as Graph;
 			if (!graph) 
@@ -863,7 +863,7 @@ package com.hjx.diagram.editor
 		 * @return 
 		 * 
 		 */
-		function snapPoint(point:Point, displayObjectContainer:DisplayObjectContainer):flash.geom.Point
+		public	function snapPoint(point:Point, displayObjectContainer:DisplayObjectContainer):flash.geom.Point
 		{
 			if (displayObjectContainer != this._graph) 
 			{
@@ -878,7 +878,7 @@ package com.hjx.diagram.editor
 			return point;
 		}
 		
-		function deselectAllExcept(arg1:Renderer=null):void
+		public	function deselectAllExcept(arg1:Renderer=null):void
 		{
 			var loc1:*=null;
 			var loc2:*=0;

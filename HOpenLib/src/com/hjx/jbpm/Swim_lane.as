@@ -7,8 +7,6 @@ package com.hjx.jbpm
 		
 		public function Swim_lane()
 		{
-			assignment.className="swim-lane";
-			assignment.name="swim-lane";
 		}
 		
 		override public function toXml():XML
