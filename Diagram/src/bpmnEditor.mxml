@@ -27,7 +27,6 @@
 			import com.hjx.jbpm.Event;
 			import com.hjx.jbpm.Exception_handler;
 			import com.hjx.jbpm.JbpmBase;
-			import com.hjx.uitls.CloneUtil;
 			
 			import flash.globalization.NumberFormatter;
 			
@@ -367,7 +366,7 @@
 							<editor:DiagramPalette>
 								<graphic1:StartEvent label="开始"/>
 							</editor:DiagramPalette>
-							<editor:DiagramPalette>
+							<!--<editor:DiagramPalette>
 								<graphic1:StartEvent label="开始" trigger="Message"/>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
@@ -384,7 +383,7 @@
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
 								<graphic1:StartEvent label="开始" trigger="Multiple"/>
-							</editor:DiagramPalette>
+							</editor:DiagramPalette>-->
 						</editor:DiagramPalette>
 					</s:NavigatorContent>
 					<s:NavigatorContent width="100%" height="100%" label="结束事件"
@@ -396,7 +395,7 @@
 							<editor:DiagramPalette>
 								<graphic1:EndEvent label="结束"/>
 							</editor:DiagramPalette>
-							<editor:DiagramPalette>
+							<!--<editor:DiagramPalette>
 								<graphic1:EndEvent label="结束" trigger="Message"/>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
@@ -413,7 +412,7 @@
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
 								<graphic1:EndEvent label="结束" trigger="Multiple"/>
-							</editor:DiagramPalette>
+							</editor:DiagramPalette>-->
 						</editor:DiagramPalette>
 					</s:NavigatorContent>
 					<s:NavigatorContent width="100%" height="100%" label="网关"
@@ -425,7 +424,7 @@
 							<editor:DiagramPalette>
 								<graphic1:Gateway label="网关"/>
 							</editor:DiagramPalette>
-							<editor:DiagramPalette>
+							<!--<editor:DiagramPalette>
 								<graphic1:Gateway label="网关" gatewayType="AND"/>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
@@ -433,7 +432,7 @@
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
 								<graphic1:Gateway label="网关" gatewayType="Complex"/>
-							</editor:DiagramPalette>
+							</editor:DiagramPalette>-->
 						</editor:DiagramPalette>
 					</s:NavigatorContent>
 					<s:NavigatorContent width="100%" height="100%" label="子流程"
