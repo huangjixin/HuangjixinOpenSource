@@ -24,6 +24,8 @@
 			import com.hjx.graphic.Node;
 			import com.hjx.graphic.Renderer;
 			import com.hjx.graphic.SubGraph;
+			import com.hjx.jbpm.Event;
+			import com.hjx.jbpm.Exception_handler;
 			import com.hjx.jbpm.JbpmBase;
 			import com.hjx.uitls.CloneUtil;
 			
@@ -53,17 +55,14 @@
 			
 			private function saveXML() : void 
 			{
-				getJbpmBtn_clickHandler();
-				////////////////////////////
 				file = new FileReference();
 				var xml:XML = new XMLSerializer().serialize(diagramEditor.graph, "BpmnDiagram");
-				xml.appendChild(jbpmXml);
 				var fileName:String = currentFileName;
 				if(fileName == null)
-					fileName = "新建流程";
+					fileName = "bpmn图形描述文件"+".xml";
 				file.addEventListener(flash.events.Event.COMPLETE, fileSaved);
 				file.addEventListener(flash.events.IOErrorEvent.IO_ERROR, ioError);
-				file.save(xml, fileName+".xml");
+				file.save(xml, fileName);
 			}
 			
 			private function fileSaved(event:flash.events.Event) : void 
@@ -94,9 +93,11 @@
 			
 			private function doLoadXML(): void
 			{
+				var xmlFileFileFilter:FileFilter = new
+					FileFilter("xml流程描述文件", "*.xml");
 				file = new FileReference();
 				file.addEventListener(flash.events.Event.SELECT, fileSelectedForLoad);
-				file.browse();
+				file.browse([xmlFileFileFilter]);
 			}
 			
 			private function fileSelectedForLoad(event:flash.events.Event) : void 
@@ -226,7 +227,13 @@
 					{
 						if(renderer is Task){
 							var task:Task = renderer as Task;
-							task.task.commonNodeElements.name = "commonNodeElements";
+							task.task.description = "任务描述";
+							task.task.commonNodeElements.async= false;
+							
+							var exhandler:Exception_handler = new Exception_handler();
+							exhandler.name = "异常";
+							
+							task.task.commonNodeElements.exception_handlers[0] = exhandler;
 						}
 					}
 					
@@ -237,6 +244,11 @@
 			{
 				jbpmXml= new XML('<?xml version="1.0" encoding="UTF-8"?><process-denifition/>');
 				serializeToJbpm();
+				file = new FileReference();
+				
+				file.addEventListener(flash.events.Event.COMPLETE, fileSaved);
+				file.addEventListener(flash.events.IOErrorEvent.IO_ERROR, ioError);
+				file.save(jbpmXml, "processdenifition"+".xml");
 			}
 			
 			public function serializeToJbpm():void{
@@ -248,12 +260,14 @@
 			}
 			
 			public function serializeRenderer(renderer:Renderer):void{
-				if(renderer is Task ){
-					jbpmXml.appendChild(Task(renderer).task.toXml());
-				}else if(renderer is StartEvent ){
+				if(renderer is StartEvent ){
 					jbpmXml.appendChild(StartEvent(renderer).star_state.toXml());
+				}else if(renderer is Task ){
+					jbpmXml.appendChild(Task(renderer).task.toXml());
 				}else if(renderer is EndEvent ){
 					jbpmXml.appendChild(EndEvent(renderer).end_state.toXml());
+				}else if(renderer is ConnectingObject ){
+					jbpmXml.appendChild(ConnectingObject(renderer).transition.toXml());
 				}else if(renderer is SubGraph){
 					if(renderer is LaneBase){
 						jbpmXml.appendChild(LaneBase(renderer).swimlane.toXml());
@@ -491,7 +505,8 @@
 										backgroundColor="#EEF0F3">
 						<s:List id="linkList" width="100%" height="100%"
 								change="diagramEditor.linkPrototype = IList(linkList.dataProvider).getItemAt(event.newIndex) as Link;"
-								selectedIndex="0">
+								selectedIndex="0"
+								creationComplete="diagramEditor.linkPrototype = IList(linkList.dataProvider).getItemAt(0) as Link;">
 							<s:itemRenderer>
 								<fx:Component>
 									<s:ItemRenderer height="30">
@@ -515,7 +530,8 @@
 								<s:ArrayList>
 									<graphic1:SequenceFlow label="时序流"
 													  fallbackEndPoint="{new Point(170,10)}"
-													  fallbackStartPoint="{new Point(10,10)}"/>
+													  fallbackStartPoint="{new Point(10,10)}"
+													  shapeType="orthogonal"/>
 									<graphic1:MessageFlow label="消息流"
 													 fallbackEndPoint="{new Point(170,10)}"
 													 fallbackStartPoint="{new Point(10,10)}"/>
@@ -536,7 +552,7 @@
 					<s:Button label="打开" click="loadXML();"/>
 					<s:Button label="连线" click="diagramEditor.connectNodes();"/>
 					<s:Button id="setProBtn" label="设置属性" click="setProBtn_clickHandler(event)"/>
-					<s:Button id="getJbpmBtn" label="抽取jbpm文件" click="getJbpmBtn_clickHandler(event)"/>
+					<s:Button id="getJbpmBtn" label="保存jbpm流程描述文件" click="getJbpmBtn_clickHandler(event)"/>
 				</s:HGroup>
 			</s:VGroup>
 			<s:Panel width="100%" height="100%">

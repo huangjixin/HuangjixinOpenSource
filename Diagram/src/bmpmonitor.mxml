@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-///////////////////////////////////////////////////////////////////////////////
-// Licensed Materials - Property of IBM
-// 5724-Z78
-// © Copyright IBM Corporation 2007, 2011. All Rights Reserved.
-//
-// Note to U.S. Government Users Restricted Rights:
-// Use, duplication or disclosure restricted by GSA ADP Schedule
-// Contract with IBM Corp.
-///////////////////////////////////////////////////////////////////////////////
--->
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
@@ -17,7 +6,8 @@
 			   viewSourceURL="srcview/index.html"
 			   xmlns:local="*"
 			   xmlns:ibm="http://www.ibm.com/xmlns/prod/ilog/elixir/diagram/2010"
-			   initialize="{init()}" xmlns:diagram="com.hjx.diagram.*"
+			   initialize="{init()}" 
+			   xmlns:diagram="com.hjx.diagram.*"
 			   >  
 	<s:layout>
 		<s:BasicLayout>
@@ -116,7 +106,7 @@
 			private function testRunner():void
 			{
 				if(runner==null){
-					runner = new DiagramRunner(diagram,10000);
+					runner = new DiagramRunner(diagram,1000);
 					runner.addEventListener("timerStop",timerStopHandler);
 					runner.addEventListener(DiagramRunnerEvent.ENTER,runnerEnterHandler);
 					runner.addEventListener(DiagramRunnerEvent.LEAVE,runnerLeaveHandler);
@@ -590,9 +580,11 @@
 			
 			private function doLoadXML(): void
 			{
+				var xmlFileFileFilter:FileFilter = new
+					FileFilter("xml流程描述文件", "*.xml");
 				file = new FileReference();
 				file.addEventListener(flash.events.Event.SELECT, fileSelectedForLoad);
-				file.browse();
+				file.browse([xmlFileFileFilter]);
 			}
 			
 			private function fileSelectedForLoad(event:flash.events.Event) : void 
@@ -609,7 +601,7 @@
 				if(file != null){
 					try {
 						var xml:XML = new XML(file.data.toString());
-						if(xml.localName() != "diagram"){
+						if(xml.localName() != "BpmnDiagram"){
 							Alert.show("该文件不是流程文件");
 							return;
 						}
