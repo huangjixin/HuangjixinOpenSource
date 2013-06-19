@@ -168,9 +168,6 @@ package com.hjx.graphic
 		}
 		
 		[Bindable]
-		/**
-		 * 元素上面的字符串。 
-		 */
 		public function get label():String
 		{
 			return _label;
