@@ -263,10 +263,10 @@
 					jbpmXml.appendChild(StartEvent(renderer).star_state.toXml());
 				}else if(renderer is Task ){
 					jbpmXml.appendChild(Task(renderer).task.toXml());
-				}else if(renderer is EndEvent ){
-					jbpmXml.appendChild(EndEvent(renderer).end_state.toXml());
 				}else if(renderer is ConnectingObject ){
 					jbpmXml.appendChild(ConnectingObject(renderer).transition.toXml());
+				}else if(renderer is EndEvent ){
+					jbpmXml.appendChild(EndEvent(renderer).end_state.toXml());
 				}else if(renderer is SubGraph){
 					if(renderer is LaneBase){
 						jbpmXml.appendChild(LaneBase(renderer).swimlane.toXml());
@@ -345,7 +345,7 @@
 							<editor:DiagramPalette>
 								<graphic1:Task label="任务"/>
 							</editor:DiagramPalette>
-							<editor:DiagramPalette>
+							<!--<editor:DiagramPalette>
 								<graphic1:Task label="任务" loop="true"/>
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
@@ -353,7 +353,7 @@
 							</editor:DiagramPalette>
 							<editor:DiagramPalette>
 								<graphic1:Task label="任务" multiInstance="true"/>
-							</editor:DiagramPalette>
+							</editor:DiagramPalette>-->
 						</editor:DiagramPalette>
 						
 					</s:NavigatorContent>
@@ -530,10 +530,18 @@
 									<graphic1:SequenceFlow label="时序流"
 													  fallbackEndPoint="{new Point(170,10)}"
 													  fallbackStartPoint="{new Point(10,10)}"
+													  shapeType="straight"/>
+									<graphic1:SequenceFlow label="时序流"
+													  fallbackEndPoint="{new Point(170,10)}"
+													  fallbackStartPoint="{new Point(10,20)}"
 													  shapeType="orthogonal"/>
 									<graphic1:MessageFlow label="消息流"
 													 fallbackEndPoint="{new Point(170,10)}"
 													 fallbackStartPoint="{new Point(10,10)}"/>
+									<graphic1:MessageFlow label="消息流"
+													 fallbackEndPoint="{new Point(170,20)}"
+													 fallbackStartPoint="{new Point(10,10)}"
+													 shapeType="orthogonal"/>
 									<graphic1:Association label="关联"
 													 fallbackEndPoint="{new Point(170,10)}"
 													 fallbackStartPoint="{new Point(10,10)}"/>
