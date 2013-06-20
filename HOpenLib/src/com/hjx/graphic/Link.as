@@ -88,6 +88,12 @@ package com.hjx.graphic
 		[SkinPart(required="false")]
 		public var startArrow:Path;
 		
+		[SkinPart(required="false")]
+		/**
+		 * 存放label标签等元素。 
+		 */
+		public var labelElement:DisplayObject;
+		
 		private var _shapePoints:Vector.<Point>;
 		private var _strokeWidth:Number;
 		private var _strokeWidthChange:Boolean;
@@ -874,7 +880,10 @@ package com.hjx.graphic
 					
 					this._shapePoints.push(defaultStartPoint);
 					this._shapePoints.push(defaultEndPoint);
-					
+					if(labelElement){
+						labelElement.x = defaultStartPoint.x/2+defaultEndPoint.x/2-labelElement.width/2;
+						labelElement.y = defaultStartPoint.y/2+defaultEndPoint.y/2-labelElement.height/2;
+					}
 					break;
 				}
 				case LinkShapeType.ORTHOGONAL:

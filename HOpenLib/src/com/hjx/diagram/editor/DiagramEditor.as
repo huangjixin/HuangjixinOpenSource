@@ -23,6 +23,7 @@ package com.hjx.diagram.editor
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
+	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
@@ -32,17 +33,22 @@ package com.hjx.diagram.editor
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
 	
+	import mx.controls.TextArea;
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
 	import mx.events.DragEvent;
+	import mx.events.FlexEvent;
+	import mx.events.FlexMouseEvent;
 	import mx.events.SandboxMouseEvent;
 	import mx.graphics.SolidColor;
 	import mx.graphics.SolidColorStroke;
 	import mx.managers.DragManager;
+	import mx.managers.PopUpManager;
 	
 	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
+	import spark.primitives.supportClasses.GraphicElement;
 	
 	import ws.tink.spark.graphics.SolidColorDash;
 	import ws.tink.spark.primatives.Rect;
@@ -131,6 +137,10 @@ package com.hjx.diagram.editor
 		internal static var Bottom:int=2;
 		
 		internal static var Left:int=3;
+		
+		private var lastDown:Number = 0;
+		private var lastUp:Number = 0;
+		private var doubleClickStarted:Boolean;
 		
 		public function DiagramEditor()
 		{
@@ -274,7 +284,25 @@ package com.hjx.diagram.editor
 			}
 			
 			var renderer:Renderer=getRenderer(event.target);
+			this.lastDown = new Date().time;
+			if (this.lastDown - this.lastUp > 200) 
+			{
+				this.doubleClickStarted = false;
+			}else{
+				this.doubleClickStarted = true;
+			}
 			
+			if (this.doubleClickStarted && this.lastDown - this.lastUp < 200) 
+			{
+				this.doubleClickStarted = false;
+				if (renderer) 
+				{
+					if (this.startEditingText(renderer)) 
+					{
+						return;
+					}
+				}
+			}
 			this._graph.setFocus();
 			if (event.ctrlKey) 
 			{
@@ -431,6 +459,8 @@ package com.hjx.diagram.editor
 		
 		internal function mouseUpHandler(event:Event):void
 		{
+			this.lastUp = new Date().time;
+			
 			var rectangle:Rectangle = null;
 			var length:int; 
 			var renderer:Renderer = null;
@@ -824,7 +854,71 @@ package com.hjx.diagram.editor
 			return false;
 		}
 		
-		internal function selectAll(event:Event):void{
+		public function startEditingText(renderer:Renderer):Boolean
+		{
+			if(!renderer.hasOwnProperty("label")){
+				return false;
+			}
+			var textEditor:TextArea = PopUpManager.createPopUp(renderer,TextArea,false) as TextArea;
+			if(renderer is Node){
+				textEditor.width = renderer.width-2;
+				textEditor.height = renderer.height-2;
+				PopUpManager.centerPopUp( textEditor);
+			}else if(renderer is Link){
+				var link:Link = renderer as Link;
+				var rect:Rectangle = Link.getPathBounds(link.path);
+				
+				textEditor.width = 100;
+				textEditor.height = 100;
+				textEditor.x = this.mouseX+textEditor.width/2;
+				textEditor.y = this.mouseX+textEditor.height/2;
+			}
+			
+			
+			if(renderer.hasOwnProperty("label")){
+				textEditor.setStyle("fontFamily","微软雅黑");
+				textEditor.text = renderer["label"];
+				
+				textEditor.setFocus();
+			}
+			
+			textEditor.addEventListener(FocusEvent.FOCUS_OUT,function onFocusOut(event:FocusEvent):void{
+				PopUpManager.removePopUp(textEditor);
+				renderer["label"]=textEditor.text;
+			});
+			textEditor.addEventListener(FlexMouseEvent.MOUSE_DOWN_OUTSIDE,function onFocusOut(event:FlexMouseEvent):void{
+				PopUpManager.removePopUp(textEditor);
+				renderer["label"]=textEditor.text;
+			});
+			
+			return true;
+		}
+		
+		public function getTextBounds(object:Object, arg2:DisplayObject):Rectangle
+		{
+			var loc1:*=null;
+			var loc2:*=null;
+			var loc3:*=null;
+			if (object is  DisplayObject) 
+			{
+				return DisplayObject(object).getBounds(arg2);
+			}
+			if (object is GraphicElement) 
+			{
+				loc1 = GraphicElement(object);
+				loc2 = new Point(loc1.getLayoutBoundsX(), loc1.getLayoutBoundsY());
+				loc3 = new Point(loc2.x + loc1.getLayoutBoundsWidth(), loc2.y + loc1.getLayoutBoundsHeight());
+				if (arg2 != loc1.parent) 
+				{
+					loc2 = arg2.globalToLocal(loc1.parent.localToGlobal(loc2));
+					loc3 = arg2.globalToLocal(loc1.parent.localToGlobal(loc3));
+				}
+				return new Rectangle(loc2.x, loc2.y, loc3.x - loc2.x, loc3.y - loc2.y);
+			}
+			return new Rectangle();
+		}
+		
+		public function selectAll(event:Event):void{
 			for (var i:int = 0; i < _graph.numElements; i++) 
 			{
 				var renderer:Renderer = _graph.getElementAt(i) as Renderer;
@@ -1184,6 +1278,8 @@ package com.hjx.diagram.editor
 					var cloneLink:Link = Link(cloneRenderer);
 					cloneLink.fallbackStartPoint = graphMousePoint;
 					cloneLink.fallbackEndPoint = new Point(graphMousePoint.x + (link.fallbackEndPoint.x - link.fallbackStartPoint.x), graphMousePoint.y + (link.fallbackEndPoint.y - link.fallbackStartPoint.y));
+					
+//					callLater(function invalidateLink():void{link.invalidateShape();});
 				}
 				else 
 				{

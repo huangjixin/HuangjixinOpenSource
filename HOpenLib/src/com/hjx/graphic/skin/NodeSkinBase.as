@@ -61,10 +61,44 @@ package com.hjx.graphic.skin
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// override 覆盖函数
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-		
-		public function set borderColor(value:uint):void
+
+		[Bindable]
+		public function get selectedTextColor():uint
 		{
-			_borderColor = value;
+			return _selectedTextColor;
+		}
+
+		public function set selectedTextColor(value:uint):void
+		{
+			_selectedTextColor = value;
+		}
+
+		[Bindable]
+		public function get selectedColor():uint
+		{
+			return _selectedColor;
+		}
+
+		public function set selectedColor(value:uint):void
+		{
+			_selectedColor = value;
+		}
+
+		[Bindable]
+		public function get color():uint
+		{
+			return _color;
+		}
+
+		public function set color(value:uint):void
+		{
+			_color = value;
+		}
+
+		[Bindable]
+		public function get caretColor():uint
+		{
+			return _caretColor;
 		}
 
 		public function set caretColor(value:uint):void
@@ -72,64 +106,27 @@ package com.hjx.graphic.skin
 			_caretColor = value;
 		}
 
-		public function set backgroundColor(value:uint):void
-		{
-			_backgroundColor = value;
-		}
-
-		/**
-		 * 背景颜色。 
-		 * @return 
-		 * 
-		 */
-		[Bindable]
-		public function get backgroundColor():uint
-		{
-			return _backgroundColor;
-		}
-		
-		/**
-		 * 边框颜色。 
-		 * @return 
-		 * 
-		 */
 		[Bindable]
 		public function get borderColor():uint
 		{
 			return _borderColor;
 		}
-		
-		public function get caretColor():uint
+
+		public function set borderColor(value:uint):void
 		{
-			return _caretColor;
+			_borderColor = value;
 		}
-		/**
-		 * 文字颜色。 
-		 * @return 
-		 * 
-		 */
-		public function get color():uint
+
+		[Bindable]
+		public function get backgroundColor():uint
 		{
-			return _color;
+			return _backgroundColor;
 		}
-		/**
-		 * 选中背景颜色。 
-		 * @return 
-		 * 
-		 */
-		public function get selectedColor():uint
+
+		public function set backgroundColor(value:uint):void
 		{
-			return _selectedColor;
+			_backgroundColor = value;
 		}
-		/**
-		 * 选中背景颜色。 
-		 * @return 
-		 * 
-		 */
-		public function get selectedTextColor():uint
-		{
-			return _selectedTextColor;
-		}
-		
+
 	}//类结束
 }//包结束

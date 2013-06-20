@@ -16,7 +16,7 @@ package com.hjx.bpmn.graphic
 		private var _monitoringStatus:String = "";
 		
 		public var monitoringDelay:Number = 1000;
-		
+		[Bindable]
 		public var label:String = "";
 		
 		private var _transition:Transition;
