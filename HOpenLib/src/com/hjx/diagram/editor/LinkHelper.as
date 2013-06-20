@@ -258,9 +258,11 @@ package com.hjx.diagram.editor
 					point = adornedLink.globalToLocal(point);
 					if(isStart){
 						adornedLink.endNode = null;
+						adornedLink.endConnectionArea = LinkConnectionArea.CENTER;
 						adornedLink.fallbackEndPoint = point;					
 					}else{
 						adornedLink.startNode = null;
+						adornedLink.startConnectionArea = LinkConnectionArea.CENTER;
 						adornedLink.fallbackStartPoint = point;
 					}
 

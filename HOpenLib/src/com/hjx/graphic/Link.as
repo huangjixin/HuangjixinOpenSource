@@ -305,11 +305,11 @@ package com.hjx.graphic
 			return rect;
 		}
 		
-		internal static function getDirection(arg1:flash.geom.Point, arg2:flash.geom.Point):int
+		internal static function getDirection(startPoint:Point, endPoint:Point):int
 		{
-			var loc1:Number=arg2.x - arg1.x;
-			var loc2:Number=arg2.y - arg1.y;
-			if (Math.abs(loc1) >= Math.abs(loc2)) 
+			var loc1:Number=endPoint.x - startPoint.x;
+			var pX:Number=endPoint.y - startPoint.y;
+			if (Math.abs(loc1) >= Math.abs(pX)) 
 			{
 				if (loc1 > 0) 
 				{
@@ -317,13 +317,48 @@ package com.hjx.graphic
 				}
 				return Left;
 			}
-			if (loc2 > 0) 
+			if (pX > 0) 
 			{
 				return Bottom;
 			}
 			return Top;
 		}
 		
+		internal static function RotateRectangle(rect:Rectangle, dirction:int):void
+		{
+			var temp:Number=NaN;
+			
+			switch (dirction) 
+			{
+				case 1:
+				{
+					temp = rect.x;
+					rect.x = -rect.y - rect.height;
+					rect.y = temp;
+					temp = rect.width;
+					rect.width = rect.height;
+					rect.height = temp;
+					break;
+				}
+				case 2:
+				{
+					rect.x = -rect.x - rect.width;
+					rect.y = -rect.y - rect.height;
+					break;
+				}
+				case 3:
+				{
+					temp = rect.x;
+					rect.x = rect.y;
+					rect.y = -temp - rect.width;
+					temp = rect.width;
+					rect.width = rect.height;
+					rect.height = temp;
+					break;
+				}
+			}
+			return;
+		}
 		
 		internal static function RotatePoint(point:Point, ratate:int):Point
 		{
@@ -844,7 +879,8 @@ package com.hjx.graphic
 				}
 				case LinkShapeType.ORTHOGONAL:
 				{
-					
+					var startRect:Rectangle;
+					var endRect:Rectangle;
 					var direction:int = getDirection(defaultStartPoint,defaultEndPoint);
 					if (this._shapePoints == null) 
 					{
@@ -864,28 +900,59 @@ package com.hjx.graphic
 							offsetX = minOffset*Math.cos(radian);
 							offsetY = minOffset*Math.sin(radian);
 							defaultStartPoint.offset(-offsetX,-offsetY);
+							//插入第一个起始元素；
+//							this._shapePoints.splice(0,0, defaultStartPoint);
 							
 						}else if(startConnectionArea == LinkConnectionArea.LEFT){
 							offsetX = Math.abs(realVisialeStartNode.width/2);
 							offsetY = 0;
 							defaultStartPoint.offset(-offsetX,-offsetY);
+							
+							//插入第一个起始元素；
+//							this._shapePoints.splice(0,0, defaultStartPoint);
+//							this._shapePoints.splice(1,0, defaultStartPoint.clone().offset(-this._orthogonalSpacing,0));
+							
 						}else if(startConnectionArea == LinkConnectionArea.RIGHT){
 							offsetX = Math.abs(realVisialeStartNode.width/2);
 							offsetY = 0;
 							defaultStartPoint.offset(offsetX,-offsetY);
+							
+							//插入第一个起始元素；
+//							this._shapePoints.splice(0,0, defaultStartPoint);
+//							this._shapePoints.splice(1,0, defaultStartPoint.clone().offset(this._orthogonalSpacing,0));
+							
 						}else if(startConnectionArea == LinkConnectionArea.TOP){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeStartNode.height/2);
 							defaultStartPoint.offset(-offsetX,-offsetY);
+							
+							//插入第一个起始元素；
+//							this._shapePoints.splice(0,0, defaultStartPoint);
+//							this._shapePoints.splice(1,0, defaultStartPoint.clone().offset(0,-this._orthogonalSpacing));
+							
 						}else if(startConnectionArea == LinkConnectionArea.BOTTOM){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeStartNode.height/2);
 							defaultStartPoint.offset(-offsetX,offsetY);
+							
+							//插入第一个起始元素；
+//							this._shapePoints.splice(0,0, defaultStartPoint);
+//							this._shapePoints.splice(1,0, defaultStartPoint.clone().offset(0,this._orthogonalSpacing));
+							
 						}
 						
 						this.fallbackStartPoint = defaultStartPoint.clone();
+						
+						if(this.parent){
+							startRect = this.startNode.getNodeOrBaseBounds(this.parent);
+						}else{
+							startRect = new Rectangle(defaultStartPoint.x,defaultStartPoint.y);
+						}
+						
 					}else{
 						defaultStartPoint = this.fallbackStartPoint.clone();
+						
+						startRect = new Rectangle(defaultStartPoint.x,defaultStartPoint.y);
 					}
 					
 					if(this.endNode){
@@ -895,32 +962,63 @@ package com.hjx.graphic
 							minOffset = Math.min(Math.abs(realVisialeEndNode.width/2/Math.cos(radian)),Math.abs(realVisialeEndNode.height/2/Math.sin(radian)));
 							offsetX = minOffset*Math.cos(radian);
 							offsetY = minOffset*Math.sin(radian);
-							defaultEndPoint.offset(-offsetX,-offsetY);							
+							defaultEndPoint.offset(-offsetX,-offsetY);	
+							
+							//插入最后元素；
+//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint);
+							
 						}else if(endConnectionArea == LinkConnectionArea.LEFT){
 							offsetX = Math.abs(realVisialeEndNode.width/2);
 							offsetY = 0;
 							defaultEndPoint.offset(-offsetX,-offsetY);
+							
+							//插入最后元素；
+//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint);
+//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint.clone().offset(-this._orthogonalSpacing,0));
+							
 						}else if(endConnectionArea == LinkConnectionArea.RIGHT){
 							offsetX = Math.abs(realVisialeEndNode.width/2);
 							offsetY = 0;
 							defaultEndPoint.offset(offsetX,-offsetY);
+							//插入最后元素；
+//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint);
+//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint.clone().offset(this._orthogonalSpacing,0));
+							
 						}else if(endConnectionArea == LinkConnectionArea.TOP){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeEndNode.height/2);
 							defaultEndPoint.offset(-offsetX,-offsetY);
+							
+							//插入最后元素；
+//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint);
+//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint.clone().offset(0,-this._orthogonalSpacing));
+							
 						}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeEndNode.height/2);
 							defaultEndPoint.offset(-offsetX,offsetY);
+							
+							//插入最后元素；
+//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint);
+//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint.clone().offset(0,this._orthogonalSpacing));
 						}
 						
 						this.fallbackEndPoint = defaultEndPoint.clone();
+						
+						if(this.parent){
+							endRect = this.endNode.getNodeOrBaseBounds(this.parent);
+						}else{
+							endRect = new Rectangle(defaultEndPoint.x,defaultEndPoint.y);
+						}
+						
 					}else{
 						defaultEndPoint = this.fallbackEndPoint.clone();
+						
+						endRect = new Rectangle(defaultEndPoint.x,defaultEndPoint.y);
 					}
 					
 					
-					computeOrthogonal(defaultStartPoint,defaultEndPoint,this._shapePoints);
+					computeOrthogonal(defaultStartPoint,startRect,defaultEndPoint,endRect,this._shapePoints);
 				}	
 				default:
 				{
@@ -937,10 +1035,205 @@ package com.hjx.graphic
 		 * @param shapePoints
 		 * 
 		 */
-		internal function computeOrthogonal(startPoint:Point, endPoint:Point, shapePoints:Vector.<Point>):void
+		internal function computeOrthogonal(startPoint:Point,startRect:Rectangle, endPoint:Point, endRect:Rectangle,shapePoints:Vector.<Point>):void
 		{
 			var direction:int = getDirection(startPoint,endPoint);
 			var middle:Point = new Point(startPoint.x/2+endPoint.x/2,startPoint.y/2+endPoint.y/2);
+			/*var pX:Number;
+			var pY:Number;
+			switch(direction){
+				case Top:
+					if (endRect.bottom < startRect.top) 
+					{
+						if (endRect.left > startPoint.x || endRect.right < startPoint.x) 
+						{
+							pY = Math.min(startRect.top, endRect.top) - this._orthogonalSpacing;
+							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+							shapePoints.push(new flash.geom.Point(endPoint.x, pY));
+						}
+						else 
+						{
+							pY = (startPoint.y + endRect.bottom) / 2;
+							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+							if (endPoint.x > startPoint.x) 
+							{
+								pX = endRect.left - this._orthogonalSpacing;
+							}
+							else 
+							{
+								pX = endRect.right + this._orthogonalSpacing;
+							}
+							shapePoints.push(new flash.geom.Point(pX, pY));
+							pY = endRect.top - this._orthogonalSpacing;
+							shapePoints.push(new flash.geom.Point(pX, pY));
+							shapePoints.push(new flash.geom.Point(endPoint.x, pY));
+						}
+					}
+					else if (endRect.top > startRect.bottom) 
+					{
+						if (endPoint.x > startRect.right || endPoint.x < startRect.left) 
+						{
+							pY = Math.min(startRect.top, endRect.top) - this._orthogonalSpacing;
+							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+							shapePoints.push(new flash.geom.Point(endPoint.x, pY));
+						}
+						else 
+						{
+							pY = startRect.top - this._orthogonalSpacing;
+							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+							if (endPoint.x < startPoint.x) 
+							{
+								pX = startRect.left - this._orthogonalSpacing;
+							}
+							else 
+							{
+								pX = startRect.right + this._orthogonalSpacing;
+							}
+							shapePoints.push(new flash.geom.Point(pX, pY));
+							pY = (endPoint.y + startRect.bottom) / 2;
+							shapePoints.push(new flash.geom.Point(pX, pY));
+							shapePoints.push(new flash.geom.Point(endPoint.x, pY));
+						}
+					}
+					else 
+					{
+						pY = Math.min(startRect.top, endRect.top) - this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+						shapePoints.push(new flash.geom.Point(endPoint.x, pY));
+					}
+				break;
+				
+				case Bottom:
+					if (endPoint.y < startPoint.y) 
+					{
+						if (endPoint.x != startPoint.x) 
+						{
+							pY = (startPoint.y + endPoint.y) / 2;
+							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+							shapePoints.push(new flash.geom.Point(endPoint.x, pY));
+						}
+					}
+					else if (endRect.left > startRect.right || endRect.right < startRect.left) 
+					{
+						pY = startRect.top - this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+						if (endRect.left > startRect.right) 
+						{
+							pX = (endRect.left + startRect.right) / 2;
+						}
+						else 
+						{
+							pX = (endRect.right + startRect.left) / 2;
+						}
+						shapePoints.push(new flash.geom.Point(pX, pY));
+						pY = endRect.bottom + this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(pX, pY));
+						shapePoints.push(new flash.geom.Point(endPoint.x, pY));
+					}
+					else 
+					{
+						pY = Math.min(startRect.top, endRect.top) - this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+						if (endPoint.x > startPoint.x) 
+						{
+							pX = Math.max(startRect.right, endRect.right) + this._orthogonalSpacing;
+						}
+						else 
+						{
+							pX = Math.min(startRect.left, endRect.left) - this._orthogonalSpacing;
+						}
+						shapePoints.push(new flash.geom.Point(pX, pY));
+						pY = endRect.bottom + this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(pX, pY));
+						shapePoints.push(new flash.geom.Point(endPoint.x, pY));
+					}
+				break;
+				
+				case Left:
+					if (endRect.left < startPoint.x) 
+					{
+						if (endRect.bottom < startPoint.y) 
+						{
+							pY = (startPoint.y + endRect.bottom) / 2;
+							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+							pX = endRect.left - this._orthogonalSpacing;
+							shapePoints.push(new flash.geom.Point(pX, pY));
+							shapePoints.push(new flash.geom.Point(pX, endPoint.y));
+						}
+						else 
+						{
+							pY = Math.min(endRect.top, startRect.top) - this._orthogonalSpacing;
+							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+							pX = Math.min(endRect.left, startRect.left) - this._orthogonalSpacing;
+							shapePoints.push(new flash.geom.Point(pX, pY));
+							shapePoints.push(new flash.geom.Point(pX, endPoint.y));
+						}
+					}
+					else if (endPoint.y < startRect.top) 
+					{
+						shapePoints.push(new flash.geom.Point(startPoint.x, endPoint.y));
+					}
+					else if (endRect.left > startRect.right) 
+					{
+						pY = startRect.top - this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+						pX = (startRect.right + endRect.left) / 2;
+						shapePoints.push(new flash.geom.Point(pX, pY));
+						shapePoints.push(new flash.geom.Point(pX, endPoint.y));
+					}
+					else 
+					{
+						pY = Math.min(endRect.top, startRect.top) - this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+						pX = Math.min(endRect.left, startRect.left) - this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(pX, pY));
+						shapePoints.push(new flash.geom.Point(pX, endPoint.y));
+					}
+				break;
+				
+				case Right:
+					if (endRect.right > startPoint.x) 
+					{
+						if (endRect.bottom < startPoint.y) 
+						{
+							pY = (startPoint.y + endRect.bottom) / 2;
+							shapePoints.push(new Point(startPoint.x, pY));
+							pX = endRect.right + this._orthogonalSpacing;
+							shapePoints.push(new flash.geom.Point(pX, pY));
+							shapePoints.push(new flash.geom.Point(pX, endPoint.y));
+						}
+						else 
+						{
+							pY = Math.min(endRect.top, startRect.top) - this._orthogonalSpacing;
+							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+							pX = Math.max(endRect.right, startRect.right) + this._orthogonalSpacing;
+							shapePoints.push(new flash.geom.Point(pX, pY));
+							shapePoints.push(new flash.geom.Point(pX, endPoint.y));
+						}
+					}
+					else if (endPoint.y < startRect.top) 
+					{
+						shapePoints.push(new flash.geom.Point(startPoint.x, endPoint.y));
+					}
+					else if (endRect.right < startRect.left) 
+					{
+						pY = startRect.top - this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+						pX = (startRect.left + endRect.right) / 2;
+						shapePoints.push(new flash.geom.Point(pX, pY));
+						shapePoints.push(new flash.geom.Point(pX, endPoint.y));
+					}
+					else 
+					{
+						pY = Math.min(endRect.top, startRect.top) - this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
+						pX = Math.max(endRect.right, startRect.right) + this._orthogonalSpacing;
+						shapePoints.push(new flash.geom.Point(pX, pY));
+						shapePoints.push(new flash.geom.Point(pX, endPoint.y));
+					}
+				break;
+				
+			}*/
 			/*switch(direction){
 				case Left:
 					shapePoints.push(startPoint);
@@ -1182,7 +1475,43 @@ package com.hjx.graphic
 					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
 					
 				}else{
-						
+					if(endConnectionArea == LinkConnectionArea.CENTER){
+						middle.x = shapePoints[1].x/2+endPoint.x/2;
+						middle.y = shapePoints[1].y/2+endPoint.y/2;
+						startPoint = shapePoints[1];
+						switch(direction)
+						{
+							case Top:
+							{
+								shapePoints.push(new Point(startPoint.x,middle.y));
+								shapePoints.push(new Point(endPoint.x,middle.y));
+								break;
+							}
+							case Bottom:
+							{
+								shapePoints.push(new Point(startPoint.x,middle.y));
+								shapePoints.push(new Point(endPoint.x,middle.y));
+								break;
+							}
+							case Right:
+							{
+								shapePoints.push(new Point(middle.x,startPoint.y));
+								shapePoints.push(new Point(middle.x,endPoint.y));
+								break;
+							}
+							case Left:
+							{
+								shapePoints.push(new Point(middle.x,startPoint.y));
+								shapePoints.push(new Point(middle.x,endPoint.y));
+								break;
+							}
+								
+							default:
+							{
+								break;
+							}
+						}
+					}	
 				}
 			}else if(startConnectionArea == LinkConnectionArea.LEFT){
 				shapePoints.push(new Point(startPoint.x-this._orthogonalSpacing,startPoint.y));	
@@ -1206,6 +1535,44 @@ package com.hjx.graphic
 					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y));
 					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
 					
+				}else{
+					if(endConnectionArea == LinkConnectionArea.CENTER){
+						middle.x = shapePoints[1].x/2+endPoint.x/2;
+						middle.y = shapePoints[1].y/2+endPoint.y/2;
+						startPoint = shapePoints[1];
+						switch(direction)
+						{
+							case Top:
+							{
+								shapePoints.push(new Point(startPoint.x,middle.y));
+								shapePoints.push(new Point(endPoint.x,middle.y));
+								break;
+							}
+							case Bottom:
+							{
+								shapePoints.push(new Point(startPoint.x,middle.y));
+								shapePoints.push(new Point(endPoint.x,middle.y));
+								break;
+							}
+							case Right:
+							{
+								shapePoints.push(new Point(middle.x,startPoint.y));
+								shapePoints.push(new Point(middle.x,endPoint.y));
+								break;
+							}
+							case Left:
+							{
+								shapePoints.push(new Point(middle.x,startPoint.y));
+								shapePoints.push(new Point(middle.x,endPoint.y));
+								break;
+							}
+								
+							default:
+							{
+								break;
+							}
+						}
+					}	
 				}
 			}else if(startConnectionArea == LinkConnectionArea.TOP){
 				shapePoints.push(new Point(startPoint.x,startPoint.y-this._orthogonalSpacing));	
@@ -1229,29 +1596,105 @@ package com.hjx.graphic
 					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y-this._orthogonalSpacing));
 					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
 					
+				}else{
+					if(endConnectionArea == LinkConnectionArea.CENTER){
+						middle.x = shapePoints[1].x/2+endPoint.x/2;
+						middle.y = shapePoints[1].y/2+endPoint.y/2;
+						startPoint = shapePoints[1];
+						switch(direction)
+						{
+							case Top:
+							{
+								shapePoints.push(new Point(startPoint.x,middle.y));
+								shapePoints.push(new Point(endPoint.x,middle.y));
+								break;
+							}
+							case Bottom:
+							{
+								shapePoints.push(new Point(startPoint.x,middle.y));
+								shapePoints.push(new Point(endPoint.x,middle.y));
+								break;
+							}
+							case Right:
+							{
+								shapePoints.push(new Point(middle.x,startPoint.y));
+								shapePoints.push(new Point(middle.x,endPoint.y));
+								break;
+							}
+							case Left:
+							{
+								shapePoints.push(new Point(middle.x,startPoint.y));
+								shapePoints.push(new Point(middle.x,endPoint.y));
+								break;
+							}
+								
+							default:
+							{
+								break;
+							}
+						}
+					}	
 				}
 			}else if(startConnectionArea == LinkConnectionArea.BOTTOM){
 				shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));	
 				if(endConnectionArea == LinkConnectionArea.LEFT){
-					//上对左
+					//下对左
 					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
 					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y));
 					
 				}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
-					//上对底
+					//下对底
 					shapePoints.push(new Point(startPoint.x,endPoint.y+this._orthogonalSpacing));
 					shapePoints.push(new Point(endPoint.x,endPoint.y+this._orthogonalSpacing));
 					
 				}else if(endConnectionArea == LinkConnectionArea.TOP){
-					//上对上
+					//下对上
 					shapePoints.push(new Point(endPoint.x,startPoint.y+this._orthogonalSpacing));
-					shapePoints.push(new Point(endPoint.x,endPoint.y+this._orthogonalSpacing));
+					shapePoints.push(new Point(endPoint.x,endPoint.y-this._orthogonalSpacing));
 					
 				}else if(endConnectionArea == LinkConnectionArea.RIGHT){
-					// 上对右
+					// 下对右
 					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
 					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
 					
+				}else{
+					if(endConnectionArea == LinkConnectionArea.CENTER){
+						middle.x = shapePoints[1].x/2+endPoint.x/2;
+						middle.y = shapePoints[1].y/2+endPoint.y/2;
+						startPoint = shapePoints[1];
+						switch(direction)
+						{
+							case Top:
+							{
+								shapePoints.push(new Point(startPoint.x,middle.y));
+								shapePoints.push(new Point(endPoint.x,middle.y));
+								break;
+							}
+							case Bottom:
+							{
+								shapePoints.push(new Point(startPoint.x,middle.y));
+								shapePoints.push(new Point(endPoint.x,middle.y));
+								break;
+							}
+							case Right:
+							{
+								shapePoints.push(new Point(middle.x,startPoint.y));
+								shapePoints.push(new Point(middle.x,endPoint.y));
+								break;
+							}
+							case Left:
+							{
+								shapePoints.push(new Point(middle.x,startPoint.y));
+								shapePoints.push(new Point(middle.x,endPoint.y));
+								break;
+							}
+								
+							default:
+							{
+								break;
+							}
+						}
+					}	
 				}
 			}else{
 				if(endConnectionArea == LinkConnectionArea.CENTER){

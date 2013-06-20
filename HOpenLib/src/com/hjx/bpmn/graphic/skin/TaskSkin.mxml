@@ -54,9 +54,9 @@
 		<!-- indicators for monitoring status -->
 		<mx:SWFLoader id="wait" includeIn="active" right="-8" top="-16" width="16" height="16"
 					  activate="{animateWaitEffect.play()}" deactivate="{animateWaitEffect.stop()}"
-					  source="{IconClass.iconClass(IconClass.WAIT)}"/>
+					  source="@Embed(source='../images/wait.svg')"/>
 		<mx:SWFLoader includeIn="done" right="-8" top="-16" width="16" height="16"
-					  source="{IconClass.iconClass(IconClass.OK)}"/>
+					  source="@Embed(source='../images/ok.svg')"/>
 		
 		
 		<s:Rect id="rect" left="0" right="0" top="0" bottom="0" radiusX="5" radiusY="5">
