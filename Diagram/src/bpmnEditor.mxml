@@ -8,7 +8,7 @@
 			   xmlns:editor="com.hjx.diagram.editor.*"
 			   xmlns:graphlayout="com.hjx.graphic.graphlayout.*"
 			   xmlns:graphic1="com.hjx.bpmn.graphic.*"
-			   minWidth="955" minHeight="600">
+			   minWidth="955" minHeight="600" creationComplete="application1_creationCompleteHandler(event)">
 	<fx:Style source="bpmgraphic.css">
 		
 	</fx:Style>
@@ -33,18 +33,25 @@
 			import mx.collections.ArrayCollection;
 			import mx.collections.HierarchicalData;
 			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
 			import mx.core.IVisualElementContainer;
 			import mx.core.UIComponent;
 			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			import mx.events.MoveEvent;
-			import mx.utils.ObjectUtil;
 			
 			import spark.effects.Resize;
 			import spark.formatters.NumberFormatter;
 			
 			private var file:FileReference;
 			private var currentFileName:String;
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var domainid:String = FlexGlobals.topLevelApplication.parameters["domainId"];
+				Alert.show(domainid);
+			}
+			
 			// -----------------------------------------
 			// 保存和加载
 			// -----------------------------------------
@@ -328,7 +335,7 @@
 					width="100%" height="100%">
 		<s:Panel width="200" height="100%" title="图形面板">
 			<s:VGroup width="100%" height="100%" horizontalAlign="center" paddingTop="10">
-				<s:ButtonBar dataProvider="{rendererView}" skinClass="skins.BtnBarSkin">
+				<s:ButtonBar dataProvider="{rendererView}">
 					<s:layout>
 						<s:VerticalLayout rowHeight="50" gap="0" paddingLeft="0" paddingRight="0"/>
 					</s:layout>
@@ -530,21 +537,26 @@
 									<graphic1:SequenceFlow label="时序流"
 													  fallbackEndPoint="{new Point(170,10)}"
 													  fallbackStartPoint="{new Point(10,10)}"
-													  shapeType="straight"/>
+													  shapeType="straight"
+													  color="red"/>
 									<graphic1:SequenceFlow label="时序流"
 													  fallbackEndPoint="{new Point(170,10)}"
 													  fallbackStartPoint="{new Point(10,20)}"
-													  shapeType="orthogonal"/>
+													  shapeType="orthogonal"
+													  color="red"/>
 									<graphic1:MessageFlow label="消息流"
 													 fallbackEndPoint="{new Point(170,10)}"
-													 fallbackStartPoint="{new Point(10,10)}"/>
+													 fallbackStartPoint="{new Point(10,10)}"
+													 color="red"/>
 									<graphic1:MessageFlow label="消息流"
 													 fallbackEndPoint="{new Point(170,20)}"
 													 fallbackStartPoint="{new Point(10,10)}"
-													 shapeType="orthogonal"/>
+													 shapeType="orthogonal"
+													 color="red"/>
 									<graphic1:Association label="关联"
 													 fallbackEndPoint="{new Point(170,10)}"
-													 fallbackStartPoint="{new Point(10,10)}"/>
+													 fallbackStartPoint="{new Point(10,10)}"
+													 color="red"/>
 								</s:ArrayList>
 							</s:dataProvider>
 						</s:List>

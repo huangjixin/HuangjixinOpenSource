@@ -36,7 +36,7 @@
 		graphic1|Task{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.TaskSkin");
 			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner");
-			toBeAddedPalette:ClassReference("TaskToBeAddedPalette")
+/*			toBeAddedPalette:ClassReference("TaskToBeAddedPalette")*/
 			/* backgroundColor:"0x000333"; */
 		}
 		
