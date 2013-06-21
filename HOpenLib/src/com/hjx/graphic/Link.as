@@ -16,9 +16,8 @@ package com.hjx.graphic
 	import mx.graphics.SolidColorStroke;
 	import mx.styles.StyleManager;
 	
-	import spark.primitives.Path;
-	
 	import ws.tink.spark.graphics.SolidColorDash;
+	import ws.tink.spark.primatives.Path;
 
 	/**
 	 * 所有连线的基类，用于连接节点。一条线可以没有节点，或者一个节点，或者两个节点，所以其必须有两个Node的引用。 
@@ -26,17 +25,18 @@ package com.hjx.graphic
 	 * 
 	 */
 	[Style(name="caps", inherit="yes", type="String",enumeration="round,square,none")]
-	[Style(name="caretColor", inherit="no", type="uint",format="Color")]
-	[Style(name="dashArray", inherit="no", type="Array")]
-	[Style(name="dashStyle", inherit="no", type="String",enumeration="none,dash,dot,dashDot")]
+	[Style(name="caretColor", inherit="yes", type="uint",format="Color")]
+	[Style(name="color", inherit="yes", type="uint",format="Color")]
+	[Style(name="dashArray", inherit="yes", type="Array")]
+	[Style(name="dashStyle", inherit="yes", type="String",enumeration="none,dash,dot,dashDot")]
 	[Style(name="dash", inherit="yes", type="Number")]
 	[Style(name="endArrowType", inherit="yes", type="String",enumeration="triangle,open,sunken,curved,square,diamond,circle,star")]
 	[Style(name="endArrowVisible", inherit="yes", type="Boolean",format="Boolean",enumeration="true,false")]
 	[Style(name="joints", inherit="yes", type="String",enumeration="round,miter,bevel")]
 	[Style(name="miterLimit", inherit="yes", type="uint",format="Number")]
-	[Style(name="orthogonalSpacing", inherit="no", type="Number")]
+	[Style(name="orthogonalSpacing", inherit="yes", type="Number")]
 	[Style(name="pixelHinting", inherit="yes", type="Boolean",format="Boolean")]
-	[Style(name="radius", inherit="no", type="Number")]
+	[Style(name="radius", inherit="yes", type="Number")]
 	[Style(name="selectedColor", inherit="yes", type="uint",format="Color")]
 	[Style(name="selectedStrokeWidth", inherit="yes", type="uint",format="Number")]
 	[Style(name="startArrowType", inherit="yes", type="String",enumeration="triangle,open,sunken,curved,square,diamond,circle,star")]
@@ -881,8 +881,16 @@ package com.hjx.graphic
 					this._shapePoints.push(defaultStartPoint);
 					this._shapePoints.push(defaultEndPoint);
 					if(labelElement){
+						radian= Math.atan2(defaultEndPoint.y - defaultStartPoint.y, defaultEndPoint.x - defaultStartPoint.x);
+//						labelElement.rotation = radian*180/Math.PI;
 						labelElement.x = defaultStartPoint.x/2+defaultEndPoint.x/2-labelElement.width/2;
 						labelElement.y = defaultStartPoint.y/2+defaultEndPoint.y/2-labelElement.height/2;
+/*						labelElement.x = defaultStartPoint.x/2+defaultEndPoint.x/2-labelElement.width/2-labelElement.width*Math.sin(radian)/2;;
+						labelElement.y = defaultStartPoint.y/2+defaultEndPoint.y/2-labelElement.height/2-labelElement.height*Math.cos(radian)/2;*/
+						/*var dx:Number = labelElement.x;
+						var dy:Number = labelElement.y;
+						labelElement.x = dx * Math.cos(radian) - dy * Math.sin(radian);
+						labelElement.y = dy * Math.cos(radian) + dx * Math.sin(radian);*/
 					}
 					break;
 				}
@@ -1028,6 +1036,10 @@ package com.hjx.graphic
 					
 					
 					computeOrthogonal(defaultStartPoint,startRect,defaultEndPoint,endRect,this._shapePoints);
+					if(labelElement){
+						labelElement.x = this._shapePoints[0].x/2+this._shapePoints[this._shapePoints.length-1].x/2-labelElement.width/2;
+						labelElement.y = this._shapePoints[0].y/2+this._shapePoints[this._shapePoints.length-1].y/2-labelElement.height/2;
+					}
 				}	
 				default:
 				{
@@ -1832,6 +1844,27 @@ package com.hjx.graphic
 		//-----------------------------------------------------------
 		// 覆盖函数
 		//-----------------------------------------------------------
+		override protected function cloneStyle(renderer:Renderer, cloneRenderer:Renderer):void
+		{
+			cloneRenderer.setStyle("caps",renderer.getStyle("caps"));
+			cloneRenderer.setStyle("color",renderer.getStyle("color"));
+			cloneRenderer.setStyle("dashArray",renderer.getStyle("dashArray"));
+			cloneRenderer.setStyle("dashStyle",renderer.getStyle("dashStyle"));
+			cloneRenderer.setStyle("endArrowType",renderer.getStyle("endArrowType"));
+			cloneRenderer.setStyle("endArrowVisible",renderer.getStyle("endArrowVisible"));
+			cloneRenderer.setStyle("joints",renderer.getStyle("joints"));
+			cloneRenderer.setStyle("miterLimit",renderer.getStyle("miterLimit"));
+			cloneRenderer.setStyle("orthogonalSpacing",renderer.getStyle("orthogonalSpacing"));
+			cloneRenderer.setStyle("pixelHinting",renderer.getStyle("pixelHinting"));
+			cloneRenderer.setStyle("radius",renderer.getStyle("radius"));
+			cloneRenderer.setStyle("selectedColor",renderer.getStyle("selectedColor"));
+			cloneRenderer.setStyle("selectedStrokeWidth",renderer.getStyle("selectedStrokeWidth"));
+			cloneRenderer.setStyle("startArrowType",renderer.getStyle("startArrowType"));
+			cloneRenderer.setStyle("startArrowVisible",renderer.getStyle("startArrowVisible"));
+			cloneRenderer.setStyle("strokeColor",renderer.getStyle("strokeColor"));
+			cloneRenderer.setStyle("strokeWidth",renderer.getStyle("strokeWidth"));
+		}
+		
 		/*override protected function measure():void{
 			super.measure();
 			this.measuredWidth = getBoundsForMeasure().width;

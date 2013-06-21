@@ -88,13 +88,15 @@
 										 weight="{strokeWidth}" dash="8" gap="8"/>
 			</primatives:stroke>
 		</primatives:Path>  
-		<s:Path id="startArrow" data="M -10 -5 l 10 5 l -10 5 Z" stroke="{strokecolor}">
-		</s:Path>
+		<primatives:Path id="startArrow" data="M -10 -5 l 10 5 l -10 5 Z" stroke="{strokecolor}">
+		</primatives:Path>
 		<!-- data path must be relative to (0,0) because arrow are centered on path end/start points-->
-		<s:Path id="endArrow" data="M -10 -5 l 10 5 l -10 5 Z" stroke="{strokecolor}">
-			<s:fill>
+		<primatives:Path id="endArrow" data="M -10 -5 l 10 5 l -10 5 Z" stroke="{strokecolor}">
+			<primatives:fill>
 				<s:SolidColor color="white"/>
-			</s:fill>
-		</s:Path>     
+			</primatives:fill>
+		</primatives:Path>   
+		<s:Label id="labelElement" minWidth="20" color="{color}"
+				 text="{hostComponent.label}"/>
 	</s:Group>
 </skin:NodeSkinBase>

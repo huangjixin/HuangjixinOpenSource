@@ -854,43 +854,57 @@ package com.hjx.diagram.editor
 			return false;
 		}
 		
+		/**
+		 * 利用弹窗的方式编辑渲染器文本。 
+		 * @param renderer
+		 * @return 
+		 * 
+		 */
 		public function startEditingText(renderer:Renderer):Boolean
 		{
 			if(!renderer.hasOwnProperty("label")){
 				return false;
 			}
-			var textEditor:TextArea = PopUpManager.createPopUp(renderer,TextArea,false) as TextArea;
+			var textEditor:TextArea;
+			var link:Link;
 			if(renderer is Node){
+				textEditor = PopUpManager.createPopUp(renderer,TextArea,false) as TextArea;
 				textEditor.width = renderer.width-2;
 				textEditor.height = renderer.height-2;
 				PopUpManager.centerPopUp( textEditor);
 			}else if(renderer is Link){
-				var link:Link = renderer as Link;
-				var rect:Rectangle = Link.getPathBounds(link.path);
+				textEditor = PopUpManager.createPopUp(renderer["labelElement"] as DisplayObject,TextArea,false) as TextArea;
+				link = renderer as Link;
+				textEditor.height = 20;
+				textEditor.width = 100;
+				PopUpManager.centerPopUp(textEditor);
+				/*var rect:Rectangle = Link.getPathBounds(link.path);
 				
 				textEditor.width = 100;
 				textEditor.height = 100;
-				textEditor.x = this.mouseX+textEditor.width/2;
-				textEditor.y = this.mouseX+textEditor.height/2;
+				textEditor.x = link.fallbackStartPoint.x/2+link.fallbackEndPoint.x/2+100;
+				textEditor.y = link.fallbackStartPoint.y/2+link.fallbackEndPoint.y/2+100;*/
 			}
 			
 			
 			if(renderer.hasOwnProperty("label")){
 				textEditor.setStyle("fontFamily","微软雅黑");
 				textEditor.text = renderer["label"];
-				
 				textEditor.setFocus();
 			}
 			
-			textEditor.addEventListener(FocusEvent.FOCUS_OUT,function onFocusOut(event:FocusEvent):void{
+			textEditor.addEventListener(FocusEvent.FOCUS_OUT,removePopup);
+			textEditor.addEventListener(FlexMouseEvent.MOUSE_DOWN_OUTSIDE,removePopup);
+			function removePopup(event:Event):void{
 				PopUpManager.removePopUp(textEditor);
+				if(textEditor.text == ""){
+					textEditor.text = "  "
+				}
 				renderer["label"]=textEditor.text;
-			});
-			textEditor.addEventListener(FlexMouseEvent.MOUSE_DOWN_OUTSIDE,function onFocusOut(event:FlexMouseEvent):void{
-				PopUpManager.removePopUp(textEditor);
-				renderer["label"]=textEditor.text;
-			});
-			
+				if(link){
+					callLater(function invalidateLinkShap():void{link.invalidateShape();});
+				}
+			};
 			return true;
 		}
 		
@@ -1271,6 +1285,8 @@ package com.hjx.diagram.editor
 					cloneFunction.call(this,renderer,cloneRenderer);
 				}
 				
+				dropGraph.addElement(cloneRenderer);
+				
 				var link:Link;
 				if (cloneRenderer is Link) 
 				{
@@ -1278,8 +1294,8 @@ package com.hjx.diagram.editor
 					var cloneLink:Link = Link(cloneRenderer);
 					cloneLink.fallbackStartPoint = graphMousePoint;
 					cloneLink.fallbackEndPoint = new Point(graphMousePoint.x + (link.fallbackEndPoint.x - link.fallbackStartPoint.x), graphMousePoint.y + (link.fallbackEndPoint.y - link.fallbackStartPoint.y));
-					
-//					callLater(function invalidateLink():void{link.invalidateShape();});
+					cloneLink.invalidateShape();
+					callLater(function invalidateLinkShap():void{cloneLink.invalidateShape();});
 				}
 				else 
 				{
@@ -1287,9 +1303,8 @@ package com.hjx.diagram.editor
 					cloneRenderer.setY(cloneRenderer, graphMousePoint.y);
 				}
 				
-				dropGraph.addElement(cloneRenderer);
-//				this.cloneChildren(loc1, loc7);
-				this.selectOnly(cloneRenderer);
+				callLater(selectOnly,[cloneRenderer]);
+				
 				this._graph.setFocus();
 				/*if (this.allowEditingText && this.allowEditingTextOnCreate) 
 				{

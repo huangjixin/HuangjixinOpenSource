@@ -29,6 +29,13 @@
 				var sw:Number = getStyle("strokeWidth");
 				if (strokeWidth != sw) strokeWidth = sw;      
 				
+				var color:* = getStyle("color");
+				
+				if (this.color != color && color!= undefined)
+				{
+					this.color = color;
+				}  
+				
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				hostComponent.addEventListener("monitoringStatusChange",onmonitoringStatusChange);
 			}
@@ -82,12 +89,22 @@
 										 weight="{strokeWidth}"/>
 			</primatives:stroke>
 		</primatives:Path>  
-		<s:Path id="startArrow" data="M -10 -5 l 10 5 l -10 5 Z" fill="{fillcolor}">
-		</s:Path>
+		<primatives:Path id="startArrow" data="M -10 -5 l 10 5 l -10 5 Z" fill="{fillcolor}">
+		</primatives:Path>
 		<!-- data path must be relative to (0,0) because arrow are centered on path end/start points-->
-		<s:Path id="endArrow" data="M -10 -5 l 10 5 l -10 5 Z" fill="{fillcolor}">
-		</s:Path>   
-		<s:Label id="labelElement" 
-				 text="{hostComponent.label}"/>
+		<primatives:Path id="endArrow" data="M -10 -5 l 10 5 l -10 5 Z" fill="{fillcolor}">
+		</primatives:Path>   
+		<s:Group id="labelElement">
+			<s:Rect top="0" bottom="0" left="0" right="0">
+				<s:fill>
+					<s:SolidColor color="0xffffff"/>
+				</s:fill>
+			</s:Rect>
+			<s:Label text="{hostComponent.label}">
+				<s:filters>
+					<s:GlowFilter blurX="4" blurY="4" color="0xffffff"/>
+				</s:filters>
+			</s:Label>
+		</s:Group>
 	</s:Group>
 </skin:NodeSkinBase>
