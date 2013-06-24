@@ -74,11 +74,22 @@ package com.hjx.jbpm
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.@["class"] = className;
-			xml.@["expression"] = expression;
-			xml.@["actor-id"] = actor_id;
-			xml.@["pooled-actors"] = pooled_actors;
-			xml.@["config-type"] = config_type;
+			if(this.className && this.className!=""){
+				xml.@["class"] = className;			
+			}
+			if(this.expression && this.expression!=""){
+				xml.@["expression"] = expression;			
+			}
+			if(this.actor_id && this.actor_id!=""){
+				xml.@["actor-id"] = actor_id;		
+			}
+			if(this.pooled_actors && this.pooled_actors!=""){
+				xml.@["pooled-actors"] = pooled_actors;		
+			}
+			if(this.config_type && this.config_type!=""){
+				xml.@["config-type"] = config_type;			
+			}
+			
 			return xml;
 		}
 	}

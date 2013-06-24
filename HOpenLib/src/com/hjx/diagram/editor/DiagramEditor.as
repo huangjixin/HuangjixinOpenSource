@@ -12,6 +12,7 @@ package com.hjx.diagram.editor
 	import com.hjx.bpmn.graphic.HorizontalPool;
 	import com.hjx.diagram.Diagram;
 	import com.hjx.diagram.editor.skin.DiagramEditorSkin;
+	import com.hjx.diagram.events.DiagramEditorEvent;
 	import com.hjx.graphic.Graph;
 	import com.hjx.graphic.Link;
 	import com.hjx.graphic.LinkConnectionArea;
@@ -53,6 +54,7 @@ package com.hjx.diagram.editor
 	import ws.tink.spark.graphics.SolidColorDash;
 	import ws.tink.spark.primatives.Rect;
 	
+	[Event(name="editor_double_click", type="com.hjx.diagram.events.DiagramEditorEvent")]
 	[DefaultProperty("diagram")]
 	public class DiagramEditor extends SkinnableComponent
 	{
@@ -77,6 +79,8 @@ package com.hjx.diagram.editor
 		
 		public var allowDropping:Boolean =true;
 		
+		public var allowEditingText:Boolean =true;
+			
 		private var defaultCSSStyles:Object = {
 			skinClass:DiagramEditorSkin
 		};
@@ -297,10 +301,13 @@ package com.hjx.diagram.editor
 				this.doubleClickStarted = false;
 				if (renderer) 
 				{
-					if (this.startEditingText(renderer)) 
+					dispatchEvent(new DiagramEditorEvent(DiagramEditorEvent.EDITOR_DOUBLE_CLICK,renderer));
+					if (this.allowEditingText) 
 					{
-						return;
+						this.startEditingText(renderer);
 					}
+					
+					return;
 				}
 			}
 			this._graph.setFocus();

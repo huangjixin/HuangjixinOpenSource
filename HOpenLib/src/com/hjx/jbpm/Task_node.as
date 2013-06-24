@@ -84,11 +84,21 @@ package com.hjx.jbpm
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.@["description"] = description;
-			xml.@["signal"] = signal;
+			if(this.description && this.description!=""){
+				xml.@["description"] = description;	
+			}
+			if(this.signal && this.signal!=""){
+				xml.@["signal"] = signal;			
+			}
+			if(this.create_tasks && this.create_tasks!=""){
+				xml.@["create-tasks"] = create_tasks;		
+			}
+			if(this.end_tasks && this.end_tasks!=""){
+				xml.@["end-tasks"] = end_tasks;		
+			}
+			
 			xml.appendChild(task.toXml());
-			xml.@["create-tasks"] = create_tasks;
-			xml.@["end-tasks"] = end_tasks;
+			
 			var xmllist:XMLList = commonNodeElements.toXml().children();
 			for each (var x:XML in xmllist) 
 			{

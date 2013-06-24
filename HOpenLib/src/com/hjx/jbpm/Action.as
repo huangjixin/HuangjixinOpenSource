@@ -94,12 +94,24 @@ package com.hjx.jbpm
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.@["class"] = className;
-			xml.@["ref-name"] = ref_name;
-			xml.@["expression"] = expression;
-			xml.@["accept-propagated-events"] = accept_propagated_events;
+			if(this.className && this.className!=""){
+				xml.@["class"] = className;			
+			}
+			if(this.expression && this.expression!=""){
+				xml.@["expression"] = expression;			
+			}
+			if(this.ref_name && this.ref_name!=""){
+				xml.@["ref-name"] = ref_name;		
+			}
+			if(this.accept_propagated_events && this.accept_propagated_events!=""){
+				xml.@["accept-propagated-events"] = accept_propagated_events;	
+			}
+			if(this.config_type && this.config_type!=""){
+				xml.@["config-type"] = config_type;			
+			}
+			
 			xml.@["async"] = async;
-			xml.@["config-type"] = config_type;
+			
 			return xml;
 		}
 	}

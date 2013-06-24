@@ -10,5 +10,11 @@ package com.hjx.bpmn.graphic
 		{
 			super();
 		}
+		
+		override public function set label(value:String):void{
+			super.label = value;
+			
+			star_state.name = value;
+		}
 	}
 }

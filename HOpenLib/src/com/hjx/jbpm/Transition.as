@@ -91,7 +91,11 @@ package com.hjx.jbpm
 		{
 			var xml:XML = super.toXml();
 			xml.@["to"] = to;
-			xml.@["condition"] = condition;
+			
+			if(this.condition && this.condition!=""){
+				xml.@["condition"] = condition;			
+			}
+			
 			xml.appendChild(exception_handler.toXml());
 			
 			xml.appendChild(action.toXml());

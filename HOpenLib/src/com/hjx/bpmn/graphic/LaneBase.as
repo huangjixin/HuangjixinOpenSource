@@ -23,14 +23,27 @@ package com.hjx.bpmn.graphic
 		
 		internal var _gap:int=-1
 			
-		public var swimlane:Swim_lane;
+		private var _swimlane:Swim_lane;
 		
 		public function LaneBase()
 		{
 			super();
 			swimlane = new Swim_lane();
+			swimlane.assignment.className="org.wbase.framework.jbpm.extend.RoleBasedAssignmentHandler";
+			swimlane.assignment.config_type="bean";
+			swimlane.name = label;
 		}
 		
+		public function get swimlane():Swim_lane
+		{
+			return _swimlane;
+		}
+
+		public function set swimlane(value:Swim_lane):void
+		{
+			_swimlane = value;
+		}
+
 		public function isHorizontal():Boolean
 		{
 			return false;
@@ -43,6 +56,12 @@ package com.hjx.bpmn.graphic
 				return false;
 			}
 			return true;
+		}
+		
+		override public function set label(value:String):void{
+			super.label = value;
+			if(swimlane)
+				swimlane.name = value;
 		}
 		
 		protected override function partAdded(partName:String, instance:Object):void

@@ -1,5 +1,6 @@
 package com.hjx.bpmn.graphic
 {
+	import com.hjx.jbpm.Event;
 	import com.hjx.jbpm.Task_node;
 
 	public class Task extends Activity
@@ -20,6 +21,18 @@ package com.hjx.bpmn.graphic
 			super();
 			task.description = "";
 			task.create_tasks = true;
+			
+			var event:com.hjx.jbpm.Event = new com.hjx.jbpm.Event();
+			event.type = "node-enter";
+			event.action.className = "org.wbase.framework.jbpm.extend.DynamicCreateTaskInstanceHandler";
+			event.name = "处理";
+			task.commonNodeElements.events[0] = event;
+		}
+		
+		override public function set label(value:String):void{
+			super.label = value;
+			
+			task.name = value;
 		}
 		
 	}

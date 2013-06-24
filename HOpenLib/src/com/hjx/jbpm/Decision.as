@@ -5,9 +5,21 @@ package com.hjx.jbpm
 		private var _handler:Handler = new Handler();
 		private var _transition_conditions:String="";
 		
+		private var _commonNodeElements:CommonNodeElements = new CommonNodeElements();
+		
 		public function Decision()
 		{
 			super();
+		}
+
+		public function get commonNodeElements():CommonNodeElements
+		{
+			return _commonNodeElements;
+		}
+
+		public function set commonNodeElements(value:CommonNodeElements):void
+		{
+			_commonNodeElements = value;
 		}
 
 		public function get transition_conditions():String
@@ -34,7 +46,15 @@ package com.hjx.jbpm
 		{
 			var xml:XML = super.toXml();
 			xml.appendChild(handler.toXml());
-			xml.@["transition-conditions"] = transition_conditions;
+			if(this.transition_conditions && this.transition_conditions!=""){
+				xml.@["transition-conditions"] = transition_conditions;
+			}
+			var xmllist:XMLList = commonNodeElements.toXml().children();
+			for each (var x:XML in xmllist) 
+			{
+				xml.appendChild(x);
+			}
+			
 			return xml;
 		}
 	}

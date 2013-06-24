@@ -62,7 +62,11 @@ package com.hjx.jbpm
 			xml.appendChild(cancel_timer.toXml());
 			xml.appendChild(create_timer.toXml());
 			xml.appendChild(script.toXml());
-			xml.@["type"] = type;
+			
+			if(this.type && this.type!=""){
+				xml.@["type"] = type;	
+			}
+			
 			return xml;
 		}
 	}

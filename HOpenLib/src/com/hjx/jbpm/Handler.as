@@ -52,9 +52,17 @@ package com.hjx.jbpm
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.@["expression"] = expression;
-			xml.@["class"] = className;
-			xml.@["config-type"] = config_type;
+			if(this.className && this.className!=""){
+				xml.@["class"] = className;			
+			}
+			if(this.expression && this.expression!=""){
+				xml.@["expression"] = expression;			
+			}
+			
+			if(this.config_type && this.config_type!=""){
+				xml.@["config-type"] = config_type;			
+			}
+			
 			return xml;
 		}
 	}

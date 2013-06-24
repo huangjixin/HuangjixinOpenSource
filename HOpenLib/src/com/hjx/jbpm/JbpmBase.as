@@ -36,7 +36,9 @@ package com.hjx.jbpm
 			}	
 			
 			var xml:XML = new XML("<"+className+"/>");
-			xml.@name = this.name;
+			if(this.name && this.name!=""){
+				xml.@name = this.name;			
+			}
 			return xml;
 		}
 	}

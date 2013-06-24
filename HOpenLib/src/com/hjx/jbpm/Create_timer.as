@@ -50,9 +50,18 @@ package com.hjx.jbpm
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.@["duedate"] = duedate;
-			xml.@["repeat"] = repeat;
-			xml.@["transition"] = transition;
+			if(this.duedate && this.duedate!=""){
+				xml.@["duedate"] = duedate;		
+			}
+			
+			if(this.repeat && this.repeat!=""){
+				xml.@["repeat"] = repeat;		
+			}
+			
+			if(this.transition && this.transition!=""){
+				xml.@["transition"] = transition;		
+			}
+			
 			return xml;
 		}
 	}

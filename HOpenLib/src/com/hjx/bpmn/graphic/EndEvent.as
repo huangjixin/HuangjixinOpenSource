@@ -20,5 +20,11 @@ package com.hjx.bpmn.graphic
 			_end_state = value;
 		}
 
+		
+		override public function set label(value:String):void{
+			super.label = value;
+			
+			end_state.name = value;
+		}
 	}
 }
