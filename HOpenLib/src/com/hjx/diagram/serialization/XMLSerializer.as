@@ -127,7 +127,7 @@ package com.hjx.diagram.serialization
 		{
 			reset();
 			
-			var root:XML = new XML("<"+rootTag+"></"+rootTag+">");
+			var root:XML = new XML('<?xml version="1.0" encoding="UTF-8"?>'+"<"+rootTag+"></"+rootTag+">");
 			
 			if(childrenOnly){
 				serializeChildren(object, root, root);

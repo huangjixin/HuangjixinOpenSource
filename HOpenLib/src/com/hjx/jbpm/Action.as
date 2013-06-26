@@ -14,6 +14,16 @@ package com.hjx.jbpm
 		
 		private var _config_type:String;
 		
+		//////////// 因项目需要而加入的属性。
+		
+		private var _sendName:String="";
+		
+		private var _execType:String = "";
+		
+		private var _operationList:Vector.<Element> = new Vector.<Element>();
+		
+		private var _formFieldList:Vector.<Element> = new Vector.<Element>();
+					
 		public function Action()
 		{
 			super();
@@ -25,6 +35,46 @@ package com.hjx.jbpm
 			_config_type="";
 		}
 		
+		public function get formFieldList():Vector.<Element>
+		{
+			return _formFieldList;
+		}
+
+		public function set formFieldList(value:Vector.<Element>):void
+		{
+			_formFieldList = value;
+		}
+
+		public function get operationList():Vector.<Element>
+		{
+			return _operationList;
+		}
+
+		public function set operationList(value:Vector.<Element>):void
+		{
+			_operationList = value;
+		}
+
+		public function get execType():String
+		{
+			return _execType;
+		}
+
+		public function set execType(value:String):void
+		{
+			_execType = value;
+		}
+
+		public function get sendName():String
+		{
+			return _sendName;
+		}
+
+		public function set sendName(value:String):void
+		{
+			_sendName = value;
+		}
+
 		public function get async():Boolean
 		{
 			return _async;
@@ -108,6 +158,36 @@ package com.hjx.jbpm
 			}
 			if(this.config_type && this.config_type!=""){
 				xml.@["config-type"] = config_type;			
+			}
+			
+			if(this.sendName && this.sendName!=""){
+				var sendNamexml:XML = new XML("<sendName"+">"+this.sendName+"</sendName>");
+				xml.appendChild(sendNamexml);			
+			}
+			
+			if(this.execType && this.execType!=""){
+				var execTypexml:XML = new XML("<execType"+">"+this.execType+"</execType>");
+				xml.appendChild(execTypexml);			
+			}
+			
+			if(operationList.length>0){
+				var operationListxml:XML = new XML("<operationList/>");
+				for each (var ele:Element in operationList) 
+				{
+					operationListxml.appendChild(ele.toXml());
+				}
+				
+				xml.appendChild(operationListxml);
+			}
+			
+			if(formFieldList.length>0){
+				var formFieldListxml:XML = new XML("<formFieldList/>");
+				for each (ele in formFieldList) 
+				{
+					formFieldListxml.appendChild(ele.toXml());
+				}
+				
+				xml.appendChild(formFieldListxml);
 			}
 			
 			xml.@["async"] = async;
