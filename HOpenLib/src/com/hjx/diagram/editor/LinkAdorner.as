@@ -254,7 +254,6 @@ package com.hjx.diagram.editor
 				if(!editor){
 					return;
 				}
-//				callLater(function deselectAll():void{editor.deselectAll()});
 			}
 			else 
 			{

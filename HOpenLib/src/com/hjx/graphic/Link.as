@@ -1665,12 +1665,29 @@ package com.hjx.graphic
 				shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));	
 				if(endConnectionArea == LinkConnectionArea.LEFT){
 					//下对左
-					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
+					if(startPoint.y+this._orthogonalSpacing >= endPoint.y){
+						shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
+					}else{
+						if(startPoint.x<endPoint.x-this._orthogonalSpacing){
+							shapePoints.push(new Point(startPoint.x,endPoint.y));
+						}else{
+							
+							shapePoints.push(new Point(startPoint.x,endPoint.y-endRect.height/2-this._orthogonalSpacing));
+							shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y-endRect.height/2-this._orthogonalSpacing));						
+						}
+					}
+					
 					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y));
 					
 				}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
 					//下对底
-					shapePoints.push(new Point(startPoint.x,endPoint.y+this._orthogonalSpacing));
+					if(startPoint.y+this._orthogonalSpacing >= endPoint.y+this._orthogonalSpacing){
+						shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));
+						shapePoints.push(new Point(endPoint.x,startPoint.y+this._orthogonalSpacing));
+					}else{
+						shapePoints.push(new Point(startPoint.x,endPoint.y+this._orthogonalSpacing));
+					}
+					
 					shapePoints.push(new Point(endPoint.x,endPoint.y+this._orthogonalSpacing));
 					
 				}else if(endConnectionArea == LinkConnectionArea.TOP){
