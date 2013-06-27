@@ -16,8 +16,7 @@ package com.hjx.bpmn.graphic
 		private var _monitoringStatus:String = "";
 		
 		public var monitoringDelay:Number = 1000;
-		[Bindable]
-		public var label:String = "";
+		private var _label:String = "";
 		
 		private var _transition:Transition;
 		
@@ -37,6 +36,18 @@ package com.hjx.bpmn.graphic
 			invalidateSkinState();
 		}*/
 		
+		[Bindable]
+		public function get label():String
+		{
+			return _label;
+		}
+
+		public function set label(value:String):void
+		{
+			_label = value;
+			invalidateShape();
+		}
+
 		public function get transition():Transition
 		{
 			return _transition;

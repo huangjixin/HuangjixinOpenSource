@@ -96,7 +96,17 @@
 				<s:SolidColor color="white"/>
 			</primatives:fill>
 		</primatives:Path>   
-		<s:Label id="labelElement" minWidth="20" color="{color}"
-				 text="{hostComponent.label}"/>
+		<s:Group id="labelElement">
+			<s:Rect top="0" bottom="0" left="0" right="0">
+				<s:fill>
+					<s:SolidColor color="0xffffff"/>
+				</s:fill>
+			</s:Rect>
+			<s:Label text="{hostComponent.label}">
+				<s:filters>
+					<s:GlowFilter blurX="4" blurY="4" color="0xffffff"/>
+				</s:filters>
+			</s:Label>
+		</s:Group>
 	</s:Group>
 </skin:NodeSkinBase>

@@ -189,17 +189,19 @@ package com.hjx.diagram.editor
 			var radian:Number = Math.atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x) * 180 / Math.PI;
 			var link:Link = Link(adornedObject);
 			endPoint = this.globalToLocal(link.parent.localToGlobal(endPoint));
+			var strokeWidth:Number = this.adornedObject.getStyle("strokeWidth");
+			
 			if (isStartHandle) 
 			{
-				this.startHandleX = endPoint.x;
-				this.startHandleY = endPoint.y;
-				this.startHandleRotation = radian-(45)*180/Math.PI;
+				this.startHandleX = endPoint.x-startHandle.width/2-strokeWidth/2;
+				this.startHandleY = endPoint.y-startHandle.height/2-strokeWidth/2;
+//				this.startHandleRotation = radian-(45)*180/Math.PI;
 			}
 			else 
 			{
-				this.endHandleX = endPoint.x;
-				this.endHandleY = endPoint.y;
-				this.endHandleRotation = radian-(45)*180/Math.PI;;
+				this.endHandleX = endPoint.x-endHandle.width/2-strokeWidth/2;
+				this.endHandleY = endPoint.y-endHandle.height/2-strokeWidth/2;
+//				this.endHandleRotation = radian-(45)*180/Math.PI;
 			}
 			return;
 		}
@@ -252,7 +254,7 @@ package com.hjx.diagram.editor
 				if(!editor){
 					return;
 				}
-				callLater(function dels():void{editor.deselectAll()});
+//				callLater(function deselectAll():void{editor.deselectAll()});
 			}
 			else 
 			{

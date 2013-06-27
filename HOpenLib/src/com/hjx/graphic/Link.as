@@ -13,6 +13,7 @@ package com.hjx.graphic
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
+	import mx.core.UIComponent;
 	import mx.graphics.SolidColorStroke;
 	import mx.styles.StyleManager;
 	
@@ -881,10 +882,13 @@ package com.hjx.graphic
 					this._shapePoints.push(defaultStartPoint);
 					this._shapePoints.push(defaultEndPoint);
 					if(labelElement){
+						validateNow();
 						radian= Math.atan2(defaultEndPoint.y - defaultStartPoint.y, defaultEndPoint.x - defaultStartPoint.x);
+						var labelElementWidth:Number =UIComponent(labelElement).width; 
+						var labelElementHeight:Number =UIComponent(labelElement).height; 
 //						labelElement.rotation = radian*180/Math.PI;
-						labelElement.x = defaultStartPoint.x/2+defaultEndPoint.x/2-labelElement.width/2;
-						labelElement.y = defaultStartPoint.y/2+defaultEndPoint.y/2-labelElement.height/2;
+						labelElement.x = defaultStartPoint.x/2+defaultEndPoint.x/2-labelElementWidth/2;
+						labelElement.y = defaultStartPoint.y/2+defaultEndPoint.y/2-labelElementHeight/2;
 /*						labelElement.x = defaultStartPoint.x/2+defaultEndPoint.x/2-labelElement.width/2-labelElement.width*Math.sin(radian)/2;;
 						labelElement.y = defaultStartPoint.y/2+defaultEndPoint.y/2-labelElement.height/2-labelElement.height*Math.cos(radian)/2;*/
 						/*var dx:Number = labelElement.x;
@@ -1037,6 +1041,7 @@ package com.hjx.graphic
 					
 					computeOrthogonal(defaultStartPoint,startRect,defaultEndPoint,endRect,this._shapePoints);
 					if(labelElement){
+						validateNow();
 						labelElement.x = this._shapePoints[0].x/2+this._shapePoints[this._shapePoints.length-1].x/2-labelElement.width/2;
 						labelElement.y = this._shapePoints[0].y/2+this._shapePoints[this._shapePoints.length-1].y/2-labelElement.height/2;
 					}
@@ -2018,6 +2023,10 @@ package com.hjx.graphic
 			}
 			if(instance == this.endArrow){
 				this.endArrow.visible = getStyle("endArrowVisible")
+			}
+			
+			if(instance == this.labelElement){
+				invalidateShape();
 			}
 		}
 		

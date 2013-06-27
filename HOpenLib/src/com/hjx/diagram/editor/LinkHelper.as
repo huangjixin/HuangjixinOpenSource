@@ -272,6 +272,13 @@ package com.hjx.diagram.editor
 			}
 			if(adornedLink){
 //				editor.deselectAllExcept(adornedLink);
+				adornedLink.callLater(function deselectAll():void{
+					editor.deselectAll();
+					editor.callLater(function sel():void{
+						adornedLink.invalidateShape();
+						editor.setSelected(adornedLink,true);
+					});
+				});
 //				adornedLink.invalidateShape();
 //				editor.deselectAll();
 			}
