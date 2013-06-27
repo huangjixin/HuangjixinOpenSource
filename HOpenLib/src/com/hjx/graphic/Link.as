@@ -1671,9 +1671,14 @@ package com.hjx.graphic
 						if(startPoint.x<endPoint.x-this._orthogonalSpacing){
 							shapePoints.push(new Point(startPoint.x,endPoint.y));
 						}else{
+							if(endPoint.y-endRect.height/2-this._orthogonalSpacing>=startPoint.y+this._orthogonalSpacing){
+								shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));
+								shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y-endRect.height/2-this._orthogonalSpacing));						
+							}else{
+								shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));
+								shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y-endRect.height/2-this._orthogonalSpacing));
+							}
 							
-							shapePoints.push(new Point(startPoint.x,endPoint.y-endRect.height/2-this._orthogonalSpacing));
-							shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y-endRect.height/2-this._orthogonalSpacing));						
 						}
 					}
 					
