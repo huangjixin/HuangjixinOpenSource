@@ -110,7 +110,7 @@ package com.hjx.graphic
 		private var _startArrowTypeChange:Boolean;
 		private var _endArrowType:String;
 		private var _endArrowTypeChange:Boolean;
-		private var _orthogonalSpacing:Number = 20;
+		private var _orthogonalSpacing:Number = 12;
 		private var _orthogonalSpacingChange:Boolean;
 		private var _dash:Number = 8;
 		private var _dashChange:Boolean;
@@ -122,6 +122,8 @@ package com.hjx.graphic
 		internal static var Bottom:int=2;
 		
 		internal static var Left:int=3;
+		
+		private var connectingAreaOffset:int = 10;
 		
 		public function Link(startNode:Node=null,endNode:Node=null)
 		{
@@ -155,6 +157,8 @@ package com.hjx.graphic
 		 * @return 
 		 * 
 		 */
+		[Bindable]
+		[Inspectable(enumeration="left,right,top,bottom,center")]
 		public function get endConnectionArea():String
 		{
 			return _endConnectionArea;
@@ -172,7 +176,7 @@ package com.hjx.graphic
 		 * 
 		 */
 		[Bindable]
-		[Inspectable(enumeration="left,right,top,bottom")]
+		[Inspectable(enumeration="left,right,top,bottom,center")]
 		public function get startConnectionArea():String
 		{
 			return _startConnectionArea;
@@ -1477,6 +1481,8 @@ package com.hjx.graphic
 					break;
 				
 			}*/
+			startPoint = computeStartConnectAreaOffsetPoint(startPoint);
+			endPoint = computeEndConnectAreaOffsetPoint(endPoint);
 			shapePoints.push(startPoint);
 			if(startConnectionArea == LinkConnectionArea.RIGHT){
 				shapePoints.push(new Point(startPoint.x+this._orthogonalSpacing,startPoint.y));	
@@ -1665,25 +1671,27 @@ package com.hjx.graphic
 				shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));	
 				if(endConnectionArea == LinkConnectionArea.LEFT){
 					//下对左
-					if(startPoint.y+this._orthogonalSpacing >= endPoint.y){
+					/*if(startPoint.y+this._orthogonalSpacing >= endPoint.y){
 						shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
 					}else{
 						if(startPoint.x<endPoint.x-this._orthogonalSpacing){
 							shapePoints.push(new Point(startPoint.x,endPoint.y));
 						}else{
 							if(endPoint.y-endRect.height/2-this._orthogonalSpacing>=startPoint.y+this._orthogonalSpacing){
-								shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));
+								shapePoints.push(new Point(startPoint.x,endPoint.y-endRect.height/2-this._orthogonalSpacing));
 								shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y-endRect.height/2-this._orthogonalSpacing));						
 							}else{
 								shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));
-								shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y-endRect.height/2-this._orthogonalSpacing));
+								shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
 							}
 							
 						}
 					}
 					
 					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y));
-					
+					*/
+					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
+					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y));
 				}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
 					//下对底
 					if(startPoint.y+this._orthogonalSpacing >= endPoint.y+this._orthogonalSpacing){
@@ -1697,11 +1705,41 @@ package com.hjx.graphic
 					
 				}else if(endConnectionArea == LinkConnectionArea.TOP){
 					//下对上
+					/*if(startPoint.y+this._orthogonalSpacing >= endPoint.y-this._orthogonalSpacing){
+						if(endPoint.x+endRect.width/2+this._orthogonalSpacing<= startPoint.x){
+							shapePoints.push(new Point(endPoint.x+endRect.width/2+this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
+							shapePoints.push(new Point(endPoint.x+endRect.width/2+this._orthogonalSpacing,endPoint.y-this._orthogonalSpacing));
+						}else{
+							shapePoints.push(new Point(endPoint.x-endRect.width/2-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
+							shapePoints.push(new Point(endPoint.x-endRect.width/2-this._orthogonalSpacing,endPoint.y-this._orthogonalSpacing));							
+						}
+					}else{
+						shapePoints.push(new Point(endPoint.x,startPoint.y+this._orthogonalSpacing));					
+					}
+					shapePoints.push(new Point(endPoint.x,endPoint.y-this._orthogonalSpacing));
+					*/
 					shapePoints.push(new Point(endPoint.x,startPoint.y+this._orthogonalSpacing));
 					shapePoints.push(new Point(endPoint.x,endPoint.y-this._orthogonalSpacing));
-					
 				}else if(endConnectionArea == LinkConnectionArea.RIGHT){
 					// 下对右
+					/*if(startPoint.y+this._orthogonalSpacing >= endPoint.y){
+						shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));					
+					}else{
+						if(endPoint.x+this._orthogonalSpacing<= startPoint.x){
+							shapePoints.push(new Point(startPoint.x,endPoint.y));
+						}else{
+							if(endPoint.y-endRect.height/2-this._orthogonalSpacing>= startPoint.y+this._orthogonalSpacing){
+								shapePoints.push(new Point(startPoint.x,endPoint.y-endRect.height/2-this._orthogonalSpacing));
+								shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y-endRect.height/2-this._orthogonalSpacing));							
+							}else{
+								shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));
+								shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
+							}
+						}
+						
+					}
+					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
+					*/
 					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
 					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
 					
@@ -1782,6 +1820,188 @@ package com.hjx.graphic
 			}
 			
 			shapePoints.push(endPoint);
+		}
+		
+		/**
+		 * 获取起始节点的连接区域个数。 
+		 * @return 
+		 * 
+		 */
+		internal function getStartConnectAreaCount():int{
+			var count:int = 0;
+			
+			//如果在中间，默认为0。
+			if(this.startConnectionArea == LinkConnectionArea.CENTER){
+				return count;
+			}
+			
+			var startLinks:Vector.<Link>;
+			
+			if(this.startNode){
+				startLinks = this.startNode.getLinks();
+			}
+			
+			var ilink:Link;
+			
+			for each (ilink in startLinks) 
+			{
+				if(ilink.startConnectionArea == this.startConnectionArea ||
+					ilink.endConnectionArea == this.startConnectionArea){
+					count++;
+				}
+			}
+			
+			return count;
+		}
+		/**
+		 * 获取起始节点的连接区域偏移量。 
+		 * @return 
+		 * 
+		 */
+		internal function computeStartConnectAreaOffset():Number{
+			var count:int = getStartConnectAreaCount();
+			var offset:Number = 0;
+			
+			//如果在中间，默认为0。
+			if(count == 0 || count == 1){
+				return offset;
+			}
+			
+			var startLinks:Vector.<Link>;
+			
+			if(this.startNode){
+				startLinks = this.startNode.getLinks();
+			}
+			
+			var ilink:Link;
+			var n:int = 0;//n表示计算出连线在第几条
+			
+			for each (ilink in startLinks) 
+			{
+				if(ilink.startConnectionArea == this.startConnectionArea
+					||ilink.endConnectionArea == this.startConnectionArea){
+					if(ilink == this){
+						break;
+					}else{
+						n++;					
+					}
+				}
+			}
+			
+			offset = n * connectingAreaOffset - count* connectingAreaOffset/2;
+			
+			return offset;
+		}
+		
+		/**
+		 * 计算开始连接区域的偏移量Point。 
+		 * @param startPoint
+		 * @return 
+		 * 
+		 */
+		internal function computeStartConnectAreaOffsetPoint(startPoint:Point):Point{
+			var offset:Number = computeStartConnectAreaOffset();
+			//-----------
+			// 如果是纵向那么添加纵向偏移量，横向则添加横向偏移量。
+			//-----------
+			if(this.startConnectionArea == LinkConnectionArea.TOP || this.startConnectionArea == LinkConnectionArea.BOTTOM){
+				return startPoint.add(new Point(offset,0));
+			}else if(this.startConnectionArea == LinkConnectionArea.LEFT || this.startConnectionArea == LinkConnectionArea.RIGHT){
+				return startPoint.add(new Point(0,offset));
+			} 
+			
+			return startPoint.add(new Point(0,0));
+		}
+		/**
+		 * 获取结束节点的连接区域个数。 
+		 * @return 
+		 * 
+		 */
+		internal function getEndConnectAreaCount():int{
+			var count:int = 0;
+			
+			//如果在中间，默认为0。
+			if(this.endConnectionArea == LinkConnectionArea.CENTER){
+				return count;
+			}
+			
+			var endLinks:Vector.<Link>;
+			
+			if(this.endNode){
+				endLinks = this.endNode.getLinks();
+			}
+			
+			var ilink:Link;
+			
+			for each (ilink in endLinks) 
+			{
+				if(ilink.startConnectionArea == this.endConnectionArea ||
+					ilink.endConnectionArea == this.endConnectionArea){
+					count++;
+				}
+			}
+			
+			return count;
+		}
+		/**
+		 * 获取结束节点的连接区域偏移量。 
+		 * @return 
+		 * 
+		 */
+		internal function computeEndConnectAreaOffset():Number{
+			var count:int = getEndConnectAreaCount();
+			var offset:Number = 0;
+			
+			//如果在中间，默认为0。
+			if(count == 0  || count == 1){
+				return offset;
+			}
+			
+			var endLinks:Vector.<Link>;
+			
+			if(this.endNode){
+				endLinks = this.endNode.getLinks();
+			}
+			
+			var ilink:Link;
+			var n:int = 0;//n表示计算出连线在第几条
+			
+			for each (ilink in endLinks) 
+			{
+				if(ilink.startConnectionArea == this.endConnectionArea
+					||ilink.endConnectionArea == this.endConnectionArea){
+					if(ilink == this){
+						break;
+					}else{
+						n++;					
+					}
+				}
+			}
+			
+			offset = n * connectingAreaOffset - count* connectingAreaOffset/2;
+			
+			return offset;
+		}
+		
+		/**
+		 * 计算结束连接区域的偏移量。 
+		 * @param endPoint
+		 * @return 
+		 * 
+		 */
+		internal function computeEndConnectAreaOffsetPoint(endPoint:Point):Point{
+			
+			var offset:Number = computeEndConnectAreaOffset();
+			//-----------
+			// 如果是纵向那么添加纵向偏移量，横向则添加横向偏移量。
+			//-----------
+			if(this.endConnectionArea == LinkConnectionArea.TOP || this.endConnectionArea == LinkConnectionArea.BOTTOM){
+				return endPoint.add(new Point(offset,0));
+			}else if(this.endConnectionArea == LinkConnectionArea.LEFT || this.endConnectionArea == LinkConnectionArea.RIGHT){
+				return endPoint.add(new Point(0,offset));
+			} 
+			
+			return endPoint.add(new Point(0,0));
 		}
 		
 		/**

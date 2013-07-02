@@ -3,7 +3,7 @@ package com.hjx.jbpm
 	public class Task_node extends JbpmBase
 	{
 		private var _description:String;
-		private var _signal:String = "last";
+		private var _signal:String = "";
 		private var _create_tasks:Boolean = true;
 		private var _end_tasks:Boolean = false;
 		private var _task:Task;

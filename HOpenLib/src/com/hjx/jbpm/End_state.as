@@ -2,11 +2,13 @@ package com.hjx.jbpm
 {
 	public class End_state extends JbpmBase
 	{
-		private var _event:Event = new Event();
-		private var _exception_handler:Exception_handler = new Exception_handler();
+		private var _event:Event ;
+		private var _exception_handler:Exception_handler;
 		public function End_state()
 		{
 			super();
+//			event = new Event();
+//			event.type = "node-enter";
 		}
 		
 		public function get event():Event
@@ -32,8 +34,13 @@ package com.hjx.jbpm
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.appendChild(event.toXml());
-			xml.appendChild(exception_handler.toXml());
+			if(event){
+				xml.appendChild(event.toXml());
+			}
+			if(exception_handler){
+				xml.appendChild(exception_handler.toXml());	
+			}
+			
 			return xml;
 		}
 	}

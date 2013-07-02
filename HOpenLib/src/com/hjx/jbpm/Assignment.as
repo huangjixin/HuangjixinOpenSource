@@ -71,6 +71,12 @@ package com.hjx.jbpm
 			_className = value;
 		}
 		
+		public function canIgnored():Boolean{
+			return (config_type=="" &&
+				pooled_actors=="" &&
+				actor_id=="" &&
+				expression=="");
+		}
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();

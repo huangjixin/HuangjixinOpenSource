@@ -2,16 +2,17 @@ package com.hjx.jbpm
 {
 	public class Event extends JbpmBase
 	{
-		public var action:Action = new Action;
+		public var action:Action;
 		
 		private var _type:String = "";
 		
-		private var _script:Script = new Script();
-		private var _create_timer:Create_timer = new Create_timer();
-		private var _cancel_timer:Cancel_timer = new Cancel_timer();
+		private var _script:Script;
+		private var _create_timer:Create_timer;
+		private var _cancel_timer:Cancel_timer;
 		public function Event()
 		{
 			super();
+			action = new Action;
 		}
 
 		public function get cancel_timer():Cancel_timer
@@ -58,10 +59,18 @@ package com.hjx.jbpm
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.appendChild(action.toXml());
-			xml.appendChild(cancel_timer.toXml());
-			xml.appendChild(create_timer.toXml());
-			xml.appendChild(script.toXml());
+			if(action){
+				xml.appendChild(action.toXml());
+			}
+			if(cancel_timer){
+				xml.appendChild(cancel_timer.toXml());
+			}
+			if(create_timer){
+				xml.appendChild(create_timer.toXml());
+			}
+			if(script){
+				xml.appendChild(script.toXml());
+			}
 			
 			if(this.type && this.type!=""){
 				xml.@["type"] = type;	

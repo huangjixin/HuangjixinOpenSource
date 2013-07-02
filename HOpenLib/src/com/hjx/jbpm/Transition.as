@@ -6,12 +6,12 @@ package com.hjx.jbpm
 		
 		private var _condition:String="";
 		
-		private var _exception_handler:Exception_handler= new Exception_handler();
+		private var _exception_handler:Exception_handler;
 		
-		private var _action:Action = new Action;
-		private var _script:Script = new Script();
-		private var _create_timer:Create_timer = new Create_timer();
-		private var _cancel_timer:Cancel_timer = new Cancel_timer();
+		private var _action:Action;
+		private var _script:Script;
+		private var _create_timer:Create_timer;
+		private var _cancel_timer:Cancel_timer;
 		public function Transition()
 		{
 		}
@@ -90,18 +90,35 @@ package com.hjx.jbpm
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.@["to"] = to;
+			
+			if(this.to && this.to!=""){
+				xml.@["to"] = to;			
+			}
 			
 			if(this.condition && this.condition!=""){
 				xml.@["condition"] = condition;			
 			}
 			
-			xml.appendChild(exception_handler.toXml());
+			if(exception_handler){
+				xml.appendChild(exception_handler.toXml());
+			}
 			
-			xml.appendChild(action.toXml());
-			xml.appendChild(cancel_timer.toXml());
-			xml.appendChild(create_timer.toXml());
-			xml.appendChild(script.toXml());
+			if(action){
+				xml.appendChild(action.toXml());
+			}
+			
+			if(cancel_timer){
+				xml.appendChild(cancel_timer.toXml());
+			}
+			
+			if(create_timer){
+				xml.appendChild(create_timer.toXml());
+			}
+			
+			if(script){
+				xml.appendChild(script.toXml());
+			}
+			
 			return xml;
 		}
 	}

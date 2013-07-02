@@ -13,7 +13,9 @@ package com.hjx.jbpm
 		
 		private var _duedate:String;
 		
-		private var _swimlane:Swim_lane;
+//		private var _swimlane:Swim_lane;
+		
+		private var _swimlane:String;
 		
 		[Inspectable(enumeration="highest, high, normal, low, lowest")]
 		private var _priority:String;
@@ -23,19 +25,27 @@ package com.hjx.jbpm
 		private var _exception_handlers:Vector.<Exception_handler> ;
 		private var _timers:Vector.<Timer>;
 		
-//		private var controller
 		public function Task()
 		{
 			super();
 			blocking = false;
 			signalling = true;
 			duedate = "";
-			swimlane = new Swim_lane();
-			priority = "normal";
-			assignment = new Assignment();
+//			swimlane = new Swim_lane();
+			priority = "";
 			events = new Vector.<Event>();
 			exception_handlers = new Vector.<Exception_handler>();
 			timers = new Vector.<Timer>();
+		}
+
+		public function get swimlane():String
+		{
+			return _swimlane;
+		}
+
+		public function set swimlane(value:String):void
+		{
+			_swimlane = value;
 		}
 
 		public function get timers():Vector.<Timer>
@@ -88,7 +98,7 @@ package com.hjx.jbpm
 			_priority = value;
 		}
 
-		public function get swimlane():Swim_lane
+		/*public function get swimlane():Swim_lane
 		{
 			return _swimlane;
 		}
@@ -96,7 +106,7 @@ package com.hjx.jbpm
 		public function set swimlane(value:Swim_lane):void
 		{
 			_swimlane = value;
-		}
+		}*/
 
 		public function get duedate():String
 		{
@@ -131,14 +141,27 @@ package com.hjx.jbpm
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.@["blocking"] = blocking;
-			xml.@["signalling"] = signalling;
-			xml.@["duedate"] = duedate;
-			xml.appendChild(swimlane.toXml());
-			xml.@["priority"] = priority;
-			xml.appendChild(assignment.toXml());
-			xml.@["blocking"] = blocking;
-			xml.@["blocking"] = blocking;
+			if(this.blocking && this.blocking){
+				xml.@["blocking"] = blocking;		
+			}
+			if(this.signalling && !this.signalling){
+				xml.@["signalling"] = signalling;		
+			}
+			if(this.duedate && this.duedate!=""){
+				xml.@["duedate"] = duedate;		
+			}
+			if(this.swimlane && this.swimlane!=""){
+				xml.@["swimlane"] = swimlane;		
+			}
+			/*if(swimlane){
+				xml.appendChild(swimlane.toXml());
+			}*/
+			if(this.priority && this.priority!=""){
+				xml.@["priority"] = priority;		
+			}
+			if(assignment){
+				xml.appendChild(assignment.toXml());
+			}
 			return xml;
 		}
 	}

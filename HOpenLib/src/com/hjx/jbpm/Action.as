@@ -153,7 +153,7 @@ package com.hjx.jbpm
 			if(this.ref_name && this.ref_name!=""){
 				xml.@["ref-name"] = ref_name;		
 			}
-			if(this.accept_propagated_events && this.accept_propagated_events!=""){
+			if(this.accept_propagated_events && !this.accept_propagated_events){
 				xml.@["accept-propagated-events"] = accept_propagated_events;	
 			}
 			if(this.config_type && this.config_type!=""){
@@ -190,7 +190,9 @@ package com.hjx.jbpm
 				xml.appendChild(formFieldListxml);
 			}
 			
-			xml.@["async"] = async;
+			if(async){
+				xml.@["async"] = async;
+			}
 			
 			return xml;
 		}

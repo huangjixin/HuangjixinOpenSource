@@ -7,10 +7,10 @@ package com.hjx.jbpm
 	 */
 	public class Start_state extends JbpmBase
 	{
-		private var _task:Task = new Task();
-		private var _event:Event = new Event();
-		private var _transition:Transition = new Transition();
-		private var _exception_handler:Exception_handler = new Exception_handler();
+		private var _task:Task;
+		private var _event:Event;
+		private var _transition:Transition;
+		private var _exception_handler:Exception_handler;
 		
 		public function Start_state()
 		{
@@ -60,10 +60,20 @@ package com.hjx.jbpm
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
-			xml.appendChild(transition.toXml());
-			xml.appendChild(task.toXml());
-			xml.appendChild(event.toXml());
-			xml.appendChild(exception_handler.toXml());
+			if(event){
+				xml.appendChild(event.toXml());
+			}
+			if(exception_handler){
+				xml.appendChild(exception_handler.toXml());
+			}
+			if(task){
+				xml.appendChild(task.toXml());
+			}
+			
+			if(transition){
+				xml.appendChild(transition.toXml());
+			}
+			
 			return xml;
 		}
 	}

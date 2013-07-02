@@ -1,6 +1,7 @@
 package com.hjx.bpmn.graphic
 {
 	import com.hjx.graphic.SubGraph;
+	import com.hjx.jbpm.Assignment;
 	import com.hjx.jbpm.Swim_lane;
 	
 	import mx.core.IVisualElement;
@@ -29,6 +30,7 @@ package com.hjx.bpmn.graphic
 		{
 			super();
 			swimlane = new Swim_lane();
+			swimlane.assignment = new Assignment();
 			swimlane.assignment.className="org.wbase.framework.jbpm.extend.RoleBasedAssignmentHandler";
 			swimlane.assignment.config_type="bean";
 			swimlane.name = label;

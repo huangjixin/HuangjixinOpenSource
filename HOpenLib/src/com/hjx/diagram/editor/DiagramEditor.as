@@ -27,6 +27,7 @@ package com.hjx.diagram.editor
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.filters.GlowFilter;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
@@ -1342,12 +1343,14 @@ package com.hjx.diagram.editor
 					adorner = this.createAdorner(renderer);
 					this.adorners[renderer] = adorner;
 					this.adornersGroup.addElement(adorner);
+					renderer.filters = [new GlowFilter()];
 				}
 			}
 			else if (adorner != null) 
 			{
 				this.adornersGroup.removeElement(adorner);
 				this.adorners[renderer] = null;
+				renderer.filters = [];
 			}
 			return;
 		}

@@ -5,7 +5,7 @@ package com.hjx.jbpm
 	public class Swim_lane extends JbpmBase
 	{
 		[Bindable]
-		public var assignment:Assignment = new Assignment();
+		public var assignment:Assignment;
 		
 		public function Swim_lane()
 		{
@@ -27,7 +27,10 @@ package com.hjx.jbpm
 			
 			var xml:XML = new XML("<"+className+"/>");
 			xml.@name = this.name;
-			xml.appendChild(assignment.toXml());
+			if(assignment){
+				xml.appendChild(assignment.toXml());
+			}
+			
 			return xml;
 		}
 	}

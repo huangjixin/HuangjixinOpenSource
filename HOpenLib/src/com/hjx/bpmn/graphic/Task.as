@@ -20,12 +20,12 @@ package com.hjx.bpmn.graphic
 		{
 			super();
 			task.description = "";
-			task.create_tasks = true;
+			task.create_tasks = false;
 			
 			var event:com.hjx.jbpm.Event = new com.hjx.jbpm.Event();
 			event.type = "node-enter";
 			event.action.className = "org.wbase.framework.jbpm.extend.DynamicCreateTaskInstanceHandler";
-			event.name = "处理";
+			event.action.name = "处理";
 			task.commonNodeElements.events[0] = event;
 		}
 		
