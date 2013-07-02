@@ -1,353 +1,234 @@
-<diagram xmlns:chbg="com.hjx.bpmn.graphic" xmlns:chj="com.hjx.jbpm" xmlns:chg="com.hjx.graphic" xmlns:fg="flash.geom">
-  <chbg:HorizontalLane id="horizontalLane1" centerX="313" centerY="115" expandedHeight="120" expandedWidth="480" height="120" width="480" x="73" y="55">
-    <label>横甬道</label>
-    <swimlane>
-      <chj:Swim_lane id="swim_lane1">
-        <assignment>
-          <chj:Assignment id="assignment1">
-            <className>swim-lane</className>
-            <name>swim-lane</name>
-          </chj:Assignment>
-        </assignment>
-      </chj:Swim_lane>
-    </swimlane>
-    <chbg:StartEvent id="startEvent1" centerX="46.5" centerY="56.5" height="47" width="31" x="31" y="33">
-      <label>开始</label>
-      <star_state>
-        <chj:Start_state id="start_state1">
-          <event>
-            <chj:Event id="event1">
-              <action>
-                <chj:Action id="action1"/>
-              </action>
-            </chj:Event>
-          </event>
-          <exception_handler>
-            <chj:Exception_handler id="exception_handler1"/>
-          </exception_handler>
-          <task>
-            <chj:Task id="task1">
-              <assignment>
-                <chj:Assignment id="assignment2"/>
-              </assignment>
-              <swimlane>
-                <chj:Swim_lane id="swim_lane2">
-                  <assignment>
-                    <chj:Assignment id="assignment3">
-                      <className>swim-lane</className>
-                      <name>swim-lane</name>
-                    </chj:Assignment>
-                  </assignment>
-                </chj:Swim_lane>
-              </swimlane>
-            </chj:Task>
-          </task>
-          <transition>
-            <chj:Transition id="transition1">
-              <exception_handler>
-                <chj:Exception_handler id="exception_handler2"/>
-              </exception_handler>
-            </chj:Transition>
-          </transition>
-        </chj:Start_state>
-      </star_state>
-    </chbg:StartEvent>
-    <chbg:EndEvent id="endEvent1" centerX="391.5" centerY="55.5" height="49" width="33" x="375" y="31">
-      <end_state>
-        <chj:End_state id="end_state1">
-          <event>
-            <chj:Event id="event2">
-              <action>
-                <chj:Action id="action2"/>
-              </action>
-            </chj:Event>
-          </event>
-          <exception_handler>
-            <chj:Exception_handler id="exception_handler3"/>
-          </exception_handler>
-        </chj:End_state>
-      </end_state>
-      <label>结束</label>
-    </chbg:EndEvent>
-    <chbg:Task id="task2" centerX="145" centerY="55" explicitHeight="50" explicitMinHeight="18" explicitMinWidth="24" explicitWidth="90" height="50" initialized="true" measuredHeight="50" measuredWidth="90" minHeight="18" minWidth="24" nestLevel="26" processedDescriptors="true" width="90" x="100" y="30">
-      <id>task2</id>
-      <label>任务</label>
-      <layoutDirection>ltr</layoutDirection>
-      <name>Task785</name>
-      <task>
-        <chj:Task_node id="task_node1">
-          <commonNodeElements>
-            <chj:CommonNodeElements id="commonNodeElements1"/>
-          </commonNodeElements>
-          <description>我是bpm描述</description>
-          <task>
-            <chj:Task id="task3">
-              <assignment>
-                <chj:Assignment id="assignment4"/>
-              </assignment>
-              <swimlane>
-                <chj:Swim_lane id="swim_lane3">
-                  <assignment>
-                    <chj:Assignment id="assignment5">
-                      <className>swim-lane</className>
-                      <name>swim-lane</name>
-                    </chj:Assignment>
-                  </assignment>
-                </chj:Swim_lane>
-              </swimlane>
-            </chj:Task>
-          </task>
-        </chj:Task_node>
-      </task>
-      <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup391.Panel390.PanelSkin404._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin414.diagramParent.diagram1.DiagramSkin417.graphScroller.GraphScrollerSkin420.graph.HorizontalLane520.HorizontalLaneSkin521.base.graphGroup.graph.Task785</uid>
-    </chbg:Task>
-    <chbg:Task id="task4" centerX="293" centerY="55" explicitHeight="50" explicitMinHeight="18" explicitMinWidth="24" explicitWidth="90" height="50" initialized="true" measuredHeight="50" measuredWidth="90" minHeight="18" minWidth="24" nestLevel="26" processedDescriptors="true" width="90" x="248" y="30">
-      <id>task4</id>
-      <label>任务</label>
-      <layoutDirection>ltr</layoutDirection>
-      <name>Task877</name>
-      <task>
-        <chj:Task_node id="task_node2">
-          <commonNodeElements>
-            <chj:CommonNodeElements id="commonNodeElements2"/>
-          </commonNodeElements>
-          <description>我是bpm描述</description>
-          <task>
-            <chj:Task id="task5">
-              <assignment>
-                <chj:Assignment id="assignment6"/>
-              </assignment>
-              <swimlane>
-                <chj:Swim_lane id="swim_lane4">
-                  <assignment>
-                    <chj:Assignment id="assignment7">
-                      <className>swim-lane</className>
-                      <name>swim-lane</name>
-                    </chj:Assignment>
-                  </assignment>
-                </chj:Swim_lane>
-              </swimlane>
-            </chj:Task>
-          </task>
-        </chj:Task_node>
-      </task>
-      <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup391.Panel390.PanelSkin404._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin414.diagramParent.diagram1.DiagramSkin417.graphScroller.GraphScrollerSkin420.graph.HorizontalLane520.HorizontalLaneSkin521.base.graphGroup.graph.Task877</uid>
-    </chbg:Task>
-    <chg:Link id="link1">
-      <endConnectionArea>left</endConnectionArea>
-      <endNode>task2</endNode>
-      <fallbackEndPoint>
-        <fg:Point id="point1" x="98.9" y="54.25"/>
-      </fallbackEndPoint>
-      <fallbackStartPoint>
-        <fg:Point id="point2" x="61.75" y="54.375"/>
-      </fallbackStartPoint>
-      <startConnectionArea>right</startConnectionArea>
-      <startNode>startEvent1</startNode>
-    </chg:Link>
-    <chg:Link id="link2">
-      <endConnectionArea>left</endConnectionArea>
-      <endNode>task4</endNode>
-      <fallbackEndPoint>
-        <fg:Point id="point3" x="246.89999999999998" y="54.25"/>
-      </fallbackEndPoint>
-      <fallbackStartPoint>
-        <fg:Point id="point4" x="188.9" y="54.25"/>
-      </fallbackStartPoint>
-      <startConnectionArea>right</startConnectionArea>
-      <startNode>task2</startNode>
-    </chg:Link>
-    <chg:Link id="link3">
-      <endConnectionArea>left</endConnectionArea>
-      <endNode>endEvent1</endNode>
-      <fallbackEndPoint>
-        <fg:Point id="point5" x="375" y="54.5"/>
-      </fallbackEndPoint>
-      <fallbackStartPoint>
-        <fg:Point id="point6" x="336.9" y="54.25"/>
-      </fallbackStartPoint>
-      <startConnectionArea>right</startConnectionArea>
-      <startNode>task4</startNode>
-    </chg:Link>
-  </chbg:HorizontalLane>
-  <chbg:HorizontalLane id="horizontalLane2" centerX="313" centerY="260" expandedHeight="120" expandedWidth="480" height="120" width="480" x="73" y="200">
-    <label>横甬道</label>
-    <swimlane>
-      <chj:Swim_lane id="swim_lane5">
-        <assignment>
-          <chj:Assignment id="assignment8">
-            <className>swim-lane</className>
-            <name>swim-lane</name>
-          </chj:Assignment>
-        </assignment>
-      </chj:Swim_lane>
-    </swimlane>
-    <chbg:Task id="task6" centerX="144" centerY="60" explicitHeight="50" explicitMinHeight="18" explicitMinWidth="24" explicitWidth="90" height="50" initialized="true" measuredHeight="50" measuredWidth="90" minHeight="18" minWidth="24" nestLevel="26" processedDescriptors="true" width="90" x="99" y="35">
-      <id>task6</id>
-      <label>任务</label>
-      <layoutDirection>ltr</layoutDirection>
-      <name>Task1084</name>
-      <task>
-        <chj:Task_node id="task_node3">
-          <commonNodeElements>
-            <chj:CommonNodeElements id="commonNodeElements3"/>
-          </commonNodeElements>
-          <description>我是bpm描述</description>
-          <task>
-            <chj:Task id="task7">
-              <assignment>
-                <chj:Assignment id="assignment9"/>
-              </assignment>
-              <swimlane>
-                <chj:Swim_lane id="swim_lane6">
-                  <assignment>
-                    <chj:Assignment id="assignment10">
-                      <className>swim-lane</className>
-                      <name>swim-lane</name>
-                    </chj:Assignment>
-                  </assignment>
-                </chj:Swim_lane>
-              </swimlane>
-            </chj:Task>
-          </task>
-        </chj:Task_node>
-      </task>
-      <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup391.Panel390.PanelSkin404._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin414.diagramParent.diagram1.DiagramSkin417.graphScroller.GraphScrollerSkin420.graph.HorizontalLane580.HorizontalLaneSkin581.base.graphGroup.graph.Task1084</uid>
-    </chbg:Task>
-    <chbg:Task id="task8" centerX="294" centerY="60" explicitHeight="50" explicitMinHeight="18" explicitMinWidth="24" explicitWidth="90" height="50" initialized="true" measuredHeight="50" measuredWidth="90" minHeight="18" minWidth="24" nestLevel="26" processedDescriptors="true" width="90" x="249" y="35">
-      <id>task8</id>
-      <label>任务</label>
-      <layoutDirection>ltr</layoutDirection>
-      <name>Task1176</name>
-      <task>
-        <chj:Task_node id="task_node4">
-          <commonNodeElements>
-            <chj:CommonNodeElements id="commonNodeElements4"/>
-          </commonNodeElements>
-          <description>我是bpm描述</description>
-          <task>
-            <chj:Task id="task9">
-              <assignment>
-                <chj:Assignment id="assignment11"/>
-              </assignment>
-              <swimlane>
-                <chj:Swim_lane id="swim_lane7">
-                  <assignment>
-                    <chj:Assignment id="assignment12">
-                      <className>swim-lane</className>
-                      <name>swim-lane</name>
-                    </chj:Assignment>
-                  </assignment>
-                </chj:Swim_lane>
-              </swimlane>
-            </chj:Task>
-          </task>
-        </chj:Task_node>
-      </task>
-      <uid>bpmnEditor.ApplicationSkin2._ApplicationSkin_Group1.contentGroup.HDividedBox5.VGroup391.Panel390.PanelSkin404._PanelSkin_Group1.contents.contentGroup.diagramEditor.DiagramEditorSkin414.diagramParent.diagram1.DiagramSkin417.graphScroller.GraphScrollerSkin420.graph.HorizontalLane580.HorizontalLaneSkin581.base.graphGroup.graph.Task1176</uid>
-    </chbg:Task>
-    <chg:Link id="link4">
-      <endConnectionArea>left</endConnectionArea>
-      <endNode>task8</endNode>
-      <fallbackEndPoint>
-        <fg:Point id="point7" x="247.89999999999998" y="59.25"/>
-      </fallbackEndPoint>
-      <fallbackStartPoint>
-        <fg:Point id="point8" x="187.9" y="59.25"/>
-      </fallbackStartPoint>
-      <startConnectionArea>right</startConnectionArea>
-      <startNode>task6</startNode>
-    </chg:Link>
-  </chbg:HorizontalLane>
-  <chbg:MessageFlow id="messageFlow1">
-    <endConnectionArea>top</endConnectionArea>
-    <endNode>task6</endNode>
-    <fallbackEndPoint>
-      <fg:Point id="point9" x="240.9" y="234.25"/>
-    </fallbackEndPoint>
-    <fallbackStartPoint>
-      <fg:Point id="point10" x="241.9" y="134.25"/>
-    </fallbackStartPoint>
-    <label>消息流</label>
-    <startConnectionArea>bottom</startConnectionArea>
-    <startNode>task2</startNode>
-  </chbg:MessageFlow>
-  <chbg:MessageFlow id="messageFlow2">
-    <endConnectionArea>bottom</endConnectionArea>
-    <endNode>task4</endNode>
-    <fallbackEndPoint>
-      <fg:Point id="point11" x="389.9" y="134.25"/>
-    </fallbackEndPoint>
-    <fallbackStartPoint>
-      <fg:Point id="point12" x="390.9" y="234.25"/>
-    </fallbackStartPoint>
-    <label>消息流</label>
-    <startConnectionArea>top</startConnectionArea>
-    <startNode>task8</startNode>
-  </chbg:MessageFlow>
-  <process-denifition>
-    <swim-lane name="">
-      <assignment name="swim-lane" class="swim-lane" expression="" actor-id="" pooled-actors="" config-type=""/>
-    </swim-lane>
-    <start-state name="">
-      <task name="" blocking="false" signalling="true" duedate="" priority="normal">
-        <swim-lane name="">
-          <assignment name="swim-lane" class="swim-lane" expression="" actor-id="" pooled-actors="" config-type=""/>
-        </swim-lane>
-        <assignment name="" class="" expression="" actor-id="" pooled-actors="" config-type=""/>
-      </task>
-      <event name="" type="node-enter">
-        <action name="" class="" ref-name="" expression="" accept-propagated-events="true" async="false" config-type=""/>
-      </event>
-      <transition name="" to="" condition="">
-        <exception-handler name=""/>
-      </transition>
-      <exception-handler name=""/>
-    </start-state>
-    <end-state name="">
-      <event name="" type="node-enter">
-        <action name="" class="" ref-name="" expression="" accept-propagated-events="true" async="false" config-type=""/>
-      </event>
-      <exception-handler name=""/>
-    </end-state>
-    <task-node name="" description="我是bpm描述" signal="last" create-tasks="true" end-tasks="false">
-      <task name="" blocking="false" signalling="true" duedate="" priority="normal">
-        <swim-lane name="">
-          <assignment name="swim-lane" class="swim-lane" expression="" actor-id="" pooled-actors="" config-type=""/>
-        </swim-lane>
-        <assignment name="" class="" expression="" actor-id="" pooled-actors="" config-type=""/>
-      </task>
-      <commonnodeelements name=""/>
-    </task-node>
-    <task-node name="" description="我是bpm描述" signal="last" create-tasks="true" end-tasks="false">
-      <task name="" blocking="false" signalling="true" duedate="" priority="normal">
-        <swim-lane name="">
-          <assignment name="swim-lane" class="swim-lane" expression="" actor-id="" pooled-actors="" config-type=""/>
-        </swim-lane>
-        <assignment name="" class="" expression="" actor-id="" pooled-actors="" config-type=""/>
-      </task>
-      <commonnodeelements name=""/>
-    </task-node>
-    <swim-lane name="">
-      <assignment name="swim-lane" class="swim-lane" expression="" actor-id="" pooled-actors="" config-type=""/>
-    </swim-lane>
-    <task-node name="" description="我是bpm描述" signal="last" create-tasks="true" end-tasks="false">
-      <task name="" blocking="false" signalling="true" duedate="" priority="normal">
-        <swim-lane name="">
-          <assignment name="swim-lane" class="swim-lane" expression="" actor-id="" pooled-actors="" config-type=""/>
-        </swim-lane>
-        <assignment name="" class="" expression="" actor-id="" pooled-actors="" config-type=""/>
-      </task>
-      <commonnodeelements name=""/>
-    </task-node>
-    <task-node name="" description="我是bpm描述" signal="last" create-tasks="true" end-tasks="false">
-      <task name="" blocking="false" signalling="true" duedate="" priority="normal">
-        <swim-lane name="">
-          <assignment name="swim-lane" class="swim-lane" expression="" actor-id="" pooled-actors="" config-type=""/>
-        </swim-lane>
-        <assignment name="" class="" expression="" actor-id="" pooled-actors="" config-type=""/>
-      </task>
-      <commonnodeelements name=""/>
-    </task-node>
-  </process-denifition>
-</diagram>
+<process-denifition>
+	<description>
+		88887
+	</description>
+	<exception-handler exception-class="org.wbase.framework.jbpm.extend.ExceptionHandler" />
+	<start-state name="开始">
+		<transition name="时序流" to="任务">
+			<exception-handler />
+			<action accept-propagated-events="true" async="false">
+				<operationList />
+				<formFieldList />
+			</action>
+			<cancel-timer />
+			<create-timer />
+			<script accept-propagated-events="true">
+				<expression />
+			</script>
+		</transition>
+		<task blocking="false" signalling="true" duedate="" priority="normal">
+			<swimlane name="">
+				<assignment />
+			</swimlane>
+			<assignment />
+		</task>
+		<event>
+			<action accept-propagated-events="true" async="false">
+				<operationList />
+				<formFieldList />
+			</action>
+			<cancel-timer />
+			<create-timer />
+			<script accept-propagated-events="true">
+				<expression />
+			</script>
+		</event>
+		<exception-handler />
+	</start-state>
+	<task-node name="任务" signal="last" create-tasks="true">
+		<task blocking="false" signalling="true" duedate="" priority="normal">
+			<swimlane name="">
+				<assignment />
+			</swimlane>
+			<assignment />
+		</task>
+		<transition name="时序流" to="结束">
+			<exception-handler />
+			<action accept-propagated-events="true" async="false">
+				<operationList />
+				<formFieldList />
+			</action>
+			<cancel-timer />
+			<create-timer />
+			<script accept-propagated-events="true">
+				<expression />
+			</script>
+		</transition>
+		<event name="处理" type="node-enter">
+			<action
+				class="org.wbase.framework.jbpm.extend.DynamicCreateTaskInstanceHandler"
+				accept-propagated-events="true" async="false">
+				<operationList />
+				<formFieldList />
+			</action>
+			<cancel-timer />
+			<create-timer />
+			<script accept-propagated-events="true">
+				<expression />
+			</script>
+		</event>
+	</task-node>
+	<end-state name="结束">
+		<event>
+			<action accept-propagated-events="true" async="false">
+				<operationList />
+				<formFieldList />
+			</action>
+			<cancel-timer />
+			<create-timer />
+			<script accept-propagated-events="true">
+				<expression />
+			</script>
+		</event>
+		<exception-handler />
+	</end-state>
+	<transition name="时序流" to="任务">
+		<exception-handler />
+		<action accept-propagated-events="true" async="false">
+			<operationList />
+			<formFieldList />
+		</action>
+		<cancel-timer />
+		<create-timer />
+		<script accept-propagated-events="true">
+			<expression />
+		</script>
+	</transition>
+	<transition name="时序流" to="结束">
+		<exception-handler />
+		<action accept-propagated-events="true" async="false">
+			<operationList />
+			<formFieldList />
+		</action>
+		<cancel-timer />
+		<create-timer />
+		<script accept-propagated-events="true">
+			<expression />
+		</script>
+	</transition>
+	<start-state name="开始">
+		<transition name="时序流" to="任务">
+			<exception-handler />
+			<action accept-propagated-events="true" async="false">
+				<operationList />
+				<formFieldList />
+			</action>
+			<cancel-timer />
+			<create-timer />
+			<script accept-propagated-events="true">
+				<expression />
+			</script>
+		</transition>
+		<task blocking="false" signalling="true" duedate="" priority="normal">
+			<swimlane name="">
+				<assignment />
+			</swimlane>
+			<assignment />
+		</task>
+		<event>
+			<action accept-propagated-events="true" async="false">
+				<operationList />
+				<formFieldList />
+			</action>
+			<cancel-timer />
+			<create-timer />
+			<script accept-propagated-events="true">
+				<expression />
+			</script>
+		</event>
+		<exception-handler />
+	</start-state>
+	<task-node name="任务" signal="last" create-tasks="true">
+		<task blocking="false" signalling="true" duedate="" priority="normal">
+			<swimlane name="">
+				<assignment />
+			</swimlane>
+			<assignment class="服务台" />
+		</task>
+		<transition name="时序流" to="结束">
+			<exception-handler />
+			<action accept-propagated-events="true" async="false">
+				<operationList />
+				<formFieldList />
+			</action>
+			<cancel-timer />
+			<create-timer />
+			<script accept-propagated-events="true">
+				<expression />
+			</script>
+		</transition>
+		<event name="处理" type="node-enter">
+			<action
+				class="org.wbase.framework.jbpm.extend.DynamicCreateTaskInstanceHandler"
+				accept-propagated-events="true" async="false">
+				<sendName>
+					发送
+				</sendName>
+				<execType>
+					COLL
+				</execType>
+				<operationList>
+					<element>
+						转交
+					</element>
+					<element>
+						补充信息
+					</element>
+					<element>
+						解决方案
+					</element>
+					<element>
+						回访
+					</element>
+					<element>
+						发起服务
+					</element>
+				</operationList>
+				<formFieldList />
+			</action>
+			<cancel-timer />
+			<create-timer />
+			<script accept-propagated-events="true">
+				<expression />
+			</script>
+		</event>
+	</task-node>
+	<end-state name="结束">
+		<event>
+			<action accept-propagated-events="true" async="false">
+				<operationList />
+				<formFieldList />
+			</action>
+			<cancel-timer />
+			<create-timer />
+			<script accept-propagated-events="true">
+				<expression />
+			</script>
+		</event>
+		<exception-handler />
+	</end-state>
+	<transition name="时序流" to="任务">
+		<exception-handler />
+		<action accept-propagated-events="true" async="false">
+			<operationList />
+			<formFieldList />
+		</action>
+		<cancel-timer />
+		<create-timer />
+		<script accept-propagated-events="true">
+			<expression />
+		</script>
+	</transition>
+	<transition name="时序流" to="结束">
+		<exception-handler />
+		<action accept-propagated-events="true" async="false">
+			<operationList />
+			<formFieldList />
+		</action>
+		<cancel-timer />
+		<create-timer />
+		<script accept-propagated-events="true">
+			<expression />
+		</script>
+	</transition>
+</process-denifition>

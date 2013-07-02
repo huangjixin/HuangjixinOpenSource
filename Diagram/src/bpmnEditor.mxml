@@ -49,7 +49,7 @@
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
 				var domainid:String = FlexGlobals.topLevelApplication.parameters["domainId"];
-				Alert.show(domainid);
+//				Alert.show(domainid);
 			}
 			
 			// -----------------------------------------
