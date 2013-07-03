@@ -1345,8 +1345,14 @@ package com.hjx.graphic
 					break;
 				
 				case Right:
-					shapePoints.push(new Point(middle.x,startPoint.y));
-					shapePoints.push(new Point(middle.x,endPoint.y));
+					if(endPoint.y <=startPoint.y){
+						shapePoints.push(new Point(middle.x,startPoint.y));
+						shapePoints.push(new Point(middle.x,endPoint.y));
+					}else{
+						shapePoints.push(new Point(endPoint.x,startPoint.y));
+//						shapePoints.push(new Point(middle.x,endPoint.y));
+					}
+					
 					break;
 				
 				case Bottom:
@@ -1799,27 +1805,28 @@ package com.hjx.graphic
 			
 			if(this.startConnectionArea == LinkConnectionArea.TOP ){
 				if(includeOrthSpacing)
-					return startPoint.add(new Point(offset,-this._orthogonalSpacing))
+					startPoint.offset(offset,-this._orthogonalSpacing);
 				else
-					return startPoint.add(new Point(offset,0))
+					startPoint.offset(offset,0);
 			}else if(this.startConnectionArea == LinkConnectionArea.BOTTOM){
 				if(includeOrthSpacing)
-					return startPoint.add(new Point(offset,this._orthogonalSpacing));
+					startPoint.offset(offset,this._orthogonalSpacing);
 				else
-					return startPoint.add(new Point(offset,0));
+					startPoint.offset(offset,0);
 			}else if(this.startConnectionArea == LinkConnectionArea.LEFT){
 				if(includeOrthSpacing)
-					return startPoint.add(new Point(-this._orthogonalSpacing,offset));
+					startPoint.offset(-this._orthogonalSpacing,offset);
 				else
-					return startPoint.add(new Point(0,offset));
+					startPoint.offset(0,offset);
 			}else if(this.startConnectionArea == LinkConnectionArea.RIGHT){
 				if(includeOrthSpacing)
-					return startPoint.add(new Point(this._orthogonalSpacing,offset));
+					startPoint.offset(this._orthogonalSpacing,offset);
 				else
-					return startPoint.add(new Point(0,offset));
+					startPoint.offset(0,offset);
 			} 
 			
-			return startPoint.add(new Point(0,0));
+			startPoint.offset(0,0);
+			return startPoint;
 		}
 		/**
 		 * 获取结束节点的连接区域个数。 
@@ -1916,27 +1923,29 @@ package com.hjx.graphic
 			//-----------
 			if(this.endConnectionArea == LinkConnectionArea.TOP ){
 				if(includeOrthSpacing)
-					return endPoint.add(new Point(offset,-this._orthogonalSpacing));
+					endPoint.offset(offset,-this._orthogonalSpacing);
 				else
-					return endPoint.add(new Point(offset,0));
+					endPoint.offset(offset,0);
 			}else if(this.endConnectionArea == LinkConnectionArea.BOTTOM){
 				if(includeOrthSpacing)
-					return endPoint.add(new Point(offset,this._orthogonalSpacing));
+					endPoint.offset(offset,this._orthogonalSpacing);
 				else
-					return endPoint.add(new Point(offset,0));
+					endPoint.offset(offset,0);
 			}else if(this.endConnectionArea == LinkConnectionArea.LEFT){
 				if(includeOrthSpacing)
-					return endPoint.add(new Point(-this._orthogonalSpacing,offset));
+					endPoint.offset(-this._orthogonalSpacing,offset);
 				else
-					return endPoint.add(new Point(0,offset));
+					endPoint.offset(0,offset);
 			}else if(this.endConnectionArea == LinkConnectionArea.RIGHT){
 				if(includeOrthSpacing)
-					return endPoint.add(new Point(this._orthogonalSpacing,offset));
+					endPoint.offset(this._orthogonalSpacing,offset);
 				else
-					return endPoint.add(new Point(0,offset));
+					endPoint.offset(0,offset);
 			} 
 			
-			return endPoint.add(new Point(0,0));
+			endPoint.offset(0,0);
+			
+			return endPoint
 		}
 		
 		/**
