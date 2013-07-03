@@ -226,11 +226,9 @@ package com.hjx.diagram.editor
 					if(displayObject == linkAdorner.endHandle){
 						adornedLink.endNode = renderer as Node;
 						adornedLink.endConnectionArea = endNodeConnectingArea;
-						adornedLink.endNode.invalidateLinkShape();
 					}else if(displayObject == linkAdorner.startHandle){
 						adornedLink.startNode = renderer as Node;
 						adornedLink.startConnectionArea = startNodeConnectingArea;
-						adornedLink.startNode.invalidateLinkShape();
 					}
 					
 					linkParent = DiagramEditor.getLowestCommonGraph(adornedLink.startNode?adornedLink.startNode:adornedLink, adornedLink.endNode?adornedLink.endNode:adornedLink);
@@ -259,17 +257,13 @@ package com.hjx.diagram.editor
 					point = editor.adornersGroup.localToGlobal(point);
 					point = adornedLink.globalToLocal(point);
 					if(isStart){
-						var endNode:Node = adornedLink.endNode;
 						adornedLink.endNode = null;
 						adornedLink.endConnectionArea = LinkConnectionArea.CENTER;
-						adornedLink.fallbackEndPoint = point;		
-						endNode.invalidateLinkShape();
+						adornedLink.fallbackEndPoint = point;					
 					}else{
-						var startNode:Node = adornedLink.startNode;
-						adornedLink.startNode = null
+						adornedLink.startNode = null;
 						adornedLink.startConnectionArea = LinkConnectionArea.CENTER;
 						adornedLink.fallbackStartPoint = point;
-						startNode.invalidateLinkShape();
 					}
 
 //					adornedLink.invalidateShape();

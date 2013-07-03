@@ -214,6 +214,11 @@ package com.hjx.graphic
 			return _outgoingLinks.length;
 		}
 		
+		public function clearLinks():void{
+			this.incomingLinks.splice(0,this.incomingLinks.length);
+			this.outgoingLinks.splice(0,this.outgoingLinks.length);
+		}
+		
 		public function resumeGraphLayoutInvalidationOnMoveResize():void{
 		}
 		

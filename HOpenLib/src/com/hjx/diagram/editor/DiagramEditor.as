@@ -1209,8 +1209,25 @@ package com.hjx.diagram.editor
 			var link:Link= renderer as Link;
 			if (link != null) 
 			{
+				var index:int = -1;
+				if(link.startNode){
+					index = link.startNode.incomingLinks.indexOf(link);
+					link.startNode.incomingLinks.splice(index,1);
+					index = link.startNode.outgoingLinks.indexOf(link);
+					link.startNode.outgoingLinks.splice(index,1);
+				}
+				if(link.endNode){
+					index = link.endNode.incomingLinks.indexOf(link);
+					link.endNode.incomingLinks.splice(index,1);
+					index = link.endNode.outgoingLinks.indexOf(link);
+					link.endNode.outgoingLinks.splice(index,1);
+				}
 				/*this.disconnectLink(loc1, true);
 				this.disconnectLink(loc1, false);*/
+			}
+			var node:Node = renderer as Node;
+			if(node){
+				node.clearLinks();
 			}
 			/*if (!(this.textEditingAdorner == null) && this.textEditingAdorner.adornedObject == arg1) 
 			{
