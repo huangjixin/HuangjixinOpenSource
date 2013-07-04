@@ -82,9 +82,8 @@ package com.hjx.jbpm
 
 		override public function deserialXml(xml:XML):void{
 			super.deserialXml(xml);
-			var descriptionXml:XML = xml.elements["description"][0];
+			var descriptionXml:XML = xml.description[0];
 			this.description = descriptionXml.text;
-			trace(xml.toString());
 		}
 		
 		override public function toXml():XML

@@ -142,7 +142,6 @@ package com.hjx.jbpm
 			super.deserialXml(xml);
 			var nameXml:XML = xml.name[0];
 			this.name = nameXml.text;
-			trace(xml.toString());
 		}
 		
 		override public function toXml():XML
