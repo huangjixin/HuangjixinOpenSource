@@ -1066,8 +1066,9 @@ package com.hjx.graphic
 					computeOrthogonal(defaultStartPoint,startRect,defaultEndPoint,endRect,this._shapePoints);
 					if(labelElement){
 						validateNow();
-						labelElement.x = this._shapePoints[0].x/2+this._shapePoints[this._shapePoints.length-1].x/2-labelElement.width/2;
-						labelElement.y = this._shapePoints[0].y/2+this._shapePoints[this._shapePoints.length-1].y/2-labelElement.height/2;
+						var avg:int = this._shapePoints.length/2;
+						labelElement.x = this._shapePoints[avg].x/2+this._shapePoints[avg+1].x/2-labelElement.width/2;
+						labelElement.y = this._shapePoints[avg].y/2+this._shapePoints[avg+1].y/2-labelElement.height/2;
 					}
 				}	
 				default:
@@ -1088,7 +1089,7 @@ package com.hjx.graphic
 		internal function computeOrthogonal(startPoint:Point,startRect:Rectangle, endPoint:Point, endRect:Rectangle,shapePoints:Vector.<Point>):void
 		{
 			var direction:int = getDirection(startPoint,endPoint);
-			var middle:Point = new Point(startPoint.x/2+endPoint.x/2,startPoint.y/2+endPoint.y/2);
+			
 			/*var rotateDe:int = 0;
 			switch (direction) 
 			{
@@ -1317,26 +1318,30 @@ package com.hjx.graphic
 			/*startPoint = computeStartConnectAreaOffsetPoint(startPoint,false);
 			endPoint = computeEndConnectAreaOffsetPoint(endPoint,false);*/
 
+			var cloneStartPoint:Point = startPoint.clone();
 			if(startConnectionArea != LinkConnectionArea.CENTER){
-				shapePoints.push(startPoint.clone());
+				cloneStartPoint = computeStartConnectAreaOffsetPoint(cloneStartPoint,false);	
+				shapePoints.push(cloneStartPoint);
 				startPoint = computeStartConnectAreaOffsetPoint(startPoint);			
 			}
+			
 			shapePoints.push(startPoint);
 			
-			var cloneEndPoint:Point = endPoint.clone();
-			
-			/*shapePoints.push(cloneStartPoint);*/
-			
+			var cloneEndPoint:Point = endPoint.clone();			
 			if(this.endConnectionArea != LinkConnectionArea.CENTER){
-				endPoint = computeEndConnectAreaOffsetPoint(endPoint);		
+				endPoint = computeEndConnectAreaOffsetPoint(endPoint);
 			}
 			
-			
+			var middle:Point = new Point(startPoint.x/2+endPoint.x/2,startPoint.y/2+endPoint.y/2);
 			
 			switch(direction){
 				case Left:
-					shapePoints.push(new Point(middle.x,startPoint.y));
-					shapePoints.push(new Point(middle.x,endPoint.y));
+					if(endPoint.y <=startPoint.y){
+						shapePoints.push(new Point(middle.x,startPoint.y));
+						shapePoints.push(new Point(middle.x,endPoint.y));
+					}else{
+						shapePoints.push(new Point(endPoint.x,startPoint.y));
+					}
 					break;
 				
 				case Top:
@@ -1350,7 +1355,6 @@ package com.hjx.graphic
 						shapePoints.push(new Point(middle.x,endPoint.y));
 					}else{
 						shapePoints.push(new Point(endPoint.x,startPoint.y));
-//						shapePoints.push(new Point(middle.x,endPoint.y));
 					}
 					
 					break;
@@ -1362,8 +1366,10 @@ package com.hjx.graphic
 			}
 			
 			if(this.endConnectionArea != LinkConnectionArea.CENTER){
-				shapePoints.push(endPoint);	
+				shapePoints.push(endPoint);
+				cloneEndPoint = computeEndConnectAreaOffsetPoint(cloneEndPoint,false);	
 			}
+			
 			shapePoints.push(cloneEndPoint);
 			
 			
@@ -1825,7 +1831,6 @@ package com.hjx.graphic
 					startPoint.offset(0,offset);
 			} 
 			
-			startPoint.offset(0,0);
 			return startPoint;
 		}
 		/**
@@ -1943,9 +1948,7 @@ package com.hjx.graphic
 					endPoint.offset(0,offset);
 			} 
 			
-			endPoint.offset(0,0);
-			
-			return endPoint
+			return endPoint;
 		}
 		
 		/**
