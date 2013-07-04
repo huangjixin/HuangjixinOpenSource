@@ -4,7 +4,7 @@ package com.hjx.jbpm
 	{
 		public var action:Action;
 		
-		private var _type:String = "";
+		private var _type:String = "node-enter";
 		
 		private var _script:Script;
 		private var _create_timer:Create_timer;

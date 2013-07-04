@@ -80,7 +80,13 @@ package com.hjx.jbpm
 			_description = value;
 		}
 
-
+		override public function deserialXml(xml:XML):void{
+			super.deserialXml(xml);
+			var descriptionXml:XML = xml.elements["description"][0];
+			this.description = descriptionXml.text;
+			trace(xml.toString());
+		}
+		
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();
@@ -90,9 +96,9 @@ package com.hjx.jbpm
 			if(this.signal && this.signal!=""){
 				xml.@["signal"] = signal;			
 			}
-			if(this.create_tasks && this.create_tasks!=""){
-				xml.@["create-tasks"] = create_tasks;		
-			}
+			
+			xml.@["create-tasks"] = create_tasks;
+			
 			if(this.end_tasks && this.end_tasks!=""){
 				xml.@["end-tasks"] = end_tasks;		
 			}

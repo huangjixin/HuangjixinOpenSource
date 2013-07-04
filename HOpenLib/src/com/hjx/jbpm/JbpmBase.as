@@ -21,6 +21,12 @@ package com.hjx.jbpm
 			_name = value;
 		}
 
+		public function deserialXml(xml:XML):void{
+			var nameXml:XML = xml.name[0];
+			this.name = nameXml.text;
+			trace(xml.toString());
+		}
+		
 		public function toXml():XML
 		{
 			var className:String = getQualifiedClassName(this);

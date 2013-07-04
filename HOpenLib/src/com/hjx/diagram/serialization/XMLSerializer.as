@@ -366,6 +366,16 @@ package com.hjx.diagram.serialization
 				return serializePropertyAsElement(name, value, root);
 			}
 			
+			if (object is JbpmBase && value is Vector) {
+				var jbpmBasesXML:XML = new XML("<"+name+"></"+name+">");
+				for each(var obj:Object in Vector(value)){
+					var jbpmBaseXML:XML = serializeObject(obj, root);
+					if(jbpmBaseXML != null)
+						jbpmBasesXML.appendChild(jbpmBaseXML);
+				}
+				return jbpmBasesXML;
+			}
+			
 			if(value is String) {
 				var propXML:XML = new XML("<"+name+"></"+name+">");
 				propXML.appendChild(String(value));
@@ -386,7 +396,13 @@ package com.hjx.diagram.serialization
 		{
 			var propXML:XML = new XML("<"+name+"></"+name+">");
 			var valueXML:XML = serializeObject(value, root);
+			///////////////////////////////
+			// jbpmn语言属性。
+			///////////////////////////////
 			if(valueXML != null){
+				if(value is JbpmBase){
+					valueXML.appendChild(JbpmBase(value).toXml());
+				}
 				propXML.appendChild(valueXML);
 				return propXML;
 			} else {
@@ -657,6 +673,20 @@ package com.hjx.diagram.serialization
 				if ((name == "nodeLayout") || (name == "linkLayout")) {
 					if (xmlValue is XML)
 						return deserializePropertyAsElement(XML(xmlValue));
+				}
+			}
+			
+			////////////////////////////////////////////////////////////
+			// 反序列化jbmn属性
+			////////////////////////////////////////////////////////////
+			if(object[name] is JbpmBase){
+				if(xmlValue is XML){
+					var elements:XMLList = xmlValue.elements();
+					if(elements.length() > 0){
+						var jbpmBase:JbpmBase = object[name] as JbpmBase;
+						jbpmBase.deserialXml(elements[0]);
+					}
+					return object[name];
 				}
 			}
 			

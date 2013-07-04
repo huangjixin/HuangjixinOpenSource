@@ -89,6 +89,21 @@ package com.hjx.graphic
 			addEventListener(MouseEvent.MOUSE_DOWN,handleMouseDown,false,EventPriority.DEFAULT);
 		}
 		
+		[Bindable(event="labelChange")]
+		public function get label():String
+		{
+			return _label;
+		}
+
+		public function set label(value:String):void
+		{
+			if( _label !== value)
+			{
+				_label = value;
+				dispatchEvent(new Event("labelChange"));
+			}
+		}
+
 		protected function handleMouseDown(event:MouseEvent):void
 		{
 			// TODO Auto-generated method stub
@@ -165,20 +180,6 @@ package com.hjx.graphic
 		public function set movable(value:Boolean):void
 		{
 			_movable = value;
-		}
-		
-		[Bindable]
-		public function get label():String
-		{
-			return _label;
-		}
-		
-		/**
-		 * @private
-		 */
-		public function set label(value:String):void
-		{
-			_label = value;
 		}
 		
 		//--------------------------------------------------------

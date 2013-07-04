@@ -1,5 +1,6 @@
 package com.hjx.bpmn.graphic
 {
+	import com.hjx.graphic.Link;
 	import com.hjx.jbpm.Event;
 	import com.hjx.jbpm.Task_node;
 
@@ -29,10 +30,16 @@ package com.hjx.bpmn.graphic
 			task.commonNodeElements.events[0] = event;
 		}
 		
+		
 		override public function set label(value:String):void{
 			super.label = value;
 			
 			task.name = value;
+			
+			for each (var link:ConnectingObject in incomingLinks) 
+			{
+				link.label = "到"+value;
+			}
 		}
 		
 	}

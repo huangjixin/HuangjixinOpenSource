@@ -137,7 +137,14 @@ package com.hjx.jbpm
 		{
 			_blocking = value;
 		}
-
+		
+		override public function deserialXml(xml:XML):void{
+			super.deserialXml(xml);
+			var nameXml:XML = xml.name[0];
+			this.name = nameXml.text;
+			trace(xml.toString());
+		}
+		
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();

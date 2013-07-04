@@ -2,15 +2,25 @@ package com.hjx.jbpm
 {
 	import flash.utils.getQualifiedClassName;
 
-	public class Element
+	public class Element extends JbpmBase
 	{
-		private var value:String;
+		private var _value:String;
 		public function Element(value:String)
 		{
 			this.value = value;
 		}
 		
-		public function toXml():XML
+		public function get value():String
+		{
+			return _value;
+		}
+
+		public function set value(value:String):void
+		{
+			_value = value;
+		}
+
+		override public function toXml():XML
 		{
 			var className:String = getQualifiedClassName(this);
 			var nameSpace:Namespace = null;

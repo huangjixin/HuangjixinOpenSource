@@ -27,12 +27,13 @@ package com.hjx.jbpm
 		public function Action()
 		{
 			super();
-			className="";
+			className="org.wbase.framework.jbpm.extend.DynamicCreateTaskInstanceHandler";
 			ref_name="";
 			expression="";
 			accept_propagated_events = true;
 			async = false;
 			_config_type="";
+			name = "处理";
 		}
 		
 		public function get formFieldList():Vector.<Element>
@@ -139,6 +140,13 @@ package com.hjx.jbpm
 		public function set className(value:String):void
 		{
 			_className = value;
+		}
+		
+		override public function deserialXml(xml:XML):void{
+			super.deserialXml(xml);
+			var classXmlName:XML = xml.elements["class"][0];
+			this.className = classXmlName.text;
+			trace(xml.toString());
 		}
 		
 		override public function toXml():XML
