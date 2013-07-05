@@ -144,9 +144,9 @@ package com.hjx.jbpm
 		
 		override public function deserialXml(xml:XML):void{
 			super.deserialXml(xml);
-			var classXmlName:XML = xml.elements["class"][0];
-			this.className = classXmlName.text;
-			trace(xml.toString());
+//			var classXmlName:XML = xml.elements["class"][0];
+//			this.className = classXmlName.text;
+			
 		}
 		
 		override public function toXml():XML

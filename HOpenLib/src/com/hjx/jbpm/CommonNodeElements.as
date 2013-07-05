@@ -28,6 +28,24 @@ package com.hjx.jbpm
 			_async = value;
 		}
 
+		override public function deserialXml(xml:XML):void{
+			super.deserialXml(xml);
+			if(XMLList(xml.commonNodeElements).length() > 0){
+			
+			}
+			/*var commonNodeElementsXML:XML = xml.commonNodeElements[0];
+			if(commonNodeElements){
+				var eventList:XMLList = commonNodeElements.event;
+				for each (var eventXml:XML in eventList) 
+				{
+					var event:Event = new Event();
+					event.deserialXml(eventXml);
+					events.push(event);
+				}
+				
+			}*/
+		}
+		
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();

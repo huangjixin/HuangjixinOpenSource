@@ -56,6 +56,11 @@ package com.hjx.jbpm
 			_type = value;
 		}
 
+		override public function deserialXml(xml:XML):void{
+			super.deserialXml(xml);
+			
+		}
+		
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();

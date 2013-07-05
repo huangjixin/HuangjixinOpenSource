@@ -84,6 +84,13 @@ package com.hjx.jbpm
 			super.deserialXml(xml);
 			var descriptionXml:XML = xml.description[0];
 			this.description = descriptionXml.text;
+			trace(xml.commonNodeElements[0].CommonNodeElements[0]);
+			if(XMLList(xml.commonNodeElements).length() > 0){
+				if(XMLList(xml.commonNodeElements[0].CommonNodeElements).length() > 0){
+					this.commonNodeElements.deserialXml(xml.commonNodeElements[0].CommonNodeElements[0]);
+				}
+			}
+			
 		}
 		
 		override public function toXml():XML
