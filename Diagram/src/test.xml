@@ -1,234 +1,108 @@
-<process-denifition>
-	<description>
-		88887
-	</description>
-	<exception-handler exception-class="org.wbase.framework.jbpm.extend.ExceptionHandler" />
-	<start-state name="开始">
-		<transition name="时序流" to="任务">
-			<exception-handler />
-			<action accept-propagated-events="true" async="false">
-				<operationList />
-				<formFieldList />
-			</action>
-			<cancel-timer />
-			<create-timer />
-			<script accept-propagated-events="true">
-				<expression />
-			</script>
-		</transition>
-		<task blocking="false" signalling="true" duedate="" priority="normal">
-			<swimlane name="">
-				<assignment />
-			</swimlane>
-			<assignment />
-		</task>
-		<event>
-			<action accept-propagated-events="true" async="false">
-				<operationList />
-				<formFieldList />
-			</action>
-			<cancel-timer />
-			<create-timer />
-			<script accept-propagated-events="true">
-				<expression />
-			</script>
-		</event>
-		<exception-handler />
-	</start-state>
-	<task-node name="任务" signal="last" create-tasks="true">
-		<task blocking="false" signalling="true" duedate="" priority="normal">
-			<swimlane name="">
-				<assignment />
-			</swimlane>
-			<assignment />
-		</task>
-		<transition name="时序流" to="结束">
-			<exception-handler />
-			<action accept-propagated-events="true" async="false">
-				<operationList />
-				<formFieldList />
-			</action>
-			<cancel-timer />
-			<create-timer />
-			<script accept-propagated-events="true">
-				<expression />
-			</script>
-		</transition>
-		<event name="处理" type="node-enter">
-			<action
-				class="org.wbase.framework.jbpm.extend.DynamicCreateTaskInstanceHandler"
-				accept-propagated-events="true" async="false">
-				<operationList />
-				<formFieldList />
-			</action>
-			<cancel-timer />
-			<create-timer />
-			<script accept-propagated-events="true">
-				<expression />
-			</script>
-		</event>
-	</task-node>
-	<end-state name="结束">
-		<event>
-			<action accept-propagated-events="true" async="false">
-				<operationList />
-				<formFieldList />
-			</action>
-			<cancel-timer />
-			<create-timer />
-			<script accept-propagated-events="true">
-				<expression />
-			</script>
-		</event>
-		<exception-handler />
-	</end-state>
-	<transition name="时序流" to="任务">
-		<exception-handler />
-		<action accept-propagated-events="true" async="false">
-			<operationList />
-			<formFieldList />
-		</action>
-		<cancel-timer />
-		<create-timer />
-		<script accept-propagated-events="true">
-			<expression />
-		</script>
-	</transition>
-	<transition name="时序流" to="结束">
-		<exception-handler />
-		<action accept-propagated-events="true" async="false">
-			<operationList />
-			<formFieldList />
-		</action>
-		<cancel-timer />
-		<create-timer />
-		<script accept-propagated-events="true">
-			<expression />
-		</script>
-	</transition>
-	<start-state name="开始">
-		<transition name="时序流" to="任务">
-			<exception-handler />
-			<action accept-propagated-events="true" async="false">
-				<operationList />
-				<formFieldList />
-			</action>
-			<cancel-timer />
-			<create-timer />
-			<script accept-propagated-events="true">
-				<expression />
-			</script>
-		</transition>
-		<task blocking="false" signalling="true" duedate="" priority="normal">
-			<swimlane name="">
-				<assignment />
-			</swimlane>
-			<assignment />
-		</task>
-		<event>
-			<action accept-propagated-events="true" async="false">
-				<operationList />
-				<formFieldList />
-			</action>
-			<cancel-timer />
-			<create-timer />
-			<script accept-propagated-events="true">
-				<expression />
-			</script>
-		</event>
-		<exception-handler />
-	</start-state>
-	<task-node name="任务" signal="last" create-tasks="true">
-		<task blocking="false" signalling="true" duedate="" priority="normal">
-			<swimlane name="">
-				<assignment />
-			</swimlane>
-			<assignment class="服务台" />
-		</task>
-		<transition name="时序流" to="结束">
-			<exception-handler />
-			<action accept-propagated-events="true" async="false">
-				<operationList />
-				<formFieldList />
-			</action>
-			<cancel-timer />
-			<create-timer />
-			<script accept-propagated-events="true">
-				<expression />
-			</script>
-		</transition>
-		<event name="处理" type="node-enter">
-			<action
-				class="org.wbase.framework.jbpm.extend.DynamicCreateTaskInstanceHandler"
-				accept-propagated-events="true" async="false">
-				<sendName>
-					发送
-				</sendName>
-				<execType>
-					COLL
-				</execType>
-				<operationList>
-					<element>
-						转交
-					</element>
-					<element>
-						补充信息
-					</element>
-					<element>
-						解决方案
-					</element>
-					<element>
-						回访
-					</element>
-					<element>
-						发起服务
-					</element>
-				</operationList>
-				<formFieldList />
-			</action>
-			<cancel-timer />
-			<create-timer />
-			<script accept-propagated-events="true">
-				<expression />
-			</script>
-		</event>
-	</task-node>
-	<end-state name="结束">
-		<event>
-			<action accept-propagated-events="true" async="false">
-				<operationList />
-				<formFieldList />
-			</action>
-			<cancel-timer />
-			<create-timer />
-			<script accept-propagated-events="true">
-				<expression />
-			</script>
-		</event>
-		<exception-handler />
-	</end-state>
-	<transition name="时序流" to="任务">
-		<exception-handler />
-		<action accept-propagated-events="true" async="false">
-			<operationList />
-			<formFieldList />
-		</action>
-		<cancel-timer />
-		<create-timer />
-		<script accept-propagated-events="true">
-			<expression />
-		</script>
-	</transition>
-	<transition name="时序流" to="结束">
-		<exception-handler />
-		<action accept-propagated-events="true" async="false">
-			<operationList />
-			<formFieldList />
-		</action>
-		<cancel-timer />
-		<create-timer />
-		<script accept-propagated-events="true">
-			<expression />
-		</script>
-	</transition>
-</process-denifition>
+<chj:Task_node id="task_node1" xmlns:chbg="com.hjx.bpmn.graphic" xmlns:chj="com.hjx.jbpm">
+  <commonNodeElements>
+    <chj:CommonNodeElements id="commonNodeElements1">
+      <commonNodeElements>
+        <event type="node-enter">
+          <action name="处理" class="org.wbase.framework.jbpm.extend.DynamicCreateTaskInstanceHandler">
+            <sendName>
+              发送
+            </sendName>
+            <execType>
+              COLL
+            </execType>
+            <operationList>
+              <element>
+                发送
+              </element>
+              <element>
+                转交
+              </element>
+              <element>
+                补充信息
+              </element>
+              <element>
+                解决方案
+              </element>
+              <element>
+                回访
+              </element>
+              <element>
+                发起服务
+              </element>
+            </operationList>
+            <formFieldList>
+              <element>
+                TICKET_CODE
+              </element>
+              <element>
+                STARTT_DEPT
+              </element>
+              <element>
+                START_OPERATOR
+              </element>
+              <element>
+                START_TIME
+              </element>
+            </formFieldList>
+          </action>
+        </event>
+      </commonNodeElements>
+    </chj:CommonNodeElements>
+  </commonNodeElements>
+  <description/>
+  <name>
+    任务
+  </name>
+  <task>
+    <chj:Task id="task2">
+      <task/>
+    </chj:Task>
+  </task>
+  <task-node name="任务" create-tasks="true">
+    <task/>
+    <event type="node-enter">
+      <action name="处理" class="org.wbase.framework.jbpm.extend.DynamicCreateTaskInstanceHandler">
+        <sendName>
+          发送
+        </sendName>
+        <execType>
+          COLL
+        </execType>
+        <operationList>
+          <element>
+            发送
+          </element>
+          <element>
+            转交
+          </element>
+          <element>
+            补充信息
+          </element>
+          <element>
+            解决方案
+          </element>
+          <element>
+            回访
+          </element>
+          <element>
+            发起服务
+          </element>
+        </operationList>
+        <formFieldList>
+          <element>
+            TICKET_CODE
+          </element>
+          <element>
+            STARTT_DEPT
+          </element>
+          <element>
+            START_OPERATOR
+          </element>
+          <element>
+            START_TIME
+          </element>
+        </formFieldList>
+      </action>
+    </event>
+  </task-node>
+</chj:Task_node>
