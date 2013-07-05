@@ -7,7 +7,6 @@
 				   creationComplete="nodeskinbase1_creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
-			import com.hjx.bpmn.graphic.icons.IconClass;
 			import com.hjx.bpmn.graphic.icons.skin.CompensationTriggerSkin;
 			import com.hjx.bpmn.graphic.icons.skin.ErrorTriggerSkin;
 			import com.hjx.bpmn.graphic.icons.skin.MessageTriggerSkin;

@@ -6,7 +6,6 @@
 				   xmlns:icons="com.hjx.bpmn.graphic.icons.*">
 	<fx:Script>
 		<![CDATA[
-			import com.hjx.bpmn.graphic.icons.IconClass;
 			import com.hjx.bpmn.graphic.icons.skin.ANDMarkerSkin;
 			import com.hjx.bpmn.graphic.icons.skin.ComplexMarkerSkin;
 			import com.hjx.bpmn.graphic.icons.skin.ORMarkerSkin;

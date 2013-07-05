@@ -5,7 +5,6 @@
 				   xmlns:skin="com.hjx.graphic.skin.*">
 	<fx:Script>
 		<![CDATA[
-			import com.hjx.bpmn.graphic.icons.IconClass;
 		]]>
 	</fx:Script>
 	<fx:Declarations>
