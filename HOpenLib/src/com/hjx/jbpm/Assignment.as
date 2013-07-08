@@ -77,6 +77,12 @@ package com.hjx.jbpm
 				actor_id=="" &&
 				expression=="");
 		}
+		
+		override public function deserialXml(xml:XML):void{
+			this.className = xml.attribute("class");
+			this.config_type = xml.attribute("config-type");
+		}
+		
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();

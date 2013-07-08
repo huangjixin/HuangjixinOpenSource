@@ -23,7 +23,7 @@ package com.hjx.jbpm
 
 		public function deserialXml(xml:XML):void{
 			var nameXml:XML = xml.name[0];
-			this.name = nameXml.text;
+			this.name = nameXml.text();
 		}
 		
 		public function toXml():XML

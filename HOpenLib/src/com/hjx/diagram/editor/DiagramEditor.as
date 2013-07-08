@@ -940,7 +940,7 @@ package com.hjx.diagram.editor
 			return new Rectangle();
 		}
 		
-		public function selectAll(event:Event):void{
+		public function selectAll(event:Event= null):void{
 			for (var i:int = 0; i < _graph.numElements; i++) 
 			{
 				var renderer:Renderer = _graph.getElementAt(i) as Renderer;

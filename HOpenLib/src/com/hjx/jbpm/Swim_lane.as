@@ -11,6 +11,13 @@ package com.hjx.jbpm
 		{
 		}
 		
+		override public function deserialXml(xml:XML):void{
+			super.deserialXml(xml);
+			if(assignment){
+				assignment.deserialXml(xml.swimlane[0].assignment[0]);
+			}
+		}
+		
 		override public function toXml():XML
 		{
 			var className:String = getQualifiedClassName(this);

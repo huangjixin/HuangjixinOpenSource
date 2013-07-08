@@ -57,6 +57,24 @@ package com.hjx.jbpm
 			_task = value;
 		}
 
+		override public function deserialXml(xml:XML):void{
+			super.deserialXml(xml);
+			if(event){
+				event.deserialXml(xml.event[0]);
+			}
+			if(exception_handler){
+//				var exception_handlerXmlList:XMLList = 
+				exception_handler.deserialXml(xml.child("exception-handler")[0])
+			}
+			if(task){
+				task.deserialXml(xml.task[0]);
+			}
+			
+			if(transition){
+				transition.deserialXml(xml.transition[0]);
+			}
+		}
+		
 		override public function toXml():XML
 		{
 			var xml:XML = super.toXml();

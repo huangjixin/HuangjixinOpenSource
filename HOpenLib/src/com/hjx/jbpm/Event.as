@@ -57,7 +57,20 @@ package com.hjx.jbpm
 		}
 
 		override public function deserialXml(xml:XML):void{
-			super.deserialXml(xml);
+			this.type = xml.@type;
+			var actionXml:XML = xml.action[0];
+			if(action){
+				if(actionXml){
+					action.deserialXml(actionXml);
+				}
+			}
+			
+			var scriptXml:XML = xml.script[0];
+			if(script){
+				if(scriptXml){
+					script.deserialXml(scriptXml);				
+				}
+			}
 			
 		}
 		

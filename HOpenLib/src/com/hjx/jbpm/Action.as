@@ -143,9 +143,33 @@ package com.hjx.jbpm
 		}
 		
 		override public function deserialXml(xml:XML):void{
-			super.deserialXml(xml);
-//			var classXmlName:XML = xml.elements["class"][0];
-//			this.className = classXmlName.text;
+			this.name = xml.@name;
+			this.className = xml.attribute("class");
+			this.sendName = xml.sendName[0].text();
+			this.execType = xml.execType[0].text();
+			
+			var ele:Element;
+			var eleXml:XML;
+			var operationListXml:XML = xml.operationList[0];
+			var eleXmllist:XMLList = operationListXml.element;
+			
+			operationList = new Vector.<Element>();
+			for each (eleXml in eleXmllist) 
+			{
+				ele = new Element(eleXml.text());
+				this.operationList.push(ele);
+			}
+			
+			var formFieldListXml:XML = xml.formFieldList[0];
+			eleXmllist = formFieldListXml.element;
+			
+			formFieldList = new Vector.<Element>();
+			for each (eleXml in eleXmllist) 
+			{
+				ele = new Element(eleXml.text());
+				this.formFieldList.push(ele);
+			}
+			
 			
 		}
 		

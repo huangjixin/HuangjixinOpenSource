@@ -83,8 +83,15 @@ package com.hjx.jbpm
 		override public function deserialXml(xml:XML):void{
 			super.deserialXml(xml);
 			var descriptionXml:XML = xml.description[0];
-			this.description = descriptionXml.text;
-			trace(xml.commonNodeElements[0].CommonNodeElements[0]);
+			this.description = descriptionXml.text();
+			
+			var taskNodeXml:XML = xml.child("task-node")[0];
+			if(this.task){
+				if(taskNodeXml){
+					this.name = taskNodeXml.@name;
+					this.create_tasks = taskNodeXml.attribute("create-tasks");
+				}
+			}
 			if(XMLList(xml.commonNodeElements).length() > 0){
 				if(XMLList(xml.commonNodeElements[0].CommonNodeElements).length() > 0){
 					this.commonNodeElements.deserialXml(xml.commonNodeElements[0].CommonNodeElements[0]);
