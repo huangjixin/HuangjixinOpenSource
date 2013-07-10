@@ -204,9 +204,7 @@ package com.hjx.diagram.editor
 						adornedLink.endConnectionArea = endNodeConnectingArea;
 						adornedLink.startNode = adornedNode;
 						adornedLink.endNode = renderer as Node;
-						if(adornedLink.hasOwnProperty("label")){
-							adornedLink["label"] = "到"+adornedLink.endNode.label;
-						}
+						
 						linkParent = DiagramEditor.getLowestCommonGraph(adornedLink.startNode, adornedLink.endNode);
 						linkParent.addElement(adornedLink);
 						

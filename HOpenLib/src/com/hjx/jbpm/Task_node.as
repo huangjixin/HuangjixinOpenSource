@@ -4,7 +4,7 @@ package com.hjx.jbpm
 	{
 		private var _description:String;
 		private var _signal:String = "";
-		private var _create_tasks:Boolean = true;
+		private var _create_tasks:Boolean = false;
 		private var _end_tasks:Boolean = false;
 		private var _task:Task;
 		private var _commonNodeElements:CommonNodeElements ;

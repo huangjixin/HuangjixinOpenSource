@@ -55,7 +55,12 @@
 		</s:Rect>    
 		
 		<s:Group id="labelElement"  left="0" top="0" right="0" 
-				 fontSize="12" minWidth="25" clipAndEnableScrolling="true"> 
+				 fontSize="12" minHeight="25" clipAndEnableScrolling="true"> 
+			<s:Rect left="0" top="0" width="100%" height="100%">
+				<s:stroke>
+					<s:SolidColorStroke color="{borderColor}" weight="2" />
+				</s:stroke>
+			</s:Rect>
 			<s:Label text="{hostComponent.label}" top="5" horizontalCenter="0" color="{color}" />
 		</s:Group>
 		
@@ -64,6 +69,11 @@
 				 visible="true" 
 				 visible.collapsed="false" 
 				 alpha="1" alpha.collapsed="0">
+			<s:Rect left="2" right="2" top="0" bottom="2">
+				<s:fill>
+					<s:SolidColor color="0xffffff" />
+				</s:fill>
+			</s:Rect>  
 			<graphic:Graph id="graph" left="0" top="0" width="100%" height="100%" 
 						automaticGraphLayout="false"/>
 		</s:Group>
