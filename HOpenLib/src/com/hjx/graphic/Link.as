@@ -98,7 +98,7 @@ package com.hjx.graphic
 		private var _shapePoints:Vector.<Point>;
 		private var _strokeWidth:Number;
 		private var _strokeWidthChange:Boolean;
-		private var _radius:Number = 10;
+		private var _radius:Number = 5;
 		private var _radiusChange:Boolean;
 		private var _dashStyle:String = DashStyle.NONE;
 		private var _dashStyleChange:Boolean;
@@ -2005,24 +2005,89 @@ package com.hjx.graphic
 					if(point == shapePoints[0]){
 						data = "M "+point.x+" "+point.y+" ";
 					}else{
-						data+="L "+point.x+" "+point.y+" ";
-						/*if(i+2<shapePoints.length){
-							var point1:Point = shapePoints[i+1];
-							var point2:Point = shapePoints[i+2];
-							var direction:int = getDirection(point1,point2);
-							if(direction == Top){
-								data+="Q "+point1.x+" "+point1.y+" "+point2.x+" "+(point1.y+10)+" ";
-							}else if(direction == Right){
-								data+="Q "+point1.x+" "+point1.y+" "+(point1.x+10)+" "+point2.y+" ";
-							}else if(direction == Bottom){
-								data+="Q "+point1.x+" "+point1.y+" "+point2.x+" "+(point1.y-10)+" ";
-							}else if(direction == Left){
-								data+="Q "+point1.x+" "+point1.y+" "+(point1.x-10)+" "+point2.y+" ";
+						var prevPoint:Point = shapePoints[i-1];
+						var nextPoint:Point;
+						if(i+1<shapePoints.length){
+							nextPoint = shapePoints[i+1];
+							if(point.x != prevPoint.x && prevPoint.x != nextPoint.x && prevPoint.y != nextPoint.y){
+								
+								if(point.x > prevPoint.x){
+									data+="L "+(point.x-radius)+" "+point.y+" ";
+									if(point.y >= prevPoint.y){
+										data+="Q "+point.x+" "+point.y;	
+										if(point.y <= nextPoint.y){
+											data+=" "+point.x+" "+(point.y+radius)+" ";
+										}else{
+											data+=" "+point.x+" "+(point.y-radius)+" ";
+										}
+									}else{
+										data+="Q "+point.x+" "+point.y;	
+										if(point.y <= nextPoint.y){
+											data+=" "+point.x+" "+(point.y+radius)+" ";
+										}else{
+											data+=" "+point.x+" "+(point.y-radius)+" ";
+										}
+									}
+								}else{
+									data+="L "+(point.x+radius)+" "+point.y+" ";
+									if(point.y >= prevPoint.y){
+										data+="Q "+point.x+" "+point.y+" ";	
+										if(point.y <= nextPoint.y){
+											data+=" "+point.x+" "+(point.y+radius)+" ";
+										}else{
+											data+=" "+point.x+" "+(point.y-radius)+" ";
+										}									
+									}else{
+										data+="Q "+point.x+" "+point.y+" ";	
+										if(point.y <= nextPoint.y){
+											data+=" "+point.x+" "+(point.y+radius)+" ";
+										}else{
+											data+=" "+point.x+" "+(point.y-radius)+" ";
+										}
+									}	
+								}
+							}else if(point.y != prevPoint.y && prevPoint.x != nextPoint.x && prevPoint.y != nextPoint.y){
+								if(point.y > prevPoint.y){
+									data+="L "+point.x+" "+(point.y-radius)+" ";
+									if(point.x >= prevPoint.x){
+										data+="Q "+point.x+" "+point.y;	
+										if(point.x <= nextPoint.x){
+											data+=" "+(point.x+radius)+" "+point.y+" ";
+										}else{
+											data+=" "+(point.x-radius)+" "+point.y+" ";
+										}
+									}else{
+										data+="Q "+point.x+" "+point.y;	
+										if(point.x <= nextPoint.x){
+											data+=" "+(point.x+radius)+" "+point.y+" ";
+										}else{
+											data+=" "+(point.x-radius)+" "+point.y+" ";
+										}
+									}
+								}else{
+									data+="L "+point.x+" "+(point.y+radius)+" ";
+									if(point.x >= prevPoint.x){
+										data+="Q "+point.x+" "+point.y;	
+										if(point.x <= nextPoint.x){
+											data+=" "+(point.x+radius)+" "+point.y+" ";
+										}else{
+											data+=" "+(point.x-radius)+" "+point.y+" ";
+										}								
+									}else{
+										data+="Q "+point.x+" "+point.y;	
+										if(point.x <= nextPoint.x){
+											data+=" "+(point.x+radius)+" "+point.y+" ";
+										}else{
+											data+=" "+(point.x-radius)+" "+point.y+" ";
+										}
+									}
+								}
+							}else{
+								data+="L "+point.x+" "+point.y+" ";
 							}
-							
 						}else{
-							data+="L "+point.x+" "+point.y+" ";
-						}*/
+							data+="L "+point.x+" "+point.y+" ";						
+						}
 					}
 				}
 				
