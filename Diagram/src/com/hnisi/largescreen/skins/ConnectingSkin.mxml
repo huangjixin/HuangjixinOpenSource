@@ -5,17 +5,21 @@
 				   xmlns:skin="com.hjx.graphic.skin.*"
 				   xmlns:primatives="ws.tink.spark.primatives.*"
 				   xmlns:graphics="ws.tink.spark.graphics.*">
+	
 	<fx:Declarations>
 		<s:AnimateColor id="alertEffect" colorFrom="0" colorPropertyName="color" colorTo="red"
 						duration="500" repeatCount="0" targets="{[path.stroke]}"/>
-		<s:AnimateColor id="safeEffect" colorPropertyName="color" colorTo="green" duration="100"
-						repeatBehavior="reverse" repeatCount="0" targets="{[path.stroke]}"/>
+		<s:AnimateColor id="safeEffect" colorPropertyName="color" colorTo="green" duration="2000"
+						repeatBehavior="loop" repeatCount="0" targets="{[path.stroke]}"/>
 	</fx:Declarations>
 	<fx:Metadata>
 		[HostComponent("com.hnisi.largescreen.Connecting")]
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
+			import mx.events.TweenEvent;
+			
+			import spark.effects.animation.RepeatBehavior;
 			/**
 			 *  @private
 			 */
@@ -28,7 +32,6 @@
 				if (strokeWidth != sw) strokeWidth = sw;      
 				
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
-				hostComponent.addEventListener("monitoringStatusChange",onmonitoringStatusChange);
 			}
 			
 			[Bindable]
@@ -37,19 +40,61 @@
 			[Bindable]
 			public var strokeWidth:Number = 1;
 			
-			protected function onmonitoringStatusChange(event:Event):void
+			private var timer:Timer;
+			protected function safeGroup_addedToStageHandler(event:Event):void
 			{
-				if(hostComponent.monitoringStatus == "alert"){
-					alertEffect.play();
-					safeEffect.stop();
-				}else if(hostComponent.monitoringStatus == "safe"){
-					safeEffect.play();
-					alertEffect.stop();
-				}else{
-					alertEffect.stop();
-					safeEffect.stop();
-				}
+				var point1:Point;
+				var point2:Point;
+				var radian:Number = 1;
+				var shapePoints:Vector.<Point> = hostComponent.shapePoints;
+				
+				point1 = shapePoints[shapePoints.length - 2];
+				point2 = shapePoints[(shapePoints.length - 1)];
+				if (point1 && point2 && !(isNaN(point1.length) || isNaN(point2.length))) 
+				{
+					radian = Math.atan2(point2.y - point1.y, point2.x - point1.x);
+				}	
+				safeEllipse.rotation = radian * 180 / Math.PI;
+				safeEllipse.x = point1.x;
+				safeEllipse.y = point1.y;
+				
+				/* var dist:Number = Point.distance(point1,point2);
+				var avg:Number = dist/safeEllipse.width;
+				timer = new Timer(200,0);
+				timer.start();
+				var cloneStart:Point = point1.clone();
+				
+				timer.addEventListener(TimerEvent.TIMER,function onTimer(event:TimerEvent):void{
+					safeEllipse.x +=  safeEllipse.width* Math.cos(radian);
+					safeEllipse.y +=  safeEllipse.width* Math.sin(radian);
+					cloneStart.offset(safeEllipse.width* Math.cos(radian),safeEllipse.width* Math.sin(radian));
+					
+					if(Point.distance(point1,cloneStart)> dist){
+						safeEllipse.x = point1.x;
+						safeEllipse.y = point1.y;
+						cloneStart = point1.clone();
+					}
+				}); */
+				 safeMove.xFrom = point1.x;
+				safeMove.yFrom = point1.y;
+				safeMove.xTo = point2.x;
+				safeMove.yTo = point2.y;
+				safeMove.repeatBehavior = RepeatBehavior.LOOP;
+				safeMove.repeatCount = 0;
+				safeMove.play();
 			}
+			
+			protected function safeGroup_removedFromStageHandler(event:Event):void
+			{
+//				timer.stop();
+				safeMove.stop();
+			}
+			
+			/* protected function onTween(event:TweenEvent):void
+			{
+				trace("s");
+			} */
+			
 		]]>
 	</fx:Script>
 	<skin:states>
@@ -61,28 +106,40 @@
 		<s:State name="alert"/>
 	</skin:states>
 	<fx:Declarations>
-		<s:SolidColorStroke id="strokecolor" caps="none" color="{strokeColor}" weight="1"/>
+		<s:SolidColorStroke id="strokecolor" caps="none" color="{strokeColor}" color.alert="red" weight="1"/>
 		<s:SolidColor id="fillcolor" color="{strokeColor}"/>
+		<s:Move id="safeMove" target="{safeEllipse}" duration="2000" />
+		<mx:Glow id="alertglow" blurXFrom="0" blurXTo="30" blurYFrom="0" blurYTo="30" color="red"
+				 duration="1000"
+				 repeatCount="0"/>
 	</fx:Declarations>
 	
 	<s:Group id="base" includeInLayout="false">  
 		<primatives:Path id="path" data="M 0 0 L 0 0" stroke="{strokecolor}">
 			
 		</primatives:Path>  
-		<primatives:Path id="animatePath" visible="false">
-			<primatives:stroke>
-				<graphics:SolidColorDash caps="none" color="{strokeColor}" dash="8" gap="8"
-										 weight="{strokeWidth}"/>
-			</primatives:stroke>
-		</primatives:Path>  
+		<s:Group includeIn="alert">
+			<primatives:Path id="alertPath" data="{path.data}">
+				<primatives:stroke>
+					<s:SolidColorStroke color="red"
+											 weight="{strokeWidth}"/>
+				</primatives:stroke>
+				<primatives:filters>
+					<s:GlowFilter blurX="15" blurY="15" color="0xff0000"/>
+				</primatives:filters>
+			</primatives:Path> 
+		</s:Group>
+		 
 		<primatives:Path id="startArrow" data="M -6 -3 l 6 3 l -6 3 Z" stroke="{strokecolor}">
 		</primatives:Path>
 		<!-- data path must be relative to (0,0) because arrow are centered on path end/start points-->
 		<primatives:Path id="endArrow" data="M -6 -3 l 6 3 l -6 3 Z" stroke="{strokecolor}">
 			<primatives:fill>
-				<s:SolidColor color="white"/>
+				<s:SolidColor color="white" color.alert="red"/>
 			</primatives:fill>
 		</primatives:Path>   
+		
+		
 		<s:Group id="labelElement">
 			<s:Rect left="0" right="0" top="0" bottom="0">
 				<s:fill>
@@ -94,6 +151,18 @@
 					<s:GlowFilter blurX="4" blurY="4" color="0xffffff"/>
 				</s:filters>
 			</s:Label>-->
+		</s:Group>
+		<s:Group id="safeGroup" includeIn="safe"
+				  addedToStage="safeGroup_addedToStageHandler(event)"
+				  removedFromStage="safeGroup_removedFromStageHandler(event)">
+			<s:Rect id="safeEllipse" width="1" height="2" includeIn="safe">
+				<s:filters>
+					<s:GlowFilter blurX="15" blurY="15" color="0x00ff00" strength="10" />
+				</s:filters>
+				<s:fill>
+					<s:SolidColor color="green"/>
+				</s:fill>
+			</s:Rect>
 		</s:Group>
 	</s:Group>
 </skin:NodeSkinBase>

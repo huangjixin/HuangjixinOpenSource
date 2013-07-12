@@ -15,6 +15,7 @@
 			import com.hjx.diagram.serialization.XMLSerializer;
 			import com.hjx.graphic.Link;
 			import com.hjx.graphic.Renderer;
+			import com.hjx.graphic.SubGraph;
 			
 			import mx.controls.Alert;
 			import mx.events.CloseEvent;
@@ -139,6 +140,64 @@
 				            
 			}
 			
+			protected function diagramEditor_clickHandler(event:MouseEvent):void
+			{
+				var renderer:Renderer = DiagramEditor.getRenderer(event.target);
+				if(renderer){
+					var connect:Connecting = renderer as Connecting;
+					if(connect){
+						if(connect.monitoringStatus ==""){
+							connect.monitoringStatus = "safe";
+						}else if(connect.monitoringStatus =="safe"){
+							connect.monitoringStatus = "alert";
+						}else if(connect.monitoringStatus =="alert"){
+							connect.monitoringStatus = "";
+						}
+					}
+					var city:City = renderer as City;
+					if(city){
+						if(city.monitoringStatus ==""){
+							city.monitoringStatus = "safe";
+						}else if(city.monitoringStatus =="safe"){
+							city.monitoringStatus = "alert";
+						}else if(city.monitoringStatus =="alert"){
+							city.monitoringStatus = "";
+						}
+					}
+				}
+			}
+			
+			public function serializeToJbpm(status:String):void{
+				for (var i:int = 0;i<diagramEditor.graph.numElements;i++) 
+				{
+					var ele:Renderer = diagramEditor.graph.getElementAt(i) as Renderer;
+					serializeRenderer(ele,status);
+				}
+			}
+			
+			public function serializeRenderer(renderer:Renderer,status:String):void{
+				
+				if(renderer){
+					var connect:Connecting = renderer as Connecting;
+					if(connect){
+						connect.monitoringStatus = status;
+					}
+					var city:City = renderer as City;
+					if(city){
+						city.monitoringStatus = status;
+					}
+				}
+				
+				if(renderer is SubGraph){
+					for (var i:int = 0;i<SubGraph(renderer).numElements;i++) 
+					{
+						var ele:Renderer = SubGraph(renderer).getElementAt(i) as Renderer;
+						serializeRenderer(ele,status);
+					}
+					
+				}
+				
+			}
 		]]>
 	</fx:Script>
 	
@@ -205,7 +264,7 @@
 															fallbackStartPoint="{new Point(10,10)}"
 															shapeType="straight"
 															startConnectionArea="center"
-															dashStyle="dash"/>
+															dashStyle="none"/>
 								</s:ArrayList>
 							</s:dataProvider>
 						</s:List>
@@ -219,12 +278,16 @@
 					<s:Button label="保存到本地" click="saveXML();"/>
 					<s:Button label="打开本地文件" click="loadXML();"/>
 					<s:Button label="连线" click="diagramEditor.connectNodes();"/>
+					<s:Button  id="safeBtn" label="安全状态" click="serializeToJbpm('safe')"/>
+					<s:Button id="alertBtn" label="告警状态" click="serializeToJbpm('alert')"/>
+					<s:Button label="无状态" click="serializeToJbpm('')"/>
 				</s:HGroup>
 			</s:VGroup>
 			<s:Panel id="titlePanel" width="100%" height="100%" title="{proecessdefinitionName}">
 				<editor:DiagramEditor xmlns:chg="com.hjx.graphic"
 									  id="diagramEditor" width="100%" height="100%"
-									  cloneFunction="cloneFunction">
+									  cloneFunction="cloneFunction"
+									  click="diagramEditor_clickHandler(event)">
 					<diagram:Diagram id="diagram" width="100%" height="100%"
 									 automaticGraphLayout="false" labelField="@label"
 									 selectionMode="multiple" xLocationField="@x"

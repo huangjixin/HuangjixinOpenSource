@@ -31,5 +31,15 @@ package com.hnisi.largescreen
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
+		override protected function getCurrentSkinState() : String{
+			if(monitoringStatus=="safe") 
+				return "safe";
+			if(monitoringStatus=="alert") 
+				return "alert";
+			return super.getCurrentSkinState();
+		}
 	}
 }

@@ -2,15 +2,24 @@
 <skin:NodeSkinBase xmlns:fx="http://ns.adobe.com/mxml/2009"
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
-				   xmlns:skin="com.hjx.graphic.skin.*"
-				   >
+				   xmlns:skin="com.hjx.graphic.skin.*">
 	<fx:Declarations>
+		<mx:Glow id="safeglow" blurXFrom="0" blurXTo="20" blurYFrom="0" blurYTo="20" color="green"
+				 duration="1000"
+				 repeatCount="0"/>
+		<mx:Glow id="alertglow" blurXFrom="0" blurXTo="30" blurYFrom="0" blurYTo="30" color="red"
+				 duration="1000"
+				 repeatCount="0"/>
 	</fx:Declarations>
 	<fx:Metadata>
-		[HostComponent("com.hjx.graphic.Node")]
+		[HostComponent("com.hnisi.largescreen.City")]
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
+			import com.hjx.graphic.Link;
+			import com.hnisi.largescreen.Connecting;
+			
+			import mx.events.FlexEvent;
 			/**
 			 *  @private
 			 */
@@ -32,6 +41,18 @@
 				
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 			}
+			
+			protected function group1_addedToStageHandler(event:Event):void
+			{
+				alertglow.play([ellipse2]);
+				var links:Vector.<Link> = hostComponent.getLinks();
+				for each (var link:Link in links) 
+				{
+					Connecting(link).monitoringStatus = "alert";	
+				}
+				
+			}
+			
 		]]>
 	</fx:Script>
 	<skin:states>
@@ -39,11 +60,11 @@
 		<s:State name="normalAndShowsCaret"/>
 		<s:State name="selected"/>
 		<s:State name="selectedAndShowsCaret"/>
+		<s:State name="safe"/>
+		<s:State name="alert"/>
 	</skin:states>
 	<s:Group id="base" left="0" right="0" top="0" bottom="0">
-		<s:Ellipse verticalCenter="0" horizontalCenter="0" 
-				   width="10"
-				   height="10">
+		<s:Ellipse id="ellipse" width="8" height="8" horizontalCenter="0" verticalCenter="0">
 			<s:fill>
 				<s:RadialGradient>
 					<s:GradientEntry color="{this.backgroundColor}"/>
@@ -53,8 +74,38 @@
 				<s:SolidColorStroke color="{this.borderColor}" weight="1"/>
 			</s:stroke>
 		</s:Ellipse>
+		<s:Group  horizontalCenter="0" verticalCenter="0" includeIn="safe"
+				  addedToStage="safeglow.play([ellipse1]);" removedFromStage="safeglow.stop()">
+			<s:Ellipse id="ellipse1" width="8" height="8" horizontalCenter="0" verticalCenter="0">
+				<s:fill>
+					<s:RadialGradient>
+						<s:GradientEntry color="{this.backgroundColor}"/>
+					</s:RadialGradient>
+				</s:fill>
+				<s:stroke>
+					<s:SolidColorStroke color="{this.borderColor}" weight="1"/>
+				</s:stroke>
+			</s:Ellipse>
+		</s:Group>
+		<s:Group  horizontalCenter="0" verticalCenter="0" includeIn="alert"
+				  addedToStage="group1_addedToStageHandler(event)" removedFromStage="alertglow.stop()">
+			<s:Ellipse id="ellipse2" width="8" height="8" horizontalCenter="0" verticalCenter="0">
+				<s:filters>
+					<s:GlowFilter blurX="15" blurY="15" color="0xff0000" />
+				</s:filters>
+				<s:fill>
+					<s:RadialGradient>
+						<s:GradientEntry color="{this.backgroundColor}"/>
+					</s:RadialGradient>
+				</s:fill>
+				<s:stroke>
+					<s:SolidColorStroke color="{this.borderColor}" weight="1"/>
+				</s:stroke>
+			</s:Ellipse>
+		</s:Group>
+		
 		<s:Group id="labelElement" horizontalCenter="0" verticalCenter="12">
-			<s:Label id="label" text="{hostComponent.label}" horizontalCenter="0" verticalCenter="0"/>
+			<s:Label id="label" horizontalCenter="0" text="{hostComponent.label}" verticalCenter="0"/>
 		</s:Group>
 	</s:Group>
 </skin:NodeSkinBase>
