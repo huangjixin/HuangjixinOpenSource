@@ -8,7 +8,7 @@
 			   xmlns:editor="com.hjx.diagram.editor.*"
 			   xmlns:graphlayout="com.hjx.graphic.graphlayout.*"
 			   xmlns:graphic1="com.hjx.bpmn.graphic.*"
-			   minWidth="955" minHeight="600" creationComplete="application1_creationCompleteHandler(event)">
+			   minWidth="955" minHeight="600" creationComplete="application1_creationCompleteHandler(event)" xmlns:map="map.*">
 	<fx:Style source="bpmgraphic.css">
 		
 	</fx:Style>
@@ -352,6 +352,18 @@
 							<editor:DiagramPalette>
 								<graphic1:Task label="任务"/>
 							</editor:DiagramPalette>
+							<editor:DiagramPalette  width="100%" height="100">
+								<editor:layout>
+									<s:HorizontalLayout horizontalAlign="center"/>
+								</editor:layout>
+								<map:Province width="100" height="100" />
+							</editor:DiagramPalette>
+							<editor:DiagramPalette  width="100%" height="100">
+								<editor:layout>
+									<s:HorizontalLayout horizontalAlign="center"/>
+								</editor:layout>
+								<map:Province width="100" height="100" />
+							</editor:DiagramPalette>
 							<!--<editor:DiagramPalette>
 								<graphic1:Task label="任务" loop="true"/>
 							</editor:DiagramPalette>
@@ -538,11 +550,14 @@
 													  fallbackEndPoint="{new Point(170,10)}"
 													  fallbackStartPoint="{new Point(10,10)}"
 													  shapeType="straight"
+													  strokeWidth="1"
 													  color="red"/>
 									<graphic1:SequenceFlow label="时序流"
 													  fallbackEndPoint="{new Point(170,10)}"
 													  fallbackStartPoint="{new Point(10,20)}"
 													  shapeType="orthogonal"
+													  strokeWidth="1"
+													  radius="8"
 													  color="red"/>
 									<graphic1:MessageFlow label="消息流"
 													 fallbackEndPoint="{new Point(170,10)}"

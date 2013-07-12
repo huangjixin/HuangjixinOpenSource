@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin:NodeSkinBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:skin="com.hjx.graphic.skin.*"
+				   xmlns:graphic="com.hjx.graphic.*">
+	<fx:Metadata>
+		[HostComponent("map.Province")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+				var cr:Number = getStyle("caretColor");
+				if (caretColor != cr) super.caretColor = cr;
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			} 
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+	</fx:Declarations>
+	<skin:states>
+		<s:State name="normal"/>
+		<s:State name="normalAndShowsCaret"/>
+		<s:State name="selected"/>
+		<s:State name="selectedAndShowsCaret"/>
+		<s:State name="collapsed"/>
+		<s:State name="collapsedAndShowsCaret"/>
+		<s:State name="collapsedSelected"/>
+		<s:State name="collapsedSelectedAndShowsCaret"/>
+	</skin:states>
+	
+	<s:Group id="base" left="0" top="0" width="{hostComponent.expandedWidth}"
+			 height="{hostComponent.expandedHeight}"
+			 width.collapsed="{hostComponent.collapsedWidth}"
+			 height.collapsed="{hostComponent.collapsedHeight}">
+		<!--<s:Rect top="0" left="0" bottom="0" right="0">
+			<s:fill>
+				<s:SolidColor color="0xffffff" alpha="1"/>
+			</s:fill>
+		</s:Rect>-->
+		<mx:SWFLoader source="@Embed(source='../assets/china.svg')" 
+					  width="{hostComponent.width}" height="{hostComponent.height}"
+					  x="{hostComponent.width/2}" y="{hostComponent.height/2}"/>
+		<s:Group id="labelElement" left="5" top="8" fontSize="12"
+				 horizontalCenter.collapsed="0" verticalCenter.collapsed="-10">
+		</s:Group>
+		
+		<s:Group id="graphGroup" top="0" left="0" bottom="0" right="0">
+			<graphic:Graph id="graph" left="{hostComponent.graphMarginLeft}"
+						   right="{hostComponent.graphMarginRight}"
+						   top="{hostComponent.graphMarginTop}"
+						   bottom="{hostComponent.graphMarginBottom}" automaticGraphLayout="false"/>
+		</s:Group>
+	</s:Group>
+</skin:NodeSkinBase>

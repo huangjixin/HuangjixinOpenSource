@@ -6,6 +6,7 @@
 		@namespace editor "com.hjx.diagram.editor.*";
 		@namespace graphlayout "com.hjx.graphic.graphlayout.*";
 		@namespace graphic1 "com.hjx.bpmn.graphic.*";
+		@namespace map "map.*";
 		s|Label{
 			fontFamily:"微软雅黑";
 		}
@@ -89,12 +90,16 @@
 		
 		graphic1|HorizontalLane{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.HorizontalLaneSkin");
+			backgroundColor:"0x98D0DD";
+			borderColor:"0x000000";
 /*			backgroundColor:"0xDDA09D";
 			borderColor:"0x3E2D2C";*/
 		}
 		
 		graphic1|VerticalLane{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.VerticalLaneSkin");
+			backgroundColor:"0x98D0DD";
+			borderColor:"0x000000";
 /*			backgroundColor:"0xDDA09D";
 			borderColor:"0x3E2D2C";*/
 		}
@@ -129,4 +134,8 @@
 
 		graphic1|SubProcess{
 			skinClass:ClassReference("com.hjx.bpmn.graphic.skin.SubProcessSkin")
+		}
+
+		map|Province{
+			skinClass:ClassReference("map.skin.ProvinceSkin")
 		}

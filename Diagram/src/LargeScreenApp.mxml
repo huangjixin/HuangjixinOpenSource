@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:diagram="com.hjx.diagram.*"
+			   xmlns:editor="com.hjx.diagram.editor.*"
+			   xmlns:largescreen="com.hnisi.largescreen.*"
+			   minWidth="955" minHeight="600"
+			   creationComplete="application1_creationCompleteHandler(event)">
+	<fx:Style source="largescreen.css">
+		
+	</fx:Style>
+	<fx:Script>
+		<![CDATA[
+			import com.hjx.diagram.serialization.XMLSerializer;
+			import com.hjx.graphic.Link;
+			import com.hjx.graphic.Renderer;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.effects.Resize;
+			
+			
+			private var file:FileReference;
+			private var currentFileName:String="";
+			
+			[Bindable]
+			private var proecessdefinitionName:String="";
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+			}
+			
+			// -----------------------------------------
+			// 保存和加载
+			// -----------------------------------------
+			private var isModified:Boolean;
+			
+			private var jbpmXml:XML;
+			private var currentTime:String;
+			
+			private function saveXML() : void 
+			{
+				file = new FileReference();
+				var xml:XML = new XMLSerializer().serialize(diagramEditor.graph, "BpmnDiagram");
+				var fileName:String = currentFileName;
+				if(fileName == null)
+					fileName = "bpmn图形描述文件"+".xml";
+				file.addEventListener(flash.events.Event.COMPLETE, fileSaved);
+				file.addEventListener(flash.events.IOErrorEvent.IO_ERROR, ioError);
+				file.save(xml, fileName);
+			}
+			
+			private function fileSaved(event:flash.events.Event) : void 
+			{
+				if(file != null){
+					currentFileName = file.name;
+					isModified = false;
+					
+					file = null;
+				}
+			}
+			
+			private function loadXML() : void 
+			{
+				if(isModified){
+					Alert.show("流程没有保存哦","",
+						Alert.YES|Alert.NO, this, loadAlertCloseHandler, null, Alert.NO);
+				} else {
+					doLoadXML();
+				}
+			}
+			
+			private function loadAlertCloseHandler(event:CloseEvent) : void 
+			{
+				if(event.detail == Alert.YES)
+					doLoadXML();
+			}
+			
+			private function doLoadXML(): void
+			{
+				var xmlFileFileFilter:FileFilter = new
+					FileFilter("xml流程描述文件", "*.xml");
+				file = new FileReference();
+				file.addEventListener(flash.events.Event.SELECT, fileSelectedForLoad);
+				file.browse([xmlFileFileFilter]);
+			}
+			
+			private function fileSelectedForLoad(event:flash.events.Event) : void 
+			{
+				if(file != null){
+					file.addEventListener(flash.events.Event.COMPLETE, fileLoaded);
+					file.addEventListener(flash.events.IOErrorEvent.IO_ERROR, ioError);
+					file.load();
+				}
+			}
+			
+			private function fileLoaded(event:flash.events.Event) : void 
+			{
+				if(file != null){
+					try {
+						var xml:XML = new XML(file.data.toString());
+						if(xml.localName() != "BpmnDiagram"){
+							Alert.show("该文件不是流程文件");
+							return;
+						}
+						diagramEditor.clear();
+						new XMLSerializer().deserialize(diagramEditor.graph, xml);
+						currentFileName = file.name;
+						isModified = false;
+						//						undoManager.clearUndo();
+					} catch(err:Error){
+						Alert.show(err.message);
+					}
+					file = null;
+				}
+			}    
+			
+			private function ioError(event:IOErrorEvent) : void 
+			{
+				var msg:String = event.text;
+				var title:String = "出错";
+				Alert.show(msg, title, Alert.OK|Alert.CANCEL, null, ioErrorAlertHandler);
+			}
+			
+			private function ioErrorAlertHandler(event:CloseEvent):void
+			{
+				if (event.detail == Alert.OK)
+					saveXML();        
+			}
+			//-------------------------------------------------------------------------------------------
+			// 克隆函数。
+			//-------------------------------------------------------------------------------------------
+			private function cloneFunction(obj:Renderer, clone:Renderer, playResize:Boolean = false) : void 
+			{
+				var resize:Resize = new Resize(clone);
+				            
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	<mx:HDividedBox xmlns:chg="com.hjx.graphic"
+					xmlns:chbg="com.hjx.bpmn.graphic"
+					width="100%" height="100%">
+		<s:Panel width="200" height="100%" title="图形面板">
+			<s:VGroup width="100%" height="100%" horizontalAlign="center" paddingTop="10">
+				<s:ButtonBar dataProvider="{rendererView}">
+					<s:layout>
+						<s:VerticalLayout gap="0" paddingLeft="0" paddingRight="0" rowHeight="50"/>
+					</s:layout>
+				</s:ButtonBar>
+				
+				<!--<s:TabBar width="100%" dataProvider="{rendererView}"/>-->
+				<mx:ViewStack id="rendererView" width="100%" height="100%" creationPolicy="all">
+					<s:NavigatorContent width="100%" height="100%" label="任务"
+										backgroundColor="#EEF0F3">
+						<editor:DiagramPalette top="10" width="100%" height="100%">
+							<editor:layout>
+								<s:VerticalLayout horizontalAlign="center"/>
+							</editor:layout>
+							<editor:DiagramPalette>
+								<largescreen:City label="城市名称"/>
+							</editor:DiagramPalette>
+							<editor:DiagramPalette>
+								<largescreen:ChinaMap label="" width="100" height="100"/>
+							</editor:DiagramPalette>
+						</editor:DiagramPalette>
+						
+					</s:NavigatorContent>
+					<s:NavigatorContent width="100%" height="100%" label="连线"
+										backgroundColor="#EEF0F3">
+						<s:List id="linkList" width="100%" height="100%"
+								change="diagramEditor.linkPrototype = IList(linkList.dataProvider).getItemAt(event.newIndex) as Link;"
+								creationComplete="diagramEditor.linkPrototype = IList(linkList.dataProvider).getItemAt(0) as Link;"
+								selectedIndex="0">
+							<s:itemRenderer>
+								<fx:Component>
+									<s:ItemRenderer height="30">
+										<s:states>
+											<s:State name="normal"/>
+											<s:State name="hovered"/>
+											<s:State name="selected"/>
+										</s:states>
+										<s:Rect left="0" right="0" top="0" bottom="0">
+											<s:fill>
+												<s:SolidColor alpha="0" color="0x999999"
+															  alpha.hovered="0.2"
+															  alpha.selected="0.6"/>
+											</s:fill>
+										</s:Rect>
+										<editor:DiagramPalette data="{data}"/>
+									</s:ItemRenderer>
+								</fx:Component>
+							</s:itemRenderer>
+							<s:dataProvider>
+								<s:ArrayList>
+									<largescreen:Connecting color="red"
+															endConnectionArea="center"
+															fallbackEndPoint="{new Point(170,10)}"
+															fallbackStartPoint="{new Point(10,10)}"
+															shapeType="straight"
+															startConnectionArea="center"
+															dashStyle="dash"/>
+								</s:ArrayList>
+							</s:dataProvider>
+						</s:List>
+					</s:NavigatorContent>
+				</mx:ViewStack>
+			</s:VGroup>
+		</s:Panel>
+		<s:VGroup width="100%" height="100%">
+			<s:VGroup width="100%" paddingBottom="5" paddingTop="5">
+					<s:HGroup id="editGroup">
+					<s:Button label="保存到本地" click="saveXML();"/>
+					<s:Button label="打开本地文件" click="loadXML();"/>
+					<s:Button label="连线" click="diagramEditor.connectNodes();"/>
+				</s:HGroup>
+			</s:VGroup>
+			<s:Panel id="titlePanel" width="100%" height="100%" title="{proecessdefinitionName}">
+				<editor:DiagramEditor xmlns:chg="com.hjx.graphic"
+									  id="diagramEditor" width="100%" height="100%"
+									  cloneFunction="cloneFunction">
+					<diagram:Diagram id="diagram" width="100%" height="100%"
+									 automaticGraphLayout="false" labelField="@label"
+									 selectionMode="multiple" xLocationField="@x"
+									 yLocationField="@y">
+					</diagram:Diagram>
+				</editor:DiagramEditor>
+			</s:Panel>		
+		</s:VGroup>
+	</mx:HDividedBox>
+</s:Application>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://blog.flexexamples.com/2009/01/09/setting-the-joint-style-on-a-path-stroke-in-flex-gumbo/ -->
+<s:Application name="Spark_Path_stroke_joints_test"
+			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   creationComplete="application1_creationCompleteHandler(event)">
+	<s:controlBarContent>
+		<mx:Form>
+			<mx:FormItem label="joints:">
+				<s:DropDownList id="comboBox"
+								selectedIndex="2"
+								change="comboBox_change(event);">
+					<s:dataProvider>
+						<s:ArrayList>
+							<s:source>
+								<fx:String>{JointStyle.BEVEL}</fx:String>
+								<fx:String>{JointStyle.MITER}</fx:String>
+								<fx:String>{JointStyle.ROUND}</fx:String>
+							</s:source>
+						</s:ArrayList>
+					</s:dataProvider>
+				</s:DropDownList>
+			</mx:FormItem>
+		</mx:Form>
+	</s:controlBarContent>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			private var shapePoints:Vector.<Point> = new Vector.<Point>();
+			protected function comboBox_change(evt:IndexChangeEvent):void {
+				pathStroke.joints = comboBox.selectedItem.toString();
+			}
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				shapePoints.push(new Point(0,0));
+				shapePoints.push(new Point(200,0));
+				shapePoints.push(new Point(200,200));
+				shapePoints.push(new Point(400,200));
+				
+				var data:String;
+				var point:Point;
+				var radius:Number = 8;
+				for(var i:int = 0;i<shapePoints.length;i++) 
+				{
+					point = shapePoints[i];
+					if(point == shapePoints[0]){
+						data = "M "+point.x+" "+point.y+" ";
+					}else{
+						var prevPoint:Point = shapePoints[i-1];
+						var nextPoint:Point;
+						if(i+1<shapePoints.length){
+							nextPoint = shapePoints[i+1];
+							if(point.x != prevPoint.x && prevPoint.x != nextPoint.x && prevPoint.y != nextPoint.y){
+								
+								if(point.x > prevPoint.x){
+									data+="L "+(point.x-radius)+" "+point.y+" ";
+									if(point.y >= prevPoint.y){
+										data+="Q "+point.x+" "+point.y;	
+										if(point.y <= nextPoint.y){
+											data+=" "+point.x+" "+(point.y+radius)+" ";
+										}else{
+											data+=" "+point.x+" "+(point.y-radius)+" ";
+										}
+									}else{
+										data+="Q "+point.x+" "+point.y;	
+										if(point.y <= nextPoint.y){
+											data+=" "+point.x+" "+(point.y+radius)+" ";
+										}else{
+											data+=" "+point.x+" "+(point.y-radius)+" ";
+										}
+									}
+								}else{
+									data+="L "+(point.x+radius)+" "+point.y+" ";
+									if(point.y >= prevPoint.y){
+										data+="Q "+point.x+" "+point.y+" ";	
+										if(point.y <= nextPoint.y){
+											data+=" "+point.x+" "+(point.y+radius)+" ";
+										}else{
+											data+=" "+point.x+" "+(point.y-radius)+" ";
+										}									
+									}else{
+										data+="Q "+point.x+" "+point.y+" ";	
+										if(point.y <= nextPoint.y){
+											data+=" "+point.x+" "+(point.y+radius)+" ";
+										}else{
+											data+=" "+point.x+" "+(point.y-radius)+" ";
+										}
+									}	
+								}
+							}else if(point.y != prevPoint.y && prevPoint.x != nextPoint.x && prevPoint.y != nextPoint.y){
+								if(point.y > prevPoint.y){
+									data+="L "+point.x+" "+(point.y-radius)+" ";
+									if(point.x >= prevPoint.x){
+										data+="Q "+point.x+" "+point.y;	
+										if(point.x <= nextPoint.x){
+											data+=" "+(point.x+radius)+" "+point.y+" ";
+										}else{
+											data+=" "+(point.x-radius)+" "+point.y+" ";
+										}
+									}else{
+										data+="Q "+point.x+" "+point.y;	
+										if(point.x <= nextPoint.x){
+											data+=" "+(point.x+radius)+" "+point.y+" ";
+										}else{
+											data+=" "+(point.x-radius)+" "+point.y+" ";
+										}
+									}
+								}else{
+									data+="L "+point.x+" "+(point.y+radius)+" ";
+									if(point.x >= prevPoint.x){
+										data+="Q "+point.x+" "+point.y;	
+										if(point.x <= nextPoint.x){
+											data+=" "+(point.x+radius)+" "+point.y+" ";
+										}else{
+											data+=" "+(point.x-radius)+" "+point.y+" ";
+										}								
+									}else{
+										data+="Q "+point.x+" "+point.y;	
+										if(point.x <= nextPoint.x){
+											data+=" "+(point.x+radius)+" "+point.y+" ";
+										}else{
+											data+=" "+(point.x-radius)+" "+point.y+" ";
+										}
+									}
+								}
+							}else{
+								data+="L "+point.x+" "+point.y+" ";
+							}
+						}else{
+							data+="L "+point.x+" "+point.y+" ";						
+						}
+					}
+				}
+				pathData = data;
+				path.invalidateProperties();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<fx:String id="pathData">M 0 0 L 195 0 Q 200 0 200 5 L 200 195 Q 200 200 205 200 L 400 200 </fx:String>
+	</fx:Declarations>
+	
+	<s:Graphic horizontalCenter="0" verticalCenter="0">
+		<s:Path id="path" data="{pathData}">
+			<s:stroke>
+				<s:SolidColorStroke id="pathStroke"
+									color="red"
+									weight="1" miterLimit="25" />
+			</s:stroke>
+		</s:Path>
+		<!--<s:Path data="{pathData}">
+			<s:stroke>
+				<s:SolidColorStroke color="black" weight="1" />
+			</s:stroke>
+		</s:Path>-->
+	</s:Graphic>
+	
+</s:Application>

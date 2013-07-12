@@ -1,0 +1,49 @@
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace graphic "com.hjx.graphic.*";
+		@namespace local "*";
+		@namespace diagram "com.hjx.diagram.*";
+		@namespace editor "com.hjx.diagram.editor.*";
+		@namespace graphlayout "com.hjx.graphic.graphlayout.*";
+		@namespace graphic1 "com.hjx.bpmn.graphic.*";
+		@namespace map "map.*";
+		@namespace largescreen "com.hnisi.largescreen.*";
+		s|Label{
+			fontFamily:"微软雅黑";
+		}
+		
+		editor|NodeAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.NodeAdornerSkin");
+		}
+		
+		editor|ResizableNodeAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.ResizeableAdornerSkin")
+		}
+		
+		editor|DiagramEditor{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.DiagramEditorSkin")
+		}
+		
+		editor|LinkAdorner{
+			skinClass:ClassReference("com.hjx.diagram.editor.skin.LinkAdornerSkin");
+		}
+		
+		largescreen|City{
+			skinClass:ClassReference("com.hnisi.largescreen.skins.CitySkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.NodeAdorner");
+			backgroundColor:"0x00ffff";
+			borderColor:"0xfff000";
+		}
+		
+		largescreen|Connecting{
+			skinClass:ClassReference("com.hnisi.largescreen.skins.ConnectingSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.LinkAdorner");
+			startArrowVisible:false;
+			endArrowVisible:true;
+			strokeWidth:1;
+		}
+		
+		largescreen|ChinaMap{
+			skinClass:ClassReference("com.hnisi.largescreen.skins.ChinaMapSkin");
+			adornerClass:ClassReference("com.hjx.diagram.editor.ResizableNodeAdorner");
+		}

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin:NodeSkinBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:skin="com.hjx.graphic.skin.*"
+				   xmlns:primatives="ws.tink.spark.primatives.*"
+				   xmlns:graphics="ws.tink.spark.graphics.*">
+	<fx:Declarations>
+		<s:AnimateColor id="alertEffect" colorFrom="0" colorPropertyName="color" colorTo="red"
+						duration="500" repeatCount="0" targets="{[path.stroke]}"/>
+		<s:AnimateColor id="safeEffect" colorPropertyName="color" colorTo="green" duration="100"
+						repeatBehavior="reverse" repeatCount="0" targets="{[path.stroke]}"/>
+	</fx:Declarations>
+	<fx:Metadata>
+		[HostComponent("com.hnisi.largescreen.Connecting")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			/**
+			 *  @private
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
+			{
+				var cr:Number = getStyle("strokeColor");
+				if (strokeColor != cr)strokeColor = cr;
+				
+				var sw:Number = getStyle("strokeWidth");
+				if (strokeWidth != sw) strokeWidth = sw;      
+				
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				hostComponent.addEventListener("monitoringStatusChange",onmonitoringStatusChange);
+			}
+			
+			[Bindable]
+			public var strokeColor:uint = 0;
+			
+			[Bindable]
+			public var strokeWidth:Number = 1;
+			
+			protected function onmonitoringStatusChange(event:Event):void
+			{
+				if(hostComponent.monitoringStatus == "alert"){
+					alertEffect.play();
+					safeEffect.stop();
+				}else if(hostComponent.monitoringStatus == "safe"){
+					safeEffect.play();
+					alertEffect.stop();
+				}else{
+					alertEffect.stop();
+					safeEffect.stop();
+				}
+			}
+		]]>
+	</fx:Script>
+	<skin:states>
+		<s:State name="normal"/>
+		<s:State name="normalAndShowsCaret"/>
+		<s:State name="selected"/>
+		<s:State name="selectedAndShowsCaret"/>
+		<s:State name="safe"/>
+		<s:State name="alert"/>
+	</skin:states>
+	<fx:Declarations>
+		<s:SolidColorStroke id="strokecolor" caps="none" color="{strokeColor}" weight="1"/>
+		<s:SolidColor id="fillcolor" color="{strokeColor}"/>
+	</fx:Declarations>
+	
+	<s:Group id="base" includeInLayout="false">  
+		<primatives:Path id="path" data="M 0 0 L 0 0" stroke="{strokecolor}">
+			
+		</primatives:Path>  
+		<primatives:Path id="animatePath" visible="false">
+			<primatives:stroke>
+				<graphics:SolidColorDash caps="none" color="{strokeColor}" dash="8" gap="8"
+										 weight="{strokeWidth}"/>
+			</primatives:stroke>
+		</primatives:Path>  
+		<primatives:Path id="startArrow" data="M -6 -3 l 6 3 l -6 3 Z" stroke="{strokecolor}">
+		</primatives:Path>
+		<!-- data path must be relative to (0,0) because arrow are centered on path end/start points-->
+		<primatives:Path id="endArrow" data="M -6 -3 l 6 3 l -6 3 Z" stroke="{strokecolor}">
+			<primatives:fill>
+				<s:SolidColor color="white"/>
+			</primatives:fill>
+		</primatives:Path>   
+		<s:Group id="labelElement">
+			<s:Rect left="0" right="0" top="0" bottom="0">
+				<s:fill>
+					<s:SolidColor color="0xffffff"/>
+				</s:fill>
+			</s:Rect>
+			<!--<s:Label text="{hostComponent.label}">
+				<s:filters>
+					<s:GlowFilter blurX="4" blurY="4" color="0xffffff"/>
+				</s:filters>
+			</s:Label>-->
+		</s:Group>
+	</s:Group>
+</skin:NodeSkinBase>
