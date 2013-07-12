@@ -223,6 +223,7 @@ package ws.tink.spark.primatives
 		/** 
 		 *  @private
 		 */
+		[Bindable]
 		override public function get data():String 
 		{
 			return _data;

@@ -96,7 +96,7 @@ package com.hjx.graphic
 		public var labelElement:DisplayObject;
 		
 		private var _shapePoints:Vector.<Point>;
-		private var _strokeWidth:Number;
+		private var _strokeWidth:Number = 1;
 		private var _strokeWidthChange:Boolean;
 		private var _radius:Number = 5;
 		private var _radiusChange:Boolean;
@@ -2227,7 +2227,8 @@ package com.hjx.graphic
 						this.startArrow.visible = true;
 						var midWidth:Number;
 						var startRect:Rectangle = getPathBounds(this.startArrow);
-						var startOffsetW:Number = Math.max(10,startRect.width);
+//						var startOffsetW:Number = Math.max(10,startRect.width);
+						var startOffsetW:Number = startRect.width;
 						point1.offset(-startOffsetW * Math.cos(radian),-startOffsetW*Math.sin(radian));
 						this._shapePoints[0] = point1;
 					}
@@ -2251,7 +2252,8 @@ package com.hjx.graphic
 						this.endArrow.y = point2.y;
 						this.endArrow.visible = true;
 						var endRect:Rectangle = getPathBounds(this.startArrow);
-						var endOffsetW:Number = Math.max(10,endRect.width);
+//						var endOffsetW:Number = Math.max(10,endRect.width);
+						var endOffsetW:Number = endRect.width;
 						point2.offset(-endOffsetW * Math.cos(radian),-endOffsetW*Math.sin(radian));
 						this._shapePoints[this._shapePoints.length - 1] = point2;
 					}
