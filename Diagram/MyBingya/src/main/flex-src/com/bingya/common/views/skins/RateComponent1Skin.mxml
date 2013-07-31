@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		toolTip="{hostComponent.percentValue}"
+		creationComplete="skin1_creationCompleteHandler(event)">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("com.bingya.common.views.RateComponent1")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+				super.updateDisplayList(unscaledWidth,unscaledHeight);
+				
+				var g:Graphics = group.graphics;
+				g.clear();
+				var total:int = group.width / 4;
+				backgroud.width = total * 4;
+				
+					for (var i:int = 0; i < total; i++) 
+					{
+						g.beginFill(0x006500);
+						g.drawRect(i*4,0,2,group.height/2);
+						g.endFill();
+					}
+					
+					for (i = 0; i < total; i++) 
+					{
+						g.beginFill(0x006500);
+						g.drawRect(i*4,group.height/2+1,2,group.height/2);
+						g.endFill();
+					}
+				
+				
+				var percent:Number = group.width * hostComponent.percentValue / 400;
+				
+					for (var j:int = 0; j < percent; j++) 
+					{
+						g.beginFill(0x00ff00);
+						g.drawRect(j*4,0,2,group.height/2);
+						g.endFill();
+					}
+					
+					for (j = 0; j < percent; j++) 
+					{
+						g.beginFill(0x00ff00);
+						g.drawRect(j*4,group.height/2+1,2,group.height/2);
+						g.endFill();
+					}
+				
+			}
+			
+			protected function skin1_creationCompleteHandler(event:FlexEvent):void
+			{
+				hostComponent.addEventListener("percentValueChange",onpercentValueChange);
+				hostComponent.addEventListener(ResizeEvent.RESIZE,onpercentValueChange);
+			}
+			
+			protected function onpercentValueChange(event:Event):void
+			{
+				invalidateDisplayList();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Group id="backgroud" top="0" bottom="0">
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:SolidColor color="0x292f25"/>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	<s:Group id="group" left="0" right="0" top="0" bottom="1">
+		
+	</s:Group>
+	<s:Group id="percGroup" left="0" right="0" top="0" bottom="1">
+		
+	</s:Group>
+</s:Skin>

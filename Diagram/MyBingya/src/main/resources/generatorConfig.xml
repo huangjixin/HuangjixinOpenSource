@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-system_1_0.dtd">
+<!-- 黄记新，mybatis底层生成器配置文件 -->
+<generatorConfiguration>
+	<classPathEntry
+		location="C:\Users\Administrator\.m2\repository\mysql\mysql-connector-java\5.1.18\mysql-connector-java-5.1.18.jar" />
+	<!-- MyBatis3,Ibatis2Java5 -->
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+		<plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"></plugin>
+		<plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
+		<!-- 想要mybaits代码生成器生成Example类换个名字，是通过插件实现的，即下面的这个插件配置参数很关键。 -->
+		<!-- <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin"> -->
+		<!-- <property name="searchString" value="Example$" /> -->
+		<!-- <property name="replaceString" value="Criteria" /> -->
+		<!-- </plugin> -->
+
+		<plugin type="org.mybatis.plugin.PaginationPlugin" />
+
+		<commentGenerator>
+			<property name="suppressDate" value="false" />
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/bingya" userId="root"
+			password="qwer123456">
+		</jdbcConnection>
+
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<javaModelGenerator targetPackage="com.bingya.domain.system"
+			targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<sqlMapGenerator targetPackage="com.bingya.dao.system"
+			targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.bingya.dao.system" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+		<table tableName="user" domainObjectName="User" />
+		<table tableName="user_role" domainObjectName="UserRole" />
+		<table tableName="menu" domainObjectName="Menu" />
+		<table tableName="role_menu" domainObjectName="RoleMenu" />
+		<table tableName="role" domainObjectName="Role" />
+		<table tableName="resource" domainObjectName="Resource" />
+		<table tableName="role_resource" domainObjectName="RoleResource" />
+		<table tableName="tb_article" domainObjectName="Article" />
+		<table tableName="tb_asset" domainObjectName="Asset" />
+		<table tableName="tb_category" domainObjectName="Category" />
+		<table tableName="tb_comment" domainObjectName="Comment" />
+
+	</context>
+</generatorConfiguration>

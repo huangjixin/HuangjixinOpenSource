@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:flex="http://www.springframework.org/schema/flex"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd 
+	http://www.springframework.org/schema/flex http://www.springframework.org/schema/flex/spring-flex-1.5.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd"
+	default-lazy-init="true">
+		
+	<!-- Spring-Flex消息路由配置 -->
+	<flex:message-broker id="_messageBroker" />
+	<bean class="org.springframework.flex.servlet.MessageBrokerHandlerAdapter" />
+
+	<!-- 业务视图管理接口 -->
+	<!-- <bean id="businessViewManager" class="com.hnisi.e3itm.service.business.BusinessViewManager">
+		<flex:remoting-destination destination-id="businessViewManager"
+			message-broker="_messageBroker" channels="my-amf" />
+	</bean>		 -->
+	
+	<!--测试用<bean id="businessTopoManager" class="com.hnisi.e3itm.service.business.impl.BusinessTopoManagerImpl">
+		<flex:remoting-destination destination-id="businessTopoManager"
+			message-broker="_messageBroker" channels="my-amf" />
+	</bean>-->	
+	
+<!-- 	<bean id="businessViewManager" class="com.hnisi.e3itm.service.business.impl.BusinessViewManagerImpl"> -->
+<!-- 		<flex:remoting-destination destination-id="businessViewManager" -->
+<!-- 			message-broker="_messageBroker" channels="my-amf" /> -->
+<!-- 	</bean>	 -->
+</beans>

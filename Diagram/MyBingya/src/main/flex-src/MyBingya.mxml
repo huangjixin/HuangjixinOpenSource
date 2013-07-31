@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
+			   creationComplete="application1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.bingya.common.Global;
+			import com.bingya.test.model.TestRemoteServerProxy;
+			
+			import mx.events.FlexEvent;
+			
+			private var testRemoteServer:TestRemoteServerProxy = new TestRemoteServerProxy();
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				Global.getInstance().setUrl();
+				
+				testRemoteServer.getStr();
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+</s:Application>

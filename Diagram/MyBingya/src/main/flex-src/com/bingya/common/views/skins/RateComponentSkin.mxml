@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		toolTip="{hostComponent.percentValue}">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("com.bingya.common.views.RateComponent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			
+		]]>
+	</fx:Script>
+	<s:Group id="group" left="0" right="0" top="0" bottom="0">
+		<s:Rect left="0" right="0" top="0" bottom="0" radiusX="1">
+			<s:stroke>
+				<s:LinearGradientStroke id="outerStroke" rotation="90">
+					<!--<s:GradientEntry color="0x999999"/>-->
+					<s:GradientEntry color="0xB1CDA5"/>
+				</s:LinearGradientStroke>
+			</s:stroke>
+			<s:fill>
+				<!--<s:SolidColor color="0xffffff"/>-->
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="0xCCE1C2"/>
+					<s:GradientEntry color="0xFBFDFA"/>
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	<s:Group left="0" right="{(1-hostComponent.percentValue/100) * this.width}" top="0" bottom="0">
+		<s:Rect left="0" right="0" top="0" bottom="0" radiusX="1">
+			<s:stroke>
+				<s:LinearGradientStroke rotation="90">
+					<!--<s:GradientEntry color="0x999999"/>-->
+					<s:GradientEntry color="0xB1CDA5"/>
+				</s:LinearGradientStroke>
+			</s:stroke>
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="0xD5FFB5"/>
+					<s:GradientEntry color="0x91CB74" ratio="0.4"/>
+					<s:GradientEntry color="0xB0D699"/>
+					<!--<s:GradientEntry color="0x0"/>
+					<s:GradientEntry color="{hostComponent.fillColor}"/>-->
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	<!--<s:Group left="1" right="{(1-hostComponent.percentValue/100) * this.width + 1}" top="1" bottom="0">
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="0xffffff" alpha="1"/>
+					<s:GradientEntry color="0xffffff" ratio="0.4" alpha="0"/>
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+	</s:Group>-->
+</s:Skin>

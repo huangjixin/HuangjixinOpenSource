@@ -1,0 +1,27 @@
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log opened at 2012-12-11 15:16:31
+project --topLevelPackage com.bingya --projectName MyBingya --java 6 --packaging JAR
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log closed at 2012-12-11 15:17:07
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log opened at 2012-12-11 15:23:36
+jpa setup --provider HIBERNATE --database MYSQL --userName root --password qwer123456 
+osgi start --url file:///C:\Users\Administrator\.m2\repository\mysql\mysql-connector-java\5.1.18\mysql-connector-java-5.1.18.jar
+database introspect --schema bingya --enableViews false 
+database introspect --schema bingya --enableViews false 
+database reverse engineer --schema bingya --package com.bingya.sys.domain --testAutomatically false --enableViews false --includeNonPortableAttributes false --activeRecord false 
+web mvc setup 
+finder add --class com.bingya.sys.domain.User --finderName UserFinder 
+web mvc all --package com.bingya.sys.web 
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log closed at 2012-12-11 15:40:53
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log opened at 2012-12-13 16:50:51
+json all --deepSerialize true 
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log closed at 2012-12-13 17:06:21
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log opened at 2012-12-21 09:08:14
+security setup 
+database reverse engineer --schema bingya --package com.bingya.sys.domain --testAutomatically false --enableViews false --includeNonPortableAttributes false --activeRecord false 
+web mvc all --package com.bingya.sys.web 
+database reverse engineer --schema bingya --package com.bingya.sys.domain --testAutomatically false --enableViews false --includeNonPortableAttributes false --activeRecord false 
+web mvc all --package com.bingya.sys.web 
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log closed at 2012-12-21 15:44:37
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log opened at 2012-12-27 09:52:43
+database reverse engineer --schema bingya --package com.bingya.sys.domain --testAutomatically false --enableViews false --includeNonPortableAttributes false --activeRecord false 
+database reverse engineer --schema bingya --package com.bingya.sys.domain --testAutomatically false --enableViews false --includeNonPortableAttributes false --activeRecord false 
+// Spring Roo 1.2.1.RELEASE [rev 6eae723] log closed at 2012-12-28 09:20:08
