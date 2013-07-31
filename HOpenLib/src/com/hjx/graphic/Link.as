@@ -991,7 +991,7 @@ package com.hjx.graphic
 						if(this.parent){
 							startRect = this.startNode.getNodeOrBaseBounds(this.parent);
 						}else{
-							startRect = new Rectangle(defaultStartPoint.x,defaultStartPoint.y);
+							startRect = new Rectangle(defaultStartPoint.x,defaultStartPoint.y,0,0);
 						}
 						
 					}else{
@@ -1053,7 +1053,7 @@ package com.hjx.graphic
 						if(this.parent){
 							endRect = this.endNode.getNodeOrBaseBounds(this.parent);
 						}else{
-							endRect = new Rectangle(defaultEndPoint.x,defaultEndPoint.y);
+							endRect = new Rectangle(defaultEndPoint.x,defaultEndPoint.y,0,0);
 						}
 						
 					}else{
@@ -1067,8 +1067,8 @@ package com.hjx.graphic
 					if(labelElement){
 						validateNow();
 						var avg:int = this._shapePoints.length/2;
-						labelElement.x = this._shapePoints[avg].x/2+this._shapePoints[avg+1].x/2-labelElement.width/2;
-						labelElement.y = this._shapePoints[avg].y/2+this._shapePoints[avg+1].y/2-labelElement.height/2;
+						labelElement.x = this._shapePoints[avg].x/2+this._shapePoints[avg-1].x/2-labelElement.width/2;
+						labelElement.y = this._shapePoints[avg].y/2+this._shapePoints[avg-1].y/2-labelElement.height/2;
 					}
 				}	
 				default:
@@ -1320,16 +1320,17 @@ package com.hjx.graphic
 
 			var cloneStartPoint:Point = startPoint.clone();
 			if(startConnectionArea != LinkConnectionArea.CENTER){
-				cloneStartPoint = computeStartConnectAreaOffsetPoint(cloneStartPoint,false);	
+				cloneStartPoint = computeStartConnectAreaOffsetPoint(cloneStartPoint,false,direction);	
 				shapePoints.push(cloneStartPoint);
-				startPoint = computeStartConnectAreaOffsetPoint(startPoint);			
+				startPoint = computeStartConnectAreaOffsetPoint(startPoint,true,direction);			
 			}
 			
 			shapePoints.push(startPoint);
 			
 			var cloneEndPoint:Point = endPoint.clone();			
 			if(this.endConnectionArea != LinkConnectionArea.CENTER){
-				endPoint = computeEndConnectAreaOffsetPoint(endPoint);
+				cloneEndPoint = computeEndConnectAreaOffsetPoint(cloneEndPoint,false,direction);
+				endPoint = computeEndConnectAreaOffsetPoint(endPoint,true,direction);
 			}
 			
 			var middle:Point = new Point(startPoint.x/2+endPoint.x/2,startPoint.y/2+endPoint.y/2);
@@ -1337,22 +1338,22 @@ package com.hjx.graphic
 			switch(direction){
 				case Left:
 					if(endPoint.y <=startPoint.y){
-						shapePoints.push(new Point(middle.x,startPoint.y));
-						shapePoints.push(new Point(middle.x,endPoint.y));
+						shapePoints.push(new Point(startPoint.x,endPoint.y));
 					}else{
 						shapePoints.push(new Point(endPoint.x,startPoint.y));
 					}
 					break;
 				
 				case Top:
-					shapePoints.push(new Point(startPoint.x,middle.y));
-					shapePoints.push(new Point(endPoint.x,middle.y));
+					/*shapePoints.push(new Point(startPoint.x,middle.y));
+					shapePoints.push(new Point(endPoint.x,middle.y));*/
+//					shapePoints.push(new Point(startPoint.x,endPoint.y));
+					shapePoints.push(new Point(endPoint.x,startPoint.y));
 					break;
 				
 				case Right:
 					if(endPoint.y <=startPoint.y){
-						shapePoints.push(new Point(middle.x,startPoint.y));
-						shapePoints.push(new Point(middle.x,endPoint.y));
+						shapePoints.push(new Point(startPoint.x,endPoint.y));
 					}else{
 						shapePoints.push(new Point(endPoint.x,startPoint.y));
 					}
@@ -1360,14 +1361,19 @@ package com.hjx.graphic
 					break;
 				
 				case Bottom:
-					shapePoints.push(new Point(startPoint.x,middle.y));
-					shapePoints.push(new Point(endPoint.x,middle.y));
+					/*if(endPoint.x <=startPoint.x){
+						shapePoints.push(new Point(startPoint.y,endPoint.x));
+					}else{
+						shapePoints.push(new Point(endPoint.y,startPoint.x));
+					}*/
+					shapePoints.push(new Point(startPoint.x,endPoint.y));
+//					shapePoints.push(new Point(startPoint.x,middle.y));
+//					shapePoints.push(new Point(endPoint.x,middle.y));
 					break;
 			}
 			
 			if(this.endConnectionArea != LinkConnectionArea.CENTER){
 				shapePoints.push(endPoint);
-				cloneEndPoint = computeEndConnectAreaOffsetPoint(cloneEndPoint,false);	
 			}
 			
 			shapePoints.push(cloneEndPoint);
@@ -1803,30 +1809,47 @@ package com.hjx.graphic
 		 * @return 
 		 * 
 		 */
-		internal function computeStartConnectAreaOffsetPoint(startPoint:Point,includeOrthSpacing:Boolean = true):Point{
+		internal function computeStartConnectAreaOffsetPoint(startPoint:Point,includeOrthSpacing:Boolean = true,direction:int = 0):Point{
 			var offset:Number = computeStartConnectAreaOffset();
 			//-----------
 			// 如果是纵向那么添加纵向偏移量，横向则添加横向偏移量。
 			//-----------
+			var offsetOrthogonalSpacing:Number = this._orthogonalSpacing;
+			
+			/*switch(direction){
+				case Left:
+					offsetOrthogonalSpacing *= 1;
+					break;
+				case Top:
+					offsetOrthogonalSpacing *= -1;
+					break;
+				case Right:
+					offsetOrthogonalSpacing *= 1;
+					break;
+				case Bottom:
+					offsetOrthogonalSpacing *= 1;
+					break;
+			}*/
 			
 			if(this.startConnectionArea == LinkConnectionArea.TOP ){
-				if(includeOrthSpacing)
-					startPoint.offset(offset,-this._orthogonalSpacing);
+				if(includeOrthSpacing){
+					startPoint.offset(offset,-offsetOrthogonalSpacing);				
+				}
 				else
 					startPoint.offset(offset,0);
 			}else if(this.startConnectionArea == LinkConnectionArea.BOTTOM){
 				if(includeOrthSpacing)
-					startPoint.offset(offset,this._orthogonalSpacing);
+					startPoint.offset(offset,offsetOrthogonalSpacing);
 				else
 					startPoint.offset(offset,0);
 			}else if(this.startConnectionArea == LinkConnectionArea.LEFT){
 				if(includeOrthSpacing)
-					startPoint.offset(-this._orthogonalSpacing,offset);
+					startPoint.offset(-offsetOrthogonalSpacing,offset);
 				else
 					startPoint.offset(0,offset);
 			}else if(this.startConnectionArea == LinkConnectionArea.RIGHT){
 				if(includeOrthSpacing)
-					startPoint.offset(this._orthogonalSpacing,offset);
+					startPoint.offset(offsetOrthogonalSpacing,offset);
 				else
 					startPoint.offset(0,offset);
 			} 
@@ -1920,30 +1943,47 @@ package com.hjx.graphic
 		 * @return 
 		 * 
 		 */
-		internal function computeEndConnectAreaOffsetPoint(endPoint:Point,includeOrthSpacing:Boolean = true):Point{
+		internal function computeEndConnectAreaOffsetPoint(endPoint:Point,includeOrthSpacing:Boolean = true,direction:int = 0):Point{
 			
 			var offset:Number = computeEndConnectAreaOffset();
 			//-----------
 			// 如果是纵向那么添加纵向偏移量，横向则添加横向偏移量。
 			//-----------
+			var offsetOrthogonalSpacing:Number = this._orthogonalSpacing;
+			
+			/*switch(direction){
+				case Left:
+					offsetOrthogonalSpacing *= 1;
+					break;
+				case Top:
+					offsetOrthogonalSpacing *= -1;
+					break;
+				case Right:
+					offsetOrthogonalSpacing *= -1;
+					break;
+				case Bottom:
+					offsetOrthogonalSpacing *= -1;
+					break;
+			}*/
+			
 			if(this.endConnectionArea == LinkConnectionArea.TOP ){
 				if(includeOrthSpacing)
-					endPoint.offset(offset,-this._orthogonalSpacing);
+					endPoint.offset(offset,-offsetOrthogonalSpacing);
 				else
 					endPoint.offset(offset,0);
 			}else if(this.endConnectionArea == LinkConnectionArea.BOTTOM){
 				if(includeOrthSpacing)
-					endPoint.offset(offset,this._orthogonalSpacing);
+					endPoint.offset(offset,offsetOrthogonalSpacing);
 				else
 					endPoint.offset(offset,0);
 			}else if(this.endConnectionArea == LinkConnectionArea.LEFT){
 				if(includeOrthSpacing)
-					endPoint.offset(-this._orthogonalSpacing,offset);
+					endPoint.offset(-offsetOrthogonalSpacing,offset);
 				else
 					endPoint.offset(0,offset);
 			}else if(this.endConnectionArea == LinkConnectionArea.RIGHT){
 				if(includeOrthSpacing)
-					endPoint.offset(this._orthogonalSpacing,offset);
+					endPoint.offset(offsetOrthogonalSpacing,offset);
 				else
 					endPoint.offset(0,offset);
 			} 
