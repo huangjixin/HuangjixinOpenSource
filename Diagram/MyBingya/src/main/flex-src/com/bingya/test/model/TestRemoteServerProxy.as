@@ -32,6 +32,7 @@ package com.bingya.test.model
 		private function getStrFault(event:FaultEvent):void  
 		{  
 			dispatchEvent(new TestRemoteServerEvent(TestRemoteServerEvent.getStrFault,event.fault));
+			Alert.show(event.fault.toString());
 		} 
 	}
 }
