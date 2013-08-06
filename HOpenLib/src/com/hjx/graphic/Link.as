@@ -940,13 +940,11 @@ package com.hjx.graphic
 					if(this.startNode){
 						if(startConnectionArea == LinkConnectionArea.CENTER){
 							//计算开始节点偏移量坐标。
-							radian= Math.atan2(point1.y - point2.y, point1.x - point2.x);
-							minOffset = Math.min(Math.abs(realVisialeStartNode.width/2/Math.cos(radian)),Math.abs(realVisialeStartNode.height/2/Math.sin(radian)));
-							offsetX = minOffset*Math.cos(radian);
-							offsetY = minOffset*Math.sin(radian);
-							defaultStartPoint.offset(-offsetX,-offsetY);
-							//插入第一个起始元素；
-//							this._shapePoints.splice(0,0, defaultStartPoint);
+//							radian= Math.atan2(point1.y - point2.y, point1.x - point2.x);
+//							minOffset = Math.min(Math.abs(realVisialeStartNode.width/2/Math.cos(radian)),Math.abs(realVisialeStartNode.height/2/Math.sin(radian)));
+//							offsetX = minOffset*Math.cos(radian);
+//							offsetY = minOffset*Math.sin(radian);
+//							defaultStartPoint.offset(-offsetX,-offsetY);
 							
 						}else if(startConnectionArea == LinkConnectionArea.LEFT){
 							offsetX = Math.abs(realVisialeStartNode.width/2);
@@ -1003,49 +1001,32 @@ package com.hjx.graphic
 					if(this.endNode){
 						if(endConnectionArea == LinkConnectionArea.CENTER){
 							//计算开始节点偏移量坐标。
-							radian= Math.atan2(point2.y - point1.y, point2.x - point1.x);
-							minOffset = Math.min(Math.abs(realVisialeEndNode.width/2/Math.cos(radian)),Math.abs(realVisialeEndNode.height/2/Math.sin(radian)));
-							offsetX = minOffset*Math.cos(radian);
-							offsetY = minOffset*Math.sin(radian);
-							defaultEndPoint.offset(-offsetX,-offsetY);	
-							
-							//插入最后元素；
-//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint);
+//							radian= Math.atan2(point2.y - point1.y, point2.x - point1.x);
+//							minOffset = Math.min(Math.abs(realVisialeEndNode.width/2/Math.cos(radian)),Math.abs(realVisialeEndNode.height/2/Math.sin(radian)));
+//							offsetX = minOffset*Math.cos(radian);
+//							offsetY = minOffset*Math.sin(radian);
+//							defaultEndPoint.offset(-offsetX,-offsetY);	
 							
 						}else if(endConnectionArea == LinkConnectionArea.LEFT){
 							offsetX = Math.abs(realVisialeEndNode.width/2);
 							offsetY = 0;
 							defaultEndPoint.offset(-offsetX,-offsetY);
 							
-							//插入最后元素；
-//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint);
-//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint.clone().offset(-this._orthogonalSpacing,0));
-							
 						}else if(endConnectionArea == LinkConnectionArea.RIGHT){
 							offsetX = Math.abs(realVisialeEndNode.width/2);
 							offsetY = 0;
 							defaultEndPoint.offset(offsetX,-offsetY);
-							//插入最后元素；
-//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint);
-//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint.clone().offset(this._orthogonalSpacing,0));
-							
+
 						}else if(endConnectionArea == LinkConnectionArea.TOP){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeEndNode.height/2);
 							defaultEndPoint.offset(-offsetX,-offsetY);
-							
-							//插入最后元素；
-//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint);
-//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint.clone().offset(0,-this._orthogonalSpacing));
 							
 						}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeEndNode.height/2);
 							defaultEndPoint.offset(-offsetX,offsetY);
 							
-							//插入最后元素；
-//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint);
-//							this._shapePoints.splice(this._shapePoints.length,0, defaultEndPoint.clone().offset(0,this._orthogonalSpacing));
 						}
 						
 						this.fallbackEndPoint = defaultEndPoint.clone();
@@ -1319,409 +1300,70 @@ package com.hjx.graphic
 			endPoint = computeEndConnectAreaOffsetPoint(endPoint,false);*/
 
 			var cloneStartPoint:Point = startPoint.clone();
-			if(startConnectionArea != LinkConnectionArea.CENTER){
-				cloneStartPoint = computeStartConnectAreaOffsetPoint(cloneStartPoint,false,direction);	
-				shapePoints.push(cloneStartPoint);
-				startPoint = computeStartConnectAreaOffsetPoint(startPoint,true,direction);			
-			}
+//			if(startConnectionArea != LinkConnectionArea.CENTER){
+//				cloneStartPoint = computeStartConnectAreaOffsetPoint(cloneStartPoint,false,direction);	
+//				shapePoints.push(cloneStartPoint);
+//				startPoint = computeStartConnectAreaOffsetPoint(startPoint,true,direction);			
+//			}
 			
-			shapePoints.push(startPoint);
+//			shapePoints.push(startPoint);
 			
-			var cloneEndPoint:Point = endPoint.clone();			
-			if(this.endConnectionArea != LinkConnectionArea.CENTER){
-				cloneEndPoint = computeEndConnectAreaOffsetPoint(cloneEndPoint,false,direction);
-				endPoint = computeEndConnectAreaOffsetPoint(endPoint,true,direction);
-			}
+//			var cloneEndPoint:Point = endPoint.clone();			
+//			if(this.endConnectionArea != LinkConnectionArea.CENTER){
+//				cloneEndPoint = computeEndConnectAreaOffsetPoint(cloneEndPoint,false,direction);
+//				endPoint = computeEndConnectAreaOffsetPoint(endPoint,true,direction);
+//			}
 			
-			var middle:Point = new Point(startPoint.x/2+endPoint.x/2,startPoint.y/2+endPoint.y/2);
+			var middle:Point;
 			
 			switch(direction){
 				case Left:
-					if(endPoint.y <=startPoint.y){
-						shapePoints.push(new Point(startPoint.x,endPoint.y));
-					}else{
-						shapePoints.push(new Point(endPoint.x,startPoint.y));
-					}
+					startPoint.offset(-startRect.width/2,0);
+					endPoint.offset(endRect.width/2,0);
+					middle = new Point(startPoint.x/2+endPoint.x/2,startPoint.y/2+endPoint.y/2);
+					shapePoints.push(startPoint);
+					shapePoints.push(new Point(middle.x,startPoint.y));
+					shapePoints.push(new Point(middle.x,endPoint.y));
+					shapePoints.push(endPoint);
 					break;
 				
 				case Top:
-					/*shapePoints.push(new Point(startPoint.x,middle.y));
-					shapePoints.push(new Point(endPoint.x,middle.y));*/
-//					shapePoints.push(new Point(startPoint.x,endPoint.y));
-					shapePoints.push(new Point(endPoint.x,startPoint.y));
+					startPoint.offset(0,-startRect.height/2);
+					endPoint.offset(0,endRect.height/2);
+					middle = new Point(startPoint.x/2+endPoint.x/2,startPoint.y/2+endPoint.y/2);
+					shapePoints.push(startPoint);
+					shapePoints.push(new Point(startPoint.x,middle.y));
+					shapePoints.push(new Point(endPoint.x,middle.y));
+					shapePoints.push(endPoint);
 					break;
 				
 				case Right:
-					if(endPoint.y <=startPoint.y){
-						shapePoints.push(new Point(startPoint.x,endPoint.y));
-					}else{
-						shapePoints.push(new Point(endPoint.x,startPoint.y));
-					}
-					
+					startPoint.offset(startRect.width/2,0);
+					endPoint.offset(-endRect.width/2,0);
+					middle = new Point(startPoint.x/2+endPoint.x/2,startPoint.y/2+endPoint.y/2);
+					shapePoints.push(startPoint);
+					shapePoints.push(new Point(middle.x,startPoint.y));
+					shapePoints.push(new Point(middle.x,endPoint.y));
+					shapePoints.push(endPoint);
 					break;
 				
 				case Bottom:
-					/*if(endPoint.x <=startPoint.x){
-						shapePoints.push(new Point(startPoint.y,endPoint.x));
-					}else{
-						shapePoints.push(new Point(endPoint.y,startPoint.x));
-					}*/
-					shapePoints.push(new Point(startPoint.x,endPoint.y));
-//					shapePoints.push(new Point(startPoint.x,middle.y));
-//					shapePoints.push(new Point(endPoint.x,middle.y));
+					startPoint.offset(0,startRect.height/2);
+					endPoint.offset(0,-endRect.height/2);
+					middle = new Point(startPoint.x/2+endPoint.x/2,startPoint.y/2+endPoint.y/2);
+					shapePoints.push(startPoint);
+					shapePoints.push(new Point(startPoint.x,middle.y));
+					shapePoints.push(new Point(endPoint.x,middle.y));
+					shapePoints.push(endPoint);
 					break;
 			}
 			
-			if(this.endConnectionArea != LinkConnectionArea.CENTER){
+			/*if(this.endConnectionArea != LinkConnectionArea.CENTER){
 				shapePoints.push(endPoint);
 			}
 			
-			shapePoints.push(cloneEndPoint);
+			shapePoints.push(cloneEndPoint);*/
 			
-			
-			
-			///---------------------------------------------------------------------------
-			/// 分类讨论。
-			///---------------------------------------------------------------------------
-			/*startPoint = computeStartConnectAreaOffsetPoint(startPoint);
-			endPoint = computeEndConnectAreaOffsetPoint(endPoint);
-			shapePoints.push(startPoint);
-			if(startConnectionArea == LinkConnectionArea.RIGHT){
-				shapePoints.push(new Point(startPoint.x+this._orthogonalSpacing,startPoint.y));	
-				if(endConnectionArea == LinkConnectionArea.LEFT){
-					//左对左
-					shapePoints.push(new Point(startPoint.x+this._orthogonalSpacing,endPoint.y));
-					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y));
-					
-				}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
-					//左对底
-					shapePoints.push(new Point(startPoint.x+this._orthogonalSpacing,endPoint.y+this._orthogonalSpacing));
-					shapePoints.push(new Point(endPoint.x,endPoint.y+this._orthogonalSpacing));
-					
-				}else if(endConnectionArea == LinkConnectionArea.TOP){
-					//左对上
-					shapePoints.push(new Point(endPoint.x,startPoint.y));
-					shapePoints.push(new Point(endPoint.x,endPoint.y-this._orthogonalSpacing));
-					
-				}else if(endConnectionArea == LinkConnectionArea.RIGHT){
-					//左对右
-					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y));
-					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
-					
-				}else{
-					if(endConnectionArea == LinkConnectionArea.CENTER){
-						middle.x = shapePoints[1].x/2+endPoint.x/2;
-						middle.y = shapePoints[1].y/2+endPoint.y/2;
-						startPoint = shapePoints[1];
-						switch(direction)
-						{
-							case Top:
-							{
-								shapePoints.push(new Point(startPoint.x,middle.y));
-								shapePoints.push(new Point(endPoint.x,middle.y));
-								break;
-							}
-							case Bottom:
-							{
-								shapePoints.push(new Point(startPoint.x,middle.y));
-								shapePoints.push(new Point(endPoint.x,middle.y));
-								break;
-							}
-							case Right:
-							{
-								shapePoints.push(new Point(middle.x,startPoint.y));
-								shapePoints.push(new Point(middle.x,endPoint.y));
-								break;
-							}
-							case Left:
-							{
-								shapePoints.push(new Point(middle.x,startPoint.y));
-								shapePoints.push(new Point(middle.x,endPoint.y));
-								break;
-							}
-								
-							default:
-							{
-								break;
-							}
-						}
-					}	
-				}
-			}else if(startConnectionArea == LinkConnectionArea.LEFT){
-				shapePoints.push(new Point(startPoint.x-this._orthogonalSpacing,startPoint.y));	
-				if(endConnectionArea == LinkConnectionArea.LEFT){
-					//左对左
-					shapePoints.push(new Point(startPoint.x-this._orthogonalSpacing,endPoint.y));
-					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y));
-					
-				}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
-					//左对底
-					shapePoints.push(new Point(startPoint.x-this._orthogonalSpacing,endPoint.y+this._orthogonalSpacing));
-					shapePoints.push(new Point(endPoint.x,endPoint.y+this._orthogonalSpacing));
-					
-				}else if(endConnectionArea == LinkConnectionArea.TOP){
-					//左对上
-					shapePoints.push(new Point(endPoint.x,startPoint.y));
-					shapePoints.push(new Point(endPoint.x,endPoint.y-this._orthogonalSpacing));
-					
-				}else if(endConnectionArea == LinkConnectionArea.RIGHT){
-					//左对右
-					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y));
-					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
-					
-				}else{
-					if(endConnectionArea == LinkConnectionArea.CENTER){
-						middle.x = shapePoints[1].x/2+endPoint.x/2;
-						middle.y = shapePoints[1].y/2+endPoint.y/2;
-						startPoint = shapePoints[1];
-						switch(direction)
-						{
-							case Top:
-							{
-								shapePoints.push(new Point(startPoint.x,middle.y));
-								shapePoints.push(new Point(endPoint.x,middle.y));
-								break;
-							}
-							case Bottom:
-							{
-								shapePoints.push(new Point(startPoint.x,middle.y));
-								shapePoints.push(new Point(endPoint.x,middle.y));
-								break;
-							}
-							case Right:
-							{
-								shapePoints.push(new Point(middle.x,startPoint.y));
-								shapePoints.push(new Point(middle.x,endPoint.y));
-								break;
-							}
-							case Left:
-							{
-								shapePoints.push(new Point(middle.x,startPoint.y));
-								shapePoints.push(new Point(middle.x,endPoint.y));
-								break;
-							}
-								
-							default:
-							{
-								break;
-							}
-						}
-					}	
-				}
-			}else if(startConnectionArea == LinkConnectionArea.TOP){
-				shapePoints.push(new Point(startPoint.x,startPoint.y-this._orthogonalSpacing));	
-				if(endConnectionArea == LinkConnectionArea.LEFT){
-					//上对左
-					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,startPoint.y-this._orthogonalSpacing));
-					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y));
-					
-				}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
-					//上对底
-					shapePoints.push(new Point(startPoint.x,endPoint.y+this._orthogonalSpacing));
-					shapePoints.push(new Point(endPoint.x,endPoint.y+this._orthogonalSpacing));
-					
-				}else if(endConnectionArea == LinkConnectionArea.TOP){
-					//上对上
-					shapePoints.push(new Point(endPoint.x,startPoint.y-this._orthogonalSpacing));
-					shapePoints.push(new Point(endPoint.x,endPoint.y-this._orthogonalSpacing));
-					
-				}else if(endConnectionArea == LinkConnectionArea.RIGHT){
-					// 上对右
-					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y-this._orthogonalSpacing));
-					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
-					
-				}else{
-					if(endConnectionArea == LinkConnectionArea.CENTER){
-						middle.x = shapePoints[1].x/2+endPoint.x/2;
-						middle.y = shapePoints[1].y/2+endPoint.y/2;
-						startPoint = shapePoints[1];
-						switch(direction)
-						{
-							case Top:
-							{
-								shapePoints.push(new Point(startPoint.x,middle.y));
-								shapePoints.push(new Point(endPoint.x,middle.y));
-								break;
-							}
-							case Bottom:
-							{
-								shapePoints.push(new Point(startPoint.x,middle.y));
-								shapePoints.push(new Point(endPoint.x,middle.y));
-								break;
-							}
-							case Right:
-							{
-								shapePoints.push(new Point(middle.x,startPoint.y));
-								shapePoints.push(new Point(middle.x,endPoint.y));
-								break;
-							}
-							case Left:
-							{
-								shapePoints.push(new Point(middle.x,startPoint.y));
-								shapePoints.push(new Point(middle.x,endPoint.y));
-								break;
-							}
-								
-							default:
-							{
-								break;
-							}
-						}
-					}	
-				}
-			}else if(startConnectionArea == LinkConnectionArea.BOTTOM){
-				shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));	
-				if(endConnectionArea == LinkConnectionArea.LEFT){
-					//下对左
-//					if(startPoint.y+this._orthogonalSpacing >= endPoint.y){
-//						shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
-//					}else{
-//						if(startPoint.x<endPoint.x-this._orthogonalSpacing){
-//							shapePoints.push(new Point(startPoint.x,endPoint.y));
-//						}else{
-//							if(endPoint.y-endRect.height/2-this._orthogonalSpacing>=startPoint.y+this._orthogonalSpacing){
-//								shapePoints.push(new Point(startPoint.x,endPoint.y-endRect.height/2-this._orthogonalSpacing));
-//								shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y-endRect.height/2-this._orthogonalSpacing));						
-//							}else{
-//								shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));
-//								shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
-//							}
-//							
-//						}
-//					}
-//					
-//					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y));
-//					
-					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
-					shapePoints.push(new Point(endPoint.x-this._orthogonalSpacing,endPoint.y));
-				}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
-					//下对底
-					if(startPoint.y+this._orthogonalSpacing >= endPoint.y+this._orthogonalSpacing){
-						shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));
-						shapePoints.push(new Point(endPoint.x,startPoint.y+this._orthogonalSpacing));
-					}else{
-						shapePoints.push(new Point(startPoint.x,endPoint.y+this._orthogonalSpacing));
-					}
-					
-					shapePoints.push(new Point(endPoint.x,endPoint.y+this._orthogonalSpacing));
-					
-				}else if(endConnectionArea == LinkConnectionArea.TOP){
-					//下对上
-//					if(startPoint.y+this._orthogonalSpacing >= endPoint.y-this._orthogonalSpacing){
-//						if(endPoint.x+endRect.width/2+this._orthogonalSpacing<= startPoint.x){
-//							shapePoints.push(new Point(endPoint.x+endRect.width/2+this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
-//							shapePoints.push(new Point(endPoint.x+endRect.width/2+this._orthogonalSpacing,endPoint.y-this._orthogonalSpacing));
-//						}else{
-//							shapePoints.push(new Point(endPoint.x-endRect.width/2-this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
-//							shapePoints.push(new Point(endPoint.x-endRect.width/2-this._orthogonalSpacing,endPoint.y-this._orthogonalSpacing));							
-//						}
-//					}else{
-//						shapePoints.push(new Point(endPoint.x,startPoint.y+this._orthogonalSpacing));					
-//					}
-//					shapePoints.push(new Point(endPoint.x,endPoint.y-this._orthogonalSpacing));
-//					
-					shapePoints.push(new Point(endPoint.x,startPoint.y+this._orthogonalSpacing));
-					shapePoints.push(new Point(endPoint.x,endPoint.y-this._orthogonalSpacing));
-				}else if(endConnectionArea == LinkConnectionArea.RIGHT){
-					// 下对右
-//					if(startPoint.y+this._orthogonalSpacing >= endPoint.y){
-//						shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));					
-//					}else{
-//						if(endPoint.x+this._orthogonalSpacing<= startPoint.x){
-//							shapePoints.push(new Point(startPoint.x,endPoint.y));
-//						}else{
-//							if(endPoint.y-endRect.height/2-this._orthogonalSpacing>= startPoint.y+this._orthogonalSpacing){
-//								shapePoints.push(new Point(startPoint.x,endPoint.y-endRect.height/2-this._orthogonalSpacing));
-//								shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y-endRect.height/2-this._orthogonalSpacing));							
-//							}else{
-//								shapePoints.push(new Point(startPoint.x,startPoint.y+this._orthogonalSpacing));
-//								shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
-//							}
-//						}
-//						
-//					}
-//					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
-//					
-					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,startPoint.y+this._orthogonalSpacing));
-					shapePoints.push(new Point(endPoint.x+this._orthogonalSpacing,endPoint.y));
-					
-				}else{
-					if(endConnectionArea == LinkConnectionArea.CENTER){
-						middle.x = shapePoints[1].x/2+endPoint.x/2;
-						middle.y = shapePoints[1].y/2+endPoint.y/2;
-						startPoint = shapePoints[1];
-						switch(direction)
-						{
-							case Top:
-							{
-								shapePoints.push(new Point(startPoint.x,middle.y));
-								shapePoints.push(new Point(endPoint.x,middle.y));
-								break;
-							}
-							case Bottom:
-							{
-								shapePoints.push(new Point(startPoint.x,middle.y));
-								shapePoints.push(new Point(endPoint.x,middle.y));
-								break;
-							}
-							case Right:
-							{
-								shapePoints.push(new Point(middle.x,startPoint.y));
-								shapePoints.push(new Point(middle.x,endPoint.y));
-								break;
-							}
-							case Left:
-							{
-								shapePoints.push(new Point(middle.x,startPoint.y));
-								shapePoints.push(new Point(middle.x,endPoint.y));
-								break;
-							}
-								
-							default:
-							{
-								break;
-							}
-						}
-					}	
-				}
-			}else{
-				if(endConnectionArea == LinkConnectionArea.CENTER){
-					switch(direction)
-					{
-						case Top:
-						{
-							shapePoints.push(new Point(startPoint.x,middle.y));
-							shapePoints.push(new Point(endPoint.x,middle.y));
-							break;
-						}
-						case Bottom:
-						{
-							shapePoints.push(new Point(startPoint.x,middle.y));
-							shapePoints.push(new Point(endPoint.x,middle.y));
-							break;
-						}
-						case Right:
-						{
-							shapePoints.push(new Point(middle.x,startPoint.y));
-							shapePoints.push(new Point(middle.x,endPoint.y));
-							break;
-						}
-						case Left:
-						{
-							shapePoints.push(new Point(middle.x,startPoint.y));
-							shapePoints.push(new Point(middle.x,endPoint.y));
-							break;
-						}
-							
-						default:
-						{
-							break;
-						}
-					}
-				}					
-			}
-			
-			shapePoints.push(endPoint);*/
 		}
 		
 		/**

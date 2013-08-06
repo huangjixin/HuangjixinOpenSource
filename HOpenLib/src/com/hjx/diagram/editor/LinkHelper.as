@@ -134,8 +134,8 @@ package com.hjx.diagram.editor
 				}else{
 					startNodeConnectingArea = LinkConnectionArea.CENTER;
 				}
-				
-				
+				//始终为中心；
+				startNodeConnectingArea = LinkConnectionArea.CENTER;
 			}else if(adornedLink){
 				var linkAdorner:LinkAdorner = adorner as LinkAdorner;
 				if(!linkAdorner){
@@ -183,7 +183,8 @@ package com.hjx.diagram.editor
 					rect = nodeRect;
 					flag = 4;
 				}
-				
+				//始终为中心点。
+				flag = 4;
 				if(adornedNode && !adornedLink){
 					adornedLink = editor.createLink(startNodeConnectingArea,endNodeConnectingArea);
 					if (adornedLink) {
