@@ -355,49 +355,70 @@ package com.hjx.graphic
 			return Top;
 		}
 		
-		internal static function RotateRectangle(rect:Rectangle, dirction:int):void
+		internal static function RotateRectangle(arg1:flash.geom.Rectangle, arg2:int):void
 		{
-			var temp:Number=NaN;
-			
-			switch (dirction) 
+			var loc1:*=NaN;
+			var loc2:*=arg2;
+			switch (loc2) 
 			{
 				case 1:
 				{
-					temp = rect.x;
-					rect.x = -rect.y - rect.height;
-					rect.y = temp;
-					temp = rect.width;
-					rect.width = rect.height;
-					rect.height = temp;
+					loc1 = arg1.x;
+					arg1.x = -arg1.y - arg1.height;
+					arg1.y = loc1;
+					loc1 = arg1.width;
+					arg1.width = arg1.height;
+					arg1.height = loc1;
 					break;
 				}
 				case 2:
 				{
-					rect.x = -rect.x - rect.width;
-					rect.y = -rect.y - rect.height;
+					arg1.x = -arg1.x - arg1.width;
+					arg1.y = -arg1.y - arg1.height;
 					break;
 				}
 				case 3:
 				{
-					temp = rect.x;
-					rect.x = rect.y;
-					rect.y = -temp - rect.width;
-					temp = rect.width;
-					rect.width = rect.height;
-					rect.height = temp;
+					loc1 = arg1.x;
+					arg1.x = arg1.y;
+					arg1.y = -loc1 - arg1.width;
+					loc1 = arg1.width;
+					arg1.width = arg1.height;
+					arg1.height = loc1;
 					break;
 				}
 			}
 			return;
 		}
 		
-		internal static function RotatePoint(point:Point, ratate:int):Point
+		internal static function RotatePoint(arg1:flash.geom.Point, arg2:int):void
 		{
-			var rotatePoint:Point = new Point();
-			rotatePoint.x = point.x * Math.cos(ratate) - point.y * Math.sin(ratate);
-			rotatePoint.y = point.y * Math.cos(ratate) + point.x * Math.sin(ratate);
-			
-			return rotatePoint;
+			var loc1:*=NaN;
+			var loc2:*=arg2;
+			switch (loc2) 
+			{
+				case 1:
+				{
+					loc1 = arg1.x;
+					arg1.x = -arg1.y;
+					arg1.y = loc1;
+					break;
+				}
+				case 2:
+				{
+					arg1.x = -arg1.x;
+					arg1.y = -arg1.y;
+					break;
+				}
+				case 3:
+				{
+					loc1 = arg1.x;
+					arg1.x = arg1.y;
+					arg1.y = -loc1;
+					break;
+				}
+			}
+			return;
 		}
 		
 		internal static function RotatePosition(arg1:int, arg2:int):int
@@ -994,6 +1015,7 @@ package com.hjx.graphic
 						startRect = new Rectangle(defaultStartPoint.x,defaultStartPoint.y);
 					}
 					
+					var defaultEndPointClone:Point;
 					if(this.endNode){
 						if(endConnectionArea == LinkConnectionArea.CENTER){
 							//计算开始节点偏移量坐标。
@@ -1008,21 +1030,29 @@ package com.hjx.graphic
 							offsetY = 0;
 							defaultEndPoint.offset(-offsetX,-offsetY);
 							
+							defaultEndPointClone = defaultEndPoint.clone();
+							defaultEndPoint.offset(-this._orthogonalSpacing,0);
 						}else if(endConnectionArea == LinkConnectionArea.RIGHT){
 							offsetX = Math.abs(realVisialeEndNode.width/2);
 							offsetY = 0;
 							defaultEndPoint.offset(offsetX,-offsetY);
-
+							
+							defaultEndPointClone = defaultEndPoint.clone();
+							defaultEndPoint.offset(this._orthogonalSpacing,0);
 						}else if(endConnectionArea == LinkConnectionArea.TOP){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeEndNode.height/2);
 							defaultEndPoint.offset(-offsetX,-offsetY);
 							
+							defaultEndPointClone = defaultEndPoint.clone();
+							defaultEndPoint.offset(0,-this._orthogonalSpacing);
 						}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeEndNode.height/2);
 							defaultEndPoint.offset(-offsetX,offsetY);
 							
+							defaultEndPointClone = defaultEndPoint.clone();
+							defaultEndPoint.offset(0,this._orthogonalSpacing);
 						}
 						
 						this.fallbackEndPoint = defaultEndPoint.clone();
@@ -1045,6 +1075,10 @@ package com.hjx.graphic
 //					computeOrthogonal(defaultStartPoint,startRect,defaultEndPoint,endRect,this._shapePoints);
 					computeOrthogonal1(defaultStartPoint,toDirection,startRect,defaultEndPoint,fromDirection,endRect,this._shapePoints);
 					this._shapePoints.push(defaultEndPoint);
+					if(defaultEndPointClone){
+						this._shapePoints.push(defaultEndPointClone);
+					}
+					
 					if(labelElement){
 						validateNow();
 						var avg:int = this._shapePoints.length/2;
@@ -1066,7 +1100,7 @@ package com.hjx.graphic
 			var loc4:*=0;
 			var loc1:*=0;
 			var loc5:*=arg2;
-			/*switch (loc5) 
+			switch (loc5) 
 			{
 				case Top:
 				{
@@ -1095,7 +1129,7 @@ package com.hjx.graphic
 			RotateRectangle(arg3, loc1);
 			RotatePoint(arg4, loc1);
 			arg5 = RotatePosition(arg5, loc1);
-			RotateRectangle(arg6, loc1);*/
+			RotateRectangle(arg6, loc1);
 			loc5 = arg5;
 			switch (loc5) 
 			{
@@ -1295,16 +1329,16 @@ package com.hjx.graphic
 					break;
 				}
 			}
-			/*if (loc1 != 0) 
+			if (loc1 != 0) 
 			{
 				loc1 = 4 - loc1;
-				loc4 = 1;
+				loc4 = 2;
 				while (loc4 < arg7.length) 
 				{
 					RotatePoint(arg7[loc4], loc1);
 					++loc4;
 				}
-			}*/
+			}
 			return;
 		}
 		
