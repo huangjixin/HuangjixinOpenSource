@@ -957,21 +957,27 @@ package com.hjx.graphic
 							offsetX = Math.abs(realVisialeStartNode.width/2);
 							offsetY = 0;
 							defaultStartPoint.offset(-offsetX,-offsetY);
+							this._shapePoints.push(defaultStartPoint.clone());
+							defaultStartPoint.offset(-this._orthogonalSpacing,0);
 							
 						}else if(startConnectionArea == LinkConnectionArea.RIGHT){
 							offsetX = Math.abs(realVisialeStartNode.width/2);
 							offsetY = 0;
 							defaultStartPoint.offset(offsetX,-offsetY);
-							
+							this._shapePoints.push(defaultStartPoint.clone());
+							defaultStartPoint.offset(this._orthogonalSpacing,0);
 						}else if(startConnectionArea == LinkConnectionArea.TOP){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeStartNode.height/2);
 							defaultStartPoint.offset(-offsetX,-offsetY);
-							
+							this._shapePoints.push(defaultStartPoint.clone());
+							defaultStartPoint.offset(0,-this._orthogonalSpacing);
 						}else if(startConnectionArea == LinkConnectionArea.BOTTOM){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeStartNode.height/2);
 							defaultStartPoint.offset(-offsetX,offsetY);
+							this._shapePoints.push(defaultStartPoint.clone());
+							defaultStartPoint.offset(0,this._orthogonalSpacing);
 						}
 						
 						this.fallbackStartPoint = defaultStartPoint.clone();
@@ -1060,7 +1066,7 @@ package com.hjx.graphic
 			var loc4:*=0;
 			var loc1:*=0;
 			var loc5:*=arg2;
-			switch (loc5) 
+			/*switch (loc5) 
 			{
 				case Top:
 				{
@@ -1089,7 +1095,7 @@ package com.hjx.graphic
 			RotateRectangle(arg3, loc1);
 			RotatePoint(arg4, loc1);
 			arg5 = RotatePosition(arg5, loc1);
-			RotateRectangle(arg6, loc1);
+			RotateRectangle(arg6, loc1);*/
 			loc5 = arg5;
 			switch (loc5) 
 			{
@@ -1289,7 +1295,7 @@ package com.hjx.graphic
 					break;
 				}
 			}
-			if (loc1 != 0) 
+			/*if (loc1 != 0) 
 			{
 				loc1 = 4 - loc1;
 				loc4 = 1;
@@ -1298,7 +1304,7 @@ package com.hjx.graphic
 					RotatePoint(arg7[loc4], loc1);
 					++loc4;
 				}
-			}
+			}*/
 			return;
 		}
 		
