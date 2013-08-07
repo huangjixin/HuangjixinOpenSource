@@ -400,6 +400,13 @@ package com.hjx.graphic
 			return rotatePoint;
 		}
 		
+		internal static function RotatePosition(arg1:int, arg2:int):int
+		{
+			var loc1:*=arg1;
+			loc1 = (loc1 + arg2) % 4;
+			return loc1;
+		}
+		
 		/**
 		 * 绘制图形。 
 		 * 
@@ -940,48 +947,31 @@ package com.hjx.graphic
 					if(this.startNode){
 						if(startConnectionArea == LinkConnectionArea.CENTER){
 							//计算开始节点偏移量坐标。
-//							radian= Math.atan2(point1.y - point2.y, point1.x - point2.x);
-//							minOffset = Math.min(Math.abs(realVisialeStartNode.width/2/Math.cos(radian)),Math.abs(realVisialeStartNode.height/2/Math.sin(radian)));
-//							offsetX = minOffset*Math.cos(radian);
-//							offsetY = minOffset*Math.sin(radian);
-//							defaultStartPoint.offset(-offsetX,-offsetY);
+							radian= Math.atan2(point1.y - point2.y, point1.x - point2.x);
+							minOffset = Math.min(Math.abs(realVisialeStartNode.width/2/Math.cos(radian)),Math.abs(realVisialeStartNode.height/2/Math.sin(radian)));
+							offsetX = minOffset*Math.cos(radian);
+							offsetY = minOffset*Math.sin(radian);
+							defaultStartPoint.offset(-offsetX,-offsetY);
 							
 						}else if(startConnectionArea == LinkConnectionArea.LEFT){
 							offsetX = Math.abs(realVisialeStartNode.width/2);
 							offsetY = 0;
 							defaultStartPoint.offset(-offsetX,-offsetY);
 							
-							//插入第一个起始元素；
-//							this._shapePoints.splice(0,0, defaultStartPoint);
-//							this._shapePoints.splice(1,0, defaultStartPoint.clone().offset(-this._orthogonalSpacing,0));
-							
 						}else if(startConnectionArea == LinkConnectionArea.RIGHT){
 							offsetX = Math.abs(realVisialeStartNode.width/2);
 							offsetY = 0;
 							defaultStartPoint.offset(offsetX,-offsetY);
-							
-							//插入第一个起始元素；
-//							this._shapePoints.splice(0,0, defaultStartPoint);
-//							this._shapePoints.splice(1,0, defaultStartPoint.clone().offset(this._orthogonalSpacing,0));
 							
 						}else if(startConnectionArea == LinkConnectionArea.TOP){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeStartNode.height/2);
 							defaultStartPoint.offset(-offsetX,-offsetY);
 							
-							//插入第一个起始元素；
-//							this._shapePoints.splice(0,0, defaultStartPoint);
-//							this._shapePoints.splice(1,0, defaultStartPoint.clone().offset(0,-this._orthogonalSpacing));
-							
 						}else if(startConnectionArea == LinkConnectionArea.BOTTOM){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeStartNode.height/2);
 							defaultStartPoint.offset(-offsetX,offsetY);
-							
-							//插入第一个起始元素；
-//							this._shapePoints.splice(0,0, defaultStartPoint);
-//							this._shapePoints.splice(1,0, defaultStartPoint.clone().offset(0,this._orthogonalSpacing));
-							
 						}
 						
 						this.fallbackStartPoint = defaultStartPoint.clone();
@@ -1001,11 +991,11 @@ package com.hjx.graphic
 					if(this.endNode){
 						if(endConnectionArea == LinkConnectionArea.CENTER){
 							//计算开始节点偏移量坐标。
-//							radian= Math.atan2(point2.y - point1.y, point2.x - point1.x);
-//							minOffset = Math.min(Math.abs(realVisialeEndNode.width/2/Math.cos(radian)),Math.abs(realVisialeEndNode.height/2/Math.sin(radian)));
-//							offsetX = minOffset*Math.cos(radian);
-//							offsetY = minOffset*Math.sin(radian);
-//							defaultEndPoint.offset(-offsetX,-offsetY);	
+							radian= Math.atan2(point2.y - point1.y, point2.x - point1.x);
+							minOffset = Math.min(Math.abs(realVisialeEndNode.width/2/Math.cos(radian)),Math.abs(realVisialeEndNode.height/2/Math.sin(radian)));
+							offsetX = minOffset*Math.cos(radian);
+							offsetY = minOffset*Math.sin(radian);
+							defaultEndPoint.offset(-offsetX,-offsetY);	
 							
 						}else if(endConnectionArea == LinkConnectionArea.LEFT){
 							offsetX = Math.abs(realVisialeEndNode.width/2);
@@ -1043,8 +1033,12 @@ package com.hjx.graphic
 						endRect = new Rectangle(defaultEndPoint.x,defaultEndPoint.y);
 					}
 					
-					
-					computeOrthogonal(defaultStartPoint,startRect,defaultEndPoint,endRect,this._shapePoints);
+					var toDirection:int = getDirection(defaultStartPoint, defaultEndPoint);
+					var fromDirection:int = getDirection(defaultEndPoint, defaultStartPoint);
+					this._shapePoints.push(defaultStartPoint);
+//					computeOrthogonal(defaultStartPoint,startRect,defaultEndPoint,endRect,this._shapePoints);
+					computeOrthogonal1(defaultStartPoint,toDirection,startRect,defaultEndPoint,fromDirection,endRect,this._shapePoints);
+					this._shapePoints.push(defaultEndPoint);
 					if(labelElement){
 						validateNow();
 						var avg:int = this._shapePoints.length/2;
@@ -1057,6 +1051,255 @@ package com.hjx.graphic
 					break;
 				}
 			}
+		}
+		
+		internal function computeOrthogonal1(arg1:flash.geom.Point, arg2:int, arg3:flash.geom.Rectangle, arg4:flash.geom.Point, arg5:int, arg6:flash.geom.Rectangle, arg7:__AS3__.vec.Vector.<flash.geom.Point>):void
+		{
+			var loc2:*=NaN;
+			var loc3:*=NaN;
+			var loc4:*=0;
+			var loc1:*=0;
+			var loc5:*=arg2;
+			switch (loc5) 
+			{
+				case Top:
+				{
+					break;
+				}
+				case Bottom:
+				{
+					loc1 = 2;
+					break;
+				}
+				case Left:
+				{
+					loc1 = 1;
+					break;
+				}
+				case Right:
+				{
+					loc1 = 3;
+					break;
+				}
+			}
+			arg1 = arg1.clone();
+			arg4 = arg4.clone();
+			RotatePoint(arg1, loc1);
+			arg2 = RotatePosition(arg2, loc1);
+			RotateRectangle(arg3, loc1);
+			RotatePoint(arg4, loc1);
+			arg5 = RotatePosition(arg5, loc1);
+			RotateRectangle(arg6, loc1);
+			loc5 = arg5;
+			switch (loc5) 
+			{
+				case Top:
+				{
+					if (arg6.bottom < arg3.top) 
+					{
+						if (arg6.left > arg1.x || arg6.right < arg1.x) 
+						{
+							loc3 = Math.min(arg3.top, arg6.top) - this._orthogonalSpacing;
+							arg7.push(new flash.geom.Point(arg1.x, loc3));
+							arg7.push(new flash.geom.Point(arg4.x, loc3));
+						}
+						else 
+						{
+							loc3 = (arg1.y + arg6.bottom) / 2;
+							arg7.push(new flash.geom.Point(arg1.x, loc3));
+							if (arg4.x > arg1.x) 
+							{
+								loc2 = arg6.left - this._orthogonalSpacing;
+							}
+							else 
+							{
+								loc2 = arg6.right + this._orthogonalSpacing;
+							}
+							arg7.push(new flash.geom.Point(loc2, loc3));
+							loc3 = arg6.top - this._orthogonalSpacing;
+							arg7.push(new flash.geom.Point(loc2, loc3));
+							arg7.push(new flash.geom.Point(arg4.x, loc3));
+						}
+					}
+					else if (arg6.top > arg3.bottom) 
+					{
+						if (arg4.x > arg3.right || arg4.x < arg3.left) 
+						{
+							loc3 = Math.min(arg3.top, arg6.top) - this._orthogonalSpacing;
+							arg7.push(new flash.geom.Point(arg1.x, loc3));
+							arg7.push(new flash.geom.Point(arg4.x, loc3));
+						}
+						else 
+						{
+							loc3 = arg3.top - this._orthogonalSpacing;
+							arg7.push(new flash.geom.Point(arg1.x, loc3));
+							if (arg4.x < arg1.x) 
+							{
+								loc2 = arg3.left - this._orthogonalSpacing;
+							}
+							else 
+							{
+								loc2 = arg3.right + this._orthogonalSpacing;
+							}
+							arg7.push(new flash.geom.Point(loc2, loc3));
+							loc3 = (arg4.y + arg3.bottom) / 2;
+							arg7.push(new flash.geom.Point(loc2, loc3));
+							arg7.push(new flash.geom.Point(arg4.x, loc3));
+						}
+					}
+					else 
+					{
+						loc3 = Math.min(arg3.top, arg6.top) - this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(arg1.x, loc3));
+						arg7.push(new flash.geom.Point(arg4.x, loc3));
+					}
+					break;
+				}
+				case Bottom:
+				{
+					if (arg4.y < arg1.y) 
+					{
+						if (arg4.x != arg1.x) 
+						{
+							loc3 = (arg1.y + arg4.y) / 2;
+							arg7.push(new flash.geom.Point(arg1.x, loc3));
+							arg7.push(new flash.geom.Point(arg4.x, loc3));
+						}
+					}
+					else if (arg6.left > arg3.right || arg6.right < arg3.left) 
+					{
+						loc3 = arg3.top - this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(arg1.x, loc3));
+						if (arg6.left > arg3.right) 
+						{
+							loc2 = (arg6.left + arg3.right) / 2;
+						}
+						else 
+						{
+							loc2 = (arg6.right + arg3.left) / 2;
+						}
+						arg7.push(new flash.geom.Point(loc2, loc3));
+						loc3 = arg6.bottom + this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(loc2, loc3));
+						arg7.push(new flash.geom.Point(arg4.x, loc3));
+					}
+					else 
+					{
+						loc3 = Math.min(arg3.top, arg6.top) - this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(arg1.x, loc3));
+						if (arg4.x > arg1.x) 
+						{
+							loc2 = Math.max(arg3.right, arg6.right) + this._orthogonalSpacing;
+						}
+						else 
+						{
+							loc2 = Math.min(arg3.left, arg6.left) - this._orthogonalSpacing;
+						}
+						arg7.push(new flash.geom.Point(loc2, loc3));
+						loc3 = arg6.bottom + this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(loc2, loc3));
+						arg7.push(new flash.geom.Point(arg4.x, loc3));
+					}
+					break;
+				}
+				case Left:
+				{
+					if (arg6.left < arg1.x) 
+					{
+						if (arg6.bottom < arg1.y) 
+						{
+							loc3 = (arg1.y + arg6.bottom) / 2;
+							arg7.push(new flash.geom.Point(arg1.x, loc3));
+							loc2 = arg6.left - this._orthogonalSpacing;
+							arg7.push(new flash.geom.Point(loc2, loc3));
+							arg7.push(new flash.geom.Point(loc2, arg4.y));
+						}
+						else 
+						{
+							loc3 = Math.min(arg6.top, arg3.top) - this._orthogonalSpacing;
+							arg7.push(new flash.geom.Point(arg1.x, loc3));
+							loc2 = Math.min(arg6.left, arg3.left) - this._orthogonalSpacing;
+							arg7.push(new flash.geom.Point(loc2, loc3));
+							arg7.push(new flash.geom.Point(loc2, arg4.y));
+						}
+					}
+					else if (arg4.y < arg3.top) 
+					{
+						arg7.push(new flash.geom.Point(arg1.x, arg4.y));
+					}
+					else if (arg6.left > arg3.right) 
+					{
+						loc3 = arg3.top - this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(arg1.x, loc3));
+						loc2 = (arg3.right + arg6.left) / 2;
+						arg7.push(new flash.geom.Point(loc2, loc3));
+						arg7.push(new flash.geom.Point(loc2, arg4.y));
+					}
+					else 
+					{
+						loc3 = Math.min(arg6.top, arg3.top) - this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(arg1.x, loc3));
+						loc2 = Math.min(arg6.left, arg3.left) - this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(loc2, loc3));
+						arg7.push(new flash.geom.Point(loc2, arg4.y));
+					}
+					break;
+				}
+				case Right:
+				{
+					if (arg6.right > arg1.x) 
+					{
+						if (arg6.bottom < arg1.y) 
+						{
+							loc3 = (arg1.y + arg6.bottom) / 2;
+							arg7.push(new flash.geom.Point(arg1.x, loc3));
+							loc2 = arg6.right + this._orthogonalSpacing;
+							arg7.push(new flash.geom.Point(loc2, loc3));
+							arg7.push(new flash.geom.Point(loc2, arg4.y));
+						}
+						else 
+						{
+							loc3 = Math.min(arg6.top, arg3.top) - this._orthogonalSpacing;
+							arg7.push(new flash.geom.Point(arg1.x, loc3));
+							loc2 = Math.max(arg6.right, arg3.right) + this._orthogonalSpacing;
+							arg7.push(new flash.geom.Point(loc2, loc3));
+							arg7.push(new flash.geom.Point(loc2, arg4.y));
+						}
+					}
+					else if (arg4.y < arg3.top) 
+					{
+						arg7.push(new flash.geom.Point(arg1.x, arg4.y));
+					}
+					else if (arg6.right < arg3.left) 
+					{
+						loc3 = arg3.top - this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(arg1.x, loc3));
+						loc2 = (arg3.left + arg6.right) / 2;
+						arg7.push(new flash.geom.Point(loc2, loc3));
+						arg7.push(new flash.geom.Point(loc2, arg4.y));
+					}
+					else 
+					{
+						loc3 = Math.min(arg6.top, arg3.top) - this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(arg1.x, loc3));
+						loc2 = Math.max(arg6.right, arg3.right) + this._orthogonalSpacing;
+						arg7.push(new flash.geom.Point(loc2, loc3));
+						arg7.push(new flash.geom.Point(loc2, arg4.y));
+					}
+					break;
+				}
+			}
+			if (loc1 != 0) 
+			{
+				loc1 = 4 - loc1;
+				loc4 = 1;
+				while (loc4 < arg7.length) 
+				{
+					RotatePoint(arg7[loc4], loc1);
+					++loc4;
+				}
+			}
+			return;
 		}
 		
 		
