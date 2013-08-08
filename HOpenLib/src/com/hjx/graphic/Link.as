@@ -428,273 +428,6 @@ package com.hjx.graphic
 			return loc1;
 		}
 		
-		/**
-		 * 绘制图形。 
-		 * 
-		 */
-		public function draw():void{
-			var stPoint:Point;
-			var enPoint:Point;
-			var stSubGraph:SubGraph = null;
-			var enSubGraph:SubGraph = null;
-			
-			if(startNode){
-				if(!fallbackStartPoint){
-					var stArrCol:ArrayCollection = new ArrayCollection();
-					getCollpasedSubGraph(stArrCol,startNode);
-					/*if(stArrCol.length>0){
-						if(stArrCol[0] is SubGraph){
-							stSubGraph = stArrCol[0] as SubGraph;
-						}
-					}*/
-					for(var i:int = stArrCol.length-1 ;i>=0;i--) 
-					{
-						var stSG:SubGraph = stArrCol[i];
-						if(stSG.collapsed){
-							stSubGraph = stSG;
-							break;
-						}
-					}
-					
-					if(stSubGraph){
-						stPoint = new Point(stSubGraph.centerX,stSubGraph.centerY);
-						stPoint = stSubGraph.parent.localToGlobal(stPoint);
-						stPoint = this.parent.globalToLocal(stPoint);
-					}else{
-						stPoint = new Point(startNode.centerX,startNode.centerY);
-						stPoint = startNode.parent.localToGlobal(stPoint);
-						stPoint = this.parent.globalToLocal(stPoint);					
-					}
-				}else{
-					stPoint = fallbackStartPoint;
-				}
-				
-			}else{
-				if(!fallbackStartPoint){
-					stPoint = new Point();
-				}else{
-					stPoint = fallbackStartPoint;
-				}
-			}
-			
-			if(endNode){
-				if(!fallbackEndPoint){
-					var enArrCol:ArrayCollection = new ArrayCollection();
-					getCollpasedSubGraph(enArrCol,endNode);
-					/*if(enArrCol.length>0){
-						if(enArrCol[0] is SubGraph){
-							enSubGraph = enArrCol[0] as SubGraph;
-						}
-					}*/
-					for(var j:int = enArrCol.length-1 ;j>=0;j--) 
-					{
-						var enSG:SubGraph = enArrCol[i];
-						if(enSG.collapsed){
-							enSubGraph = enSG;
-							break;
-						}
-					}
-					if (enSubGraph){
-						enPoint = new Point(enSubGraph.centerX,enSubGraph.centerY);
-						enPoint = endNode.parent.localToGlobal(enPoint);
-						enPoint = this.parent.globalToLocal(enPoint);
-					}else{
-						enPoint = new Point(endNode.centerX,endNode.centerY);
-						enPoint = endNode.parent.localToGlobal(enPoint);
-						enPoint = this.parent.globalToLocal(enPoint);						
-					}
-				}else{
-					enPoint = fallbackEndPoint;
-				}
-				
-			}else{
-				if(!fallbackEndPoint){
-					enPoint = new Point();
-				}else{
-					enPoint = fallbackEndPoint;
-				}
-			}
-			
-			// path绘图数据。
-			var data:String = getData(stPoint,enPoint,stSubGraph,enSubGraph);
-			path.data = data;
-		}
-		
-		/**
-		 * 通过开始节点，结束节点，线的风格，形状，计算开始箭头，结束箭头的位置，返回字符串数据。 
-		 * @return data字符串。
-		 * 
-		 */
-		private function getData(stPoint:Point,enPoint:Point,stSubGraph:SubGraph = null,enSubGraph:SubGraph = null):String
-		{
-			var data:String = "";
-			// 确定连线风格。
-			var dashStyle:String = this.getStyle("dashStyle");
-			// 
-			var fP:Point = stPoint;
-			var tP:Point = enPoint;
-			//计算终点和起始点形成的角度。
-			var linkAngle:Number = Math.atan2(tP.y - fP.y,tP.x - fP.x);
-			//如果为直连线的话，那么连线连线的终点箭头就是linkDegree，开始箭头就是linkDegree+180
-			var linkDegree:Number = Geometry.rad2deg(linkAngle);
-			if(shapeType == LinkShapeType.STRAIGHT){
-				var distance:Number;//两点之间的距离。
-				var minOffset:Number;
-				
-				if(startNode){
-//					//确定结束节点的高宽比角度。
-					var startNodeHWAngle:Number = stSubGraph == null ?Math.atan2(startNode.height,startNode.width):Math.atan2(stSubGraph.collapsedHeight,stSubGraph.collapsedWidth);
-					// 计算出终点二分之一宽度对应的弦；
-					var sNodeHeightOffset:Number = stSubGraph == null ?startNode.width/2/ Math.cos(linkAngle):stSubGraph.collapsedWidth/2/ Math.cos(linkAngle);
-//					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
-					var sNodeWidthOffset:Number = stSubGraph == null ?startNode.height/2/ Math.sin(linkAngle):stSubGraph.collapsedHeight/2/ Math.sin(linkAngle);
-//					
-					minOffset = Math.min(Math.abs(sNodeHeightOffset),Math.abs(sNodeWidthOffset));
-//					minOffset = Math.abs(minOffset);
-					fP.offset(minOffset*Math.cos(linkAngle),minOffset*Math.sin(linkAngle));
-				}
-				//确定开始点箭头位置
-				var sArrowPoint:Point = fP.clone();
-				if(startArrow){
-					var startArrowVisible:* = getStyle("startArrowVisible");
-					if(startArrowVisible){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
-						var startArrowType:* = getStyle("startArrowType");
-						if(startArrowType == "triangle"){
-							startArrow.x = sArrowPoint.x;
-							startArrow.y = sArrowPoint.y;
-							startArrow.rotation = 180+linkDegree;
-							
-							//确定连线终点位置
-							sArrowPoint = Point.polar(ARROW_HEADER_LENGTH,linkAngle);
-							fP.offset(sArrowPoint.x,sArrowPoint.y);
-						}
-					}
-				}
-				
-				if(endNode){					
-					//确定结束节点的高宽比角度。
-					var endNodeHWAngle:Number = enSubGraph == null ?Math.atan2(endNode.height,endNode.width):Math.atan2(enSubGraph.collapsedHeight,enSubGraph.collapsedWidth);
-					// 计算出终点二分之一宽度对应的弦；
-					var eNodeHeightOffset:Number = enSubGraph == null ?endNode.width/2/ Math.cos(linkAngle):enSubGraph.collapsedWidth/2/ Math.cos(linkAngle);
-					// 计算出终点二分之一高度对应的弦；（因为角度的变化，要让终点始终紧贴着终结点，必须找到更小的弦）
-					var eNodeWidthOffset:Number = enSubGraph == null ?endNode.height/2/ Math.sin(linkAngle):enSubGraph.collapsedHeight/2/ Math.sin(linkAngle);
-					
-					minOffset = Math.min(Math.abs(eNodeHeightOffset),Math.abs(eNodeWidthOffset));
-					
-//					minOffset = Math.abs(minOffset);
-					distance = Point.distance(tP,fP);
-//					if(distance>= minOffset){
-//						tP = Point.polar(distance -minOffset,linkAngle);
-//					}else{
-//						if(minOffset == Math.abs(eNodeHeightOffset)){
-//							tP = Point.polar(distance +eNodeHeightOffset,linkAngle);
-//						}else{
-//							tP = Point.polar(distance +eNodeWidthOffset,linkAngle);
-//						}
-//						
-//					}
-					tP = Point.polar(distance -minOffset,linkAngle);
-					tP.offset(fP.x,fP.y);
-				}
-				
-				//确定终点箭头位置
-				var eArrowPoint:Point = Point.polar(Point.distance(tP,fP),linkAngle);
-				eArrowPoint.offset(fP.x,fP.y);
-				if(endArrow){
-					var endArrowVisiable:* = getStyle("endArrowVisible");
-					if(endArrowVisiable){//倘若终节点可见，移动其位置，旋转其箭头，并且确定连线终点位置
-						var endArrowType:* = getStyle("endArrowType");
-						if(endArrowType == "triangle"){
-							endArrow.x = eArrowPoint.x;
-							endArrow.y = eArrowPoint.y;
-							endArrow.rotation = linkDegree;
-							
-							//确定连线终点位置
-							tP = Point.polar(Point.distance(tP,fP) - ARROW_HEADER_LENGTH,linkAngle);
-							tP.offset(fP.x,fP.y);
-						}
-					}
-				}
-				
-				if(dashStyle == DashStyle.NONE){
-					data = "M "+fP.x+" "+fP.y+" L "+tP.x+" "+tP.y;
-				}else if(dashStyle == DashStyle.DASH){
-					
-				}else if(dashStyle == DashStyle.DASH_DOT){
-					
-				}else if(dashStyle == DashStyle.DOT){
-					
-				}
-			}else if(shapeType == LinkShapeType.ORTHOGONAL){
-				var startOffset:Point ;
-				var endOffset:Point ;
-				
-				if(startConnectionArea == LinkConnectionArea.LEFT){
-					fP.offset(-startNode.width/2,0);
-					startOffset = fP.clone();
-					startOffset.offset(-EXTEND_LENGTH,0);
-				}else if(startConnectionArea == LinkConnectionArea.RIGHT){
-					fP.offset(startNode.width/2,0);
-					startOffset = fP.clone();
-					startOffset.offset(EXTEND_LENGTH,0);
-				}else if(startConnectionArea == LinkConnectionArea.TOP){
-					fP.offset(0,-startNode.height/2);
-					startOffset = fP.clone();
-					startOffset.offset(0,-EXTEND_LENGTH);
-				}else if(startConnectionArea == LinkConnectionArea.BOTTOM){
-					fP.offset(0,startNode.height/2);
-					startOffset = fP.clone();
-					startOffset.offset(0,EXTEND_LENGTH);
-				}
-				
-				if(endConnectionArea == LinkConnectionArea.LEFT){
-					tP.offset(-endNode.width/2,0);
-					endOffset = tP.clone();
-					endOffset.offset(-EXTEND_LENGTH,0);
-					tP.offset(-10,0);
-					if(endArrow){
-						endArrow.x = tP.x;
-						endArrow.y = tP.y;
-						endArrow.rotation = 0;
-					}
-				}else if(endConnectionArea == LinkConnectionArea.RIGHT){
-					tP.offset(endNode.width/2,0);
-					endOffset = tP.clone();
-					endOffset.offset(EXTEND_LENGTH,0);
-				}else if(endConnectionArea == LinkConnectionArea.TOP){
-					tP.offset(0,-endNode.height/2);
-					endOffset = tP.clone();
-					endOffset.offset(0,-EXTEND_LENGTH);
-				}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
-					tP.offset(0,endNode.height/2);
-					endOffset = tP.clone();
-					endOffset.offset(0,EXTEND_LENGTH);
-				}
-				
-				var basePoint:Point = new Point(startOffset.x/2+endOffset.x/2,startOffset.y/2+endOffset.y/2);
-				if(dashStyle == DashStyle.NONE){
-					data = "M "+fP.x+" "+fP.y+" L "+startOffset.x+" "+startOffset.y
-						+" L "+basePoint.x+" "+startOffset.y
-						+" L "+basePoint.x+" "+endOffset.y
-						+" L "+endOffset.x+" "+endOffset.y
-						+" L "+tP.x+" "+tP.y;
-				}else if(dashStyle == DashStyle.DASH){
-					
-				}else if(dashStyle == DashStyle.DASH_DOT){
-					
-				}else if(dashStyle == DashStyle.DOT){
-					
-				}
-			}else if(shapeType == LinkShapeType.FREE){
-				
-			}else if(shapeType == LinkShapeType.OBLIQUE){
-				
-			}
-			
-			return data;
-		}//getData结束
-		
-		
 		private function getCollpasedSubGraph(arr:ArrayCollection,render:Renderer):SubGraph
 		{
 			if(render.parent is Graph){
@@ -978,27 +711,27 @@ package com.hjx.graphic
 							offsetX = Math.abs(realVisialeStartNode.width/2);
 							offsetY = 0;
 							defaultStartPoint.offset(-offsetX,-offsetY);
-							this._shapePoints.push(defaultStartPoint.clone());
-							defaultStartPoint.offset(-this._orthogonalSpacing,0);
+//							this._shapePoints.push(defaultStartPoint.clone());
+//							defaultStartPoint.offset(-this._orthogonalSpacing,0);
 							
 						}else if(startConnectionArea == LinkConnectionArea.RIGHT){
 							offsetX = Math.abs(realVisialeStartNode.width/2);
 							offsetY = 0;
 							defaultStartPoint.offset(offsetX,-offsetY);
-							this._shapePoints.push(defaultStartPoint.clone());
-							defaultStartPoint.offset(this._orthogonalSpacing,0);
+//							this._shapePoints.push(defaultStartPoint.clone());
+//							defaultStartPoint.offset(this._orthogonalSpacing,0);
 						}else if(startConnectionArea == LinkConnectionArea.TOP){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeStartNode.height/2);
 							defaultStartPoint.offset(-offsetX,-offsetY);
-							this._shapePoints.push(defaultStartPoint.clone());
-							defaultStartPoint.offset(0,-this._orthogonalSpacing);
+//							this._shapePoints.push(defaultStartPoint.clone());
+//							defaultStartPoint.offset(0,-this._orthogonalSpacing);
 						}else if(startConnectionArea == LinkConnectionArea.BOTTOM){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeStartNode.height/2);
 							defaultStartPoint.offset(-offsetX,offsetY);
-							this._shapePoints.push(defaultStartPoint.clone());
-							defaultStartPoint.offset(0,this._orthogonalSpacing);
+//							this._shapePoints.push(defaultStartPoint.clone());
+//							defaultStartPoint.offset(0,this._orthogonalSpacing);
 						}
 						
 						this.fallbackStartPoint = defaultStartPoint.clone();
@@ -1030,29 +763,29 @@ package com.hjx.graphic
 							offsetY = 0;
 							defaultEndPoint.offset(-offsetX,-offsetY);
 							
-							defaultEndPointClone = defaultEndPoint.clone();
-							defaultEndPoint.offset(-this._orthogonalSpacing,0);
+//							defaultEndPointClone = defaultEndPoint.clone();
+//							defaultEndPoint.offset(-this._orthogonalSpacing,0);
 						}else if(endConnectionArea == LinkConnectionArea.RIGHT){
 							offsetX = Math.abs(realVisialeEndNode.width/2);
 							offsetY = 0;
 							defaultEndPoint.offset(offsetX,-offsetY);
 							
-							defaultEndPointClone = defaultEndPoint.clone();
-							defaultEndPoint.offset(this._orthogonalSpacing,0);
+//							defaultEndPointClone = defaultEndPoint.clone();
+//							defaultEndPoint.offset(this._orthogonalSpacing,0);
 						}else if(endConnectionArea == LinkConnectionArea.TOP){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeEndNode.height/2);
 							defaultEndPoint.offset(-offsetX,-offsetY);
 							
-							defaultEndPointClone = defaultEndPoint.clone();
-							defaultEndPoint.offset(0,-this._orthogonalSpacing);
+//							defaultEndPointClone = defaultEndPoint.clone();
+//							defaultEndPoint.offset(0,-this._orthogonalSpacing);
 						}else if(endConnectionArea == LinkConnectionArea.BOTTOM){
 							offsetX = 0;
 							offsetY = Math.abs(realVisialeEndNode.height/2);
 							defaultEndPoint.offset(-offsetX,offsetY);
 							
-							defaultEndPointClone = defaultEndPoint.clone();
-							defaultEndPoint.offset(0,this._orthogonalSpacing);
+//							defaultEndPointClone = defaultEndPoint.clone();
+//							defaultEndPoint.offset(0,this._orthogonalSpacing);
 						}
 						
 						this.fallbackEndPoint = defaultEndPoint.clone();
@@ -1073,7 +806,7 @@ package com.hjx.graphic
 					var fromDirection:int = getDirection(defaultEndPoint, defaultStartPoint);
 					this._shapePoints.push(defaultStartPoint);
 //					computeOrthogonal(defaultStartPoint,startRect,defaultEndPoint,endRect,this._shapePoints);
-					computeOrthogonal1(defaultStartPoint,toDirection,startRect,defaultEndPoint,fromDirection,endRect,this._shapePoints);
+					computeOrthogonal1(defaultStartPoint,fromDirection,startRect,defaultEndPoint,toDirection,endRect,this._shapePoints);
 					this._shapePoints.push(defaultEndPoint);
 					if(defaultEndPointClone){
 						this._shapePoints.push(defaultEndPointClone);
@@ -1093,13 +826,14 @@ package com.hjx.graphic
 			}
 		}
 		
-		internal function computeOrthogonal1(arg1:flash.geom.Point, arg2:int, arg3:flash.geom.Rectangle, arg4:flash.geom.Point, arg5:int, arg6:flash.geom.Rectangle, arg7:__AS3__.vec.Vector.<flash.geom.Point>):void
+		internal function computeOrthogonal1(arg1:Point, arg2:int, arg3:Rectangle, arg4:Point, arg5:int, arg6:Rectangle, arg7:Vector.<Point>):void
 		{
 			var loc2:*=NaN;
 			var loc3:*=NaN;
 			var loc4:*=0;
 			var loc1:*=0;
 			var loc5:*=arg2;
+			
 			switch (loc5) 
 			{
 				case Top:
@@ -1122,6 +856,7 @@ package com.hjx.graphic
 					break;
 				}
 			}
+			
 			arg1 = arg1.clone();
 			arg4 = arg4.clone();
 			RotatePoint(arg1, loc1);
@@ -1332,7 +1067,7 @@ package com.hjx.graphic
 			if (loc1 != 0) 
 			{
 				loc1 = 4 - loc1;
-				loc4 = 2;
+				loc4 = 1;
 				while (loc4 < arg7.length) 
 				{
 					RotatePoint(arg7[loc4], loc1);
@@ -1353,231 +1088,6 @@ package com.hjx.graphic
 		internal function computeOrthogonal(startPoint:Point,startRect:Rectangle, endPoint:Point, endRect:Rectangle,shapePoints:Vector.<Point>):void
 		{
 			var direction:int = getDirection(startPoint,endPoint);
-			
-			/*var rotateDe:int = 0;
-			switch (direction) 
-			{
-				case Top:
-				{
-					break;
-				}
-				case Bottom:
-				{
-					rotateDe = 2;
-					break;
-				}
-				case Left:
-				{
-					rotateDe = 1;
-					break;
-				}
-				case Right:
-				{
-					rotateDe = 3;
-					break;
-				}
-			}
-			
-			RotatePoint(startPoint, rotateDe);
-			RotateRectangle(startRect, rotateDe);
-			
-			RotatePoint(endPoint, rotateDe);
-			RotateRectangle(endRect, rotateDe);
-			var pX:Number;
-			var pY:Number;
-			switch(direction){
-				case Top:
-					if (endRect.bottom < startRect.top) 
-					{
-						if (endRect.left > startPoint.x || endRect.right < startPoint.x) 
-						{
-							pY = Math.min(startRect.top, endRect.top) - this._orthogonalSpacing;
-							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-							shapePoints.push(new flash.geom.Point(endPoint.x, pY));
-						}
-						else 
-						{
-							pY = (startPoint.y + endRect.bottom) / 2;
-							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-							if (endPoint.x > startPoint.x) 
-							{
-								pX = endRect.left - this._orthogonalSpacing;
-							}
-							else 
-							{
-								pX = endRect.right + this._orthogonalSpacing;
-							}
-							shapePoints.push(new flash.geom.Point(pX, pY));
-							pY = endRect.top - this._orthogonalSpacing;
-							shapePoints.push(new flash.geom.Point(pX, pY));
-							shapePoints.push(new flash.geom.Point(endPoint.x, pY));
-						}
-					}
-					else if (endRect.top > startRect.bottom) 
-					{
-						if (endPoint.x > startRect.right || endPoint.x < startRect.left) 
-						{
-							pY = Math.min(startRect.top, endRect.top) - this._orthogonalSpacing;
-							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-							shapePoints.push(new flash.geom.Point(endPoint.x, pY));
-						}
-						else 
-						{
-							pY = startRect.top - this._orthogonalSpacing;
-							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-							if (endPoint.x < startPoint.x) 
-							{
-								pX = startRect.left - this._orthogonalSpacing;
-							}
-							else 
-							{
-								pX = startRect.right + this._orthogonalSpacing;
-							}
-							shapePoints.push(new flash.geom.Point(pX, pY));
-							pY = (endPoint.y + startRect.bottom) / 2;
-							shapePoints.push(new flash.geom.Point(pX, pY));
-							shapePoints.push(new flash.geom.Point(endPoint.x, pY));
-						}
-					}
-					else 
-					{
-						pY = Math.min(startRect.top, endRect.top) - this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-						shapePoints.push(new flash.geom.Point(endPoint.x, pY));
-					}
-				break;
-				
-				case Bottom:
-					if (endPoint.y < startPoint.y) 
-					{
-						if (endPoint.x != startPoint.x) 
-						{
-							pY = (startPoint.y + endPoint.y) / 2;
-							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-							shapePoints.push(new flash.geom.Point(endPoint.x, pY));
-						}
-					}
-					else if (endRect.left > startRect.right || endRect.right < startRect.left) 
-					{
-						pY = startRect.top - this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-						if (endRect.left > startRect.right) 
-						{
-							pX = (endRect.left + startRect.right) / 2;
-						}
-						else 
-						{
-							pX = (endRect.right + startRect.left) / 2;
-						}
-						shapePoints.push(new flash.geom.Point(pX, pY));
-						pY = endRect.bottom + this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(pX, pY));
-						shapePoints.push(new flash.geom.Point(endPoint.x, pY));
-					}
-					else 
-					{
-						pY = Math.min(startRect.top, endRect.top) - this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-						if (endPoint.x > startPoint.x) 
-						{
-							pX = Math.max(startRect.right, endRect.right) + this._orthogonalSpacing;
-						}
-						else 
-						{
-							pX = Math.min(startRect.left, endRect.left) - this._orthogonalSpacing;
-						}
-						shapePoints.push(new flash.geom.Point(pX, pY));
-						pY = endRect.bottom + this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(pX, pY));
-						shapePoints.push(new flash.geom.Point(endPoint.x, pY));
-					}
-				break;
-				
-				case Left:
-					if (endRect.left < startPoint.x) 
-					{
-						if (endRect.bottom < startPoint.y) 
-						{
-							pY = (startPoint.y + endRect.bottom) / 2;
-							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-							pX = endRect.left - this._orthogonalSpacing;
-							shapePoints.push(new flash.geom.Point(pX, pY));
-							shapePoints.push(new flash.geom.Point(pX, endPoint.y));
-						}
-						else 
-						{
-							pY = Math.min(endRect.top, startRect.top) - this._orthogonalSpacing;
-							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-							pX = Math.min(endRect.left, startRect.left) - this._orthogonalSpacing;
-							shapePoints.push(new flash.geom.Point(pX, pY));
-							shapePoints.push(new flash.geom.Point(pX, endPoint.y));
-						}
-					}
-					else if (endPoint.y < startRect.top) 
-					{
-						shapePoints.push(new flash.geom.Point(startPoint.x, endPoint.y));
-					}
-					else if (endRect.left > startRect.right) 
-					{
-						pY = startRect.top - this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-						pX = (startRect.right + endRect.left) / 2;
-						shapePoints.push(new flash.geom.Point(pX, pY));
-						shapePoints.push(new flash.geom.Point(pX, endPoint.y));
-					}
-					else 
-					{
-						pY = Math.min(endRect.top, startRect.top) - this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-						pX = Math.min(endRect.left, startRect.left) - this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(pX, pY));
-						shapePoints.push(new flash.geom.Point(pX, endPoint.y));
-					}
-				break;
-				
-				case Right:
-					if (endRect.right > startPoint.x) 
-					{
-						if (endRect.bottom < startPoint.y) 
-						{
-							pY = (startPoint.y + endRect.bottom) / 2;
-							shapePoints.push(new Point(startPoint.x, pY));
-							pX = endRect.right + this._orthogonalSpacing;
-							shapePoints.push(new flash.geom.Point(pX, pY));
-							shapePoints.push(new flash.geom.Point(pX, endPoint.y));
-						}
-						else 
-						{
-							pY = Math.min(endRect.top, startRect.top) - this._orthogonalSpacing;
-							shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-							pX = Math.max(endRect.right, startRect.right) + this._orthogonalSpacing;
-							shapePoints.push(new flash.geom.Point(pX, pY));
-							shapePoints.push(new flash.geom.Point(pX, endPoint.y));
-						}
-					}
-					else if (endPoint.y < startRect.top) 
-					{
-						shapePoints.push(new flash.geom.Point(startPoint.x, endPoint.y));
-					}
-					else if (endRect.right < startRect.left) 
-					{
-						pY = startRect.top - this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-						pX = (startRect.left + endRect.right) / 2;
-						shapePoints.push(new flash.geom.Point(pX, pY));
-						shapePoints.push(new flash.geom.Point(pX, endPoint.y));
-					}
-					else 
-					{
-						pY = Math.min(endRect.top, startRect.top) - this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(startPoint.x, pY));
-						pX = Math.max(endRect.right, startRect.right) + this._orthogonalSpacing;
-						shapePoints.push(new flash.geom.Point(pX, pY));
-						shapePoints.push(new flash.geom.Point(pX, endPoint.y));
-					}
-				break;
-				
-			}*/
 			//// 计算偏移量，决定起始终点。
 			/*startPoint = computeStartConnectAreaOffsetPoint(startPoint,false);
 			endPoint = computeEndConnectAreaOffsetPoint(endPoint,false);*/
