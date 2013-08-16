@@ -355,7 +355,7 @@ package com.hjx.graphic
 			return Top;
 		}
 		
-		internal static function RotateRectangle(arg1:flash.geom.Rectangle, arg2:int):void
+		private static function RotateRectangle(arg1:flash.geom.Rectangle, arg2:int):void
 		{
 			var loc1:*=NaN;
 			var loc2:*=arg2;
@@ -391,7 +391,7 @@ package com.hjx.graphic
 			return;
 		}
 		
-		internal static function RotatePoint(arg1:flash.geom.Point, arg2:int):void
+		private static function RotatePoint(arg1:flash.geom.Point, arg2:int):void
 		{
 			var loc1:*=NaN;
 			var loc2:*=arg2;
@@ -421,7 +421,7 @@ package com.hjx.graphic
 			return;
 		}
 		
-		internal static function RotatePosition(arg1:int, arg2:int):int
+		private static function RotatePosition(arg1:int, arg2:int):int
 		{
 			var loc1:*=arg1;
 			loc1 = (loc1 + arg2) % 4;
@@ -826,14 +826,13 @@ package com.hjx.graphic
 			}
 		}
 		
-		internal function computeOrthogonal1(arg1:Point, arg2:int, arg3:Rectangle, arg4:Point, arg5:int, arg6:Rectangle, arg7:Vector.<Point>):void
+		private function computeOrthogonal1(arg1:flash.geom.Point, arg2:int, arg3:flash.geom.Rectangle, arg4:flash.geom.Point, arg5:int, arg6:flash.geom.Rectangle, arg7:__AS3__.vec.Vector.<flash.geom.Point>):void
 		{
 			var loc2:*=NaN;
 			var loc3:*=NaN;
 			var loc4:*=0;
 			var loc1:*=0;
 			var loc5:*=arg2;
-			
 			switch (loc5) 
 			{
 				case Top:
@@ -856,7 +855,6 @@ package com.hjx.graphic
 					break;
 				}
 			}
-			
 			arg1 = arg1.clone();
 			arg4 = arg4.clone();
 			RotatePoint(arg1, loc1);
