@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<common:DashBoardRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+						  xmlns:s="library://ns.adobe.com/flex/spark"
+						  xmlns:mx="library://ns.adobe.com/flex/mx"
+						  xmlns:common="com.bingya.common.*"
+						  width="100" height="100" autoDrawBackground="false">
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	<s:Group id="base" top="0" left="0" bottom="0" right="0">
+		<s:Rect top="0" left="0" bottom="0" right="0">
+			<s:fill>
+				<s:SolidColor color="green"/>
+			</s:fill>
+			<s:stroke>
+				<s:SolidColorStroke color="0"/>
+			</s:stroke>
+		</s:Rect>
+	</s:Group>
+	<s:Label text="{data.label}" horizontalCenter="0" verticalCenter="0" color="white"/>
+</common:DashBoardRenderer>

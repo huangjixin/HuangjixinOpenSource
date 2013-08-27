@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   minWidth="0" minHeight="0">
+	<fx:Declarations>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.bingya.common.DashBoardEvent;
+			import com.bingya.common.DashBoardRenderer;
+			
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.RendererExistenceEvent;
+			[Bindable]
+			private var arrcol:ArrayCollection = new ArrayCollection([{label:'A'},{label:'B'},{label:'C'}
+				,{label:'D'},{label:'E'},{label:'F'},{label:'G'},{label:'H'},{label:'I'},{label:'J'},{label:'K'}]);
+			
+			protected function datagroup1_rendererAddHandler(event:RendererExistenceEvent):void
+			{
+				DashBoardRenderer(event.renderer).addEventListener(DashBoardEvent.INDEX_CHANGE,onIndexChange);
+			}
+			
+			protected function onIndexChange(event:DashBoardEvent):void
+			{
+				var index0 :int = dataGroup.getElementIndex(event.dashrenderer0);
+				var index1 :int = dataGroup.getElementIndex(event.dashrenderer1);
+				var item0:Object =dataGroup.dataProvider.getItemAt(index0); 
+				var item1:Object =dataGroup.dataProvider.getItemAt(index1); 
+				dataGroup.dataProvider.setItemAt(item0,index1);
+				dataGroup.dataProvider.setItemAt(item1,index0);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:DataGroup id="dataGroup" width="80%" height="80%"
+				 horizontalCenter="0" verticalCenter="0" 
+				 itemRenderer="DashBoardItemRenderer" dataProvider="{arrcol}"
+				 rendererAdd="datagroup1_rendererAddHandler(event)">
+		<s:layout>
+			<s:TileLayout>
+				
+			</s:TileLayout>
+		</s:layout>
+	</s:DataGroup>
+</s:Application>
