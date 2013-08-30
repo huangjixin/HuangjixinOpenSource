@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:editor="cn.hnisi.ravis.editor.*">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("cn.hnisi.ravis.editor.BaseRendererAdorner")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			private var _data:Object;
+
+			[Bindable]
+			public function get data():Object
+			{
+				return _data;
+			}
+
+			public function set data(value:Object):void
+			{
+				_data = value;
+				
+				/* if(_data){
+					ciIdLabel.text = "CI_ID："+data.@ciId;
+					ciCodeLabel.text = "资产编号："+data.@ciCode;
+					nameLabel.text = "资产名称："+data.@name;
+						PNLabel.text = "批次号："+data.@PN;
+						PROVIDERLabel.text = "供应商："+data.@PROVIDER;
+						BRANDLabel.text = "品牌："+data.@BRAND;
+						PRICELabel.text = "单价："+data.@PRICE;
+						STORAGE_DATELabel.text = "入库日期："+data.@STORAGE_DATE;
+						CI_DESCLabel.text = "资产描述："+data.@CI_DESC;
+				} */
+			}
+
+		]]>
+	</fx:Script>
+	<s:Rect top="0" left="0" bottom="0" right="0">
+		<!--<s:stroke>
+			<s:SolidColorStroke color="blue" alpha="0.5"/>
+		</s:stroke>-->
+	</s:Rect>
+	<!--<editor:Handle id="topLeftHandle"
+					left="-4" top="-4"
+					skinClass="cn.hnisi.ravis.editor.skin.HandleSkin"/>
+	<editor:Handle id="topRightHandle"
+					right="-4" top="-4" 
+					rotation="90"
+					skinClass="cn.hnisi.ravis.editor.skin.HandleSkin"/>
+	<editor:Handle id="bottomLeftHandle"
+					left="-4" bottom="-4" 
+					rotation="-90"
+					skinClass="cn.hnisi.ravis.editor.skin.HandleSkin"/>
+	<editor:Handle id="bottomRightHandle" 
+					rotation="180"
+					right="-4" bottom="-4"
+					skinClass="cn.hnisi.ravis.editor.skin.HandleSkin"/>-->
+	<!--<s:Button id="addArrowBtn" width="16" height="16" right="-20" top="4"/>-->
+	<s:Group  id="addArrowBtn" width="20" height="20"  right="-24" top="0" toolTip="连线">
+		<s:Rect top="0" bottom="0" left="0" right="0" radiusX="2" radiusY="2">
+			<s:fill>
+				<s:RadialGradient>
+					<s:GradientEntry color="0xffffff"/>
+				</s:RadialGradient>
+			</s:fill>
+			<s:stroke>
+				<s:SolidColorStroke color="0" alpha="0.5"/>
+			</s:stroke>
+		</s:Rect>
+		<s:Image source="@Embed(source='resources/arrow.png')" horizontalCenter="0" verticalCenter="0"/>
+	</s:Group>
+	<s:Group  id="deleteBtn" width="20" height="20"  right="-24" top="24" toolTip="删除节点">
+		<s:Rect top="0" bottom="0" left="0" right="0"  radiusX="2" radiusY="2">
+			<s:fill>
+				<s:RadialGradient>
+					<s:GradientEntry color="0xffffff"/>
+				</s:RadialGradient>
+			</s:fill>
+			<s:stroke>
+				<s:SolidColorStroke color="0"  alpha="0.5"/>
+			</s:stroke>
+		</s:Rect>
+		<s:Image source="@Embed(source='resources/delete.png')" horizontalCenter="0" verticalCenter="0"/>
+	</s:Group>
+	<!--<s:Group  id="detailBtn" width="20" height="20"  right="-24" top="48" toolTip="查看详细信息"
+			  click="{detailGroup.visible = !detailGroup.visible;detailGroup.right = -28-detailGroup.width}">
+		<s:Rect top="0" bottom="0" left="0" right="0"  radiusX="2" radiusY="2">
+			<s:fill>
+				<s:RadialGradient>
+					<s:GradientEntry color="0xffffff"/>
+				</s:RadialGradient>
+			</s:fill>
+			<s:stroke>
+				<s:SolidColorStroke color="0"  alpha="0.5"/>
+			</s:stroke>
+		</s:Rect>
+		<s:Image source="@Embed(source='resources/detail.png')" horizontalCenter="0" verticalCenter="0"/>
+	</s:Group>-->
+	<!--<s:Group id="detailGroup" minWidth="100" minHeight="100" visible="false">
+		<s:Rect top="0" bottom="0" left="0" right="0"  radiusX="2" radiusY="2">
+			<s:stroke>
+				<s:SolidColorStroke color="#C28A30">
+				</s:SolidColorStroke>
+			</s:stroke>
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="#FFF480"/>
+					<s:GradientEntry color="#FFD96C"/>
+					<s:GradientEntry color="#FFF480"/>
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+		<s:VGroup top="10" left="10" right="10" bottom="10">
+			<s:Label id="ciIdLabel"/>
+			<s:Label id="ciCodeLabel"/>
+			<s:Label id="nameLabel"/>
+			<s:Label id="PNLabel"/>
+			<s:Label id="PROVIDERLabel"/>
+			<s:Label id="BRANDLabel"/>
+			<s:Label id="PRICELabel"/>
+			<s:Label id="STORAGE_DATELabel"/>
+			<s:Label id="CI_DESCLabel"/>
+		</s:VGroup>
+	</s:Group>-->
+</s:Skin>
