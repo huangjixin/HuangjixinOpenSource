@@ -10,7 +10,7 @@ public interface AssetMapper {
 
     int deleteByExample(AssetExample example);
 
-    int deleteByPrimaryKey(String id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(Asset record);
 
@@ -18,7 +18,7 @@ public interface AssetMapper {
 
     List<Asset> selectByExample(AssetExample example);
 
-    Asset selectByPrimaryKey(String id);
+    Asset selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") Asset record, @Param("example") AssetExample example);
 

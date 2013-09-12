@@ -3,20 +3,22 @@ package com.bingya.domain.system;
 import java.io.Serializable;
 
 public class Asset implements Serializable {
-    private String id;
+    private Integer id;
 
     private String name;
 
     private String path;
 
+    private Integer userId;
+
     private static final long serialVersionUID = 1L;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -33,5 +35,13 @@ public class Asset implements Serializable {
 
     public void setPath(String path) {
         this.path = path == null ? null : path.trim();
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }
