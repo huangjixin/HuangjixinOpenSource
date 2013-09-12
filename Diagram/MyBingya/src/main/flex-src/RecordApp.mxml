@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="0" minHeight="0"
+			   creationComplete="application1_creationCompleteHandler(event)">
+	<fx:Declarations>
+	</fx:Declarations>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		s|Application{
+			fontFamily:"微软雅黑";
+			fontSize:13;
+		}
+	</fx:Style>
+	<fx:Script>
+		<![CDATA[
+			import com.bingya.common.Global;
+			
+			import components.FileUploadTitleWindow;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.UIDUtil;
+			
+			/**
+			 * 网络连接
+			 */ 
+			private var _netConnection:NetConnection; 
+			/**
+			 * 视频流。
+			 */ 
+			private var _inCommingStream:NetStream;
+			
+			private var localVideo:Video;
+			/**
+			 * url地址。
+			 */ 
+			private var rtmpRecordUrl:String;
+			
+			/**
+			 * 摄像头。
+			 */ 
+			private var camera:Camera; 
+			
+			/**
+			 * 麦克风。
+			 */ 
+			private var mic:Microphone; 
+			
+			private var userUID:String = UIDUtil.createUID();
+			/**
+			 * 初始化。
+			 */ 
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				Global.getInstance().setUrl();
+			}
+			
+			private function doStartRecording() : void
+			{
+				_netConnection = new NetConnection();
+				_netConnection.addEventListener(NetStatusEvent.NET_STATUS, handlerNetStatus);
+				_netConnection.connect("rtmp://localhost/RecordStream/"+userUID);
+			}
+			
+			/**
+			 * 网络连接响应
+			 */ 
+			protected function onNetStatus(event:NetStatusEvent):void
+			{
+				handlerNetStatus(event);
+			}
+			
+			private function handlerNetStatus(event:NetStatusEvent) : void 
+			{
+				var info:Object = event.info;
+				switch(info.code) 
+				{
+					case "NetConnection.Connect.Success":	
+						if ( doNetStream() )
+						{
+						}
+						break;
+					
+					case "NetConnection.Connect.Rejected":
+						break;
+					
+					case "NetConnection.Connect.Failed":
+						break;
+					
+					case "NetConnection.Connect.Closed":
+						break;
+				}
+			}
+			
+			private function doNetStream() : Boolean
+			{
+				this._inCommingStream = new NetStream(this._netConnection);
+				this._inCommingStream.client = new Object();
+				
+				//保证有一个摄像头
+				camera = Camera.getCamera();
+				if ( camera == null )
+				{
+					if ( Camera.names.length > 0 )
+					{
+						Alert.show( 'The default camera is in use by another application.', 'Error' );
+					}
+					else
+					{
+						Alert.show( 'Please install a webcam to use this sample.', 'Error' );
+					}
+				}
+				else
+				{
+					//if the getting the camera was successful attach it to the NetStream
+					this._inCommingStream.attachCamera(camera); 
+				}
+				
+				//check and make sure that we have a mic
+				mic = Microphone.getMicrophone();
+				
+				//If attaching a microphone was unsuccessful...
+				if ( mic == null )
+				{
+					if ( Microphone.names.length > 0 )
+					{
+					}
+					else
+					{
+					}
+				}
+				else
+				{
+					//if the getting the microphone was successful attach it to the NetStream
+					this._inCommingStream.attachAudio(mic);
+				}
+				
+				//we need a video to at least play, so at least a camera
+				//must be attached.
+				if ( camera )
+				{			
+					//If camera is present, publish the Netstream with the userUID and a type of "record"
+					this._inCommingStream.publish( userUID, "record" );
+					
+					//Attach the video being recorded by the camera to the VideoDisplay component
+					localVideoDisplay.attachCamera(camera);
+					
+					return true;
+				}
+				else
+				{
+					
+					//If no camera was attached (or just a mic) then close the
+					//NetConnection
+					this._netConnection.close();
+					
+					//clearing the memory for the NetStream
+					this._netConnection = null;
+					return false;
+				}
+			}
+			/**
+			 * 渲染硬件，包括麦克风和摄像头。
+			 */ 
+			protected function attachMediaHardware():void{
+				//获取系统的摄像头 
+				var camera:Camera=Camera.getCamera();
+				if (camera)
+				{
+					this.camera = camera;
+					//设定宽,高,以及帧 
+					camera.setMode (240,180,24); 
+					//设定画面质量 
+					camera.setQuality (0,90);
+				}
+				
+				//获取系统的microphone 
+				var microphone:Microphone=Microphone.getMicrophone();
+				if (microphone)
+				{
+					this.mic = microphone;
+				}
+			}
+			
+			/**
+			 * 结束按钮响应函数。
+			 */ 
+			protected function endRecordBtn_clickHandler(event:MouseEvent):void
+			{
+				if(this._netConnection){
+					this._netConnection.close();
+					this._netConnection = null;
+				}
+				
+				endRecordBtn.enabled= false;
+				startRecordBtn.enabled= true;
+			}
+			
+			/**
+			 * 开始按钮响应函数。
+			 */
+			protected function startRecordBtn_clickHandler(event:MouseEvent):void
+			{
+				doStartRecording();endRecordBtn.enabled= true;startRecordBtn.enabled= false;
+			}
+			
+			/**
+			 * 查询讲义，上传讲义，删除讲义。
+			 */ 
+			protected function openFileBtn_clickHandler(event:MouseEvent):void
+			{
+				var fileUploadTitleWindow:FileUploadTitleWindow = PopUpManager.createPopUp(this,FileUploadTitleWindow,true) as FileUploadTitleWindow;
+				PopUpManager.centerPopUp(fileUploadTitleWindow);
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout>
+	<s:VGroup horizontalAlign="center">
+		<s:Button id="openFileBtn" label="讲义……" click="openFileBtn_clickHandler(event)"/>
+		<s:Label text="标注"/>
+		<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="gray"/>
+			</s:stroke>
+		</s:Line>
+		<s:Group>
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:SolidColor color="gray"/>
+				</s:fill>
+			</s:Rect>
+			<s:VGroup left="5" right="5" bottom="5" top="5">
+				<s:Button label="红"/>
+				<s:Button label="绿"/>
+				<s:Button label="蓝"/>
+				<s:Button label="橡皮擦"/>
+				<s:Button label="删除"/>
+			</s:VGroup>
+		</s:Group>
+	</s:VGroup>
+	<s:Group>
+		<s:Rect width="100%" height="100%">
+			<s:fill>
+				<s:SolidColor color="green"/>
+			</s:fill>
+		</s:Rect>
+		<s:SWFLoader id="swfLoader" width="700" height="500"/>
+		<s:Button id="lastBtn" label="《" left="0" verticalCenter="0"/>
+		<s:Button id="nextBtn" label="》" right="0" verticalCenter="0"/>
+	</s:Group>
+	<s:VGroup horizontalAlign="center">
+		<mx:VideoDisplay id="localVideoDisplay" width="300" height="240" live="true"/>
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="视频"/>
+			<s:ToggleButton label="打开"/>
+			<s:Spacer width="5"/>
+			<s:Label text="音量"/>
+			<s:HSlider id="voiceHSlider" minimum="0" maximum="100"/>
+			<s:Spacer width="5"/>
+			<s:Button label="设置"/>
+		</s:HGroup>
+		<s:Label text="00:00:00" color="blue" fontSize="18"/>
+		<s:Label text="0"/>
+		<s:Button label="环境自测"/>
+		<s:Button id="startRecordBtn" label="开始录制" click="startRecordBtn_clickHandler(event)"/>
+		<s:Button id="endRecordBtn" label="退出" click="endRecordBtn_clickHandler(event)"/>
+		<s:Spacer height="110"/>
+	</s:VGroup>
+</s:Application>

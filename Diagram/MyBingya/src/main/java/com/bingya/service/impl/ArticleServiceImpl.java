@@ -54,7 +54,7 @@ public class ArticleServiceImpl implements IArticleService {
 	 * com.bingya.service.IGenericService#deleteByPrimaryKey(java.lang.Integer)
 	 */
 	@Override
-	public int deleteByPrimaryKey(String id) {
+	public int deleteByPrimaryKey(Integer id) {
 		// --先删除子表数据。
 		CommentExample commentExample = new CommentExample();
 		commentExample.createCriteria().andTbArticleIdEqualTo(id);
@@ -74,13 +74,12 @@ public class ArticleServiceImpl implements IArticleService {
 	 * @see com.bingya.service.IGenericService#insert(java.io.Serializable)
 	 */
 	@Override
-	public String insert(Article entity) {
+	public Integer insert(Article entity) {
 		Date date = new Date();
 		Long time = date.getTime();
-		entity.setId("" + time);
 		int i = articleMapper.insertSelective(entity);
 		if (i == 0) {
-			return "" + i;
+			return i;
 		}
 
 		return entity.getId();
@@ -103,7 +102,7 @@ public class ArticleServiceImpl implements IArticleService {
 	 * com.bingya.service.IGenericService#selectByPrimaryKey(java.lang.Integer)
 	 */
 	@Override
-	public Article selectByPrimaryKey(String id) {
+	public Article selectByPrimaryKey(Integer id) {
 		return articleMapper.selectByPrimaryKey(id);
 	}
 

@@ -10,7 +10,7 @@ public interface ResourceMapper {
 
     int deleteByExample(ResourceExample example);
 
-    int deleteByPrimaryKey(String id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(Resource record);
 
@@ -18,7 +18,7 @@ public interface ResourceMapper {
 
     List<Resource> selectByExample(ResourceExample example);
 
-    Resource selectByPrimaryKey(String id);
+    Resource selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") Resource record, @Param("example") ResourceExample example);
 

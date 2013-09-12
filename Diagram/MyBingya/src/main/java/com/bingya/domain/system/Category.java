@@ -3,22 +3,22 @@ package com.bingya.domain.system;
 import java.io.Serializable;
 
 public class Category implements Serializable {
-    private String id;
+    private Integer id;
 
     private String name;
 
     private String description;
 
-    private String parentid;
+    private Integer parentid;
 
     private static final long serialVersionUID = 1L;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -37,11 +37,11 @@ public class Category implements Serializable {
         this.description = description == null ? null : description.trim();
     }
 
-    public String getParentid() {
+    public Integer getParentid() {
         return parentid;
     }
 
-    public void setParentid(String parentid) {
-        this.parentid = parentid == null ? null : parentid.trim();
+    public void setParentid(Integer parentid) {
+        this.parentid = parentid;
     }
 }

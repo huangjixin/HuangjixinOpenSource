@@ -163,62 +163,52 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andIdEqualTo(String value) {
+        public Criteria andIdEqualTo(Integer value) {
             addCriterion("id =", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotEqualTo(String value) {
+        public Criteria andIdNotEqualTo(Integer value) {
             addCriterion("id <>", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThan(String value) {
+        public Criteria andIdGreaterThan(Integer value) {
             addCriterion("id >", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThanOrEqualTo(String value) {
+        public Criteria andIdGreaterThanOrEqualTo(Integer value) {
             addCriterion("id >=", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThan(String value) {
+        public Criteria andIdLessThan(Integer value) {
             addCriterion("id <", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThanOrEqualTo(String value) {
+        public Criteria andIdLessThanOrEqualTo(Integer value) {
             addCriterion("id <=", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLike(String value) {
-            addCriterion("id like", value, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdNotLike(String value) {
-            addCriterion("id not like", value, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andIdIn(List<String> values) {
+        public Criteria andIdIn(List<Integer> values) {
             addCriterion("id in", values, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotIn(List<String> values) {
+        public Criteria andIdNotIn(List<Integer> values) {
             addCriterion("id not in", values, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdBetween(String value1, String value2) {
+        public Criteria andIdBetween(Integer value1, Integer value2) {
             addCriterion("id between", value1, value2, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotBetween(String value1, String value2) {
+        public Criteria andIdNotBetween(Integer value1, Integer value2) {
             addCriterion("id not between", value1, value2, "id");
             return (Criteria) this;
         }
@@ -513,62 +503,52 @@ public class ArticleExample {
             return (Criteria) this;
         }
 
-        public Criteria andTbCategoryIdEqualTo(String value) {
+        public Criteria andTbCategoryIdEqualTo(Integer value) {
             addCriterion("tb_category_id =", value, "tbCategoryId");
             return (Criteria) this;
         }
 
-        public Criteria andTbCategoryIdNotEqualTo(String value) {
+        public Criteria andTbCategoryIdNotEqualTo(Integer value) {
             addCriterion("tb_category_id <>", value, "tbCategoryId");
             return (Criteria) this;
         }
 
-        public Criteria andTbCategoryIdGreaterThan(String value) {
+        public Criteria andTbCategoryIdGreaterThan(Integer value) {
             addCriterion("tb_category_id >", value, "tbCategoryId");
             return (Criteria) this;
         }
 
-        public Criteria andTbCategoryIdGreaterThanOrEqualTo(String value) {
+        public Criteria andTbCategoryIdGreaterThanOrEqualTo(Integer value) {
             addCriterion("tb_category_id >=", value, "tbCategoryId");
             return (Criteria) this;
         }
 
-        public Criteria andTbCategoryIdLessThan(String value) {
+        public Criteria andTbCategoryIdLessThan(Integer value) {
             addCriterion("tb_category_id <", value, "tbCategoryId");
             return (Criteria) this;
         }
 
-        public Criteria andTbCategoryIdLessThanOrEqualTo(String value) {
+        public Criteria andTbCategoryIdLessThanOrEqualTo(Integer value) {
             addCriterion("tb_category_id <=", value, "tbCategoryId");
             return (Criteria) this;
         }
 
-        public Criteria andTbCategoryIdLike(String value) {
-            addCriterion("tb_category_id like", value, "tbCategoryId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTbCategoryIdNotLike(String value) {
-            addCriterion("tb_category_id not like", value, "tbCategoryId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTbCategoryIdIn(List<String> values) {
+        public Criteria andTbCategoryIdIn(List<Integer> values) {
             addCriterion("tb_category_id in", values, "tbCategoryId");
             return (Criteria) this;
         }
 
-        public Criteria andTbCategoryIdNotIn(List<String> values) {
+        public Criteria andTbCategoryIdNotIn(List<Integer> values) {
             addCriterion("tb_category_id not in", values, "tbCategoryId");
             return (Criteria) this;
         }
 
-        public Criteria andTbCategoryIdBetween(String value1, String value2) {
+        public Criteria andTbCategoryIdBetween(Integer value1, Integer value2) {
             addCriterion("tb_category_id between", value1, value2, "tbCategoryId");
             return (Criteria) this;
         }
 
-        public Criteria andTbCategoryIdNotBetween(String value1, String value2) {
+        public Criteria andTbCategoryIdNotBetween(Integer value1, Integer value2) {
             addCriterion("tb_category_id not between", value1, value2, "tbCategoryId");
             return (Criteria) this;
         }
@@ -710,11 +690,6 @@ public class ArticleExample {
             super();
         }
 
-        public Criteria andIdLikeInsensitive(String value) {
-            addCriterion("upper(id) like", value.toUpperCase(), "id");
-            return this;
-        }
-
         public Criteria andTitleLikeInsensitive(String value) {
             addCriterion("upper(title) like", value.toUpperCase(), "title");
             return this;
@@ -732,11 +707,6 @@ public class ArticleExample {
 
         public Criteria andDescriptionLikeInsensitive(String value) {
             addCriterion("upper(description) like", value.toUpperCase(), "description");
-            return this;
-        }
-
-        public Criteria andTbCategoryIdLikeInsensitive(String value) {
-            addCriterion("upper(tb_category_id) like", value.toUpperCase(), "tbCategoryId");
             return this;
         }
 

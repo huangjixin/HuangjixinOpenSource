@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Presentation>
+	<PlayerProperties id="PP">
+		<Skin id="PP_S" />
+		<Loop id="PP_L">false</Loop>
+		<Completion id="PP_C">http://www.iemaker.com</Completion>
+		<Live id="PP_LIVE">false</Live>
+		<Vote id="PP_VOTE">true</Vote>
+		<Show id="PP_SHOW">true</Show>
+		<PlayModel />
+	</PlayerProperties>
+	<BuiltinProperties id="BP">
+		<Title id="BP_T">新建课件2</Title>
+		<Keywords id="BP_K" />
+		<Description id="BP_D">无</Description>
+		<PresenterName id="BP_P" />
+		<PresenterCompany id="BP_PC" />
+		<PresenterEmail id="BP_PE" />
+		<PresenterBio id="BP_PB" />
+		<PresenterPhoto id="BP_PP">head.jpg</PresenterPhoto>
+	</BuiltinProperties>
+	<Video>1363785143160</Video>
+	<Courseware id="CCS">
+		<Section id="1">
+			<title>第1节</title>
+			<time>
+				<start>0</start>
+				<end>35424</end>
+			</time>
+			<type>slide</type>
+			<source>5288453063903214964.swf</source>
+			<show>1</show>
+			<pads />
+			<poss />
+			<sticks>
+				<stick long="1100" ptf="31200"></stick>
+			</sticks>
+		</Section>
+		<Section id="2">
+			<title>第2节</title>
+			<time>
+				<start>35424</start>
+				<end>48175</end>
+			</time>
+			<type>slide</type>
+			<source>5227189631714865750.swf</source>
+			<show>1</show>
+			<pads />
+			<poss />
+			<sticks>
+				<stick long="9600" ptf="1600"></stick>
+			</sticks>
+		</Section>
+		<Section id="3">
+			<title>第3节</title>
+			<time>
+				<start>48175</start>
+				<end>49851</end>
+			</time>
+			<type>slide</type>
+			<source>5137662708622926602.swf</source>
+			<show>1</show>
+			<pads />
+			<poss />
+			<sticks />
+		</Section>
+		<Section id="4">
+			<title>第4节</title>
+			<time>
+				<start>49851</start>
+				<end>161218</end>
+			</time>
+			<type>slide</type>
+			<source>5640213179285282065.swf</source>
+			<show>1</show>
+			<pads>
+				<pad col="16711680" long="2500" ptf="29300" ness="3"></pad>
+				<pad col="16711680" long="2900" ptf="32800" ness="3"></pad>
+				<pad col="16711680" long="1900" ptf="37200" ness="3"></pad>
+				<pad col="16711680" long="1900" ptf="40800" ness="3"></pad>
+				<pad col="16711680" long="3100" ptf="43400" ness="3"></pad>
+				<pad col="16711680" long="2700" ptf="54500" ness="3"></pad>
+				<pad col="16711680" long="100" ptf="60100" ness="3">#</pad>
+				<pad col="16711680" long="2200" ptf="60200" ness="3"></pad>
+				<pad col="16711680" long="500" ptf="65400" ness="3"></pad>
+				<pad col="16711680" long="400" ptf="66500" ness="3"></pad>
+				<pad col="16711680" long="500" ptf="67600" ness="3"></pad>
+				<pad col="16711680" long="500" ptf="68600" ness="3"></pad>
+				<pad col="16711680" long="800" ptf="69800" ness="3"></pad>
+				<pad col="16711680" long="400" ptf="71100" ness="3"></pad>
+				<pad ptf="75300" cmd="clear" />
+			</pads>
+			<poss />
+			<sticks>
+				<stick long="26300" ptf="1400"></stick>
+				<stick long="1500" ptf="76900"></stick>
+				<stick long="22600" ptf="78700"></stick>
+			</sticks>
+		</Section>
+		<Section id="5">
+			<title>第5节</title>
+			<time>
+				<start>161218</start>
+				<end>251497</end>
+			</time>
+			<type>slide</type>
+			<source>5348317094050754455.swf</source>
+			<show>1</show>
+			<pads />
+			<poss />
+			<sticks>
+				<stick long="79100" ptf="3100"></stick>
+			</sticks>
+		</Section>
+		<Section id="6">
+			<title>第6节</title>
+			<time>
+				<start>251497</start>
+				<end>408783</end>
+			</time>
+			<type>slide</type>
+			<source>4714139351622814050.swf</source>
+			<show>1</show>
+			<pads />
+			<poss />
+			<sticks>
+				<stick long="142100" ptf="1900"></stick>
+			</sticks>
+		</Section>
+		<Section id="7">
+			<title>第7节</title>
+			<time>
+				<start>408783</start>
+				<end>412067</end>
+			</time>
+			<type>slide</type>
+			<source>5150532416911579860.swf</source>
+			<show>1</show>
+			<pads />
+			<poss />
+			<sticks />
+		</Section>
+		<Section id="8">
+			<title>第8节</title>
+			<time>
+				<start>412067</start>
+				<end>477141</end>
+			</time>
+			<type>slide</type>
+			<source>4840363577554797960.swf</source>
+			<show>1</show>
+			<pads />
+			<poss />
+			<sticks>
+				<stick long="57300" ptf="2100"></stick>
+			</sticks>
+		</Section>
+		<Section id="9">
+			<title>第9节</title>
+			<time>
+				<start>477141</start>
+				<end>482272</end>
+			</time>
+			<type>slide</type>
+			<source>5092714163010136912.swf</source>
+			<show>1</show>
+			<pads />
+			<poss />
+			<sticks />
+		</Section>
+	</Courseware>
+</Presentation>
+<Root>
+	<Page Id="1">
+		<Title>把顾客变成信徒 VIP顾客的维护和管理</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="2">
+		<Title>培训小贴士</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="3">
+		<Title>课程大纲</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="4">
+		<Title>课程大纲</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="5">
+		<Title>培养忠诚客户的前提</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="6">
+		<Title>培养和维护忠诚客户的原因</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="7">
+		<Title>培养和维护忠诚客户的原因</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="8">
+		<Title>课程大纲</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="9">
+		<Title>如何获得顾客的忠诚</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="10">
+		<Title>如何获得顾客的忠诚</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="11">
+		<Title>课程大纲</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="12">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="13">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="14">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="15">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="16">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="17">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="18">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="19">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="20">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="21">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="22">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="23">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="24">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="25">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="26">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="27">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="28">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="29">
+		<Title>获得顾客忠诚的七步骤</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="30">
+		<Title>课程大纲</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="31">
+		<Title>忠诚顾客流失处理</Title>
+		<Content></Content>
+	</Page>
+	<Page Id="32">
+		<Title>总 结</Title>
+		<Content></Content>
+	</Page>
+</Root>

@@ -3,7 +3,7 @@ package com.bingya.domain.system;
 import java.io.Serializable;
 
 public class Role implements Serializable {
-    private String id;
+    private Integer id;
 
     private String name;
 
@@ -11,12 +11,12 @@ public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {

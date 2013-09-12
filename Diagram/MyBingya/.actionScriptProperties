@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="main/flex-src/MyBingya.mxml" projectUUID="84c5bdf1-3d40-4e21-9328-2e2104108805" version="10">
-  <compiler additionalCompilerArguments="-locale en_US" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="src/main/webapp" removeUnusedRSL="true" rootURL="http://huangjixin:8081/MyBingya" sourceFolderPath="src/main/flex-src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+<actionScriptProperties analytics="false" mainApplicationPath="XIFFGUI.mxml" projectUUID="84c5bdf1-3d40-4e21-9328-2e2104108805" version="10">
+  <compiler additionalCompilerArguments="-locale en_US" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="src/main/webapp" removeUnusedRSL="true" rootURL="http://localhost:8088/MyBingya" sourceFolderPath="src/main/flex-src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
@@ -13,10 +13,13 @@
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
-  <theme themeIsDefault="false" themeIsSDK="true" themeLocation="${SDK_THEMES_DIR}/samples/themes/graphite"/>
   <applications>
     <application path="main/flex-src/MyBingya.mxml"/>
     <application path="MyBingya.mxml"/>
+    <application path="XIFFGUI.mxml"/>
+    <application path="RecordApp.mxml"/>
+    <application path="DashBoardApp.mxml"/>
+    <application path="RecordApplication.mxml"/>
   </applications>
   <modules/>
   <buildCSSFiles/>

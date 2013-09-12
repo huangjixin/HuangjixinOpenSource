@@ -3,35 +3,35 @@ package com.bingya.domain.system;
 import java.io.Serializable;
 
 public class RoleResource implements Serializable {
-    private String id;
+    private Integer id;
 
-    private String roleId;
+    private Integer roleId;
 
-    private String resourceId;
+    private Integer resourceId;
 
     private static final long serialVersionUID = 1L;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getRoleId() {
+    public Integer getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(String roleId) {
-        this.roleId = roleId == null ? null : roleId.trim();
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
-    public String getResourceId() {
+    public Integer getResourceId() {
         return resourceId;
     }
 
-    public void setResourceId(String resourceId) {
-        this.resourceId = resourceId == null ? null : resourceId.trim();
+    public void setResourceId(Integer resourceId) {
+        this.resourceId = resourceId;
     }
 }

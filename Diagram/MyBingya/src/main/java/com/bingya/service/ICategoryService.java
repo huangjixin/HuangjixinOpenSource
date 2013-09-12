@@ -25,5 +25,5 @@ public interface ICategoryService extends IGenericService<Category, Integer> {
 	 * @param id
 	 * @return
 	 */
-	List<Category> getByParentId(String id);
+	List<Category> getByParentId(Integer id);
 }

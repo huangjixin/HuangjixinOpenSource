@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.bingya.dao.system.ArticleMapper" >
   <resultMap id="BaseResultMap" type="com.bingya.domain.system.Article" >
-    <id column="id" property="id" jdbcType="VARCHAR" />
+    <id column="id" property="id" jdbcType="INTEGER" />
     <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="author" property="author" jdbcType="VARCHAR" />
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
-    <result column="tb_category_id" property="tbCategoryId" jdbcType="VARCHAR" />
+    <result column="tb_category_id" property="tbCategoryId" jdbcType="INTEGER" />
     <result column="createDate" property="createdate" jdbcType="DATE" />
     <result column="source" property="source" jdbcType="VARCHAR" />
   </resultMap>
@@ -88,15 +88,15 @@
     </if>
     <include refid="OracleDialectSuffix" />
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from tb_article
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from tb_article
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.bingya.domain.system.ArticleExample" >
     delete from tb_article
@@ -108,8 +108,8 @@
     insert into tb_article (id, title, author, 
       content, description, tb_category_id, 
       createDate, source)
-    values (#{id,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
-      #{content,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{tbCategoryId,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{tbCategoryId,jdbcType=INTEGER}, 
       #{createdate,jdbcType=DATE}, #{source,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bingya.domain.system.Article" >
@@ -142,7 +142,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=VARCHAR},
+        #{id,jdbcType=INTEGER},
       </if>
       <if test="title != null" >
         #{title,jdbcType=VARCHAR},
@@ -157,7 +157,7 @@
         #{description,jdbcType=VARCHAR},
       </if>
       <if test="tbCategoryId != null" >
-        #{tbCategoryId,jdbcType=VARCHAR},
+        #{tbCategoryId,jdbcType=INTEGER},
       </if>
       <if test="createdate != null" >
         #{createdate,jdbcType=DATE},
@@ -177,7 +177,7 @@
     update tb_article
     <set >
       <if test="record.id != null" >
-        id = #{record.id,jdbcType=VARCHAR},
+        id = #{record.id,jdbcType=INTEGER},
       </if>
       <if test="record.title != null" >
         title = #{record.title,jdbcType=VARCHAR},
@@ -192,7 +192,7 @@
         description = #{record.description,jdbcType=VARCHAR},
       </if>
       <if test="record.tbCategoryId != null" >
-        tb_category_id = #{record.tbCategoryId,jdbcType=VARCHAR},
+        tb_category_id = #{record.tbCategoryId,jdbcType=INTEGER},
       </if>
       <if test="record.createdate != null" >
         createDate = #{record.createdate,jdbcType=DATE},
@@ -207,12 +207,12 @@
   </update>
   <update id="updateByExample" parameterType="map" >
     update tb_article
-    set id = #{record.id,jdbcType=VARCHAR},
+    set id = #{record.id,jdbcType=INTEGER},
       title = #{record.title,jdbcType=VARCHAR},
       author = #{record.author,jdbcType=VARCHAR},
       content = #{record.content,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
-      tb_category_id = #{record.tbCategoryId,jdbcType=VARCHAR},
+      tb_category_id = #{record.tbCategoryId,jdbcType=INTEGER},
       createDate = #{record.createdate,jdbcType=DATE},
       source = #{record.source,jdbcType=VARCHAR}
     <if test="_parameter != null" >
@@ -235,7 +235,7 @@
         description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="tbCategoryId != null" >
-        tb_category_id = #{tbCategoryId,jdbcType=VARCHAR},
+        tb_category_id = #{tbCategoryId,jdbcType=INTEGER},
       </if>
       <if test="createdate != null" >
         createDate = #{createdate,jdbcType=DATE},
@@ -244,7 +244,7 @@
         source = #{source,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bingya.domain.system.Article" >
     update tb_article
@@ -252,10 +252,10 @@
       author = #{author,jdbcType=VARCHAR},
       content = #{content,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
-      tb_category_id = #{tbCategoryId,jdbcType=VARCHAR},
+      tb_category_id = #{tbCategoryId,jdbcType=INTEGER},
       createDate = #{createdate,jdbcType=DATE},
       source = #{source,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <sql id="OracleDialectPrefix" >
     <if test="page != null" >

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="init()">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Button;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.events.FlexEvent;
+			
+			import components.*;
+			
+			private var popoutBtn:Button;
+			
+			private function init() : void
+			{
+				txtTrace.addEventListener( FlexEvent.VALUE_COMMIT,  handlerDataChange );
+			}
+			
+			private function handlerDataChange( event:FlexEvent ) : void
+			{
+				
+				event.currentTarget.verticalScrollPosition = 
+					event.currentTarget.maxVerticalScrollPosition;
+			}
+			
+			public function writeln( msg:String ) : void
+			{
+				txtTrace.text += msg;
+				txtTrace.text += "\n";
+				trace( msg );
+			}
+			
+			private function clearTrace( event:Event ):void
+			{
+				txtTrace.text = '';
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:Panel
+		title="Trace"
+		width="100%" height="100%"
+		x="0" y="0"
+		headerHeight="{clear.height+5}">
+		<mx:Canvas
+			width="100%" height="100%"
+			styleName="tracePod">
+			
+			<mx:TextArea 
+				id="txtTrace" 
+				width="95%" height="95%"
+				horizontalCenter="0"
+				verticalCenter="0" 
+				editable="false"
+				styleName="traceTextArea"/>
+			
+		</mx:Canvas>
+	</mx:Panel>
+	
+	<mx:LinkButton
+		id="clear" label="Clear Trace"
+		click="clearTrace(event)"
+		styleName="clearTraceButton"
+		top="5" right="5"/>
+	
+</mx:Canvas>

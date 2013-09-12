@@ -12,7 +12,6 @@
 		<param-value>web.root</param-value>
 	</context-param>
 
-	Enable escaping of form submission contents
 	<context-param>
 		<param-name>defaultHtmlEscape</param-name>
 		<param-value>true</param-value>
@@ -84,10 +83,19 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<servlet>  
+		<servlet-name>FileUploaded</servlet-name>  
+		<servlet-class>FileUploaded</servlet-class>  
+    </servlet>  
 	<servlet-mapping>
 		<servlet-name>flex-messagebroker</servlet-name>
 		<url-pattern>/messagebroker/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>  
+		<servlet-name>FileUploaded</servlet-name>  
+		<url-pattern>/FileUploaded</url-pattern>  
+	</servlet-mapping> 
+	
 	<!-- Handles Spring requests -->
 	<!-- <servlet> -->
 	<!-- <servlet-name>MyBingya</servlet-name> -->

@@ -10,7 +10,7 @@ public interface RoleResourceMapper {
 
     int deleteByExample(RoleResourceExample example);
 
-    int deleteByPrimaryKey(String id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(RoleResource record);
 
@@ -18,7 +18,7 @@ public interface RoleResourceMapper {
 
     List<RoleResource> selectByExample(RoleResourceExample example);
 
-    RoleResource selectByPrimaryKey(String id);
+    RoleResource selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") RoleResource record, @Param("example") RoleResourceExample example);
 
