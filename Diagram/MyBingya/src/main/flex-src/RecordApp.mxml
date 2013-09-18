@@ -2,8 +2,10 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="0" minHeight="0"
-			   creationComplete="application1_creationCompleteHandler(event)">
+			   creationComplete="application1_creationCompleteHandler(event)" 
+			   xmlns:flexpaper="com.devaldi.controls.flexpaper.*">
 	<fx:Declarations>
+		
 	</fx:Declarations>
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -15,14 +17,21 @@
 	</fx:Style>
 	<fx:Script>
 		<![CDATA[
+			import com.bingya.asset.controller.AssetEvent;
+			import com.bingya.asset.model.AssetProxy;
 			import com.bingya.common.Global;
+			import com.hurlant.util.asn1.parser.nulll;
 			
 			import components.FileUploadTitleWindow;
 			
+			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.events.SandboxMouseEvent;
 			import mx.managers.PopUpManager;
 			import mx.utils.UIDUtil;
+			
+			import spark.components.Image;
 			
 			/**
 			 * 网络连接
@@ -49,20 +58,64 @@
 			 */ 
 			private var mic:Microphone; 
 			
-			private var userUID:String = UIDUtil.createUID();
+			[Bindable]
+			private var volumeTransform:SoundTransform;  
+			
+			private var userId:String = "1";
+			
+			private var assetProxy:AssetProxy = new AssetProxy();
+			
+			[Bindable]
+			private var pathsArrcol:ArrayCollection;
+			
+			private var currentPageIndex:int = -1;
+			
+			//计时器。
+			private var timer:Timer;
+			//视频流日期
+			private var time:Number;
+			
+			//记录视频时间点。
+			private var startTime:Number = 0;
+			private var endTime:Number = 0;
+			
+			private var isRecording:Boolean;
+			//数据
+			private var presentionXml:XML;
+			
+			private var assetId:int;
 			/**
 			 * 初始化。
 			 */ 
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
 				Global.getInstance().setUrl();
+				var urlloader:URLLoader = new URLLoader();
+				urlloader.load(new URLRequest("config.xml"));
+				urlloader.addEventListener(Event.COMPLETE,function loaderComplete(event:Event):void{
+					var xml:XML = new XML(urlloader.data);
+					if(xml){
+						Global.getInstance().endPoint = xml.endPoint[0];
+						Global.getInstance().FileUploadPath = xml.fileUpload[0];
+						Global.getInstance().recordPath = xml.record[0];
+					}
+				});
+				urlloader.addEventListener(IOErrorEvent.IO_ERROR,function loaderIoError(event:IOErrorEvent):void{
+					Alert.show("加载不了config.xml配置文件");
+				});
+				
+				_netConnection = new NetConnection();
+				_netConnection.addEventListener(NetStatusEvent.NET_STATUS, handlerNetStatus);
+				_netConnection.connect(Global.getInstance().recordPath+userId);
 			}
 			
 			private function doStartRecording() : void
 			{
-				_netConnection = new NetConnection();
-				_netConnection.addEventListener(NetStatusEvent.NET_STATUS, handlerNetStatus);
-				_netConnection.connect("rtmp://localhost/RecordStream/"+userUID);
+				if(!time){
+					time = new Date().time;
+				}
+				
+				this._inCommingStream.publish( userId+"_"+time, "record" );
 			}
 			
 			/**
@@ -79,8 +132,68 @@
 				switch(info.code) 
 				{
 					case "NetConnection.Connect.Success":	
-						if ( doNetStream() )
+						this._inCommingStream = new NetStream(this._netConnection);
+						this._inCommingStream.client = new Object();
+						
+						//保证有一个摄像头
+						camera = Camera.getCamera();
+						if ( camera == null )
 						{
+							if ( Camera.names.length > 0 )
+							{
+								Alert.show( 'The default camera is in use by another application.', 'Error' );
+							}
+							else
+							{
+								Alert.show( 'Please install a webcam to use this sample.', 'Error' );
+							}
+						}
+						else
+						{
+							//if the getting the camera was successful attach it to the NetStream
+							this._inCommingStream.attachCamera(camera); 
+						}
+						
+						//check and make sure that we have a mic
+						mic = Microphone.getMicrophone();
+						if(!volumeTransform){
+							volumeTransform = new SoundTransform();
+							this.volumeBar.value = volumeTransform.volume;
+							this._inCommingStream.soundTransform=volumeTransform;
+						}
+						//If attaching a microphone was unsuccessful...
+						if ( mic == null )
+						{
+							if ( Microphone.names.length > 0 )
+							{
+							}
+							else
+							{
+							}
+						}
+						else
+						{
+							//if the getting the microphone was successful attach it to the NetStream
+							this._inCommingStream.attachAudio(mic);
+						}
+						
+						//we need a video to at least play, so at least a camera
+						//must be attached.
+						if ( camera )
+						{		
+							//Attach the video being recorded by the camera to the VideoDisplay component
+							localVideoDisplay.attachCamera(camera);
+							
+						}
+						else
+						{
+							
+							//If no camera was attached (or just a mic) then close the
+							//NetConnection
+							this._netConnection.close();
+							
+							//clearing the memory for the NetStream
+							this._netConnection = null;
 						}
 						break;
 					
@@ -97,69 +210,35 @@
 			
 			private function doNetStream() : Boolean
 			{
-				this._inCommingStream = new NetStream(this._netConnection);
-				this._inCommingStream.client = new Object();
-				
-				//保证有一个摄像头
-				camera = Camera.getCamera();
-				if ( camera == null )
-				{
-					if ( Camera.names.length > 0 )
-					{
-						Alert.show( 'The default camera is in use by another application.', 'Error' );
-					}
-					else
-					{
-						Alert.show( 'Please install a webcam to use this sample.', 'Error' );
-					}
-				}
-				else
-				{
-					//if the getting the camera was successful attach it to the NetStream
-					this._inCommingStream.attachCamera(camera); 
+				return false;
+			}
+			
+			/**
+			 * 生成presentation.xml.
+			 */ 
+			private function generatePresentationXml():void{
+				if(!time){
+					time = new Date().time;
 				}
 				
-				//check and make sure that we have a mic
-				mic = Microphone.getMicrophone();
+				presentionXml = new XML('<Presentation>' +
+					'<PlayerProperties id="PP">' +
+					'<Skin id="PP_S" />' +
+					'<Loop id="PP_L">false</Loop>' +
+					'<Completion id="PP_C">http://www.iemaker.com</Completion>' +
+					'<Live id="PP_LIVE">false</Live>' +
+					'<Vote id="PP_VOTE">true</Vote>' +
+					'<Show id="PP_SHOW">true</Show><PlayModel />' +
+					'</PlayerProperties><BuiltinProperties id="BP">' +
+					'<Title id="BP_T">新建课件2</Title><Keywords id="BP_K" />' +
+					'<Description id="BP_D">无</Description><PresenterName id="BP_P" />' +
+					'<PresenterCompany id="BP_PC" /><PresenterEmail id="BP_PE" />' +
+					'<PresenterBio id="BP_PB" />' +
+					'<PresenterPhoto id="BP_PP">head.jpg</PresenterPhoto>' +
+					'</BuiltinProperties><Video>'+userId+'_'+time+'</Video><Courseware id="CCS"/></Presentation>');
 				
-				//If attaching a microphone was unsuccessful...
-				if ( mic == null )
-				{
-					if ( Microphone.names.length > 0 )
-					{
-					}
-					else
-					{
-					}
-				}
-				else
-				{
-					//if the getting the microphone was successful attach it to the NetStream
-					this._inCommingStream.attachAudio(mic);
-				}
-				
-				//we need a video to at least play, so at least a camera
-				//must be attached.
-				if ( camera )
-				{			
-					//If camera is present, publish the Netstream with the userUID and a type of "record"
-					this._inCommingStream.publish( userUID, "record" );
+				if(currentPageIndex != -1){
 					
-					//Attach the video being recorded by the camera to the VideoDisplay component
-					localVideoDisplay.attachCamera(camera);
-					
-					return true;
-				}
-				else
-				{
-					
-					//If no camera was attached (or just a mic) then close the
-					//NetConnection
-					this._netConnection.close();
-					
-					//clearing the memory for the NetStream
-					this._netConnection = null;
-					return false;
 				}
 			}
 			/**
@@ -174,7 +253,7 @@
 					//设定宽,高,以及帧 
 					camera.setMode (240,180,24); 
 					//设定画面质量 
-					camera.setQuality (0,90);
+					camera.setQuality (16384,100);
 				}
 				
 				//获取系统的microphone 
@@ -190,9 +269,48 @@
 			 */ 
 			protected function endRecordBtn_clickHandler(event:MouseEvent):void
 			{
+				if(presentionXml){
+					var xmllist:XMLList = presentionXml.Courseware;
+					var path:String = pathsArrcol[currentPageIndex];
+					if(path.indexOf("/")!= -1){
+						path = path.substring(path.lastIndexOf("/")+1,path.length);
+					}
+					startTime = endTime;
+					endTime = Math.floor(this._inCommingStream.time*1000);
+					
+					var xml:XML = new XML('<Section id="'+(currentPageIndex+1)+'">' +
+						'<title>第'+(currentPageIndex+1)+'节</title>' +
+						'<time>' +
+						'<start>'+startTime+'</start><end>'+endTime+'</end>' +
+						'</time><type>slide</type>' +
+						'<source>'+path+'</source>' +
+						'<show>1</show><pads />' +
+						'<poss /><sticks><stick long="1100" ptf="31200">' +
+						'</stick></sticks></Section>');
+					presentionXml.Courseware[0].appendChild(xml);
+					trace(presentionXml.toString());
+				}
+				
+				if(presentionXml){
+					assetProxy.saveXmlStringToFile(presentionXml.toString(),assetId);
+				}
+				
+//				presentionXml = null;
+				if(timer){
+					timer.stop();
+				}
+				
+				isRecording = false;
+				
 				if(this._netConnection){
-					this._netConnection.close();
-					this._netConnection = null;
+					if(this._inCommingStream){
+						_inCommingStream.attachCamera(null);
+						this._inCommingStream.close();
+						this._inCommingStream = null;
+					}
+					
+//					this._netConnection.close();
+//					this._netConnection = null;
 				}
 				
 				endRecordBtn.enabled= false;
@@ -205,6 +323,37 @@
 			protected function startRecordBtn_clickHandler(event:MouseEvent):void
 			{
 				doStartRecording();endRecordBtn.enabled= true;startRecordBtn.enabled= false;
+				generatePresentationXml();
+				timer = new Timer(1000);
+				timer.start();
+				var sTime:Number = new Date().time;
+				timer.addEventListener(TimerEvent.TIMER,function ontimer(event:TimerEvent):void{
+					var eTime:Number = new Date().time;
+					var titleTime:Number = eTime-sTime;
+					titleTime/=1000;
+					var hour:Number = Math.floor(titleTime/3600);
+					var minu:Number = Math.floor((titleTime%3600)/60);
+					var sec:Number = Math.floor(((titleTime%3600)%60)%60);
+					var text:String = "";
+					if(hour< 10){
+						text+="0"+hour+":";
+					}else{
+						text+=hour+":";
+					}
+					if(minu< 10){
+						text+="0"+minu+":";
+					}else{
+						text+=minu+":";
+					}
+					if(sec< 10){
+						text+="0"+sec+"";
+					}else{
+						text+=sec+"";
+					}
+					timeLabel.text = text;
+				});
+				
+				isRecording = true;
 			}
 			
 			/**
@@ -214,63 +363,320 @@
 			{
 				var fileUploadTitleWindow:FileUploadTitleWindow = PopUpManager.createPopUp(this,FileUploadTitleWindow,true) as FileUploadTitleWindow;
 				PopUpManager.centerPopUp(fileUploadTitleWindow);
-				
+				fileUploadTitleWindow.confirmBtn.addEventListener(MouseEvent.CLICK, function onOpenBtnClick(event:MouseEvent):void{
+					var item:Object = fileUploadTitleWindow.dataGrid.selectedItem;
+					if(item){
+						assetId = item.id as int;
+						assetProxy.getPathsById(item.id);
+						assetProxy.addEventListener(AssetEvent.getPathsByIdFault,assetProxyFault);
+						assetProxy.addEventListener(AssetEvent.getPathsByIdResult,assetProxyResult);
+						/* var path:String = item.path;
+						var swfSource:String = Global.getInstance().urlWithName+"/"+path;
+						var results:Array = swfSource.split("\\");
+						swfSource = "";
+						for (var i:int = 0; i < results.length; i++) 
+						{
+							if(i!=results.length-1){
+								swfSource+=results[i]+"/";
+							}else{
+								swfSource+=results[i];
+							}
+						}
+						
+						var lastDot:int = swfSource.lastIndexOf(".");
+						if(lastDot!=-1){
+							swfSource = swfSource.substring(0,lastDot);
+						}
+						swfSource+=".swf"; */
+//						swfLoader.source = "http://localhost:8088/MyBingya/upload/1/english/java.swf";
+//						swfLoader.load("http://localhost:8088/MyBingya/upload/1/english/java.swf");
+//						flexPaperViewer.SwfFile = swfSource;
+					}
+					PopUpManager.removePopUp(fileUploadTitleWindow);
+				});
 			}
 			
+			protected function assetProxyFault(event:AssetEvent):void
+			{
+				Alert.show( event.object.toString() );
+			}
+			
+			protected function assetProxyResult(event:AssetEvent):void
+			{
+				var arrcol:ArrayCollection = event.object as ArrayCollection;
+				pathsArrcol = arrcol;
+				currentPageIndex = -1;
+				if(arrcol && arrcol.length>0){
+//					flexPaperViewer.SwfFile = arrcol[0];
+					swfLoader.source = arrcol[0];
+					currentPageIndex = 0;
+				}
+			}
+			
+			/**
+			 * 打开视频。
+			 */ 
+			protected function openVedioBtn_clickHandler(event:MouseEvent):void
+			{
+				 if (openVedioBtn.selected){
+					if(this._inCommingStream){
+						if(this.camera){
+							this._inCommingStream.attachCamera(camera);
+						}
+					}
+				} else{
+					if(this._inCommingStream){
+						this._inCommingStream.close();
+						this._inCommingStream.attachCamera(null);
+					}
+				} 
+			}
+			
+			protected function lastBtn_clickHandler(event:MouseEvent):void
+			{
+				if(pathsArrcol && pathsArrcol.length>0){
+					if(currentPageIndex-1 >=0){
+						if(presentionXml){//录制状态，生成XML节点。
+							var path:String = pathsArrcol[currentPageIndex];
+							if(path.indexOf("/")!= -1){
+								path = path.substring(path.lastIndexOf("/")+1,path.length);
+							}
+							
+							startTime = endTime;
+							endTime  = Math.floor(this._inCommingStream.time*1000);
+							var xml:XML = new XML('<Section id="'+(currentPageIndex+1)+'">' +
+								'<title>第'+(currentPageIndex+1)+'节</title>' +
+								'<time>' +
+								'<start>'+startTime+'</start><end>'+endTime+'</end>' +
+								'</time><type>slide</type>' +
+								'<source>'+path+'</source>' +
+								'<show>1</show><pads />' +
+								'<poss /><sticks><stick long="1100" ptf="31200">' +
+								'</stick></sticks></Section>');
+							presentionXml.Courseware[0].appendChild(xml);
+						}
+						
+						currentPageIndex-=1;
+						
+						deleteGraphicBtn_clickHandler(event);//翻页清空画笔
+					}
+					swfLoader.source = pathsArrcol[currentPageIndex];
+				}
+			}
+			
+			protected function nextBtn_clickHandler(event:MouseEvent):void
+			{
+				if(pathsArrcol && pathsArrcol.length>0){
+					if(currentPageIndex+1 < pathsArrcol.length){
+						if(presentionXml){//录制状态，生成XML节点。
+							var path:String = pathsArrcol[currentPageIndex];
+							if(path.indexOf("/")!= -1){
+								path = path.substring(path.lastIndexOf("/")+1,path.length);
+							}
+							
+							startTime = endTime;
+							endTime  = Math.floor(this._inCommingStream.time*1000);
+							var xml:XML = new XML('<Section id="'+(currentPageIndex+1)+'">' +
+								'<title>第'+(currentPageIndex+1)+'节</title>' +
+								'<time>' +
+								'<start>'+startTime+'</start><end>'+endTime+'</end>' +
+								'</time><type>slide</type>' +
+								'<source>'+path+'</source>' +
+								'<show>1</show><pads />' +
+								'<poss /><sticks><stick long="1100" ptf="31200">' +
+								'</stick></sticks></Section>');
+							presentionXml.Courseware[0].appendChild(xml);
+						}
+						
+						currentPageIndex+=1;
+						
+						deleteGraphicBtn_clickHandler(event);//翻页清空画笔
+					}
+					swfLoader.source = pathsArrcol[currentPageIndex];
+				}
+			}
+			
+			private var content:BitmapData;
+			private var bitmap:Bitmap;
+			private var image:Image;
+			private var action:int;
+			private var clearAll:int = 1;
+			/**
+			 * 画笔
+			 */ 
+			protected function graphicBtn_clickHandler(event:MouseEvent):void
+			{
+				if(!image){
+					image = new Image();
+					
+					if(!image.source){
+						content = new BitmapData(drawingGroup.width,drawingGroup.height,true,0x00FFFFFF);
+						//把content显示出来
+						bitmap = new Bitmap(content);
+						image.source = bitmap;
+					}
+					
+					drawingGroup.addElement(image);
+				}
+				drawingGroup.addEventListener(MouseEvent.MOUSE_DOWN,ondrawingGroupMouseDown);
+				action = 0;
+				graphicGroup.visible = true;
+			}
+			
+			/**
+			 * 画笔层鼠标按下。
+			 */ 
+			protected function ondrawingGroupMouseDown(event:MouseEvent):void
+			{
+				var graphics:Graphics = graphicGroup.graphics;
+				graphics.lineStyle(sizeHSlider.value,colorPicker.selectedColor);
+				graphics.moveTo(graphicGroup.mouseX,graphicGroup.mouseY);
+				
+				var displayObject:DisplayObject = systemManager.getSandboxRoot();  
+				displayObject.addEventListener(MouseEvent.MOUSE_UP, this.mouseUpHandler, true);  
+				displayObject.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseDragHandler, true);  
+				displayObject.addEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, this.mouseUpHandler, true);  
+				displayObject.addEventListener(SandboxMouseEvent.MOUSE_MOVE_SOMEWHERE, this.mouseDragHandler, true);  
+				systemManager.deployMouseShields(true);  
+			}
+			
+			protected function mouseDragHandler(event:Event):void  
+			{  
+				var graphics:Graphics = graphicGroup.graphics;
+				if(0>graphicGroup.mouseX || graphicGroup.mouseX>graphicGroup.width || 0>graphicGroup.mouseY || graphicGroup.mouseY>graphicGroup.height){
+					return;
+				}else{
+					graphics.lineTo(graphicGroup.mouseX,graphicGroup.mouseY);
+					if(action == 1){
+						content.draw(graphicGroup,new Matrix(),new ColorTransform(),BlendMode.ERASE);
+					}
+				}
+			}  
+			
+			protected function mouseUpHandler(event:Event):void  
+			{  
+				if(action == 0){
+					content.draw(graphicGroup,new Matrix(),new ColorTransform(),BlendMode.NORMAL,new Rectangle(0,0,graphicGroup.width,graphicGroup.height))				
+				}
+					
+				var graphics:Graphics = graphicGroup.graphics;
+				graphics.clear();
+				
+				var displayObject:DisplayObject=systemManager.getSandboxRoot();  
+				displayObject.removeEventListener(MouseEvent.MOUSE_UP, this.mouseUpHandler, true);  
+				displayObject.removeEventListener(MouseEvent.MOUSE_MOVE, this.mouseDragHandler, true);  
+				displayObject.removeEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, this.mouseUpHandler, true);  
+				displayObject.removeEventListener(SandboxMouseEvent.MOUSE_MOVE_SOMEWHERE, this.mouseDragHandler, true);  
+				systemManager.deployMouseShields(false);  
+			}  
+			
+			protected function ereserBtn_clickHandler(event:MouseEvent):void
+			{
+				action = 1;
+				graphicGroup.visible = false;
+			}
+			
+			protected function sizeHSlider_changeHandler(event:Event):void
+			{
+				var graphics:Graphics = graphicGroup.graphics;
+				graphics.lineStyle(sizeHSlider.value,colorPicker.selectedColor);
+			}
+			
+			protected function volumeBar_changeHandler(event:Event):void
+			{
+				if(volumeTransform){
+					volumeTransform.volume = volumeBar.value;
+				}
+			}
+			
+			/**
+			 * 删除画笔。
+			 */ 
+			protected function deleteGraphicBtn_clickHandler(event:MouseEvent = null):void
+			{
+				if(image){
+					image.source = null;
+					content = new BitmapData(drawingGroup.width,drawingGroup.height,true,0x00FFFFFF);
+					//把content显示出来
+					bitmap = new Bitmap(content);
+					image.source = bitmap;
+				}
+			}
+			
+			protected function saveXmlBtn_clickHandler(event:MouseEvent):void
+			{
+				var fileRef:FileReference = new FileReference();
+				fileRef.save(presentionXml.toString(),"presentation.xml");
+			}
 		]]>
 	</fx:Script>
-	<s:layout>
-		<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
-	</s:layout>
-	<s:VGroup horizontalAlign="center">
-		<s:Button id="openFileBtn" label="讲义……" click="openFileBtn_clickHandler(event)"/>
-		<s:Label text="标注"/>
-		<s:Line width="100%">
-			<s:stroke>
-				<s:SolidColorStroke color="gray"/>
-			</s:stroke>
-		</s:Line>
+	
+	<s:HGroup horizontalAlign="center" verticalAlign="middle" width="100%" height="100%">
+		<s:VGroup horizontalAlign="center">
+			<s:Button id="openFileBtn" label="讲义……" click="openFileBtn_clickHandler(event)"/>
+			<s:Label text="标注"/>
+			<s:Line width="100%">
+				<s:stroke>
+					<s:SolidColorStroke color="gray"/>
+				</s:stroke>
+			</s:Line>
+			<s:Group>
+				<s:Rect width="100%" height="100%">
+					<s:fill>
+						<s:SolidColor color="gray"/>
+					</s:fill>
+				</s:Rect>
+				<s:VGroup left="5" right="5" bottom="5" top="5">
+					<s:ToggleButton id="graphicBtn" label="画笔" click="graphicBtn_clickHandler(event)"/>
+					<mx:ColorPicker id="colorPicker"/>
+					<s:ToggleButton id="ereserBtn" label="橡皮擦" click="ereserBtn_clickHandler(event)"/>
+					<s:HSlider id="sizeHSlider" minimum="1" maximum="10" value="2" change="sizeHSlider_changeHandler(event)"/>
+					<s:Button label="删除画笔" id="deleteGraphicBtn" click="deleteGraphicBtn_clickHandler(event)"/>
+					<s:Spacer height="5"/>
+					<s:Button id="saveXmlBtn" label="保存生成的xml数据" click="saveXmlBtn_clickHandler(event)"/>
+				</s:VGroup>
+			</s:Group>
+		</s:VGroup>
 		<s:Group>
 			<s:Rect width="100%" height="100%">
 				<s:fill>
-					<s:SolidColor color="gray"/>
+					<s:SolidColor color="green"/>
 				</s:fill>
 			</s:Rect>
-			<s:VGroup left="5" right="5" bottom="5" top="5">
-				<s:Button label="红"/>
-				<s:Button label="绿"/>
-				<s:Button label="蓝"/>
-				<s:Button label="橡皮擦"/>
-				<s:Button label="删除"/>
-			</s:VGroup>
+			<s:SWFLoader id="swfLoader" width="700" height="500"/>
+			<s:Group id="drawingGroup" width="{swfLoader.width}" height="{swfLoader.height}">
+				<s:Rect width="100%" height="100%">
+					<s:fill>
+						<s:SolidColor color="white" alpha="0"/>
+					</s:fill>
+				</s:Rect>
+			</s:Group>
+			<s:Group id="graphicGroup" width="{swfLoader.width}" height="{swfLoader.height}">
+				
+			</s:Group>
+			<!--<flexpaper:FlexPaperViewer id="flexPaperViewer" width="520" height="450" Scale="0.6" /> -->
+			<s:Button id="lastBtn" label="《" left="0" verticalCenter="0" click="lastBtn_clickHandler(event)"/>
+			<s:Button id="nextBtn" label="》" right="0" verticalCenter="0" click="nextBtn_clickHandler(event)"/>
 		</s:Group>
-	</s:VGroup>
-	<s:Group>
-		<s:Rect width="100%" height="100%">
-			<s:fill>
-				<s:SolidColor color="green"/>
-			</s:fill>
-		</s:Rect>
-		<s:SWFLoader id="swfLoader" width="700" height="500"/>
-		<s:Button id="lastBtn" label="《" left="0" verticalCenter="0"/>
-		<s:Button id="nextBtn" label="》" right="0" verticalCenter="0"/>
-	</s:Group>
-	<s:VGroup horizontalAlign="center">
-		<mx:VideoDisplay id="localVideoDisplay" width="300" height="240" live="true"/>
-		<s:HGroup verticalAlign="middle">
-			<s:Label text="视频"/>
-			<s:ToggleButton label="打开"/>
-			<s:Spacer width="5"/>
-			<s:Label text="音量"/>
-			<s:HSlider id="voiceHSlider" minimum="0" maximum="100"/>
-			<s:Spacer width="5"/>
-			<s:Button label="设置"/>
-		</s:HGroup>
-		<s:Label text="00:00:00" color="blue" fontSize="18"/>
-		<s:Label text="0"/>
-		<s:Button label="环境自测"/>
-		<s:Button id="startRecordBtn" label="开始录制" click="startRecordBtn_clickHandler(event)"/>
-		<s:Button id="endRecordBtn" label="退出" click="endRecordBtn_clickHandler(event)"/>
-		<s:Spacer height="110"/>
-	</s:VGroup>
+		<s:VGroup horizontalAlign="center">
+			<mx:VideoDisplay id="localVideoDisplay" width="300" height="240" live="true"/>
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="视频"/>
+				<s:ToggleButton id="openVedioBtn" click="openVedioBtn_clickHandler(event)" label="打开"/>
+				<s:Spacer width="5"/>
+				<s:Label text="音量"/>
+				<s:VolumeBar id="volumeBar" change="volumeBar_changeHandler(event)"/>
+				<!--<s:HSlider id="voiceHSlider" minimum="0" maximum="100"/>-->
+				<s:Spacer width="5"/>
+				<s:Button label="设置"/>
+			</s:HGroup>
+			<s:Label id="timeLabel" text="00:00:00" color="blue" fontSize="18"/>
+			<s:Label text="0"/>
+			<!--<s:Button label="环境自测"/>-->
+			<s:Button id="startRecordBtn" label="开始录制" click="startRecordBtn_clickHandler(event)"/>
+			<s:Button id="endRecordBtn" label="退出" click="endRecordBtn_clickHandler(event)"/>
+			<!--<s:Spacer height="80"/>-->
+		</s:VGroup>
+	</s:HGroup>
+	<s:Label text="测试水印" horizontalCenter="0" verticalCenter="0" fontSize="60" color="blue"/>
 </s:Application>

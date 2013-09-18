@@ -18,4 +18,14 @@ public interface IAssetService extends IGenericService<Asset, Integer> {
 	List<Asset> selectByUserId(Integer userId);
 	
 	List<Asset> selectByName(String name);
+
+	List<String> getPathsById(Integer id);
+
+	/**
+	 * 把字符串的xml写到讲义所在文件夹下面。
+	 * @param xmlString
+	 * @param assetId
+	 */
+	Boolean saveXmlStringToFile(String xmlString,int assetId);
+	
 }

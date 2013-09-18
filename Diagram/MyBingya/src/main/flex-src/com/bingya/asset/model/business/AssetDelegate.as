@@ -22,7 +22,7 @@ package com.bingya.asset.model.business
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		
 		private var _responder : IResponder;  
-		private var _service : Object; 
+		private var _service : RemoteObject; 
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// public 公有变量声明处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -36,6 +36,7 @@ package com.bingya.asset.model.business
 			_service = new RemoteObject();  
 			_service.endpoint = Global.getInstance().endPoint;  // 端点；
 			_service.destination = "assetServiceImpl";        // 目标对象；
+			_service.source = "AssetServiceImpl";        // 目标对象；
 			_service.makeObjectsBindable=true;  
 			_service.showBusyCursor=true;
 			
@@ -54,6 +55,18 @@ package com.bingya.asset.model.business
 		public function  deleteByPrimaryKey(id:int):void
 		{
 			var call:Object = _service.deleteByPrimaryKey(id);  
+			call.addResponder(_responder);  
+		}
+		
+		public function  getPathsById(id:int):void
+		{
+			var call:Object = _service.getPathsById(id);  
+			call.addResponder(_responder);  
+		}
+		
+		public function  saveXmlStringToFile( xmlString:String, assetId:int):void
+		{
+			var call:Object = _service.saveXmlStringToFile(xmlString,assetId);  
 			call.addResponder(_responder);  
 		}
 		

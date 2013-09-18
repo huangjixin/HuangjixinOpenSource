@@ -22,9 +22,11 @@
 			
 			private var assetProxy:AssetProxy;
 			
+			private var userId:String = "1";
+			
 			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
 			{
-				filePath = Global.getInstance().urlWithName+"/FileUploaded";
+				filePath = Global.getInstance().FileUploadPath;
 				
 				assetProxy = new AssetProxy();
 				
@@ -111,7 +113,7 @@
 				if (e.detail == Alert.YES)  
 				{  
 					var request:URLRequest=new URLRequest(filePath);
-					var urlVariables:URLVariables = new URLVariables("userId=1&course=english");
+					var urlVariables:URLVariables = new URLVariables("userId="+userId+"&course=english");
 					request.data = urlVariables;
 					try  
 					{  
@@ -167,12 +169,12 @@
 	</s:DataGrid>
 	<s:HGroup>
 		<s:Spacer width="100%"/>
-		<s:Button id="openBtn" label="打开"/>
+		<s:Button id="openBtn" label="打开" enabled="{dataGrid.selectedItem!=null}"/>
 		<s:Button id="deleteBtn" label="删除" enabled="{dataGrid.selectedItem!=null}" click="deleteBtn_clickHandler(event)"/>
 	</s:HGroup>
 	<s:controlBarContent>
 		<s:Spacer width="100%"/>
-		<s:Button id="confirmBtn" label="确定"/>
+		<s:Button id="confirmBtn" label="确定打开"/>
 		<s:Button id="cancelBtn" label="取消" click="titlewindow1_closeHandler();"/>
 	</s:controlBarContent>
 </s:TitleWindow>

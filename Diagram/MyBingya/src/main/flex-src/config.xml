@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<endPoint>http://localhost:8088/MyBingya/messagebroker/amf</endPoint>
+	<fileUpload>http://localhost:8088/MyBingya/FileUploaded</fileUpload>
+	<record>rtmp://localhost/RecordStream/</record><!-- 录播路径 -->
+</config>

@@ -11,6 +11,14 @@ package com.bingya.asset.controller
 		public static const deleteByPrimaryKey:String = "deleteByPrimaryKey";
 		public static const deleteByPrimaryKeyResult:String = "deleteByPrimaryKeyResult";
 		public static const deleteByPrimaryKeyFault:String = "deleteByPrimaryKeyFault";
+
+		public static const getPathsById:String = "getPathsById";
+		public static const getPathsByIdResult:String = "getPathsByIdResult";
+		public static const getPathsByIdFault:String = "getPathsByIdFault";
+
+		public static const saveXmlStringToFile:String = "saveXmlStringToFile";
+		public static const saveXmlStringToFileResult:String = "saveXmlStringToFileResult";
+		public static const saveXmlStringToFileFault:String = "saveXmlStringToFileFault";
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// public 公有变量声明处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/

@@ -3,6 +3,8 @@
  */
 package com.bingya.service.impl;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -158,6 +160,49 @@ public class AssetServiceImpl implements IAssetService {
 		
 		List<Asset> list = assetMapper.selectByExample(assetExample);
 		return list;
+	}
+
+	@Override
+	public List<String> getPathsById(Integer id) {
+		List<String> list = new ArrayList<String>();
+		Asset asset = assetMapper.selectByPrimaryKey(id);
+		String path = asset.getPath();
+		path = path.replace("\\", "/");
+		int lastDot = path.lastIndexOf(".");
+		if(lastDot!=-1){
+			path = path.substring(0,lastDot);
+		}
+		String path1 = path+"1";
+		String path2 = path+"2";
+		String path3 = path+"3";
+		String path4 = path+"4";
+		path+=".swf";
+		path1+=".swf";
+		path2+=".swf";
+		path3+=".swf";
+		path4+=".swf";
+		list.add(path);
+		list.add(path1);
+		list.add(path2);
+		list.add(path3);
+		list.add(path4);
+		return list;
+	}
+
+	@Override
+	public Boolean saveXmlStringToFile(String xmlString,int assetId) {
+		Asset asset = assetMapper.selectByPrimaryKey(assetId);
+		asset.getPath();
+		String uploadPath = System.getProperty("web.root");
+		uploadPath += asset.getPath();
+		int lastIndex = (uploadPath ).lastIndexOf(File.separator);
+		// 文件后缀
+		String fileName = (uploadPath ).substring(lastIndex + 1,
+				(uploadPath).length());
+		String fileDir = (uploadPath).substring(0,uploadPath.length()-fileName.length());
+		fileDir+=assetId+"_presentation.xml";
+		DeleteFileUtil.string2File(xmlString, fileDir);
+		return null;
 	}
 
 }

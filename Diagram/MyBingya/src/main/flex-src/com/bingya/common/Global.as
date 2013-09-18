@@ -29,6 +29,10 @@ package com.bingya.common
 		
 		public var urlWithName:String = "";
 		
+		public var FileUploadPath:String = "";
+		
+		public var recordPath:String = "rtmp://localhost/RecordStream/";
+		
 		public var appFileUrl:String = "http://localhost:8080/gdds_portal/hall_swf/gdds_portal.swf";
 		
 		public var frequency:Number = 900000;			//定时播放频率；
@@ -101,7 +105,12 @@ package com.bingya.common
 			if(array && array.length>4){
 				endPoint+="/"+array[3];
 			}
-			Global.getInstance().urlWithName = endPoint;
+			
+ 			Global.getInstance().recordPath = "rtmp://"+URLUtil.getServerName(url)+"/RecordStream/";
+			
+			Global.getInstance().url = endPoint;
+			
+			Global.getInstance().urlWithName = endPoint+"/FileUploaded";
 			
 			Global.getInstance().endPoint = endPoint + "/"+'messagebroker/amf';
 			

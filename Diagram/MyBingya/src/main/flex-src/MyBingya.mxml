@@ -5,24 +5,51 @@
 			   creationComplete="application1_creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
-			import com.bingya.common.Global;
-			import com.bingya.test.model.TestRemoteServerProxy;
-			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
 			
-			private var testRemoteServer:TestRemoteServerProxy = new TestRemoteServerProxy();
+//			private var testRemoteServer:TestRemoteServerProxy = new TestRemoteServerProxy();
 			
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
-				Global.getInstance().setUrl();
+//				Global.getInstance().setUrl();
 				
-				testRemoteServer.getStr();
+//				testRemoteServer.getStr();
 				
+				assetServiceImplRemoteObject.selectByUserId(1);
+			}
+			
+			protected function assetServiceImplResultHandler(event:ResultEvent):void
+			{
+				var arr:ArrayCollection = event.result as ArrayCollection;
+				if(arr){
+					var str:String = "";
+					for (var i:int = 0; i < arr.length; i++) 
+					{
+						str+=arr[i]+",";
+					}
+					
+					Alert.show(str,"返回数组成功");
+				}
+				Alert.show(event.result.toString(),"调用成功");
+			}
+			
+			protected function assetServiceImplFaultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.toString(),"调用失败");
 			}
 			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:RemoteObject id="assetServiceImplRemoteObject" destination="assetServiceImpl" 
+						endpoint="http://localhost:8088/MyBingya/messagebroker/amf" 
+						source="com.bingya.service.impl.AssetServiceImpl" showBusyCursor="true">
+			<s:method name="selectByUserId" result="assetServiceImplResultHandler(event)" fault="assetServiceImplFaultHandler(event)">
+			</s:method>
+		</s:RemoteObject>
 	</fx:Declarations>
 </s:Application>
