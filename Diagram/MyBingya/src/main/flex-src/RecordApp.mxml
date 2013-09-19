@@ -267,6 +267,16 @@
 			protected function endRecordBtn_clickHandler(event:MouseEvent):void
 			{
 				if(presentionXml){
+					if(timer){
+						timer.stop();
+						timer = null;
+					}
+					
+					isRecording = false;
+					
+					endRecordBtn.enabled= false;
+					startRecordBtn.enabled= true;
+					
 					if(!pathsArrcol|| pathsArrcol.length==0){
 						return;
 					}					
@@ -293,15 +303,6 @@
 				if(presentionXml){
 					assetProxy.saveXmlStringToFile(presentionXml.toString(),assetId);
 				}
-				
-				if(timer){
-					timer.stop();
-				}
-				
-				isRecording = false;
-								
-				endRecordBtn.enabled= false;
-				startRecordBtn.enabled= true;
 			}
 			
 			/**
