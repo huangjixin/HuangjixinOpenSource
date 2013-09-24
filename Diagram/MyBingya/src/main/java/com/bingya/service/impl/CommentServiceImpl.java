@@ -47,7 +47,7 @@ public class CommentServiceImpl implements ICommentService {
 	 * com.bingya.service.IGenericService#deleteByPrimaryKey(java.lang.Integer)
 	 */
 	@Override
-	public int deleteByPrimaryKey(String id) {
+	public int deleteByPrimaryKey(Integer id) {
 		// 外键删除完毕；
 		int i = commentMapper.deleteByPrimaryKey(id);
 		return i;
@@ -59,7 +59,7 @@ public class CommentServiceImpl implements ICommentService {
 	 * @see com.bingya.service.IGenericService#insert(java.io.Serializable)
 	 */
 	@Override
-	public String insert(Comment entity) {
+	public Integer insert(Comment entity) {
 		int i = commentMapper.insertSelective(entity);
 		return entity.getId();
 	}
@@ -81,7 +81,7 @@ public class CommentServiceImpl implements ICommentService {
 	 * com.bingya.service.IGenericService#selectByPrimaryKey(java.lang.Integer)
 	 */
 	@Override
-	public Comment selectByPrimaryKey(String id) {
+	public Comment selectByPrimaryKey(Integer id) {
 		return commentMapper.selectByPrimaryKey(id);
 	}
 

@@ -6,6 +6,7 @@ package com.bingya.service;
 import java.util.List;
 
 import com.bingya.domain.system.Asset;
+import com.bingya.service.domain.AssetBusiDomain;
 import com.bingya.util.Page;
 
 /**
@@ -19,13 +20,14 @@ public interface IAssetService extends IGenericService<Asset, Integer> {
 	
 	List<Asset> selectByName(String name);
 
-	List<String> getPathsById(Integer id);
+	AssetBusiDomain getPathsById(Integer id);
 
 	/**
 	 * 把字符串的xml写到讲义所在文件夹下面。
 	 * @param xmlString
 	 * @param assetId
 	 */
-	Boolean saveXmlStringToFile(String xmlString,int assetId);
+	Boolean saveXmlStringToFile(String xmlString,int userId,int courseId,String name,int assetId);
 	
+	void saveXmlStr(String xmlString,int userId,int courseId,String name,int assetId);
 }

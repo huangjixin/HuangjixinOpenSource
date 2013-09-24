@@ -50,7 +50,7 @@ public class RoleServiceImpl implements IRoleService {
 	 * .Integer)
 	 */
 	@Override
-	public int deleteByPrimaryKey(String id) {
+	public int deleteByPrimaryKey(Integer id) {
 		// --先删除子表数据。
 		// --角色用户。
 		UserRoleExample userRoleExample = new UserRoleExample();
@@ -90,7 +90,7 @@ public class RoleServiceImpl implements IRoleService {
 	 * com.bingya.service.system.IGenericService#insert(java.io.Serializable)
 	 */
 	@Override
-	public String insert(Role entity) {
+	public Integer insert(Role entity) {
 		int i = roleMapper.insertSelective(entity);
 		return entity.getId();
 	}
@@ -114,7 +114,7 @@ public class RoleServiceImpl implements IRoleService {
 	 * .Integer)
 	 */
 	@Override
-	public Role selectByPrimaryKey(String id) {
+	public Role selectByPrimaryKey(Integer id) {
 		Role role = roleMapper.selectByPrimaryKey(id);
 		return role;
 	}

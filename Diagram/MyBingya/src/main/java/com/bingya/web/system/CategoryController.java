@@ -46,7 +46,7 @@ public class CategoryController extends BasicController {
 	 */
 	@RequestMapping("deleteById")
 	public String deleteById(
-			@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "id", required = true) Integer id,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse) {
 		int i = categoryService.deleteByPrimaryKey(id);

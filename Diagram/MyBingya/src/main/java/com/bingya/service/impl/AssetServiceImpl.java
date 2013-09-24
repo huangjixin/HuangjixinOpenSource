@@ -17,6 +17,7 @@ import com.bingya.dao.system.AssetMapper;
 import com.bingya.domain.system.Asset;
 import com.bingya.domain.system.AssetExample;
 import com.bingya.service.IAssetService;
+import com.bingya.service.domain.AssetBusiDomain;
 import com.bingya.util.DeleteFileUtil;
 import com.bingya.util.Page;
 
@@ -163,7 +164,9 @@ public class AssetServiceImpl implements IAssetService {
 	}
 
 	@Override
-	public List<String> getPathsById(Integer id) {
+	public AssetBusiDomain getPathsById(Integer id) {
+//		String title = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Root><Page Id=\"1\"><Title>把顾客变成信徒VIP顾客的维护和管理</Title><Content></Content></Page><Page Id=\"2\"><Title>培训小贴士</Title><Content></Content></Page><Page Id=\"3\"><Title>课程大纲</Title><Content></Content></Page><Page Id=\"4\"><Title>课程大纲</Title><Content></Content></Page><Page Id=\"5\"><Title>adfd</Title><Content></Content></Page></Root>";
+		String title = "";
 		List<String> list = new ArrayList<String>();
 		Asset asset = assetMapper.selectByPrimaryKey(id);
 		String path = asset.getPath();
@@ -186,11 +189,18 @@ public class AssetServiceImpl implements IAssetService {
 		list.add(path2);
 		list.add(path3);
 		list.add(path4);
-		return list;
+		
+		AssetBusiDomain assetBusiDomain = new AssetBusiDomain();
+		assetBusiDomain.setPaths(list);
+		assetBusiDomain.setTitleXmlString(title);
+		return assetBusiDomain;
 	}
 
 	@Override
-	public Boolean saveXmlStringToFile(String xmlString,int assetId) {
+	public Boolean saveXmlStringToFile(String xmlString,int userId,int courseId,String name,int assetId) {
+		if("".equals(xmlString)){
+			return false;
+		}
 		Asset asset = assetMapper.selectByPrimaryKey(assetId);
 		asset.getPath();
 		String uploadPath = System.getProperty("web.root");
@@ -202,7 +212,26 @@ public class AssetServiceImpl implements IAssetService {
 		String fileDir = (uploadPath).substring(0,uploadPath.length()-fileName.length());
 		fileDir+=assetId+"_presentation.xml";
 		DeleteFileUtil.string2File(xmlString, fileDir);
-		return null;
+		return true;
+	}
+	
+	@Override
+	public void saveXmlStr(String xmlString,int userId,int courseId,String name,int assetId){
+		if("".equals(xmlString)){
+			return;
+		}
+		Asset asset = assetMapper.selectByPrimaryKey(assetId);
+		asset.getPath();
+		String uploadPath = System.getProperty("web.root");
+		uploadPath += asset.getPath();
+		int lastIndex = (uploadPath ).lastIndexOf(File.separator);
+		// 文件后缀
+		String fileName = (uploadPath ).substring(lastIndex + 1,
+				(uploadPath).length());
+		String fileDir = (uploadPath).substring(0,uploadPath.length()-fileName.length());
+		fileDir+=assetId+"_presentation.xml";
+		DeleteFileUtil.string2File(xmlString, fileDir);
+		return ;
 	}
 
 }

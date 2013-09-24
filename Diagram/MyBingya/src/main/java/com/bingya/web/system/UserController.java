@@ -37,7 +37,7 @@ public class UserController extends BasicController {
 
 	@RequestMapping("deleteById")
 	public String deleteById(
-			@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "id", required = true) Integer id,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse) {
 		int i = userService.deleteByPrimaryKey(id);
@@ -63,7 +63,7 @@ public class UserController extends BasicController {
 			return "menus/create";
 		}
 		uiModel.asMap().clear();
-		String i = userService.insert(user);
+		Integer i = userService.insert(user);
 		// return "redirect:/menus/"
 		// + encodeUrlPathSegment("" + i, httpServletRequest);
 		return "redirect:/users";

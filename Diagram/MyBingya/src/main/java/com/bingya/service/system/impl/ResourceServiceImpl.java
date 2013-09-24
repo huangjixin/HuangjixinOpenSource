@@ -46,7 +46,7 @@ public class ResourceServiceImpl implements IResourceService {
 	 * com.bingya.service.IGenericService#deleteByPrimaryKey(java.lang.Integer)
 	 */
 	@Override
-	public int deleteByPrimaryKey(String id) {
+	public int deleteByPrimaryKey(Integer id) {
 		// 外键删除完毕；
 		int i = resourceMapper.deleteByPrimaryKey(id);
 		return i;
@@ -58,7 +58,7 @@ public class ResourceServiceImpl implements IResourceService {
 	 * @see com.bingya.service.IGenericService#insert(java.io.Serializable)
 	 */
 	@Override
-	public String insert(Resource entity) {
+	public Integer insert(Resource entity) {
 		int i = resourceMapper.insertSelective(entity);
 		return entity.getId();
 	}
@@ -80,7 +80,7 @@ public class ResourceServiceImpl implements IResourceService {
 	 * com.bingya.service.IGenericService#selectByPrimaryKey(java.lang.Integer)
 	 */
 	@Override
-	public Resource selectByPrimaryKey(String id) {
+	public Resource selectByPrimaryKey(Integer id) {
 		return resourceMapper.selectByPrimaryKey(id);
 	}
 

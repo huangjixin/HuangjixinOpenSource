@@ -59,7 +59,7 @@ public class MenuServiceImpl implements IMenuService {
 	 */
 	@Override
 	@Transactional
-	public int deleteByPrimaryKey(String id) {
+	public int deleteByPrimaryKey(Integer id) {
 		// 外键删除；
 		RoleMenuExample roleMenuExample = new RoleMenuExample();
 		roleMenuExample.createCriteria().andMenuIdEqualTo(id);
@@ -85,17 +85,15 @@ public class MenuServiceImpl implements IMenuService {
 	 * com.mvcbasic.service.sys.IGenericService#insert(java.io.Serializable)
 	 */
 	@Override
-	public String insert(Menu entity) {
+	public Integer insert(Menu entity) {
 		Date date = new Date();
 		Long time = date.getTime();
-		entity.setId("" + time);
+//		entity.setId(time);
 		if ("".equals(entity.getParentid())) {
 			entity.setParentid(null);
 		}
 		int i = menuMapper.insertSelective(entity);
-		if (i == 0) {
-			return "" + i;
-		}
+		
 		return entity.getId();
 	}
 
@@ -117,7 +115,7 @@ public class MenuServiceImpl implements IMenuService {
 	 * .Integer)
 	 */
 	@Override
-	public Menu selectByPrimaryKey(String id) {
+	public Menu selectByPrimaryKey(Integer id) {
 
 		return menuMapper.selectByPrimaryKey(id);
 	}
@@ -175,7 +173,7 @@ public class MenuServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public List<Menu> getByParentId(String id) {
+	public List<Menu> getByParentId(Integer id) {
 		MenuExample menuExample = new MenuExample();
 		menuExample.createCriteria().andParentidEqualTo(id);
 		return menuMapper.selectByExample(menuExample);
