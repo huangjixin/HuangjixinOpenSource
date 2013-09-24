@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="350"
+		 title="接收到的本地视音频">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				if(this.isPopUp){
+					PopUpManager.removePopUp(this);
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center"/>
+	</s:layout>
+	<mx:VideoDisplay id="localVideoDisplay" width="320" height="240" live="true"/>
+	<s:Group width="100%" height="100%">
+		<s:Rect width="100%" height="100%">
+			<s:fill>
+				<s:SolidColor color="gray" alpha="0.3"/>
+			</s:fill>
+		</s:Rect>
+		<s:VGroup horizontalAlign="center" width="100%" verticalCenter="0" horizontalCenter="0">
+			<s:Label text="如音视频接收不正常，检查打开按钮，点击【设置】进行调整，"/>
+			<s:Button label="取消" click="button1_clickHandler(event)"/>
+			<s:Spacer height="5"/>
+		</s:VGroup>
+	</s:Group>
+</s:Panel>

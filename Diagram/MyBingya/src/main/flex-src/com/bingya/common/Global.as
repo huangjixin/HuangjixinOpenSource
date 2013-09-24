@@ -23,6 +23,8 @@ package com.bingya.common
 		// public 类公有静态变量和静态常量声明处。（全部大写，使用下划线进行分割）
 		// 例如：public static const EXAMPLE:String = "example";
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+		public var swfAppUrl:String = "http://localhost:8080/MyBingya/";
+		
 		public var endPoint:String = "http://localhost:8080/gdds_portal/messagebroker/amf";
 		
 		public var url:String = "";

@@ -22,7 +22,8 @@
 			
 			private var assetProxy:AssetProxy;
 			
-			private var userId:String = "1";
+			[Bindable]
+			public var userId:int = 1;
 			
 			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
 			{
@@ -30,7 +31,7 @@
 				
 				assetProxy = new AssetProxy();
 				
-				assetProxy.selectByUserId(1);
+				assetProxy.selectByUserId(userId);
 				assetProxy.addEventListener(AssetEvent.selectByUserIdFault,selectByUserIdFault);
 				assetProxy.addEventListener(AssetEvent.selectByUserIdResult,selectByUserIdResult);
 
@@ -40,7 +41,7 @@
 			
 			protected function deleteByPrimaryKeyResult(event:AssetEvent):void
 			{
-				assetProxy.selectByUserId(1);
+				assetProxy.selectByUserId(userId);
 			}
 			
 			protected function deleteByPrimaryKeyFault(event:AssetEvent):void
@@ -50,13 +51,18 @@
 			
 			protected function selectByUserIdResult(event:AssetEvent):void
 			{
-				var arrcol:ArrayCollection = event.object as ArrayCollection;
+				var arrcol:ArrayCollection;
+				if(event.object is ArrayCollection){
+					arrcol = event.object as ArrayCollection;
+				}else if(event.object is Array){
+					arrcol = new ArrayCollection(event.object as Array);
+				}
 				dataGrid.dataProvider = arrcol;
 			}
 			
 			protected function selectByUserIdFault(event:AssetEvent):void
 			{
-				Alert.show(event.object.toString());
+				Alert.show(event.object.toString(),"selectByUserId调用失败");
 			}
 			
 			protected function titlewindow1_closeHandler(event:CloseEvent = null):void
@@ -74,18 +80,22 @@
 				file.addEventListener(Event.SELECT, onSelect);  
 				file.addEventListener(Event.COMPLETE,fileUploadCompleteHandler);  
 				file.addEventListener(IOErrorEvent.IO_ERROR,onIoError);
+				file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,onuploadComplete);
+				
 				var types:FileFilter=new FileFilter("PDF,Office (*.pdf,*.doc,*.ppt)", "*.pdf;*.doc;*.ppt;");  
 				var allTypes:Array=new Array(types);  
 				file.browse(allTypes);  
-//				file.browse();  
 			}
 			
 			private function fileUploadCompleteHandler(e:Event):void{  
-				Alert.show("上传完成");  
 				barHGroup.visible = false;
-				assetProxy.selectByUserId(1);
+				assetProxy.selectByUserId(userId);
 			}  
 
+			protected function onuploadComplete(event:DataEvent):void
+			{
+				trace(event.data);
+			}
 			
 			private function onSelect(e:Event):void  
 			{  
@@ -169,7 +179,7 @@
 	</s:DataGrid>
 	<s:HGroup>
 		<s:Spacer width="100%"/>
-		<s:Button id="openBtn" label="打开" enabled="{dataGrid.selectedItem!=null}"/>
+		<!--<s:Button id="openBtn" label="打开" enabled="{dataGrid.selectedItem!=null}"/>-->
 		<s:Button id="deleteBtn" label="删除" enabled="{dataGrid.selectedItem!=null}" click="deleteBtn_clickHandler(event)"/>
 	</s:HGroup>
 	<s:controlBarContent>

@@ -19,6 +19,10 @@ package com.bingya.asset.controller
 		public static const saveXmlStringToFile:String = "saveXmlStringToFile";
 		public static const saveXmlStringToFileResult:String = "saveXmlStringToFileResult";
 		public static const saveXmlStringToFileFault:String = "saveXmlStringToFileFault";
+
+		public static const saveXmlStr:String = "saveXmlStr";
+		public static const saveXmlStrResult:String = "saveXmlStrResult";
+		public static const saveXmlStrFault:String = "saveXmlStrFault";
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		// public 公有变量声明处
 		//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/

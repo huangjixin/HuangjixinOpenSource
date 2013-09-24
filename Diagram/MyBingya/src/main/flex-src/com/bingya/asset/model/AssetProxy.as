@@ -65,10 +65,10 @@ package  com.bingya.asset.model
 			dispatchEvent(new AssetEvent(AssetEvent.getPathsByIdFault,event.fault));
 		} 
 		
-		public function saveXmlStringToFile( xmlString:String, assetId:int):void  
+		public function saveXmlStringToFile( xmlString:String,userId:int,courseId:int,name:String, assetId:int):void  
 		{  
 			var delegate:AssetDelegate = new AssetDelegate(new Responder(saveXmlStringToFileResult, saveXmlStringToFileFault));  
-			delegate.saveXmlStringToFile(xmlString, assetId);
+			delegate.saveXmlStringToFile(xmlString,userId,courseId,name, assetId);
 		}
 		
 		private function saveXmlStringToFileResult(event:ResultEvent):void
@@ -79,6 +79,22 @@ package  com.bingya.asset.model
 		private function saveXmlStringToFileFault(event:FaultEvent):void  
 		{  
 			dispatchEvent(new AssetEvent(AssetEvent.saveXmlStringToFileFault,event.fault));
+		} 
+		
+		public function saveXmlStr(xmlString:String,userId:int,courseId:int,name:String, assetId:int):void  
+		{  
+			var delegate:AssetDelegate = new AssetDelegate(new Responder(saveXmlStrResult, saveXmlStrFault));  
+			delegate.saveXmlStr(xmlString,userId,courseId,name, assetId);
+		}
+		
+		private function saveXmlStrResult(event:ResultEvent):void
+		{
+			dispatchEvent(new AssetEvent(AssetEvent.saveXmlStrResult,event.result)); 
+		}
+		
+		private function saveXmlStrFault(event:FaultEvent):void  
+		{  
+			dispatchEvent(new AssetEvent(AssetEvent.saveXmlStrFault,event.fault));
 		} 
 	}
 }

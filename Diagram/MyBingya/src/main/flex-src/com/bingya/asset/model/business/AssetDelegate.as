@@ -64,9 +64,15 @@ package com.bingya.asset.model.business
 			call.addResponder(_responder);  
 		}
 		
-		public function  saveXmlStringToFile( xmlString:String, assetId:int):void
+		public function  saveXmlStringToFile( xmlString:String,userId:int,courseId:int,name:String, assetId:int):void
 		{
-			var call:Object = _service.saveXmlStringToFile(xmlString,assetId);  
+			var call:Object = _service.saveXmlStringToFile(xmlString,userId,courseId,name,assetId);  
+			call.addResponder(_responder);  
+		}
+		
+		public function  saveXmlStr(xmlString:String,userId:int,courseId:int,name:String, assetId:int):void
+		{
+			var call:Object = _service.saveXmlStr(xmlString,userId,courseId,name,assetId);  
 			call.addResponder(_responder);  
 		}
 		

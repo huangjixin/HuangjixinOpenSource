@@ -7,6 +7,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
@@ -20,6 +21,10 @@
 //				testRemoteServer.getStr();
 				
 				assetServiceImplRemoteObject.selectByUserId(1);
+				
+				var username:String =  FlexGlobals.topLevelApplication.parameters.username;
+				var password:String =  FlexGlobals.topLevelApplication.parameters.password;
+				Alert.show("用户名："+username+",密码："+password);
 			}
 			
 			protected function assetServiceImplResultHandler(event:ResultEvent):void

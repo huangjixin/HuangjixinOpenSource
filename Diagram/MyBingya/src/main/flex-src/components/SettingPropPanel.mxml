@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 title="视频音频设置"
+		 close="cancelBtn_clickHandler()">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.IndexChangeEvent;
+			
+			private var _camera:Camera;
+			
+			private var _fps:Number;
+			
+			private var _tempfps:Number;
+			
+			private var _mic:Microphone;
+			
+			[Bindable]
+			public function get mic():Microphone
+			{
+				return _mic;
+			}
+
+			public function set mic(value:Microphone):void
+			{
+				_mic = value;
+				
+				if(_mic){
+					callLater(function settingMic():void{
+						var mics:ArrayCollection = new ArrayCollection(Microphone.names);
+						if(mics && mics.length>0){
+							micComboBox.dataProvider = mics;
+							micComboBox.selectedIndex = 0;
+							if(_mic){
+								var index:int = mics.getItemIndex(mic.name);
+								micComboBox.selectedIndex = index;
+							}
+						}
+					});
+				} 
+			}
+
+			[Bindable]
+			public function get fps():Number
+			{
+				return _fps;
+			}
+
+			public function set fps(value:Number):void
+			{
+				_fps = value;
+			}
+
+			[Bindable]
+			public function get camera():Camera
+			{
+				return _camera;
+			}
+
+			public function set camera(value:Camera):void
+			{
+				_camera = value;
+				
+				 if(_camera){
+					 _tempfps = _camera.bandwidth;
+					callLater(function settingCamera():void{
+						var cameras:ArrayCollection = new ArrayCollection(Camera.names);
+						if(cameras && cameras.length>0){
+							cameraComboBox.dataProvider = cameras;
+							cameraComboBox.selectedIndex = 0;
+							
+							if(_camera){
+								var index:int = cameras.getItemIndex(_camera.name);
+								cameraComboBox.selectedIndex = index;
+							}
+						}
+					});
+				} 
+			}
+
+			protected function saveBtn_clickHandler(event:MouseEvent):void
+			{
+				if(this.isPopUp){
+					if(mic){
+						mic.setLoopBack(false);
+					}
+				}
+			}
+			
+			protected function cancelBtn_clickHandler(event:MouseEvent = null):void
+			{
+				if(this.isPopUp){
+					if(mic){
+						mic.setLoopBack(false);
+					}
+					
+					if(camera){
+						camera.setQuality(_tempfps, 0);
+					}
+					
+					PopUpManager.removePopUp(this);
+				}
+			}
+			
+			/**
+			 * 摄像头设置。
+			 */ 
+			protected function cameraComboBox_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+			}
+			
+			/**
+			 * 麦克风设置。
+			 */ 
+			protected function micComboBox_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+			}
+			
+			protected function cameraComboBox_changeHandler(event:IndexChangeEvent):void
+			{
+				var item:String = cameraComboBox.selectedItem as String;
+				camera = Camera.getCamera(item);
+				if(camera){
+					camera.setMode(320, 240, 15);
+					camera.setQuality(20 * 1000, 0);
+					camera.setKeyFrameInterval(48);
+				}
+			}
+			
+			protected function micComboBox_changeHandler(event:IndexChangeEvent):void
+			{
+				var item:int = micComboBox.selectedIndex;
+				mic = Microphone.getMicrophone(item);
+			}
+			
+			/**
+			 * 码率改变。 
+			 */ 
+			protected function fpsHSlider_changeHandler(event:Event):void
+			{
+				if(camera){
+					camera.setQuality(fpsHSlider.value * 1000, 0);
+					fps = fpsHSlider.value;
+				}
+			}
+			
+			protected function activityLevelLabel_enterFrameHandler(event:Event):void
+			{
+				if(mic){
+					activityLevelLabel.text = "实时音量:"+mic.activityLevel;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle" horizontalAlign="center" paddingBottom="5" paddingTop="5" paddingLeft="5" paddingRight="5"/>
+	</s:layout>
+	<s:VGroup>
+		<s:Label text="选择摄像头"/>
+		<s:ComboBox id="cameraComboBox" creationComplete="cameraComboBox_creationCompleteHandler(event)" 
+					change="cameraComboBox_changeHandler(event)" width="100%"/>
+		<s:Spacer height="10"/>
+		
+		<s:Label text="码率:{fps}fps"/>
+		<s:Label text="[数值越大越清晰，对网络要求越高]" fontWeight="bold" color="blue"/>
+		<s:HSlider id="fpsHSlider" minimum="10" maximum="1000" width="100%" change="fpsHSlider_changeHandler(event)" value="{fps}"/>
+		<s:Spacer height="10"/>
+		
+		<s:Label text="选择麦克风"/>
+		<s:ComboBox id="micComboBox" 
+					creationComplete="micComboBox_creationCompleteHandler(event)"
+					change="micComboBox_changeHandler(event)" width="100%"/>
+		<s:Label id="activityLevelLabel" text="实时音量:{mic.activityLevel}" enterFrame="activityLevelLabel_enterFrameHandler(event)"/>
+		<!--<mx:ProgressBar id="activityLevel_pb" label="实时音量："/>-->
+	</s:VGroup>
+	<s:VGroup>
+		<mx:VideoDisplay id="localVideoDisplay" width="160" height="120" live="true"/>
+		<s:HGroup horizontalAlign="center" width="100%" verticalCenter="0" horizontalCenter="0">
+			<s:Button id="saveBtn" label="保存" click="saveBtn_clickHandler(event)"/>
+			<s:Button id="cancelBtn" label="取消" click="cancelBtn_clickHandler(event)"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:TitleWindow>
