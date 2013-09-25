@@ -310,11 +310,12 @@
 			}
 			
 			protected function saveXmlStrFault(event:AssetEvent):void{
-				Alert.show("test失败");
+				Alert.show("保存失败");
 			}
 			
 			protected function saveXmlStrResult(event:AssetEvent):void{
-				Alert.show("test成功");
+				Alert.show("保存成功");
+				ExternalInterface.call("saveXmlSuccess");
 			}
 			
 			/**
@@ -347,6 +348,10 @@
 			 */
 			protected function startRecordBtn_clickHandler(event:MouseEvent):void
 			{
+				if(isRecording){
+					startRecordBtn.selected = true;
+					return;
+				}
 				if(camera){
 					localVideoDisplay.attachCamera(camera);
 				}
@@ -705,7 +710,7 @@
 				settingPropPanel.camera  = this.camera;
 				settingPropPanel.mic  = this.mic;
 				settingPropPanel.mic.setLoopBack(true);
-				settingPropPanel.fps = camera.currentFPS;
+//				settingPropPanel.fps = camera.currentFPS;
 				settingPropPanel.localVideoDisplay.attachCamera(camera);
 				settingPropPanel.saveBtn.addEventListener(MouseEvent.CLICK,function saveBtnClick(event:MouseEvent):void{
 //					camera.setMode(camera.width,camera.height,settingPropPanel.fps);
@@ -827,7 +832,8 @@
 				<mx:VideoDisplay id="localVideoDisplay" width="320" height="240" live="true"/>
 				<s:Rect width="100%" height="100%">
 					<s:fill>
-						<s:SolidColor id="videoDisColor" color="0"/>
+						<!--<s:SolidColor id="videoDisColor" color="0"/>-->
+						<s:BitmapFill id="videoDisColor" fillMode="scale" source="@Embed('components/assets/head.jpg')"/>
 					</s:fill>
 				</s:Rect>
 			</s:Group>
@@ -846,7 +852,7 @@
 				<s:Button id="testEvnBtn" width="120" height="50" label="环境自测"
 						  click="testEvnBtn_clickHandler(event)"/>
 				<s:ToggleButton id="startRecordBtn" width="120" height="50" label="开始录制"
-						  click="startRecordBtn_clickHandler(event)"/>
+						  click="startRecordBtn_clickHandler(event)" selected="{isRecording}"/>
 			</s:HGroup>
 			<s:HGroup>
 				<s:ToggleButton id="pauseBtn" width="120" height="50" label="暂停"

@@ -69,6 +69,7 @@
 				
 				 if(_camera){
 					 _tempfps = _camera.bandwidth;
+					 fps= _tempfps/1000;
 					callLater(function settingCamera():void{
 						var cameras:ArrayCollection = new ArrayCollection(Camera.names);
 						if(cameras && cameras.length>0){
