@@ -1,5 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!-- saved from url=(0014)about:internet -->
+<?php 
+    @ $userId = $_GET['userId']; 
+    @ $courseId = $_GET['courseId'];
+?> 
+
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"> 
     <!-- 
     Smart developers always View Source. 
@@ -41,6 +46,8 @@
             // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
             var xiSwfUrlStr = "${expressInstallSwf}";
             var flashvars = {};
+            flashvars.userId = "1" ;
+            flashvars.courseId = "1" ;
             var params = {};
             params.quality = "high";
             params.bgcolor = "${bgcolor}";
@@ -57,6 +64,11 @@
                 flashvars, params, attributes);
             // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
             swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+        </script>
+        <script type="text/javascript">
+        	function saveXmlSuccess(){
+        		alert('保存xml成功');
+        	}
         </script>
     </head>
     <body>
