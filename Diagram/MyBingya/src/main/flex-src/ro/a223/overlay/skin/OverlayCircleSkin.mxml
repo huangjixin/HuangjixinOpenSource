@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	addedToStage="animator.play();"
+	removedFromStage="animator.stop();">
+	
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("ro.a223.overlay.comp.Overlay")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			private var _defaultColor:uint = 0x00CC00;
+			
+			/**
+			 * Starts the animation
+			 */
+			private function play():void
+			{
+				animator.play();
+			}
+			
+			/**
+			 * Stops the animation
+			 */
+			private function stop():void
+			{
+				animator.stop();
+			}
+			
+			/**
+			 * @override - called by flex throught the component lifecycle
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				var cornerRadius:Number = getStyle("cornerRadius");
+				bgRect.radiusX = bgRect.radiusY = cornerRadius; 
+				
+				var filledElementColor:uint = getStyle("filledElementColor");
+				if (filledElementColor != _defaultColor)
+				{
+					colorOne.color = filledElementColor;
+					colorTwo.color = filledElementColor;
+					colorThree.color = filledElementColor;
+				}
+				
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:Sequence id="animator" repeatCount="0"> 
+			<s:AnimateColor
+				target="{colorOne}"
+				colorFrom="#00CC00" 
+				colorTo="#006600" 
+				duration="600"
+				repeatCount="1" 
+				repeatBehavior="reverse"> 
+			</s:AnimateColor>
+			<s:AnimateColor
+				target="{colorTwo}"
+				colorFrom="#00CC00" 
+				colorTo="#006600" 
+				duration="600"
+				repeatCount="1" 
+				repeatBehavior="reverse"> 
+			</s:AnimateColor>
+			<s:AnimateColor
+				target="{colorThree}"
+				colorFrom="#00CC00" 
+				colorTo="#006600" 
+				duration="600"
+				repeatCount="1" 
+				repeatBehavior="reverse"> 
+			</s:AnimateColor>
+		</s:Sequence>	
+	</fx:Declarations>
+	
+	<!-- layer 0: background -->
+	<s:Rect id="bgRect" left="0" right="0" top="0" bottom="0" radiusX="5" radiusY="5">
+		<s:stroke>
+			<s:SolidColorStroke color="#cccccc"/>
+		</s:stroke>
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0xFFFFFF"/>
+				<s:GradientEntry color="0xEEEEEE"/> 
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	<!-- layer 1: animated shapes -->
+	<s:Group horizontalCenter="0" verticalCenter="-13">
+		<s:Ellipse id="filledElementOne" x="0" y="25" width="20" height="20">
+			<s:fill>
+				<s:SolidColor id="colorOne" color="green"/>
+			</s:fill>
+		</s:Ellipse>
+		
+		<s:Ellipse id="filledElementTwo" x="15" y="5" width="20" height="20">
+			<s:fill>
+				<s:SolidColor id="colorTwo" color="green"/>
+			</s:fill>
+		</s:Ellipse>	
+		
+		<s:Ellipse id="filledElementThree" x="30" y="25" width="20" height="20">
+			<s:fill>
+				<s:SolidColor id="colorThree" color="green"/>
+			</s:fill>
+		</s:Ellipse>	
+	</s:Group>
+	
+	<!-- info -->
+	<s:Label id="descriptionLabel" 
+		horizontalCenter="0" 
+		verticalCenter="27">
+	</s:Label>
+	
+</s:Skin>

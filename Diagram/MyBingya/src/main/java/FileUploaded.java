@@ -72,6 +72,7 @@ public class FileUploaded extends HttpServlet {
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 		factory.setSizeThreshold(4096);
 		ServletFileUpload upload = new ServletFileUpload(factory);
+		upload.setHeaderEncoding("UTF-8");
 		upload.setSizeMax(maxPostSize);
 		try {
 			List fileItems = upload.parseRequest(request);
@@ -93,12 +94,11 @@ public class FileUploaded extends HttpServlet {
 				//如果用户上传了课程，那么创建课程文件夹；
 				if (!item.isFormField()) {
 					name = item.getName();
-					List<Asset> list = assetService.selectByName(name);
-					
-					if(list != null && list.size()>0){
-						throw new Exception("不用上传重名的pdf");
-						
-					}
+//					List<Asset> list = assetService.selectByName(name);
+//					
+//					if(list != null && list.size()>0){
+//						throw new Exception("不用上传重名的pdf");
+//					}
 					
 					try {
 						File source = new File(uploadPath + relativePath);
@@ -130,8 +130,9 @@ public class FileUploaded extends HttpServlet {
 						asset.setPath(relativePath);
 						asset.setUserId(Integer.parseInt(userId));
 						asset.setName(name);
+						assetService.insert(asset);
 						
-						 assetService.insert(asset);
+						response.getWriter().write("fileUploadComplete");
 					} else if ("doc".equals(suffix) || "ppt".equals(suffix)) {
 
 					}

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin 
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	addedToStage="animator.play();"
+	removedFromStage="animator.play();">
+
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("ro.a223.overlay.comp.Overlay")]
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			private var _defaultColor:uint = 0xCC0000;
+
+			/**
+			 * @override - called by flex throught the component lifecycle
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				var cornerRadius:Number = getStyle("cornerRadius");
+				bgRect.radiusX = bgRect.radiusY = cornerRadius;
+
+				var filledElementColor:uint = getStyle("filledElementColor");
+				if (filledElementColor != _defaultColor)
+				{
+					colorOne.color = filledElementColor;
+					colorTwo.color = filledElementColor;
+					colorThree.color = filledElementColor;
+				}
+
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<s:GlowFilter id="glow" blurX="5" blurY="5" strength="4" color="#990000"/>
+
+		<s:Sequence id="animator" repeatCount="0">
+			<!-- animate the first square -->
+			<s:Parallel>
+				<s:AnimateFilter 
+					target="{filledElementOne}"
+					repeatCount="2"
+					duration="325"
+					repeatBehavior="reverse"
+					bitmapFilter="{glow}">
+					<s:SimpleMotionPath 
+						property="alpha"
+						valueFrom=".7"
+						valueTo="1">
+					</s:SimpleMotionPath>
+				</s:AnimateFilter>
+
+				<s:AnimateColor 
+					target="{colorOne}"
+					colorFrom="#CC0000"
+					colorTo="#990000"
+					duration="650"
+					repeatCount="1"
+					repeatBehavior="reverse">
+				</s:AnimateColor>
+			</s:Parallel>
+			
+			<!-- animate the second square -->
+			<s:Parallel>
+				<s:AnimateFilter 
+					target="{filledElementTwo}"
+					repeatCount="2"
+					duration="325"
+					repeatBehavior="reverse"
+					bitmapFilter="{glow}">
+					<s:SimpleMotionPath 
+						property="alpha"
+						valueFrom=".7"
+						valueTo="1">
+					</s:SimpleMotionPath>
+				</s:AnimateFilter>
+				
+				<s:AnimateColor 
+					target="{colorTwo}"
+					colorFrom="#CC0000"
+					colorTo="#990000"
+					duration="650"
+					repeatCount="1"
+					repeatBehavior="reverse">
+				</s:AnimateColor>
+			</s:Parallel>
+			
+			<!-- animate the third square -->
+			<s:Parallel>
+				<s:AnimateFilter 
+					target="{filledElementThree}"
+					repeatCount="2"
+					duration="325"
+					repeatBehavior="reverse"
+					bitmapFilter="{glow}">
+					<s:SimpleMotionPath 
+						property="alpha"
+						valueFrom=".7"
+						valueTo="1">
+					</s:SimpleMotionPath>
+				</s:AnimateFilter>
+				
+				<s:AnimateColor 
+					target="{colorThree}"
+					colorFrom="#CC0000"
+					colorTo="#990000"
+					duration="650"
+					repeatCount="1"
+					repeatBehavior="reverse">
+				</s:AnimateColor>
+			</s:Parallel>
+		</s:Sequence>
+	</fx:Declarations>
+
+	<!-- layer 0: shadow -->
+	<!--- @private -->
+	<s:Rect left="5" right="5" top="0" bottom="5" radiusX="4" radiusY="4">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="#001111"/>
+				<s:GradientEntry color="#000000"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+
+	<!-- layer 1: background -->
+	<s:Rect 
+		id="bgRect"
+		left="0"
+		right="0"
+		top="0"
+		bottom="0"
+		radiusX="5"
+		radiusY="5">
+		<s:stroke>
+			<s:SolidColorStroke 
+				color="#cccccc"/>
+		</s:stroke>
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x111111"/>
+				<s:GradientEntry color="0x333333"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+
+	<!-- layer 2: animated shapes -->
+	<s:HGroup 
+		id="grp"
+		horizontalCenter="0"
+		verticalCenter="-10">
+		<s:Rect 
+			id="filledElementOne"
+			width="15"
+			height="15"
+			radiusX="3"
+			radiusY="3">
+			<s:fill>
+				<s:SolidColor id="colorOne" color="#CC0000"/>
+			</s:fill>
+		</s:Rect>
+
+		<s:Rect 
+			id="filledElementTwo"
+			width="15"
+			height="15"
+			radiusX="3"
+			radiusY="3">
+			<s:fill>
+				<s:SolidColor 
+					id="colorTwo" color="#CC0000"/>
+			</s:fill>
+		</s:Rect>
+
+		<s:Rect 
+			id="filledElementThree"
+			width="15"
+			height="15"
+			radiusX="3"
+			radiusY="3">
+			<s:fill>
+				<s:SolidColor 
+					id="colorThree"
+					color="#CC0000"/>
+			</s:fill>
+		</s:Rect>
+	</s:HGroup>
+
+	<!-- info -->
+	<s:Label 
+		id="descriptionLabel"
+		horizontalCenter="0"
+		verticalCenter="10"
+		color="0xFFFFFF">
+	</s:Label>
+
+</s:Skin>

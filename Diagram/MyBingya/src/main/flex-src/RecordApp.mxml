@@ -10,9 +10,18 @@
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace comp "ro.a223.overlay.comp.*";
+		
 		s|Application{
 			fontFamily:"微软雅黑";
 			fontSize:13;
+		}
+		
+		comp|Overlay{
+			skinClass:ClassReference("ro.a223.overlay.skin.OverlayRectangleSkin");
+			cornerRadius:5;
+			filledElementColor:"0xCC0000";
+			
 		}
 	</fx:Style>
 	<fx:Script>
@@ -314,7 +323,7 @@
 			}
 			
 			protected function saveXmlStrResult(event:AssetEvent):void{
-				Alert.show("保存成功");
+//				Alert.show("保存成功");
 				ExternalInterface.call("saveXmlSuccess");
 			}
 			
@@ -402,6 +411,7 @@
 				var fileUploadTitleWindow:FileUploadTitleWindow = PopUpManager.createPopUp(this,FileUploadTitleWindow,true) as FileUploadTitleWindow;
 				PopUpManager.centerPopUp(fileUploadTitleWindow);
 				fileUploadTitleWindow.userId = this.userId as int;
+				fileUploadTitleWindow.courseId = this.courseId as int;
 				fileUploadTitleWindow.confirmBtn.addEventListener(MouseEvent.CLICK, function onOpenBtnClick(event:MouseEvent):void{
 					var item:Object = fileUploadTitleWindow.dataGrid.selectedItem;
 					if(item){
@@ -860,9 +870,9 @@
 				<s:Button id="endRecordBtn" width="120" height="50" label="保存"
 						  click="endRecordBtn_clickHandler(event)" enabled="{isRecording}"/>
 			</s:HGroup>
-			<s:Button id="saveXmlBtn" width="120" height="50" label="保存生成的xml数据"
-					  click="saveXmlBtn_clickHandler(event)"/>
-			<s:Spacer height="20"/>
+			<!--<s:Button id="saveXmlBtn" width="120" height="50" label="保存生成的xml数据"
+					  click="saveXmlBtn_clickHandler(event)"/>-->
+			<s:Spacer height="72"/>
 		</s:VGroup>
 	</s:HGroup>
 	<s:Label color="blue" fontSize="60" horizontalCenter="0" text="测试水印" verticalCenter="0"/>

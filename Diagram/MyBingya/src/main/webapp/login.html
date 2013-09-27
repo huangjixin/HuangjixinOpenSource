@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>登陆界面</title>
+<style type="text/css">
+<!--
+.bg {
+	background-color: #1F598A;
+}
+
+-->
+.bj_text_user {
+	PADDING-BOTTOM: 0px;
+	border: 0px;
+	PADDING-LEFT: 44px;
+	WIDTH: 178px;
+	PADDING-RIGHT: 0px;
+	DISPLAY: inline-block;
+	BACKGROUND: url(images/username.jpg) no-repeat left 50%;
+	HEIGHT: 35px;
+	PADDING-TOP: 3px;
+	font-size: 14px;
+	color: #999999
+}
+
+.bj_text_psw {
+	PADDING-BOTTOM: 0px;
+	border: 0px;
+	PADDING-LEFT: 44px;
+	WIDTH: 178px;
+	PADDING-RIGHT: 0px;
+	DISPLAY: inline-block;
+	BACKGROUND: url(images/psw.jpg) no-repeat left 50%;
+	HEIGHT: 35px;
+	PADDING-TOP: 3px;
+	font-size: 14px;
+	color: #999999
+}
+
+.button_login {
+	BORDER-BOTTOM-STYLE: none;
+	BORDER-LEFT-STYLE: none;
+	WIDTH: 119px;
+	BORDER-TOP-STYLE: none;
+	BACKGROUND: url(images/dl.jpg) no-repeat;
+	HEIGHT: 37px;
+	BORDER-RIGHT-STYLE: none;
+	CURSOR: pointer
+}
+
+.logindiv {
+	padding-top: 28px;
+}
+</style>
+</head>
+<body class="bg">
+	<div
+		style="margin-top: 180px; height: 80px; font-size: 30px; color: #F3F3F3"
+		align="center">LOGO 图标</div>
+	<div align="center">
+		<div
+			style="width: 670px; height: 98px; background-image: url(images/loginbg.jpg)">
+			<DIV class="logindiv">
+				<form>
+					<!--txt no_code-->
+					<TABLE border=0 cellSpacing=0 cellPadding=0>
+						<TBODY>
+							<TR>
+								<TD><INPUT id=txtLoginName class="bj_text_user"
+									name=txtLoginName maxLength=20 value="用户名">&nbsp;&nbsp;</TD>
+								<TD><INPUT name=txtPwdwm type="text" class="bj_text_psw"
+									id=txtPwdwm value="密码" maxLength=20> <INPUT
+										style="DISPLAY: none" id=txtPwd class=text_password
+										name=txtPwd maxLength=20 type=password></TD>
+								<TD>&nbsp;&nbsp;<INPUT id=btnLogin class=button_login
+									name=btnLogin type=submit value=""></TD>
+							</TR>
+							<TR align="left">
+								<TD>&nbsp;&nbsp;<INPUT id=btnRegi
+									name=btnRegi type=submit value="注册"></TD>
+							</TR>
+						</TBODY>
+					</TABLE>
+				</form>
+			</DIV>
+		</div>
+	</div>
+</body>
+</html>
