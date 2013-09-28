@@ -89,6 +89,7 @@
 			//记录视频时间点。
 			private var startTime:Number = 0;
 			private var endTime:Number = 0;
+			private var offsetTime:Number = -1;
 			
 			[Bindable]
 			private var isRecording:Boolean;
@@ -96,7 +97,7 @@
 			private var presentionXml:XML;
 			
 			//讲义id。
-			private var assetId:int;
+			private var assetId:int= -1;
 			
 			[Bindable]
 			public var userId:int = 1;
@@ -150,10 +151,15 @@
 			private function doStartRecording() : void
 			{
 				time = new Date().time;
-				
+				this._netStream.close();
 				this._netStream.publish( userId+"_"+time, "record" );
+				this._netStream.addEventListener(NetDataEvent.MEDIA_TYPE_DATA,onMediaTypeData);
 			}
 			
+			protected function onMediaTypeData(event:NetDataEvent):void
+			{
+				event.type;
+			}
 			/**
 			 * 网络连接响应
 			 */ 
@@ -210,7 +216,7 @@
 					camera.addEventListener(StatusEvent.STATUS, this.camonStatusHandler);
 					camera.addEventListener(ActivityEvent.ACTIVITY, this.camactivityHandler);
 					camera.setMode(320, 240, 15);
-					camera.setQuality(20 * 1000, 0);
+					camera.setQuality(40 * 1000, 0);
 					camera.setKeyFrameInterval(48);
 					_netStream.attachCamera(camera); 
 				}
@@ -268,8 +274,6 @@
 						timer = null;
 					}
 					
-					isRecording = false;
-										
 					if(pathsArrcol && pathsArrcol.length!=0){
 						var xmllist:XMLList = presentionXml.Courseware;
 						var path:String = pathsArrcol[currentPageIndex];
@@ -277,7 +281,7 @@
 							path = path.substring(path.lastIndexOf("/")+1,path.length);
 						}
 						startTime = endTime;
-						endTime = Math.floor(this._netStream.time*1000);
+						endTime  = Math.floor((this._netStream.time-offsetTime)*1000);
 						
 						var titleStr:String ="";
 						if(this.titleXml){
@@ -296,14 +300,19 @@
 							'<poss /><sticks><stick long="1100" ptf="31200">' +
 							'</stick></sticks></Section>');
 						presentionXml.Courseware[0].appendChild(xml);
-					}					
+					}	
+					
+					isRecording = false;
+					this._netStream.publish();					
+					offsetTime = -1;
 				}
 				
-				if(currentPageIndex != -1){
+				/* if(currentPageIndex != -1){
 					assetProxy.saveXmlStr(presentionXml.toString(),userId,courseId,userId+"_"+time,assetId);
 				}else{
-					assetProxy.saveXmlStr("",userId,courseId,userId+"_"+time,assetId);
-				}
+					assetProxy.saveXmlStr(presentionXml.toString(),userId,courseId,userId+"_"+time,assetId);
+				} */
+				assetProxy.saveXmlStr(presentionXml.toString(),userId,courseId,userId+"_"+time,assetId);
 				
 //				assetProxy.test();
 				assetProxy.addEventListener(AssetEvent.saveXmlStrFault,saveXmlStrFault);
@@ -323,7 +332,6 @@
 			}
 			
 			protected function saveXmlStrResult(event:AssetEvent):void{
-//				Alert.show("保存成功");
 				ExternalInterface.call("saveXmlSuccess");
 			}
 			
@@ -374,6 +382,11 @@
 					var eTime:Number = new Date().time;
 					var titleTime:Number = eTime-sTime;
 					titleTime/=1000;
+					titleTime = _netStream.time;
+					if(offsetTime == -1){
+						offsetTime = _netStream.time;
+					}
+					titleTime-= offsetTime;
 					var hour:Number = Math.floor(titleTime/3600);
 					var minu:Number = Math.floor((titleTime%3600)/60);
 					var sec:Number = Math.floor(((titleTime%3600)%60)%60);
@@ -397,10 +410,13 @@
 					
 					if(titleTime > 120){
 						endRecordBtn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-					}
+					} 
 				});
 				
 				isRecording = true;
+				offsetTime = -1;
+				startTime = endTime = 0;
+				endTime  = Math.floor(this._netStream.time*1000);
 			}
 			
 			/**
@@ -410,12 +426,19 @@
 			{
 				var fileUploadTitleWindow:FileUploadTitleWindow = PopUpManager.createPopUp(this,FileUploadTitleWindow,true) as FileUploadTitleWindow;
 				PopUpManager.centerPopUp(fileUploadTitleWindow);
-				fileUploadTitleWindow.userId = this.userId as int;
-				fileUploadTitleWindow.courseId = this.courseId as int;
+				fileUploadTitleWindow.userId = userId as int;
+				fileUploadTitleWindow.courseId = courseId as int;
 				fileUploadTitleWindow.confirmBtn.addEventListener(MouseEvent.CLICK, function onOpenBtnClick(event:MouseEvent):void{
 					var item:Object = fileUploadTitleWindow.dataGrid.selectedItem;
 					if(item){
-						assetId = item.id as int;
+						if(item.hasOwnProperty("id")){
+							var itemId:* = item["id"];
+						}
+						
+						if(itemId){
+							assetId = new int(itemId);
+						}
+						
 						assetProxy.getPathsById(item.id);
 						assetProxy.addEventListener(AssetEvent.getPathsByIdFault,getPathsByIdFault);
 						assetProxy.addEventListener(AssetEvent.getPathsByIdResult,getPathsByIdResult);
@@ -495,7 +518,7 @@
 								}
 								
 								startTime = endTime;
-								endTime  = Math.floor(this._netStream.time*1000);
+								endTime  = Math.floor((this._netStream.time-offsetTime)*1000);
 								var titleStr:String ="";
 								if(this.titleXml){
 									var temp:XML = titleXml.Page.(@Id==(currentPageIndex-1))[0];
@@ -541,7 +564,7 @@
 								}
 								
 								startTime = endTime;
-								endTime  = Math.floor(this._netStream.time*1000);
+								endTime  = Math.floor((this._netStream.time-offsetTime)*1000);
 								var titleStr:String ="";
 								if(this.titleXml){
 									var temp:XML = titleXml.Page.(@Id==(currentPageIndex+1))[0];
@@ -737,7 +760,7 @@
 			{
 				if (pauseBtn.selected){
 					if(this._netStream){
-						this._netStream.togglePause();
+						this._netStream.pause();
 						pauseBtn.label = "继续";
 						if(timer){
 							timer.stop();
@@ -745,13 +768,32 @@
 					}
 				} else{
 					if(this._netStream){
-						this._netStream.togglePause();
+						this._netStream.resume();
 						if(timer){
-							timer.stop();
+							timer.start();
 						}
 					}
 					pauseBtn.label = "暂停";
 				} 
+			}
+			
+			
+			/**
+			 * 停止。
+			 */ 
+			protected function stopRecordBtn_clickHandler(event:MouseEvent):void
+			{
+				if(isRecording){
+					if(timer){
+						timer.stop();
+						timer = null;
+					}
+					
+					isRecording = false;
+					
+					this._netStream.publish();
+					offsetTime = -1;
+				}
 			}
 			
 		]]>
@@ -785,20 +827,27 @@
 			<s:Spacer height="320"/>
 		</s:VGroup>
 		<s:Group>
-			<s:Rect width="100%" height="100%">
+			<s:Rect top="-2" left="-2" right="-2" bottom="-2">
 				<s:fill>
-					<s:SolidColor alpha="0.5" color="green"/>
+					<s:SolidColor alpha="{currentPageIndex == -1 ? 0.5 : 0}" color="green"/>
 				</s:fill>
+				<s:stroke>
+					<s:SolidColorStroke color="gray" alpha="0.5"/>
+				</s:stroke>
 			</s:Rect>
-			<s:SWFLoader id="swfLoader" width="650" height="490"/>
-			<s:Group id="drawingGroup" width="{swfLoader.width}" height="{swfLoader.height}">
-				<s:Rect width="100%" height="100%">
+			<s:Scroller id="scroller" width="740" height="500">
+				<s:Group>
+					<s:SWFLoader id="swfLoader"/>
+				</s:Group>
+			</s:Scroller>
+			<s:Group id="drawingGroup" width="{scroller.width}" height="{scroller.height}">
+				<!--<s:Rect width="100%" height="100%">
 					<s:fill>
 						<s:SolidColor alpha="0" color="white"/>
 					</s:fill>
-				</s:Rect>
+				</s:Rect>-->
 			</s:Group>
-			<s:Group id="graphicGroup" width="{swfLoader.width}" height="{swfLoader.height}">
+			<s:Group id="graphicGroup" width="{scroller.width}" height="{scroller.height}">
 				
 			</s:Group>
 			<s:Group left="0" mouseOut="lastBtn.visible = false;" mouseOver="lastBtn.visible= true;"
@@ -811,7 +860,7 @@
 						<s:SolidColor alpha="0" color="white"/>
 					</s:fill>
 				</s:Rect>
-				<s:Image id="lastBtn" visible="false" left="0" width="32" height="32"
+				<s:Image id="lastBtn" visible="false" left="0" width="40" height="40"
 						 click="lastBtn_clickHandler(event)"
 						 source="@Embed('components/assets/arrow_left.png')" verticalCenter="0"/>
 			</s:Group>
@@ -825,7 +874,7 @@
 						<s:SolidColor alpha="0" color="white"/>
 					</s:fill>
 				</s:Rect>
-				<s:Image id="nextBtn" visible="false" width="32" height="32"
+				<s:Image id="nextBtn" visible="false" width="40" height="40"
 						 click="nextBtn_clickHandler(event)"
 						 source="@Embed('components/assets/arrow_right.png')"/>
 			</s:Group>
@@ -867,11 +916,13 @@
 			<s:HGroup>
 				<s:ToggleButton id="pauseBtn" width="120" height="50" label="暂停"
 								click="pauseBtn_clickHandler(event)" enabled="{isRecording}"/>
-				<s:Button id="endRecordBtn" width="120" height="50" label="保存"
-						  click="endRecordBtn_clickHandler(event)" enabled="{isRecording}"/>
+				<s:Button id="stopRecordBtn" width="120" height="50" label="停止"
+						  click="stopRecordBtn_clickHandler(event)" enabled="{isRecording}"/>
 			</s:HGroup>
-			<!--<s:Button id="saveXmlBtn" width="120" height="50" label="保存生成的xml数据"
-					  click="saveXmlBtn_clickHandler(event)"/>-->
+			<s:Button id="endRecordBtn" width="120" height="50" label="保存"
+					  click="endRecordBtn_clickHandler(event)" enabled="{isRecording}"/>
+			<s:Button id="saveXmlBtn" width="120" height="50" label="保存生成的xml数据"
+					  click="saveXmlBtn_clickHandler(event)"/>
 			<s:Spacer height="72"/>
 		</s:VGroup>
 	</s:HGroup>

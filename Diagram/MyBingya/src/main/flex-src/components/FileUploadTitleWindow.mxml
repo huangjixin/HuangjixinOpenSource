@@ -25,21 +25,32 @@
 			
 			private var assetProxy:AssetProxy;
 			
-			[Bindable]
-			public var userId:int = 1;
+			private var _userId:int = 1;
 			
 			[Bindable]
 			public var courseId:int = 1;
 			
 			private var overlay:Overlay;
 			
+			[Bindable]
+			public function get userId():int
+			{
+				return _userId;
+			}
+
+			public function set userId(value:int):void
+			{
+				_userId = value;
+				
+				assetProxy.selectByUserId(userId);
+			}
+
 			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
 			{
 				filePath = Global.getInstance().FileUploadPath;
 				
 				assetProxy = new AssetProxy();
 				
-				assetProxy.selectByUserId(userId);
 				assetProxy.addEventListener(AssetEvent.selectByUserIdFault,selectByUserIdFault);
 				assetProxy.addEventListener(AssetEvent.selectByUserIdResult,selectByUserIdResult);
 
@@ -159,6 +170,11 @@
 			 */ 
 			protected function deleteBtn_clickHandler(event:MouseEvent):void
 			{
+				Alert.show("确定删除 ", "提示", Alert.YES | Alert.NO, null, deleteSele);  
+			}
+			
+			private function deleteSele(e:CloseEvent):void
+			{
 				var object:Object = dataGrid.selectedItem;
 				if(!object){
 					return;
@@ -191,7 +207,8 @@
 			<s:ArrayList>
 				<s:GridColumn dataField="id" headerText="id"></s:GridColumn>
 				<s:GridColumn dataField="name" headerText="名称"></s:GridColumn>
-				<s:GridColumn dataField="path" headerText="路径"></s:GridColumn>
+				<!--<s:GridColumn dataField="path" headerText="路径"></s:GridColumn>-->
+				<s:GridColumn dataField="createDate" headerText="创建日期"></s:GridColumn>
 			</s:ArrayList>
 		</s:columns>
 	</s:DataGrid>

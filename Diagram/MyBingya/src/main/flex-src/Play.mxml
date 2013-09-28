@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   minWidth="0" minHeight="0"
+			   creationComplete="application1_creationCompleteHandler(event)">
+	<fx:Declarations>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.bingya.common.Global;
+			
+			import components.model.Section;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
+			import org.osmf.events.MediaPlayerStateChangeEvent;
+			import org.osmf.events.TimeEvent;
+			import org.osmf.media.MediaPlayerState;
+			
+			[Bindable]
+			private var currentPageIndex:int = -1;  //当前页面
+			
+			[Bindable]
+			private var videoFilePath:String = "media/";		//视频路径
+			
+			[Bindable]
+			private var sections:ArrayCollection = new ArrayCollection();		//视频路径
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// 设置初始化参数。
+				Global.getInstance().setUrl();
+				var urlloader:URLLoader = new URLLoader();
+				urlloader.load(new URLRequest("data/presentation.xml"));
+				urlloader.addEventListener(Event.COMPLETE,function loaderComplete(event:Event):void{
+					var xml:XML = new XML(urlloader.data);
+					trace(xml.toString());
+					if(xml){
+						var VideoXmllist:XMLList = xml.Video;
+						if(VideoXmllist && VideoXmllist.length()>0){
+							videoFilePath+= VideoXmllist[0].toString();
+							videoFilePath+= ".flv";
+						}
+						
+						var sectionXmllist:XMLList = xml.Courseware.Section;
+						if(sectionXmllist && sectionXmllist.length()>0){
+							for each (var sectionXml:XML in sectionXmllist) 
+							{
+								var title:String = sectionXml.title;
+								var start:String = sectionXml.time.start;
+								var end:String = sectionXml.time.end;
+								var source:String = sectionXml.source;
+								var section:Section = new Section(title,new Number(start),new Number(end),source);
+								sections.addItem(section);
+							}
+							
+						}
+					}
+				});
+				
+				urlloader.addEventListener(IOErrorEvent.IO_ERROR,function loaderIoError(event:IOErrorEvent):void{
+					Alert.show("加载不了data/presentation.xml配置文件");
+				});
+			}
+			
+			/**
+			 * 时间变化。
+			 */ 
+			protected function videoPlayer_currentTimeChangeHandler(event:TimeEvent):void
+			{
+				var currentTime:Number = videoPlayer.currentTime*1000;
+				//遍历sections，判断当前时间点落在哪个区间，然后重新加载flash文件。
+				if(sections.length>0){
+					for (var i:int = 0; i < sections.length; i++) 
+					{
+						var section:Section = sections[i] as Section;
+						
+						if(section.start < currentTime && currentTime<section.end){
+							if(i != currentPageIndex){
+								currentPageIndex = i;
+								swfLoader.source = "ppt/"+section.source;
+							}
+							break;
+						}
+					}
+				}
+			}
+			
+			/**
+			 * 状态变化。
+			 */ 
+			protected function videoPlayer_mediaPlayerStateChangeHandler(event:MediaPlayerStateChangeEvent):void
+			{
+				var state:String = event.state;
+				switch(state){
+					case MediaPlayerState.PLAYING:
+						/* if(sections.length>0){
+							if(currentPageIndex ==-1){
+								currentPageIndex =0;
+								swfLoader.source = "ppt/"+sections[0].source;
+							}
+						} */
+						break;
+					default:
+						break;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Group horizontalCenter="0" verticalCenter="0">
+		<s:Rect top="-2" left="-2" right="-2" bottom="-2">
+			<s:fill>
+				<s:SolidColor alpha="{currentPageIndex == -1 ? 0.5 : 0}" color="green"/>
+			</s:fill>
+			<s:stroke>
+				<s:SolidColorStroke color="gray" alpha="0.5"/>
+			</s:stroke>
+		</s:Rect>
+		<s:Scroller id="scroller" width="740" height="500">
+			<s:Group>
+				<s:SWFLoader id="swfLoader"/>
+			</s:Group>
+		</s:Scroller>
+		<s:Group right="{-videoPlayer.width}" top="0">
+			<s:VideoPlayer id="videoPlayer" source="{videoFilePath}"
+						   currentTimeChange="videoPlayer_currentTimeChangeHandler(event)"
+						   mediaPlayerStateChange="videoPlayer_mediaPlayerStateChangeHandler(event)"/>
+		</s:Group>
+		
+	</s:Group>
+</s:Application>
