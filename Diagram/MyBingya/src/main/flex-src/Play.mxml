@@ -10,10 +10,12 @@
 		<![CDATA[
 			import com.bingya.common.Global;
 			
+			import components.model.Page;
 			import components.model.Section;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			
 			import org.osmf.events.MediaPlayerStateChangeEvent;
@@ -29,24 +31,123 @@
 			[Bindable]
 			private var sections:ArrayCollection = new ArrayCollection();		//视频路径
 			
+			[Bindable]
+			private var titles:ArrayCollection = new ArrayCollection();		//标题
+			
+			private var rectAngle:Rectangle = new Rectangle();
+			
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
+				FlexGlobals.topLevelApplication.parameters;
 				// 设置初始化参数。
 				Global.getInstance().setUrl();
-				var urlloader:URLLoader = new URLLoader();
+				 var urlloader:URLLoader = new URLLoader();
 				urlloader.load(new URLRequest("data/presentation.xml"));
 				urlloader.addEventListener(Event.COMPLETE,function loaderComplete(event:Event):void{
 					var xml:XML = new XML(urlloader.data);
-					trace(xml.toString());
 					if(xml){
 						var VideoXmllist:XMLList = xml.Video;
 						if(VideoXmllist && VideoXmllist.length()>0){
+							videoFilePath = "media/"
 							videoFilePath+= VideoXmllist[0].toString();
 							videoFilePath+= ".flv";
 						}
 						
 						var sectionXmllist:XMLList = xml.Courseware.Section;
 						if(sectionXmllist && sectionXmllist.length()>0){
+							if(sections.length>0){
+								sections.removeAll();
+							}
+							for each (var sectionXml:XML in sectionXmllist) 
+							{
+								var title:String = sectionXml.title;
+								var start:String = sectionXml.time.start;
+								var end:String = sectionXml.time.end;
+								var source:String = "ppt/"+sectionXml.source;
+								var section:Section = new Section(title,new Number(start),new Number(end),source);
+								sections.addItem(section);
+							}
+							
+						}
+					}
+					
+					//先加载配置文件，再加载标题文件。
+					var titleurlloader:URLLoader = new URLLoader();
+					titleurlloader.load(new URLRequest("ppt/title.xml"));
+					titleurlloader.addEventListener(Event.COMPLETE,function loaderComplete(event:Event):void{
+						var xml:XML = new XML(titleurlloader.data);
+						if(xml){
+							var PageXmllist:XMLList = xml.Page;
+							if(PageXmllist && PageXmllist.length()>0){
+								for(var i:int = 0;i< PageXmllist.length();i++) 
+								{
+									var  pageXml:XML = PageXmllist[i];
+									var Title:String = pageXml.Title;
+									var Id:String = pageXml.@Id;
+									var Content:String = pageXml.Content;
+									var start:String;
+									var end:String;
+									if(sections.length>0){
+										if(i<sections.length){
+											var section:Section = sections.getItemAt(i) as Section;
+											if(section){
+												start = section.start as String;
+												end = section.end as String;
+											}
+										}
+									}
+									var page:Page = new Page(Id,Title,Content,start,end);
+									titles.addItem(page);
+								}
+							}
+						}
+					});
+					titleurlloader.addEventListener(IOErrorEvent.IO_ERROR,function titleurlloaderError(event:IOErrorEvent):void{
+						if(sections.length>0){
+							for (var i:int = 0; i < sections.length; i++) 
+							{
+								var Title:String = "第"+(i+1)+"节";
+								var Id:String = (i+1)+"";
+								var Content:String = "";
+								var start:String;
+								var end:String;
+								if(sections.length>0){
+									if(i<sections.length){
+										var section:Section = sections.getItemAt(i) as Section;
+										if(section){
+											start = section.start as String;
+											end = section.end as String;
+										}
+									}
+								}
+								var page:Page = new Page(Id,Title,Content,start,end);
+								titles.addItem(page);
+							}
+							
+						}
+					});
+				});
+				
+				urlloader.addEventListener(IOErrorEvent.IO_ERROR,function loaderIoError(event:IOErrorEvent):void{
+					Alert.show("加载不了data/presentation.xml配置文件");
+				}); 
+				
+				/* var videoFile:String = FlexGlobals.topLevelApplication.parameters.videoFile;
+				if(videoFile){
+					videoFilePath = videoFile;
+//					videoPlayer.source = "media/221_1380351953093.flv";
+//					videoPlayer.play();
+				}
+				
+				var sectionStr:Object = FlexGlobals.topLevelApplication.parameters.sections;
+				if(sectionStr){
+					var xml:XML = new XML(sectionStr);
+					if(xml){
+						var sectionXmllist:XMLList = xml.Section;
+						if(sectionXmllist && sectionXmllist.length()>0){
+							if(sections.length>0){
+								sections.removeAll();
+							}
 							for each (var sectionXml:XML in sectionXmllist) 
 							{
 								var title:String = sectionXml.title;
@@ -56,14 +157,11 @@
 								var section:Section = new Section(title,new Number(start),new Number(end),source);
 								sections.addItem(section);
 							}
-							
 						}
 					}
-				});
+				}  */
 				
-				urlloader.addEventListener(IOErrorEvent.IO_ERROR,function loaderIoError(event:IOErrorEvent):void{
-					Alert.show("加载不了data/presentation.xml配置文件");
-				});
+				addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
 			}
 			
 			/**
@@ -81,7 +179,13 @@
 						if(section.start < currentTime && currentTime<section.end){
 							if(i != currentPageIndex){
 								currentPageIndex = i;
-								swfLoader.source = "ppt/"+section.source;
+								swfLoader.source = section.source;
+							}
+							
+							if(titles.length>0){
+								if(currentPageIndex < titles.length){
+									dataGrid.selectedIndex = currentPageIndex;
+								}
 							}
 							break;
 						}
@@ -109,27 +213,107 @@
 				}
 			}
 			
+			protected function onKeyDown(event:KeyboardEvent):void
+			{
+				switch(event.keyCode)
+				{
+					case Keyboard.ESCAPE:
+					{
+						if(stage.displayState==StageDisplayState.NORMAL){
+							stage.displayState=StageDisplayState.FULL_SCREEN;
+							this.rectAngle.width = swfLoader.width;
+							this.rectAngle.height= swfLoader.height;
+							
+							swfLoader.width = stage.height+300;
+							swfLoader.height = stage.height;
+							videoGroup.visible = false;
+							//					scroller.width = stage.width;
+							//					scroller.height = stage.height;
+						}else if(stage.displayState==StageDisplayState.FULL_SCREEN){
+							stage.displayState=StageDisplayState.NORMAL;
+							//					scroller.width = 740;
+							//					scroller.height = 500;
+							swfLoader.width = this.rectAngle.width;
+							swfLoader.height = this.rectAngle.height;
+							videoGroup.visible = true;
+						}
+						break;
+					}
+						
+					default:
+					{
+						break;
+					}
+				}
+			}
+			private var isFullScr:Boolean;
+			
+			protected function swfLoader_doubleClickHandler(event:MouseEvent):void
+			{
+				isFullScr =!isFullScr;
+				
+				if(isFullScr){
+//					stage.displayState=StageDisplayState.FULL_SCREEN;
+					this.rectAngle.width = swfLoader.width;
+					this.rectAngle.height= swfLoader.height;
+					
+					swfLoader.width = stage.height+270;
+					swfLoader.height = stage.height;
+					dataGrid.visible = false;
+//					videoGroup.right = -videoPlayer.width*2/3;
+					videoPlayer.playerControls.visible = false;
+//					videoGroup.visible = false;
+//					scroller.width = stage.width;
+//					scroller.height = stage.height;
+				}else{
+//					stage.displayState=StageDisplayState.NORMAL;
+//					scroller.width = 740;
+//					scroller.height = 500;
+					swfLoader.width = this.rectAngle.width;
+					swfLoader.height = this.rectAngle.height;
+					dataGrid.visible = true;
+					videoPlayer.playerControls.visible = true;
+//					videoGroup.right = -videoPlayer.width-2;
+//					videoGroup.visible = true;
+				}
+			}
+			
+			
+			
 		]]>
 	</fx:Script>
-	<s:Group horizontalCenter="0" verticalCenter="0">
-		<s:Rect top="-2" left="-2" right="-2" bottom="-2">
+	<s:HGroup horizontalCenter="0" verticalCenter="0" gap="2">
+		<!--<s:Rect id="rect" top="-2" left="-2" right="-2" bottom="-2">
 			<s:fill>
 				<s:SolidColor alpha="{currentPageIndex == -1 ? 0.5 : 0}" color="green"/>
 			</s:fill>
 			<s:stroke>
 				<s:SolidColorStroke color="gray" alpha="0.5"/>
 			</s:stroke>
-		</s:Rect>
-		<s:Scroller id="scroller" width="740" height="500">
+		</s:Rect>-->
+		<!--<s:Scroller id="scroller" width="740" height="500">
 			<s:Group>
-				<s:SWFLoader id="swfLoader"/>
+				
 			</s:Group>
-		</s:Scroller>
-		<s:Group right="{-videoPlayer.width}" top="0">
+		</s:Scroller>-->
+		<s:SWFLoader id="swfLoader" doubleClickEnabled="true" doubleClick="swfLoader_doubleClickHandler(event)"/>
+		<s:Group id="videoGroup">
 			<s:VideoPlayer id="videoPlayer" source="{videoFilePath}"
 						   currentTimeChange="videoPlayer_currentTimeChangeHandler(event)"
-						   mediaPlayerStateChange="videoPlayer_mediaPlayerStateChangeHandler(event)"/>
+						   mediaPlayerStateChange="videoPlayer_mediaPlayerStateChangeHandler(event)"
+						   skinClass="components.skins.VideoSkin"/>
+			<s:DataGrid id="dataGrid" top="{videoPlayer.height+5}" dataProvider="{titles}" width="{videoPlayer.width}"
+						height="{swfLoader.height-videoPlayer.height-5}">
+				<s:columns> 
+					<s:ArrayList>
+						<s:GridColumn dataField="Id" headerText="Id" width="25"/> 
+						<s:GridColumn dataField="Title" headerText="标题"/> 
+						<s:GridColumn dataField="start" headerText="起始秒数"/> 
+						<s:GridColumn dataField="end" headerText="结束"/> 
+					</s:ArrayList>
+				</s:columns> 
+			</s:DataGrid>
 		</s:Group>
 		
-	</s:Group>
+	</s:HGroup>
 </s:Application>
