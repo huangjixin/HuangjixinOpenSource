@@ -148,10 +148,10 @@
 			</s:HGroup>
 			<s:Button id="endRecordBtn" width="120" height="50" label="保存"
 					  click="endRecordBtn_clickHandler(event)" enabled="{isRecording}"/>
-			<!--<s:Button id="saveXmlBtn" width="120" height="50" label="保存生成的xml数据"
-					  click="saveXmlBtn_clickHandler(event)"/>-->
+			<s:Button id="saveXmlBtn" width="120" height="50" label="保存生成的xml数据"
+					  click="saveXmlBtn_clickHandler(event)"/>
 			<s:Spacer height="34"/>
 		</s:VGroup>
 	</s:HGroup>
-	<s:Label color="blue" fontSize="60" horizontalCenter="0" text="测试水印" verticalCenter="0"/>
+	<!--<s:Label color="blue" fontSize="60" horizontalCenter="0" text="测试水印" verticalCenter="0"/>-->
 </s:Application>

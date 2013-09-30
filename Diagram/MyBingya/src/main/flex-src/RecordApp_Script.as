@@ -90,6 +90,7 @@ private var time:Number;
 private var startTime:Number = 0;
 private var endTime:Number = 0;
 private var offsetTime:Number = -1;//录制视频的时间有偏差，所以开始的时候用这个记录偏差，后面纠正偏差。
+private var titleTime:Number = 0;
 
 [Bindable]
 private var isRecording:Boolean; //标志变量，是否在录制。
@@ -227,6 +228,7 @@ protected function initCamera():void{
 		camera.setMode(320, 240, 15);
 		camera.setQuality(40 * 1000, 0);
 		camera.setKeyFrameInterval(48);
+		camera.setMotionLevel(0);
 	}
 }
 
@@ -268,6 +270,7 @@ protected function initMicphpne():void{
 	}
 	else
 	{
+		mic.setSilenceLevel(0);
 		this._netStream.attachAudio(mic);
 	}
 }
@@ -472,24 +475,27 @@ protected function startRecordBtn_clickHandler(event:MouseEvent):void
 		return;
 	}
 	
+	this.titleTime = 0;
+	
 	doStartRecording();
 	generatePresentationXml();
 	timer = new Timer(1000);
 	timer.start();
 	var sTime:Number = new Date().time+1000;
 	timer.addEventListener(TimerEvent.TIMER,function ontimer(event:TimerEvent):void{
-		trace(_netStream.time);
+		
 		var eTime:Number = new Date().time;
-		var titleTime:Number = eTime-sTime;
-		titleTime/=1000;
+		var recordTime:Number = eTime-sTime;
+		titleTime = recordTime;
+		recordTime/=1000;
 //		titleTime = _netStream.time;
 //		if(offsetTime == -1){
 //			offsetTime = _netStream.time;
 //		}
 //		titleTime-= offsetTime;
-		var hour:Number = Math.floor(titleTime/3600);
-		var minu:Number = Math.floor((titleTime%3600)/60);
-		var sec:Number = Math.floor(((titleTime%3600)%60)%60);
+		var hour:Number = Math.floor(recordTime/3600);
+		var minu:Number = Math.floor((recordTime%3600)/60);
+		var sec:Number = Math.floor(((recordTime%3600)%60)%60);
 		var text:String = "";
 		if(hour< 10){
 			text+="0"+hour+":";
@@ -508,7 +514,7 @@ protected function startRecordBtn_clickHandler(event:MouseEvent):void
 		}
 		timeLabel.text = text;
 		
-		if(titleTime > 120){
+		if(titleTime > 120*1000){
 			endRecordBtn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 		} 
 	});
@@ -516,7 +522,7 @@ protected function startRecordBtn_clickHandler(event:MouseEvent):void
 	isRecording = true;
 	offsetTime = -1;
 	startTime = endTime = 0;
-	endTime  = Math.floor(this._netStream.time*1000);
+//	endTime  = Math.floor(this._netStream.time*1000);
 }
 
 /**
@@ -534,7 +540,7 @@ protected function lastBtn_clickHandler(event:MouseEvent):void
 					}
 					
 					startTime = endTime;
-					endTime  = Math.floor((this._netStream.time)*1000);
+					endTime  = titleTime;
 //					endTime  = Math.floor((this._netStream.time-offsetTime)*1000);
 					var titleStr:String ="";
 					if(this.titleXml){
@@ -582,7 +588,7 @@ protected function nextBtn_clickHandler(event:MouseEvent):void
 					
 					startTime = endTime;
 //					endTime  = Math.floor((this._netStream.time-offsetTime)*1000);
-					endTime  = Math.floor((this._netStream.time)*1000);
+					endTime  = titleTime;
 					var titleStr:String ="";
 					if(this.titleXml){
 						var temp:XML = titleXml.Page.(@Id==(currentPageIndex+1))[0];
