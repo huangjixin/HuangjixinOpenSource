@@ -216,9 +216,9 @@ public class AssetServiceImpl implements IAssetService {
 	}
 	
 	@Override
-	public void saveXmlStr(String xmlString,int userId,int courseId,String name,int assetId){
+	public String saveXmlStr(String xmlString,int userId,int courseId,String name,int assetId){
 		if("".equals(xmlString)){
-			return;
+			return "abcdefg";
 		}
 		Asset asset = assetMapper.selectByPrimaryKey(assetId);
 		asset.getPath();
@@ -231,7 +231,7 @@ public class AssetServiceImpl implements IAssetService {
 		String fileDir = (uploadPath).substring(0,uploadPath.length()-fileName.length());
 		fileDir+=assetId+"_presentation.xml";
 		DeleteFileUtil.string2File(xmlString, fileDir);
-		return ;
+		return "abcdefg";
 	}
 
 }

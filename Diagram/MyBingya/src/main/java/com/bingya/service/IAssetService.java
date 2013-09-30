@@ -29,5 +29,5 @@ public interface IAssetService extends IGenericService<Asset, Integer> {
 	 */
 	Boolean saveXmlStringToFile(String xmlString,int userId,int courseId,String name,int assetId);
 	
-	void saveXmlStr(String xmlString,int userId,int courseId,String name,int assetId);
+	String saveXmlStr(String xmlString,int userId,int courseId,String name,int assetId);
 }
