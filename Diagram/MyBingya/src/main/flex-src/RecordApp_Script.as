@@ -481,7 +481,7 @@ protected function startRecordBtn_clickHandler(event:MouseEvent):void
 	generatePresentationXml();
 	timer = new Timer(1000);
 	timer.start();
-	var sTime:Number = new Date().time+1000;
+	var sTime:Number = new Date().time;
 	timer.addEventListener(TimerEvent.TIMER,function ontimer(event:TimerEvent):void{
 		
 		var eTime:Number = new Date().time;
