@@ -107,6 +107,8 @@ public var userId:int = 1;
 public var courseId:int = 1;
 
 private var titleXml:XML;
+
+private var courseFileDir:String;
 /**
  * 初始化。
  */ 
@@ -131,6 +133,7 @@ protected function application1_creationCompleteHandler(event:FlexEvent):void
 	
 	var uId:int = FlexGlobals.topLevelApplication.parameters.userId;  
 	var courseId:int = FlexGlobals.topLevelApplication.parameters.courseId; 
+	courseFileDir = FlexGlobals.topLevelApplication.parameters.courseFileDir;
 	
 	if(uId)
 		this.userId = uId;
@@ -151,10 +154,19 @@ protected function application1_creationCompleteHandler(event:FlexEvent):void
  */ 
 private function doStartRecording() : void
 {
+	if(openVedioBtn.selected){
+		if(camera){
+//			localVideo.attachCamera(null);
+//			localVideo.attachCamera(camera);
+			_netStream.attachCamera(camera,1); 
+		}
+	}else{
+		_netStream.attachCamera(null); 
+	}
+	
 	time = new Date().time;
 	this._netStream.close();
 	this._netStream.publish( userId+"_"+time, "record" );
-	//				this._netStream.addEventListener(NetDataEvent.MEDIA_TYPE_DATA,onMediaTypeData);
 }
 
 /**
@@ -210,12 +222,11 @@ protected function initCamera():void{
 	}
 	else
 	{
-		camera.addEventListener(StatusEvent.STATUS, this.camonStatusHandler);
-		camera.addEventListener(ActivityEvent.ACTIVITY, this.camactivityHandler);
+//		camera.addEventListener(StatusEvent.STATUS, this.camonStatusHandler);
+//		camera.addEventListener(ActivityEvent.ACTIVITY, this.camactivityHandler);
 		camera.setMode(320, 240, 15);
 		camera.setQuality(40 * 1000, 0);
 		camera.setKeyFrameInterval(48);
-		//					_netStream.attachCamera(camera); 
 	}
 }
 
@@ -329,7 +340,12 @@ protected function saveXmlStrFault(event:AssetEvent):void{
 }
 
 protected function saveXmlStrResult(event:AssetEvent):void{
-	ExternalInterface.call("saveXmlSuccess");
+	if(event.object){
+		ExternalInterface.call("saveXmlSuccess",event.object.toString());
+	}else{
+		ExternalInterface.call("saveXmlSuccess");
+	}
+
 }
 
 /**
@@ -366,6 +382,7 @@ protected function openFileBtn_clickHandler(event:MouseEvent):void
 	PopUpManager.centerPopUp(fileUploadTitleWindow);
 	fileUploadTitleWindow.userId = userId as int;
 	fileUploadTitleWindow.courseId = courseId as int;
+	fileUploadTitleWindow.refresh();
 	fileUploadTitleWindow.confirmBtn.addEventListener(MouseEvent.CLICK, function onOpenBtnClick(event:MouseEvent):void{
 		var item:Object = fileUploadTitleWindow.dataGrid.selectedItem;
 		if(item){
@@ -432,11 +449,11 @@ protected function openVedioBtn_clickHandler(event:MouseEvent):void
 {
 	if (openVedioBtn.selected){
 		if(camera){
-			//流渲染摄像头。
-			_netStream.attachCamera(camera); 
 			//捕获摄像头，并且将摄像头画面渲染到video对象。
 			localVideoDisplay.attachCamera(camera);
 			videoDisColor.alpha = 0;
+			//流渲染摄像头。
+			_netStream.attachCamera(camera); 
 		}
 	} else{
 		_netStream.attachCamera(null); 
@@ -454,24 +471,22 @@ protected function startRecordBtn_clickHandler(event:MouseEvent):void
 		startRecordBtn.selected = true;
 		return;
 	}
-	if(camera){
-		localVideoDisplay.attachCamera(camera);
-	}
 	
 	doStartRecording();
 	generatePresentationXml();
 	timer = new Timer(1000);
 	timer.start();
-	var sTime:Number = new Date().time;
+	var sTime:Number = new Date().time+1000;
 	timer.addEventListener(TimerEvent.TIMER,function ontimer(event:TimerEvent):void{
+		trace(_netStream.time);
 		var eTime:Number = new Date().time;
 		var titleTime:Number = eTime-sTime;
 		titleTime/=1000;
-		titleTime = _netStream.time;
-		if(offsetTime == -1){
-			offsetTime = _netStream.time;
-		}
-		titleTime-= offsetTime;
+//		titleTime = _netStream.time;
+//		if(offsetTime == -1){
+//			offsetTime = _netStream.time;
+//		}
+//		titleTime-= offsetTime;
 		var hour:Number = Math.floor(titleTime/3600);
 		var minu:Number = Math.floor((titleTime%3600)/60);
 		var sec:Number = Math.floor(((titleTime%3600)%60)%60);
@@ -519,7 +534,8 @@ protected function lastBtn_clickHandler(event:MouseEvent):void
 					}
 					
 					startTime = endTime;
-					endTime  = Math.floor((this._netStream.time-offsetTime)*1000);
+					endTime  = Math.floor((this._netStream.time)*1000);
+//					endTime  = Math.floor((this._netStream.time-offsetTime)*1000);
 					var titleStr:String ="";
 					if(this.titleXml){
 						var temp:XML = titleXml.Page.(@Id==(currentPageIndex-1))[0];
@@ -565,7 +581,8 @@ protected function nextBtn_clickHandler(event:MouseEvent):void
 					}
 					
 					startTime = endTime;
-					endTime  = Math.floor((this._netStream.time-offsetTime)*1000);
+//					endTime  = Math.floor((this._netStream.time-offsetTime)*1000);
+					endTime  = Math.floor((this._netStream.time)*1000);
 					var titleStr:String ="";
 					if(this.titleXml){
 						var temp:XML = titleXml.Page.(@Id==(currentPageIndex+1))[0];

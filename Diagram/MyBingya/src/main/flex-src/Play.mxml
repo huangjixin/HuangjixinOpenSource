@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   minWidth="0" minHeight="0"
 			   creationComplete="application1_creationCompleteHandler(event)">
 	<fx:Declarations>
@@ -79,6 +79,7 @@
 						if(xml){
 							var PageXmllist:XMLList = xml.Page;
 							if(PageXmllist && PageXmllist.length()>0){
+								titles.removeAll();
 								for(var i:int = 0;i< PageXmllist.length();i++) 
 								{
 									var  pageXml:XML = PageXmllist[i];
@@ -91,8 +92,8 @@
 										if(i<sections.length){
 											var section:Section = sections.getItemAt(i) as Section;
 											if(section){
-												start = section.start as String;
-												end = section.end as String;
+												start = section.start/1000+"";
+												end = section.end/1000+"";
 											}
 										}
 									}
@@ -104,6 +105,7 @@
 					});
 					titleurlloader.addEventListener(IOErrorEvent.IO_ERROR,function titleurlloaderError(event:IOErrorEvent):void{
 						if(sections.length>0){
+							titles.removeAll();
 							for (var i:int = 0; i < sections.length; i++) 
 							{
 								var Title:String = "第"+(i+1)+"节";
@@ -115,8 +117,8 @@
 									if(i<sections.length){
 										var section:Section = sections.getItemAt(i) as Section;
 										if(section){
-											start = section.start as String;
-											end = section.end as String;
+											start = section.start/1000+"";
+											end = section.end/1000+"";
 										}
 									}
 								}
@@ -282,31 +284,32 @@
 			
 		]]>
 	</fx:Script>
-	<s:HGroup horizontalCenter="0" verticalCenter="0" gap="2">
-		<!--<s:Rect id="rect" top="-2" left="-2" right="-2" bottom="-2">
+	<s:HGroup gap="0" horizontalCenter="0" verticalCenter="0">
+		<s:Rect id="rect" left="-2" right="-2" top="-2" bottom="-2">
 			<s:fill>
 				<s:SolidColor alpha="{currentPageIndex == -1 ? 0.5 : 0}" color="green"/>
 			</s:fill>
 			<s:stroke>
-				<s:SolidColorStroke color="gray" alpha="0.5"/>
+				<s:SolidColorStroke alpha="0.5" color="gray"/>
 			</s:stroke>
-		</s:Rect>-->
+		</s:Rect>
 		<!--<s:Scroller id="scroller" width="740" height="500">
 			<s:Group>
 				
 			</s:Group>
 		</s:Scroller>-->
-		<s:SWFLoader id="swfLoader" doubleClickEnabled="true" doubleClick="swfLoader_doubleClickHandler(event)"/>
+		<s:SWFLoader id="swfLoader" width="700" height="500"
+					 doubleClick="swfLoader_doubleClickHandler(event)" doubleClickEnabled="false"/>
 		<s:Group id="videoGroup">
-			<s:VideoPlayer id="videoPlayer" source="{videoFilePath}"
+			<s:VideoPlayer id="videoPlayer"
 						   currentTimeChange="videoPlayer_currentTimeChangeHandler(event)"
 						   mediaPlayerStateChange="videoPlayer_mediaPlayerStateChangeHandler(event)"
-						   skinClass="components.skins.VideoSkin"/>
-			<s:DataGrid id="dataGrid" top="{videoPlayer.height+5}" dataProvider="{titles}" width="{videoPlayer.width}"
-						height="{swfLoader.height-videoPlayer.height-5}">
+						   skinClass="components.skins.VideoSkin" source="{videoFilePath}"/>
+			<s:DataGrid id="dataGrid" top="{videoPlayer.height+5}" width="{videoPlayer.width}"
+						height="{swfLoader.height-videoPlayer.height-5}" dataProvider="{titles}">
 				<s:columns> 
 					<s:ArrayList>
-						<s:GridColumn dataField="Id" headerText="Id" width="25"/> 
+						<s:GridColumn width="25" dataField="Id" headerText="Id"/> 
 						<s:GridColumn dataField="Title" headerText="标题"/> 
 						<s:GridColumn dataField="start" headerText="起始秒数"/> 
 						<s:GridColumn dataField="end" headerText="结束"/> 

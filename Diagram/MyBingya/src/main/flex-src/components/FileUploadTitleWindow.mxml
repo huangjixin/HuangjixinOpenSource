@@ -23,7 +23,7 @@
 			private var file:FileReference;  
 			private var filePath:String=""; 
 			
-			private var assetProxy:AssetProxy;
+			private var assetProxy:AssetProxy = new AssetProxy();;
 			
 			private var _userId:int = 1;
 			
@@ -41,21 +41,23 @@
 			public function set userId(value:int):void
 			{
 				_userId = value;
-				
-				assetProxy.selectByUserId(userId);
+//				callLater(refresh);
 			}
 
 			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
 			{
 				filePath = Global.getInstance().FileUploadPath;
 				
-				assetProxy = new AssetProxy();
-				
 				assetProxy.addEventListener(AssetEvent.selectByUserIdFault,selectByUserIdFault);
 				assetProxy.addEventListener(AssetEvent.selectByUserIdResult,selectByUserIdResult);
 
 				assetProxy.addEventListener(AssetEvent.deleteByPrimaryKeyFault,deleteByPrimaryKeyFault);
 				assetProxy.addEventListener(AssetEvent.deleteByPrimaryKeyResult,deleteByPrimaryKeyResult);
+			}
+			
+			public function refresh():void
+			{
+				assetProxy.selectByUserId(userId);
 			}
 			
 			protected function deleteByPrimaryKeyResult(event:AssetEvent):void

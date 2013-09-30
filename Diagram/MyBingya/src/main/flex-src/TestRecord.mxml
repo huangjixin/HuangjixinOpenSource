@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
+			   creationComplete="application1_creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
+			/**
+			 * 网络连接
+			 */ 
+			private var _netConnection:NetConnection; 
+			/**
+			 * 视频流。
+			 */ 
+			[Bindable]
+			private var _netStream:NetStream;
+			
+			/**
+			 * 摄像头。
+			 */ 
+			private var camera:Camera; 
+			
+			/**
+			 * 麦克风。
+			 */ 
+			private var mic:Microphone; 
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_netConnection = new NetConnection();
+				_netConnection.addEventListener(NetStatusEvent.NET_STATUS, handlerNetStatus);
+				var url:String = "rtmp://localhost/RecordStream/"+221;
+				_netConnection.connect(url);
+			}
+			
+			private function handlerNetStatus(event:NetStatusEvent) : void 
+			{
+				var info:Object = event.info;
+				switch(info.code) 
+				{
+					case "NetConnection.Connect.Success":	
+						this._netStream = new NetStream(this._netConnection);
+						this._netStream.client = new Object();
+						
+						initCamera();
+						initMicphpne();
+						break;
+					
+					case "NetConnection.Connect.Rejected":
+						Alert.show("拒绝连接","注意");
+						break;
+					
+					case "NetConnection.Connect.Failed":
+						Alert.show("连接失败","注意");
+						break;
+					
+					case "NetConnection.Connect.Closed":
+						break;
+				}
+			}
+			
+			/**
+			 * 初始化摄像头摄像头。
+			 */ 
+			protected function initCamera():void{
+				//保证有一个摄像头
+				camera = Camera.getCamera();
+				if ( camera == null )
+				{
+					if ( Camera.names.length > 0 )
+					{
+						Alert.show( '其它程序正占用摄像头', 'Error' );
+					}
+					else
+					{
+						Alert.show( '要安装摄像头哦', 'Error' );
+					}
+				}
+				else
+				{
+					//		camera.addEventListener(StatusEvent.STATUS, this.camonStatusHandler);
+					//		camera.addEventListener(ActivityEvent.ACTIVITY, this.camactivityHandler);
+					camera.setMode(320, 240, 15);
+					camera.setQuality(40 * 1000, 0);
+					camera.setKeyFrameInterval(48);
+				}
+			}
+			
+			private function camactivityHandler(event:ActivityEvent) : void
+			{
+				camera.removeEventListener(ActivityEvent.ACTIVITY, this.camactivityHandler);
+				return;
+			}// end function
+			
+			private function camonStatusHandler(event:StatusEvent) : void
+			{
+				if (camera.muted)
+				{
+				}
+				else
+				{
+					camera.removeEventListener(StatusEvent.STATUS, this.camonStatusHandler);
+				}
+				return;
+			}// end function
+			
+			protected function initMicphpne():void{
+				mic = Microphone.getMicrophone();
+				if ( mic == null )
+				{
+					if ( Microphone.names.length > 0 )
+					{
+						Alert.show( '其它程序正占用麦克风', 'Error' );
+					}
+					else
+					{
+						Alert.show( '要安装麦克风哦', 'Error' );
+					}
+				}
+				else
+				{
+					this._netStream.attachAudio(mic);
+				}
+			}
+			
+			private var timer:Timer;
+			
+			protected function togglebutton1_clickHandler(event:MouseEvent):void
+			{
+				if (recordBtn.selected) 
+				{
+					recordBtn.label = "停止录制";
+					//捕获摄像头，并且将摄像头画面渲染到video对象。
+					localVideoDisplay.attachCamera(camera);
+					//流渲染摄像头。
+					_netStream.attachCamera(camera); 
+					//缓冲20秒;
+					 this._netStream.bufferTime = 20;
+					var time:Number = new Date().time;
+					this._netStream.close();
+					this._netStream.publish( 221+"_"+time, "record" );
+					timer = new Timer(1000);
+					timer.start();
+					var stime:Number = new Date().time;
+					timer.addEventListener(TimerEvent.TIMER,function onTimer(event:TimerEvent):void{
+						var etime:Number = new Date().time;
+						timerLabel.text = (etime-stime)/1000+"";
+					});
+				}else
+				{
+					timer.stop();
+					recordBtn.label = "录制视频";
+					_netStream.attachCamera(null); 
+					localVideoDisplay.attachCamera(null);
+					this._netStream.close();
+					this._netStream.publish();
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+	
+	</fx:Declarations>
+	<s:HGroup horizontalCenter="0" verticalCenter="0">
+		<mx:VideoDisplay id="localVideoDisplay" width="320" height="240" live="true"/>
+		<s:ToggleButton id="recordBtn"  label="录制视频" click="togglebutton1_clickHandler(event)">
+		</s:ToggleButton>
+		<s:Label id="timerLabel"/>
+	</s:HGroup>
+</s:Application>
