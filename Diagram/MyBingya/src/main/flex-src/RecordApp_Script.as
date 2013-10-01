@@ -514,9 +514,9 @@ protected function startRecordBtn_clickHandler(event:MouseEvent):void
 		}
 		timeLabel.text = text;
 		
-		if(titleTime > 120*1000){
+		/*if(titleTime > 120*1000){
 			endRecordBtn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-		} 
+		} */
 	});
 	
 	isRecording = true;
