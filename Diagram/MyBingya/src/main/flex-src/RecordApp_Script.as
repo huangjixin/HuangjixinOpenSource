@@ -68,6 +68,7 @@ private var camera:Camera;
 /**
  * 麦克风。
  */ 
+[Bindable]
 private var mic:Microphone; 
 
 [Bindable]
@@ -196,7 +197,7 @@ private function handlerNetStatus(event:NetStatusEvent) : void
 			break;
 		
 		case "NetConnection.Connect.Failed":
-			Alert.show("连接失败","注意");
+			Alert.show("fms连接失败"+info.description,"注意");
 			break;
 		
 		case "NetConnection.Connect.Closed":
@@ -226,7 +227,7 @@ protected function initCamera():void{
 //		camera.addEventListener(StatusEvent.STATUS, this.camonStatusHandler);
 //		camera.addEventListener(ActivityEvent.ACTIVITY, this.camactivityHandler);
 		camera.setMode(320, 240, 15);
-		camera.setQuality(40 * 1000, 0);
+		camera.setQuality(300 * 1000, 0);
 		camera.setKeyFrameInterval(48);
 		camera.setMotionLevel(0);
 	}
@@ -254,7 +255,9 @@ protected function initMicphpne():void{
 	mic = Microphone.getMicrophone();
 	if(!volumeTransform){
 		volumeTransform = new SoundTransform();
-		this.volumeBar.value = volumeTransform.volume;
+		volumeTransform.volume = 100;
+//		this.volumeBar.value = volumeTransform.volume;
+		this.volumeSlider.value = volumeTransform.volume;
 		this._netStream.soundTransform=volumeTransform;
 	}
 	if ( mic == null )
@@ -344,7 +347,7 @@ protected function saveXmlStrFault(event:AssetEvent):void{
 
 protected function saveXmlStrResult(event:AssetEvent):void{
 	if(event.object){
-		ExternalInterface.call("saveXmlSuccess",event.object.toString());
+		ExternalInterface.call("saveXmlSuccess",event.object.toString(),titleTime);
 	}else{
 		ExternalInterface.call("saveXmlSuccess");
 	}
@@ -627,7 +630,7 @@ protected function volumeBar_changeHandler(event:Event):void
 {
 	if(volumeTransform){
 		if(this._netStream && this._netStream.soundTransform){
-			this._netStream.soundTransform.volume = volumeBar.value;
+			this._netStream.soundTransform.volume = volumeSlider.value;
 		}
 	}
 }
@@ -675,10 +678,10 @@ protected function settingBtn_clickHandler(event:MouseEvent):void
  */ 
 protected function pauseBtn_clickHandler(event:MouseEvent):void
 {
-	if (pauseBtn.selected){
+	/*if (pauseBtn.selected){
 		if(this._netStream){
 			this._netStream.pause();
-			pauseBtn.label = "继续";
+			pauseBtn.label = "继续录制";
 			if(timer){
 				timer.stop();
 			}
@@ -690,8 +693,8 @@ protected function pauseBtn_clickHandler(event:MouseEvent):void
 				timer.start();
 			}
 		}
-		pauseBtn.label = "暂停";
-	} 
+		pauseBtn.label = "暂停录制";
+	} */
 }
 
 
@@ -710,6 +713,8 @@ protected function stopRecordBtn_clickHandler(event:MouseEvent):void
 		
 		this._netStream.publish();
 		offsetTime = -1;
+		
+		ExternalInterface.call("cancel");
 	}
 }
 

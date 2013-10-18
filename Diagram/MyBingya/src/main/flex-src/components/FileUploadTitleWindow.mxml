@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
-			   xmlns:s="library://ns.adobe.com/flex/spark"
-			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   width="400" height="300" title="讲义"
-			   close="titlewindow1_closeHandler(event)"
-			   creationComplete="titlewindow1_creationCompleteHandler(event)">
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 minWidth="500" minHeight="300"
+		 creationComplete="titlewindow1_creationCompleteHandler(event)" title="讲义">
 	<fx:Script>
 		<![CDATA[
 			import com.bingya.asset.controller.AssetEvent;
@@ -19,6 +18,8 @@
 			import mx.olap.aggregators.CountAggregator;
 			
 			import ro.a223.overlay.comp.Overlay;
+			
+			import spark.events.GridEvent;
 			
 			private var file:FileReference;  
 			private var filePath:String=""; 
@@ -103,7 +104,7 @@
 				file.addEventListener(IOErrorEvent.IO_ERROR,onIoError);
 				file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,onuploadComplete);
 				
-				var types:FileFilter=new FileFilter("PDF,Office (*.pdf,*.doc,*.ppt)", "*.pdf;*.doc;*.ppt;");  
+				var types:FileFilter=new FileFilter("PDF,Office (*.pdf,*.doc,*.ppt,*.docx,*.pptx)", "*.pdf;*.doc;*.ppt;*.docx;*.pptx;");  
 				var allTypes:Array=new Array(types);  
 				file.browse(allTypes);  
 			}
@@ -117,6 +118,7 @@
 				Alert.show("上传成功");
 //				barHGroup.visible = false;
 				bar.visible = false;
+				cancelUploadBtn.visible = false;
 				assetProxy.selectByUserId(userId);
 				PopUpManager.removePopUp(overlay);
 			}
@@ -153,10 +155,11 @@
 					{  
 						file.upload(request);  
 						bar.visible = true;
+						cancelUploadBtn.visible = true;
 //						barHGroup.visible = true;
 						
-						overlay = PopUpManager.createPopUp(this,Overlay,true) as Overlay;
-						overlay.info = "后台正在做格式转换，稍等片刻";
+						overlay = PopUpManager.createPopUp(this,Overlay,false) as Overlay;
+						overlay.info = "讲义正在上传,请稍等片刻";
 						overlay.width = 200;
 						overlay.height = 100;
 						PopUpManager.centerPopUp(overlay);
@@ -167,6 +170,18 @@
 				 }  
 			 }  
 
+			public function cancelUpload():void
+			{
+				if(file){
+					file.cancel();
+					bar.visible = false;
+					cancelUploadBtn.visible = false;
+					
+					if(overlay){
+						PopUpManager.removePopUp(overlay);
+					}
+				}
+			}
 			/**
 			 *  删除所选的讲义。
 			 */ 
@@ -175,7 +190,7 @@
 				Alert.show("确定删除 ", "提示", Alert.YES | Alert.NO, null, deleteSele);  
 			}
 			
-			private function deleteSele(e:CloseEvent):void
+			public function deleteSele(e:CloseEvent=null):void
 			{
 				var object:Object = dataGrid.selectedItem;
 				if(!object){
@@ -189,6 +204,11 @@
 				Alert.show(event.text);
 			}
 			
+			protected function dataGrid_gridDoubleClickHandler(event:GridEvent):void
+			{
+				confirmBtn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -197,31 +217,74 @@
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
-	<s:HGroup>
+	<s:HGroup paddingLeft="10" paddingTop="10">
 		<s:Button id="uploadBtn" label="上传讲义" click="uploadBtn_clickHandler(event)"/>
 		<mx:ProgressBar id="bar" visible="false"/>
+		<s:Button id="cancelUploadBtn" visible="false" label="取消上传" click="cancelUpload()"/>
 	</s:HGroup>
 	<!--<s:HGroup id="barHGroup"  visible="false">
 		<s:Label id="lbProgress"/>
 	</s:HGroup>-->
-	<s:DataGrid id="dataGrid" width="100%" height="100%">
+	<s:DataGrid id="dataGrid" width="100%" height="100%" doubleClickEnabled="true"
+				gridDoubleClick="dataGrid_gridDoubleClickHandler(event)">
 		<s:columns>
 			<s:ArrayList>
 				<s:GridColumn dataField="id" headerText="id"></s:GridColumn>
 				<s:GridColumn dataField="name" headerText="名称"></s:GridColumn>
 				<!--<s:GridColumn dataField="path" headerText="路径"></s:GridColumn>-->
 				<s:GridColumn dataField="createDate" headerText="创建日期"></s:GridColumn>
+				<s:GridColumn id="uploadGridColumn" headerText="上传进度">
+					<s:itemRenderer>
+						<fx:Component>
+							<s:GridItemRenderer>
+								
+								<fx:Script>
+									<![CDATA[
+										protected function deleteLabel_clickHandler(event:MouseEvent):void
+										{
+											outerDocument.deleteSele();
+										}
+										
+										protected function openLabel_clickHandler(event:MouseEvent):void
+										{
+											outerDocument.confirmBtn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+										}
+										
+										protected function cancelLabel_clickHandler(event:MouseEvent):void
+										{
+											outerDocument.cancelUpload();
+										}
+										
+									]]>
+								</fx:Script>
+								
+								<s:HGroup left="2" right="2" top="0" bottom="2"
+										  horizontalAlign="center" verticalAlign="middle">
+									<!--<mx:ProgressBar id="progressBar" label="" width="100" />
+									<s:Label id="cancelLabel" click="cancelLabel_clickHandler(event)"
+											 color="blue" text="取消"/>
+									<s:Spacer width="100%"/>-->
+									<s:Label id="deleteLabel" click="deleteLabel_clickHandler(event)"
+											 color="blue" text="删除"/>
+									<s:Label id="openLabel" click="openLabel_clickHandler(event)"
+											 color="blue" text="打开"/>
+								</s:HGroup>
+							</s:GridItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:GridColumn>
 			</s:ArrayList>
 		</s:columns>
 	</s:DataGrid>
 	<s:HGroup>
 		<s:Spacer width="100%"/>
 		<!--<s:Button id="openBtn" label="打开" enabled="{dataGrid.selectedItem!=null}"/>-->
-		<s:Button id="deleteBtn" label="删除" enabled="{dataGrid.selectedItem!=null}" click="deleteBtn_clickHandler(event)"/>
+		<s:Button id="deleteBtn" visible="false" height="0" label="删除"
+				  click="deleteBtn_clickHandler(event)" enabled="{dataGrid.selectedItem!=null}"/>
 	</s:HGroup>
 	<s:controlBarContent>
 		<s:Spacer width="100%"/>
-		<s:Button id="confirmBtn" label="确定打开"/>
-		<s:Button id="cancelBtn" label="取消" click="titlewindow1_closeHandler();"/>
+		<s:Button id="confirmBtn" visible="false" label="确定打开"/>
+		<s:Button id="cancelBtn" label="关闭" click="titlewindow1_closeHandler();"/>
 	</s:controlBarContent>
-</s:TitleWindow>
+</s:Panel>

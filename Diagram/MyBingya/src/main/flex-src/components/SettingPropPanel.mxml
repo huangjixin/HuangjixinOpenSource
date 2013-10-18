@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 title="视频音频设置"
-		 close="cancelBtn_clickHandler()">
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:components="components.*"
+			   close="cancelBtn_clickHandler()" title="视频音频设置">
 	
 	<fx:Script>
 		<![CDATA[
@@ -15,7 +15,7 @@
 			
 			private var _camera:Camera;
 			
-			private var _fps:Number;
+			private var _kbps:Number;
 			
 			private var _tempfps:Number;
 			
@@ -47,14 +47,14 @@
 			}
 
 			[Bindable]
-			public function get fps():Number
+			public function get kbps():Number
 			{
-				return _fps;
+				return _kbps;
 			}
 
-			public function set fps(value:Number):void
+			public function set kbps(value:Number):void
 			{
-				_fps = value;
+				_kbps = value;
 			}
 
 			[Bindable]
@@ -69,7 +69,7 @@
 				
 				 if(_camera){
 					 _tempfps = _camera.bandwidth;
-					 fps= _tempfps/1000;
+					 kbps= _tempfps/1000;
 					callLater(function settingCamera():void{
 						var cameras:ArrayCollection = new ArrayCollection(Camera.names);
 						if(cameras && cameras.length>0){
@@ -131,7 +131,7 @@
 				camera = Camera.getCamera(item);
 				if(camera){
 					camera.setMode(320, 240, 15);
-					camera.setQuality(20 * 1000, 0);
+					camera.setQuality(300 * 1000, 0);
 					camera.setKeyFrameInterval(48);
 				}
 			}
@@ -149,7 +149,7 @@
 			{
 				if(camera){
 					camera.setQuality(fpsHSlider.value * 1000, 0);
-					fps = fpsHSlider.value;
+					kbps = fpsHSlider.value;
 				}
 			}
 			
@@ -166,29 +166,32 @@
 	<fx:Declarations>
 	</fx:Declarations>
 	<s:layout>
-		<s:HorizontalLayout verticalAlign="middle" horizontalAlign="center" paddingBottom="5" paddingTop="5" paddingLeft="5" paddingRight="5"/>
+		<s:HorizontalLayout horizontalAlign="center" paddingBottom="5" paddingLeft="5"
+							paddingRight="5" paddingTop="5" verticalAlign="middle"/>
 	</s:layout>
 	<s:VGroup>
 		<s:Label text="选择摄像头"/>
-		<s:ComboBox id="cameraComboBox" creationComplete="cameraComboBox_creationCompleteHandler(event)" 
-					change="cameraComboBox_changeHandler(event)" width="100%"/>
+		<s:ComboBox id="cameraComboBox" width="100%" change="cameraComboBox_changeHandler(event)"
+					creationComplete="cameraComboBox_creationCompleteHandler(event)"/>
 		<s:Spacer height="10"/>
 		
-		<s:Label text="码率:{fps}fps"/>
-		<s:Label text="[数值越大越清晰，对网络要求越高]" fontWeight="bold" color="blue"/>
-		<s:HSlider id="fpsHSlider" minimum="10" maximum="1000" width="100%" change="fpsHSlider_changeHandler(event)" value="{fps}"/>
+		<s:Label text="码率:{kbps}kbps"/>
+		<s:Label color="blue" fontWeight="bold" text="[数值越大越清晰，对网络要求越高]"/>
+		<s:HSlider id="fpsHSlider" width="100%" change="fpsHSlider_changeHandler(event)"
+				   maximum="1000" minimum="10" value="{kbps}"/>
 		<s:Spacer height="10"/>
 		
 		<s:Label text="选择麦克风"/>
-		<s:ComboBox id="micComboBox" 
-					creationComplete="micComboBox_creationCompleteHandler(event)"
-					change="micComboBox_changeHandler(event)" width="100%"/>
-		<s:Label id="activityLevelLabel" text="实时音量:{mic.activityLevel}" enterFrame="activityLevelLabel_enterFrameHandler(event)"/>
+		<s:ComboBox id="micComboBox" width="100%" change="micComboBox_changeHandler(event)"
+					creationComplete="micComboBox_creationCompleteHandler(event)"/>
+		<s:Label id="activityLevelLabel" enterFrame="activityLevelLabel_enterFrameHandler(event)"
+				 text="实时音量:{mic.activityLevel}"/>
+		<components:ProgressBar id="progressBar" width="150" height="10" enterFrame="progressBar.value = mic.activityLevel"/>
 		<!--<mx:ProgressBar id="activityLevel_pb" label="实时音量："/>-->
 	</s:VGroup>
 	<s:VGroup>
 		<mx:VideoDisplay id="localVideoDisplay" width="160" height="120" live="true"/>
-		<s:HGroup horizontalAlign="center" width="100%" verticalCenter="0" horizontalCenter="0">
+		<s:HGroup width="100%" horizontalAlign="center" horizontalCenter="0" verticalCenter="0">
 			<s:Button id="saveBtn" label="保存" click="saveBtn_clickHandler(event)"/>
 			<s:Button id="cancelBtn" label="取消" click="cancelBtn_clickHandler(event)"/>
 		</s:HGroup>

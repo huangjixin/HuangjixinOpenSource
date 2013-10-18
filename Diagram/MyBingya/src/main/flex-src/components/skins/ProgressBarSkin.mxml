@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		creationComplete="skin1_creationCompleteHandler(event)">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("components.ProgressBar")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			protected function skin1_creationCompleteHandler(event:FlexEvent):void
+			{
+				hostComponent.addEventListener("valueChange",onvalueChange);
+			}
+			
+			protected function onvalueChange(event:Event):void
+			{
+				percRect.width = Math.floor(hostComponent.width*hostComponent.value/100);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Group top="0" bottom="0" left="0" right="0">
+		<s:Rect top="0" bottom="0" left="0" right="0">
+			<s:stroke>
+				<s:SolidColorStroke color="gray" weight="1"/>
+			</s:stroke>
+		</s:Rect>
+		
+		<s:Rect id="percRect" top="1" bottom="1" width="{Math.floor(hostComponent.width*hostComponent.value/100)}">
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="white" alpha="0.5" ratio="0.2"/>
+					<s:GradientEntry color="green" alpha="0.5"/>
+					<s:GradientEntry color="green"/>
+				</s:LinearGradient>
+				<!--<s:SolidColor color="green" alpha="0.5"/>-->
+			</s:fill>
+		</s:Rect>
+		
+	</s:Group>
+</s:Skin>
